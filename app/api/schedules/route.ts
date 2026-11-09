@@ -8,6 +8,11 @@ import { currentUserKey } from '@/auth';
 
 export const dynamic = 'force-dynamic';
 
+function clampThreshold(v: unknown): number {
+  const n = Number(v);
+  return Number.isFinite(n) ? Math.min(100, Math.max(0.1, n)) : 1;
+}
+
 export async function GET() {
   await initScheduler();
   return NextResponse.json((await listOwnedSchedules()).map(publicSchedule));
@@ -32,6 +37,8 @@ export async function POST(request: NextRequest) {
       enabled = true,
       recipients = [],
       retentionCount = 10,
+      notifyOn,
+      changeThreshold,
     } = body;
 
     if (!name || !targetUrl || !urls || !Array.isArray(urls) || urls.length === 0) {
@@ -68,6 +75,8 @@ export async function POST(request: NextRequest) {
       recipients: Array.isArray(recipients) ? recipients : [],
       retentionCount: Number(retentionCount) || 10,
       ownerKey,
+      notifyOn: notifyOn === 'changes' ? 'changes' : 'every',
+      changeThreshold: clampThreshold(changeThreshold),
     });
 
     // Register with active background scheduler

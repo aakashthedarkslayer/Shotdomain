@@ -57,7 +57,7 @@ async function getTransporter(): Promise<Transporter> {
 export async function sendScheduledRunEmail(
   schedule: Schedule,
   run: ScheduledRun,
-  baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3100',
+  baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
 ): Promise<EmailResult> {
   const recipients = schedule.recipients && schedule.recipients.length > 0
     ? schedule.recipients
@@ -69,6 +69,29 @@ export async function sendScheduledRunEmail(
   const statusLabel = isSuccess ? 'Completed Successfully' : run.status === 'partial' ? 'Completed with Warnings' : 'Failed';
 
   const dashboardUrl = `${baseUrl}/schedules`;
+
+  // Change summary vs. the previous run (absent on the first run).
+  const threshold = schedule.changeThreshold ?? 1;
+  const changed = run.results
+    .filter((r) => typeof r.changePct === 'number' && r.changePct >= threshold)
+    .sort((a, b) => (b.changePct ?? 0) - (a.changePct ?? 0));
+  const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+  const changesHtml = !run.comparedToRunId
+    ? ''
+    : changed.length === 0
+      ? `<p style="font-size:13px;color:#475569;margin:0 0 24px;">No pages changed by ${threshold}% or more since the previous run.</p>`
+      : `<p style="font-size:13px;color:#0f172a;font-weight:600;margin:0 0 8px;">${changed.length} page${changed.length === 1 ? '' : 's'} changed since the previous run</p>
+         <table width="100%" cellpadding="6" style="font-size:12px;color:#475569;margin-bottom:24px;border-collapse:collapse;">
+           ${changed
+             .slice(0, 15)
+             .map((r) => `<tr><td style="border-top:1px solid #e2e8f0;">${esc(r.url)}${r.device ? ` · ${esc(r.device)}` : ''}</td><td align="right" style="border-top:1px solid #e2e8f0;white-space:nowrap;">${r.changePct}%</td></tr>`)
+             .join('')}
+         </table>`;
+  const changesText = !run.comparedToRunId
+    ? ''
+    : changed.length === 0
+      ? 'No pages changed since the previous run.'
+      : `${changed.length} page(s) changed since the previous run:\n${changed.slice(0, 15).map((r) => `- ${r.url}${r.device ? ` (${r.device})` : ''}: ${r.changePct}%`).join('\n')}`;
   const runDate = new Date(run.timestamp).toLocaleString();
 
   const htmlContent = `
@@ -131,10 +154,12 @@ export async function sendScheduledRunEmail(
                   <td style="text-transform: capitalize;">${schedule.frequency}</td>
                 </tr>
                 <tr>
-                  <td style="color: #94a3b8;">Device / Size:</td>
-                  <td>${schedule.settings.device} (${schedule.settings.width}×${schedule.settings.height})</td>
+                  <td style="color: #94a3b8;">Devices:</td>
+                  <td>${esc((schedule.settings.devices?.length ? schedule.settings.devices : [schedule.settings.device ?? 'Desktop']).join(', '))}</td>
                 </tr>
               </table>
+
+              ${changesHtml}
 
               <!-- Call to Action -->
               <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -169,6 +194,7 @@ Status: ${statusLabel}
 Target URL: ${schedule.targetUrl}
 Execution Time: ${runDate}
 Completed: ${run.completedUrls}/${run.totalUrls} (${run.failedUrls} failed)
+${changesText}
 
 View results on dashboard: ${dashboardUrl}
   `.trim();
@@ -178,7 +204,9 @@ View results on dashboard: ${dashboardUrl}
     const info = await transporter.sendMail({
       from: fromEmail,
       to: recipients.join(', '),
-      subject: `[ShotDomain] Scheduled Capture: ${schedule.name} (${run.completedUrls}/${run.totalUrls} captured)`,
+      subject: changed.length
+        ? `[ShotDomain] ${changed.length} page${changed.length === 1 ? '' : 's'} changed: ${schedule.name}`
+        : `[ShotDomain] Scheduled Capture: ${schedule.name} (${run.completedUrls}/${run.totalUrls} captured)`,
       text: textContent,
       html: htmlContent,
     });

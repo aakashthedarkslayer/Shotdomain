@@ -32,6 +32,8 @@ function ScheduleForm({ onClose, targetUrl, urls, settings }: Omit<SaveScheduleM
   const user = useCurrentUser();
   const [recipients, setRecipients] = useState(user?.email ?? '');
   const [retentionCount, setRetentionCount] = useState(10);
+  const [notifyOn, setNotifyOn] = useState<'every' | 'changes'>('every');
+  const [changeThreshold, setChangeThreshold] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -56,6 +58,8 @@ function ScheduleForm({ onClose, targetUrl, urls, settings }: Omit<SaveScheduleM
           enabled: true,
           recipients: recipients.split(',').map((s) => s.trim()).filter(Boolean),
           retentionCount,
+          notifyOn,
+          changeThreshold,
         }),
       });
       if (!res.ok) {
@@ -142,6 +146,23 @@ function ScheduleForm({ onClose, targetUrl, urls, settings }: Omit<SaveScheduleM
             onChange={(e) => setRecipients(e.target.value)}
           />
         </Field>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Email me" htmlFor="schedule-notify" hint="Each run is compared with the previous one, page by page.">
+            <Select id="schedule-notify" value={notifyOn} onChange={(e) => setNotifyOn(e.target.value as 'every' | 'changes')}>
+              <option value="every">After every run</option>
+              <option value="changes">Only when pages change</option>
+            </Select>
+          </Field>
+          <Field label="Counts as changed at" htmlFor="schedule-threshold">
+            <Select id="schedule-threshold" value={changeThreshold} onChange={(e) => setChangeThreshold(Number(e.target.value))}>
+              <option value={0.1}>0.1% of the page (very sensitive)</option>
+              <option value={1}>1% of the page</option>
+              <option value={5}>5% of the page</option>
+              <option value={15}>15% of the page (big changes only)</option>
+            </Select>
+          </Field>
+        </div>
 
         <Field label="Keep history" htmlFor="schedule-retention">
           <Select id="schedule-retention" value={retentionCount} onChange={(e) => setRetentionCount(Number(e.target.value))}>

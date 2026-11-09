@@ -86,6 +86,8 @@ export async function saveProfile(userKey: string, profile: Profile): Promise<Pr
 export interface HistoryResult {
   url: string;
   device?: string;
+  /** Scheduled runs only: % changed since the previous run. */
+  changePct?: number | null;
   status: 'done' | 'failed';
   fileName?: string;
   error?: string;
@@ -153,11 +155,13 @@ export async function saveCaptureFromJob(
     settings?: { device?: string; devices?: string[]; fullPage: boolean; format: 'png' | 'jpeg' };
     results: Iterable<{ url: string; device?: string; status: string; fileName?: string; error?: string }>;
   },
-  extra: { scheduleName?: string } = {},
+  extra: { scheduleName?: string; changes?: Map<string, number | null> } = {},
 ): Promise<void> {
   const results: HistoryResult[] = [];
   for (const r of job.results) {
-    if (r.status === 'done' && r.fileName) results.push({ url: r.url, device: r.device, status: 'done', fileName: r.fileName });
+    const changePct = extra.changes?.get(`${r.device ?? ''}|${r.url}`);
+    if (r.status === 'done' && r.fileName)
+      results.push({ url: r.url, device: r.device, status: 'done', fileName: r.fileName, ...(changePct !== undefined ? { changePct } : {}) });
     else if (r.status === 'failed') results.push({ url: r.url, device: r.device, status: 'failed', error: r.error });
   }
   const done = results.filter((r) => r.status === 'done').length;

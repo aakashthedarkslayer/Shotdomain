@@ -37,6 +37,8 @@ export async function PATCH(
     const changes: Partial<Schedule> = {};
     if (typeof body.enabled === 'boolean') changes.enabled = body.enabled;
     if (typeof body.name === 'string' && body.name.trim()) changes.name = body.name.trim().slice(0, 120);
+    if (body.notifyOn === 'every' || body.notifyOn === 'changes') changes.notifyOn = body.notifyOn;
+    if (Number.isFinite(Number(body.changeThreshold))) changes.changeThreshold = Math.min(100, Math.max(0.1, Number(body.changeThreshold)));
 
     const updated = await updateSchedule(id, changes);
     if (!updated) {

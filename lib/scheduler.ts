@@ -6,6 +6,7 @@ import {
   getSchedule,
   recordScheduledRun,
   getRunDir,
+  getScheduledRuns,
   type Schedule,
   type ScheduledRun,
   type ScheduledRunResult,
@@ -17,6 +18,7 @@ import type { SiteAuth } from './captureOptions';
 import type { CaptureSettings } from './jobStore';
 import { captureScreenshots } from './screenshot';
 import { createZipFile } from './zip';
+import { percentChanged } from './imageDiff';
 import { sendScheduledRunEmail } from './email';
 
 // Global registry of active cron tasks
@@ -184,23 +186,46 @@ export async function executeScheduledRun(
     console.error(`[Scheduler] Error copying files for run ${pendingRun.id}:`, copyErr);
   }
 
-  // 5. Send Email notification
-  const emailRes = await sendScheduledRunEmail(schedule, pendingRun);
+  // 5. Compare with the previous run, page by page (same URL + device).
+  const changes = new Map<string, number | null>();
+  const previous = (await getScheduledRuns(schedule.id)).find((r) => r.id !== pendingRun.id && r.timestamp <= pendingRun.timestamp);
+  if (previous) {
+    const threshold = schedule.changeThreshold ?? 1;
+    const prevDir = getRunDir(schedule.id, previous.id);
+    let changedPages = 0;
+    for (const r of pendingRun.results) {
+      if (r.status !== 'done' || !r.fileName) continue;
+      const before = previous.results.find((p) => p.status === 'done' && p.fileName && p.url === r.url && p.device === r.device);
+      if (!before?.fileName) continue;
+      r.changePct = await percentChanged(path.join(prevDir, before.fileName), path.join(destRunDir, r.fileName));
+      changes.set(`${r.device ?? ''}|${r.url}`, r.changePct);
+      if (r.changePct !== null && r.changePct >= threshold) changedPages++;
+    }
+    pendingRun.comparedToRunId = previous.id;
+    pendingRun.changedPages = changedPages;
+    await fs.writeFile(path.join(destRunDir, 'manifest.json'), JSON.stringify(pendingRun, null, 2), 'utf-8');
+  }
+
+  // 6. Email: after every run, or only when something changed. No recipients -> no email.
+  const onlyOnChange = schedule.notifyOn === 'changes';
+  const shouldEmail =
+    (schedule.recipients?.length ?? 0) > 0 && (!onlyOnChange || (pendingRun.changedPages ?? 0) > 0);
+  const emailRes = shouldEmail ? await sendScheduledRunEmail(schedule, pendingRun) : { success: false as const };
   if (emailRes.success) {
     pendingRun.notificationSent = true;
-    if (emailRes.previewUrl) {
+    if ('previewUrl' in emailRes && emailRes.previewUrl) {
       pendingRun.emailPreviewUrl = emailRes.previewUrl;
     }
     const manifestPath = path.join(destRunDir, 'manifest.json');
     await fs.writeFile(manifestPath, JSON.stringify(pendingRun, null, 2), 'utf-8');
   }
 
-  // 6. Add the run to the owner's capture history
+  // 7. Add the run to the owner's capture history
   if (schedule.ownerKey) {
     await saveCaptureFromJob(
       schedule.ownerKey,
       { ...finishedJob, results: finishedJob.results.values() },
-      { scheduleName: schedule.name },
+      { scheduleName: schedule.name, changes },
     ).catch((err) => console.error(`[Scheduler] Could not save run ${pendingRun.id} to history:`, err));
   }
 

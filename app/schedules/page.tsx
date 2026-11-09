@@ -209,6 +209,9 @@ export default function SchedulesPage() {
                           {(s.settings?.devices?.length ? s.settings.devices : [s.settings?.device ?? 'Desktop']).join(', ')}
                         </span>
                         {s.enabled && s.nextRunAt && <span>Next: {formatDate(s.nextRunAt)}</span>}
+                        <span>
+                          {s.notifyOn === 'changes' ? `Emails on changes ≥ ${s.changeThreshold ?? 1}%` : s.recipients.length ? 'Emails every run' : 'No emails'}
+                        </span>
                       </div>
                     </div>
 
@@ -263,30 +266,58 @@ export default function SchedulesPage() {
                       ) : (
                         <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
                           {runs.map((run) => (
-                            <li key={run.id} className="flex flex-col gap-2 px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between">
-                              <div className="flex items-center gap-3 text-sm">
-                                <Badge tone={RUN_TONE[run.status]}>{run.status}</Badge>
-                                <span className="text-fg">{formatDate(run.timestamp)}</span>
-                                <span className="text-muted">
-                                  {run.completedUrls}/{run.totalUrls} screenshots
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-1.5">
-                                {run.emailPreviewUrl && (
-                                  <a href={run.emailPreviewUrl} target="_blank" rel="noopener noreferrer" className={buttonClass('ghost', 'sm')}>
-                                    <Icon name="mail" size={14} />
-                                    Email
+                            <li key={run.id} className="px-4 py-2.5">
+                              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                <div className="flex items-center gap-3 text-sm">
+                                  <Badge tone={RUN_TONE[run.status]}>{run.status}</Badge>
+                                  <span className="text-fg">{formatDate(run.timestamp)}</span>
+                                  <span className="text-muted">
+                                    {run.completedUrls}/{run.totalUrls} screenshots
+                                  </span>
+                                  {run.comparedToRunId === undefined ? (
+                                    <Badge>First run</Badge>
+                                  ) : run.changedPages ? (
+                                    <Badge tone="warning" dot>
+                                      {run.changedPages} {run.changedPages === 1 ? 'page' : 'pages'} changed
+                                    </Badge>
+                                  ) : (
+                                    <Badge tone="success">No changes</Badge>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                  {run.emailPreviewUrl && (
+                                    <a href={run.emailPreviewUrl} target="_blank" rel="noopener noreferrer" className={buttonClass('ghost', 'sm')}>
+                                      <Icon name="mail" size={14} />
+                                      Email
+                                    </a>
+                                  )}
+                                  <a
+                                    href={`/api/schedules/${s.id}/runs/${run.id}/download`}
+                                    download={`scheduled-run-${run.id.slice(0, 8)}.zip`}
+                                    className={buttonClass('secondary', 'sm')}
+                                  >
+                                    <Icon name="download" size={14} />
+                                    ZIP
                                   </a>
-                                )}
-                                <a
-                                  href={`/api/schedules/${s.id}/runs/${run.id}/download`}
-                                  download={`scheduled-run-${run.id.slice(0, 8)}.zip`}
-                                  className={buttonClass('secondary', 'sm')}
-                                >
-                                  <Icon name="download" size={14} />
-                                  ZIP
-                                </a>
+                                </div>
                               </div>
+                              {!!run.changedPages && (
+                                <ul className="mt-2 space-y-0.5 border-l-2 border-warning/40 pl-3 text-xs text-muted">
+                                  {run.results
+                                    .filter((r) => typeof r.changePct === 'number' && r.changePct >= (s.changeThreshold ?? 1))
+                                    .sort((a, b) => (b.changePct ?? 0) - (a.changePct ?? 0))
+                                    .slice(0, 10)
+                                    .map((r, i) => (
+                                      <li key={i} className="flex justify-between gap-4">
+                                        <span className="truncate font-mono">
+                                          {r.url}
+                                          {r.device ? ` · ${r.device}` : ''}
+                                        </span>
+                                        <span className="shrink-0 font-medium text-warning">{r.changePct}%</span>
+                                      </li>
+                                    ))}
+                                </ul>
+                              )}
                             </li>
                           ))}
                         </ul>

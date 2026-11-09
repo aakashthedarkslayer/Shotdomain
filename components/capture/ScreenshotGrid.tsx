@@ -15,6 +15,8 @@ export interface GridItem {
   fileName: string;
   /** Path of the file inside its capture (used for share links). */
   file?: string;
+  /** Small label over the thumbnail, e.g. "12% changed". */
+  badge?: { text: string; tone: 'warning' | 'neutral' };
 }
 
 /** Thumbnail grid with a device filter and a full-size preview; used by Results and History. */
@@ -57,7 +59,7 @@ export function ScreenshotGrid({
               <button
                 type="button"
                 onClick={() => setPreview(item)}
-                className="block aspect-[4/3] w-full cursor-zoom-in overflow-hidden border-b border-line bg-subtle"
+                className="relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden border-b border-line bg-subtle"
                 aria-label={`Preview ${item.url}`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -67,6 +69,15 @@ export function ScreenshotGrid({
                   loading="lazy"
                   className="h-full w-full object-cover object-top transition duration-300 group-hover:scale-[1.02]"
                 />
+                {item.badge && (
+                  <span
+                    className={`absolute top-2 left-2 rounded-md px-1.5 py-0.5 text-xs font-medium shadow-sm ${
+                      item.badge.tone === 'warning' ? 'bg-warning text-white' : 'bg-surface/90 text-muted'
+                    }`}
+                  >
+                    {item.badge.text}
+                  </span>
+                )}
               </button>
               <div className="flex items-center gap-2 px-3 py-2.5">
                 <div className="min-w-0 flex-1">

@@ -50,6 +50,12 @@ export default async function CaptureDetailPage({ params }: { params: Promise<{ 
             captureId={capture.id}
             items={done.map((r, idx) => ({
               file: r.fileName!,
+              badge:
+                typeof r.changePct === 'number'
+                  ? r.changePct >= 1
+                    ? { text: `${r.changePct}% changed`, tone: 'warning' as const }
+                    : { text: 'No change', tone: 'neutral' as const }
+                  : undefined,
               key: `${r.device ?? ''}-${r.fileName}-${idx}`,
               url: r.url,
               device: r.device,
