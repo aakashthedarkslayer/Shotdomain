@@ -71,6 +71,10 @@ export interface SiteAuth {
   localStorage?: string;
   /** method=cookies: extra request headers, one "Name: value" per line (sent only to the site's host). */
   headers?: string;
+  /** UI only (dropped by sanitizeAuth): name/value rows the cookie string was built from. */
+  cookieRows?: { name: string; value: string }[];
+  /** UI only: enter cookies as fields (default) or paste everything at once. */
+  cookieInput?: 'fields' | 'paste';
   /** method=basic and method=form */
   username?: string;
   password?: string;

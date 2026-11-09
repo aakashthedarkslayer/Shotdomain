@@ -8,6 +8,8 @@ import { Alert } from '@/components/ui/Alert';
 import { Icon } from '@/components/ui/Icon';
 import type { SiteAuth } from '@/lib/captureOptions';
 import { normalizeUrl } from '@/lib/url';
+import { presetFor, rowsToCookieHeader } from '@/lib/cookiePresets';
+import type { CookiePreset, CookieRow } from '@/lib/cookiePresets';
 
 interface TestResult {
   ok: boolean;
@@ -30,16 +32,27 @@ function CookieHelp() {
       </summary>
       <div className="space-y-3 border-t border-line px-3 py-3 text-muted">
         <div>
-          <p className="font-medium text-fg">Option A — from DevTools (no extension)</p>
+          <p className="font-medium text-fg">Option A — copy the values (easiest)</p>
           <ol className="mt-1 list-decimal space-y-0.5 pl-5">
-            <li>Log in to the site in Chrome, Edge or Firefox as you normally would.</li>
-            <li>Open DevTools (F12) → <b>Network</b> tab, then reload the page.</li>
-            <li>Click the first request (the page itself) → <b>Headers</b> → <b>Request Headers</b>.</li>
-            <li>Copy the value of <code className="font-mono">cookie:</code> and paste it below.</li>
+            <li>Log in to the site in Chrome or Edge as you normally would.</li>
+            <li>
+              Open DevTools (<b>Ctrl+Shift+I</b>, or right-click → <b>Inspect</b>) → <b>Application</b> tab (under <b>»</b> if hidden).
+            </li>
+            <li>
+              <b>Storage → Cookies</b> → the site’s address. Double-click the <b>Value</b> of each cookie listed below, copy it, and paste it
+              into its box.
+            </li>
           </ol>
         </div>
         <div>
-          <p className="font-medium text-fg">Option B — with a cookie extension</p>
+          <p className="font-medium text-fg">Option B — copy the whole Cookie header</p>
+          <p className="mt-1">
+            DevTools → <b>Network</b> → <b>Doc</b> filter → reload → click the page request → <b>Request Headers</b> → right-click{' '}
+            <code className="font-mono">cookie</code> → <b>Copy value</b>. Then choose “Paste all cookies at once”.
+          </p>
+        </div>
+        <div>
+          <p className="font-medium text-fg">Option C — with a cookie extension</p>
           <p className="mt-1">
             Use an extension such as Cookie-Editor (Export → JSON) or “Get cookies.txt”, and paste the export below. Both formats work.
           </p>
@@ -50,6 +63,93 @@ function CookieHelp() {
         </p>
       </div>
     </details>
+  );
+}
+
+function defaultRows(preset?: CookiePreset): CookieRow[] {
+  return preset ? preset.fields.map((f) => ({ name: f.name, value: '' })) : [{ name: '', value: '' }];
+}
+
+/**
+ * Cookies as name/value fields (only paste values; known sites pre-name the
+ * cookies that matter), or one box for a Cookie header / JSON / cookies.txt.
+ */
+function CookieInput({ siteUrl, auth, set }: { siteUrl: string; auth: SiteAuth; set: (p: Partial<SiteAuth>) => void }) {
+  const preset = presetFor(siteUrl);
+  const mode = auth.cookieInput ?? 'fields';
+  const presetNames = new Set(preset?.fields.map((f) => f.name) ?? []);
+  // Keep the user's rows once they've typed something; otherwise follow the site's preset.
+  const rows = auth.cookieRows?.some((r) => r.value.trim() || r.name.trim()) ? auth.cookieRows : defaultRows(preset);
+
+  const updateRows = (next: CookieRow[]) => set({ cookieRows: next, cookies: rowsToCookieHeader(next, preset) });
+  const setRow = (i: number, patch: Partial<CookieRow>) => updateRows(rows.map((r, j) => (j === i ? { ...r, ...patch } : r)));
+
+  if (mode === 'paste') {
+    return (
+      <div className="space-y-2">
+        <Field label="All session cookies" htmlFor="auth-cookies" hint="A Cookie header, a JSON export, or a cookies.txt file.">
+          <Textarea
+            id="auth-cookies"
+            rows={4}
+            placeholder={'session_id=abc123; csrftoken=xyz\n— or —\n[{"name":"session_id","value":"abc123","domain":".example.com"}]'}
+            value={auth.cookies ?? ''}
+            onChange={(e) => set({ cookies: e.target.value })}
+          />
+        </Field>
+        <button type="button" onClick={() => set({ cookieInput: 'fields', cookies: rowsToCookieHeader(rows, preset) })} className="cursor-pointer text-[13px] font-medium text-accent hover:underline">
+          Enter cookie values one by one instead
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2.5">
+      <div className="flex items-baseline justify-between gap-3">
+        <span className="text-[13px] font-medium text-fg">{preset ? `${preset.site} session cookie` : 'Session cookies'}</span>
+        <button type="button" onClick={() => set({ cookieInput: 'paste' })} className="cursor-pointer text-[13px] font-medium text-accent hover:underline">
+          Paste all cookies at once
+        </button>
+      </div>
+      {rows.map((row, i) => {
+        const fixed = presetNames.has(row.name);
+        const field = preset?.fields.find((f) => f.name === row.name);
+        return (
+          <div key={i} className="space-y-1">
+            <div className="flex items-center gap-2">
+              {fixed ? (
+                <span className="flex h-9 min-w-[9rem] shrink-0 items-center rounded-xl bg-subtle px-3 font-mono text-[13px] text-fg">{row.name}</span>
+              ) : (
+                <Input aria-label="Cookie name" placeholder="cookie name" value={row.name} onChange={(e) => setRow(i, { name: e.target.value })} className="font-mono text-[13px]" />
+              )}
+              <span className="text-faint">=</span>
+              <Input
+                id={i === 0 ? 'auth-cookies' : undefined}
+                aria-label={`Value of ${row.name || 'cookie'}`}
+                placeholder="paste the value only"
+                value={row.value}
+                onChange={(e) => setRow(i, { value: e.target.value })}
+                className="font-mono text-[13px]"
+                spellCheck={false}
+                autoComplete="off"
+              />
+              {!fixed && rows.length > 1 && (
+                <button type="button" aria-label="Remove cookie" onClick={() => updateRows(rows.filter((_, j) => j !== i))} className="cursor-pointer rounded-md p-1.5 text-faint hover:bg-subtle hover:text-danger">
+                  <Icon name="x" size={14} />
+                </button>
+              )}
+            </div>
+            {field && <p className="pl-1 text-xs text-muted">{field.hint}</p>}
+          </div>
+        );
+      })}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <button type="button" onClick={() => updateRows([...rows, { name: '', value: '' }])} className="flex cursor-pointer items-center gap-1 text-[13px] font-medium text-muted hover:text-fg">
+          <Icon name="plus" size={14} /> Add another cookie
+        </button>
+        {preset?.note && <span className="text-xs text-muted">{preset.note}</span>}
+      </div>
+    </div>
   );
 }
 
@@ -98,15 +198,7 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
 
           <CookieHelp />
 
-          <Field label="Session cookies" htmlFor="auth-cookies" hint="A Cookie header, a JSON export, or a cookies.txt file.">
-            <Textarea
-              id="auth-cookies"
-              rows={4}
-              placeholder={'session_id=abc123; csrftoken=xyz\n— or —\n[{"name":"session_id","value":"abc123","domain":".example.com"}]'}
-              value={auth.cookies ?? ''}
-              onChange={(e) => set({ cookies: e.target.value })}
-            />
-          </Field>
+          <CookieInput siteUrl={siteUrl} auth={auth} set={set} />
 
           <button type="button" onClick={() => setShowExtra((v) => !v)} className="flex cursor-pointer items-center gap-1 text-[13px] font-medium text-muted hover:text-fg">
             <Icon name="chevronDown" size={14} className={`transition-transform ${showExtra ? 'rotate-180' : ''}`} />
