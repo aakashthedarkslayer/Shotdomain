@@ -32,8 +32,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   }
   if (!file) return new Response('Not found', { status: 404 });
 
+  // Every shared file lives under data/; reading through a data/-scoped path
+  // also keeps the build from tracing the whole project.
+  const rel = path.relative(path.join(process.cwd(), 'data'), file);
+  if (rel.startsWith('..') || path.isAbsolute(rel)) return new Response('Not found', { status: 404 });
+
   try {
-    const data = await fs.readFile(file);
+    const data = await fs.readFile(path.join(process.cwd(), 'data', rel));
     return new Response(new Uint8Array(data), {
       headers: {
         'Content-Type': path.extname(file).toLowerCase() === '.png' ? 'image/png' : 'image/jpeg',
