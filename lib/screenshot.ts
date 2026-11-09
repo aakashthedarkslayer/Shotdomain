@@ -1,5 +1,5 @@
 import { chromium, devices } from 'playwright';
-import type { Browser, BrowserContext } from 'playwright';
+import type { Browser, BrowserContext, Page } from 'playwright';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import type { CaptureSettings, CaptureResult } from './jobStore';
@@ -161,6 +161,75 @@ async function createContext(
 }
 
 // ---------------------------------------------------------------------------
+// Pre-capture scroll (full-page only)
+// ---------------------------------------------------------------------------
+
+/** Hard cap so infinite-scroll pages can't hang a capture (~MAX_SCROLL_STEPS × 100ms). */
+const MAX_SCROLL_STEPS = 80;
+const SCROLL_STEP_DELAY_MS = 100;
+/** How long to wait for lazy images/requests triggered by the scroll to settle. */
+const SETTLE_TIMEOUT_MS = 5_000;
+
+/**
+ * Scroll the window to the bottom in viewport-sized steps so lazy-loaded
+ * content (IntersectionObserver reveals, loading="lazy" images, "load more"
+ * sentinels) renders before a full-page screenshot, then return to the top.
+ *
+ * `fullPage: true` only captures the DOM's current height, so without this
+ * anything below the fold that waits for scroll is blank or missing.
+ *
+ * Known limitation: pages that scroll inside an inner container instead of
+ * the window are not handled.
+ */
+async function autoScroll(page: Page): Promise<void> {
+  await page.evaluate(
+    async ({ maxSteps, delay }) => {
+      await new Promise<void>((resolve) => {
+        let steps = 0;
+        const timer = setInterval(() => {
+          // 75% of a viewport per step so every element is fully in view at some point.
+          const step = Math.max(300, Math.floor(window.innerHeight * 0.75));
+          window.scrollBy({ top: step, behavior: 'instant' });
+          steps++;
+          // Re-read the height every tick: pages that grow as you scroll extend the run.
+          const atBottom =
+            window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+          if (atBottom || steps >= maxSteps) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, delay);
+      });
+    },
+    { maxSteps: MAX_SCROLL_STEPS, delay: SCROLL_STEP_DELAY_MS },
+  );
+
+  // Let images and requests kicked off by the scroll finish (bounded).
+  await page.waitForLoadState('networkidle', { timeout: SETTLE_TIMEOUT_MS }).catch(() => {});
+  await page
+    .evaluate(
+      (timeout) =>
+        Promise.race([
+          Promise.all(
+            Array.from(document.images)
+              .filter((img) => !img.complete)
+              .map((img) => new Promise((done) => {
+                img.addEventListener('load', done, { once: true });
+                img.addEventListener('error', done, { once: true });
+              })),
+          ),
+          new Promise((done) => setTimeout(done, timeout)),
+        ]),
+      SETTLE_TIMEOUT_MS,
+    )
+    .catch(() => {});
+
+  // Back to the top so sticky headers and scroll-linked effects sit in their initial state.
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  await page.waitForTimeout(500);
+}
+
+// ---------------------------------------------------------------------------
 // Single-URL capture
 // ---------------------------------------------------------------------------
 
@@ -210,6 +279,11 @@ async function captureOne(
       await page.waitForTimeout(100);
     }
 
+    // Full-page: scroll first so lazy-loaded content below the fold renders.
+    if (settings.fullPage) {
+      await autoScroll(page);
+    }
+
     // Take the screenshot
     await page.screenshot({
       path: outputPath,
@@ -237,8 +311,9 @@ async function captureOne(
  *   3. Navigate with waitUntil: 'networkidle', 30s timeout
  *      If networkidle fails, fall back to waitUntil: 'load' + 3s extra wait
  *   4. If backgroundColor: inject <style>html,body{background:COLOR}</style>
- *   5. Screenshot with fullPage and format options
- *   6. Save to tmp/{jobId}/{filename}
+ *   5. If fullPage: scroll to the bottom (capped) so lazy content renders, back to top
+ *   6. Screenshot with fullPage and format options
+ *   7. Save to tmp/{jobId}/{filename}
  * - Handle errors: timeout, navigation failure, etc. Mark as failed with reason.
  * - If useCache: reuse one BrowserContext per domain
  *
