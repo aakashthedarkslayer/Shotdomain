@@ -16,10 +16,10 @@ const NAV = [
 export function AppHeader({ children }: { children?: ReactNode }) {
   const pathname = usePathname();
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-bg/85 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-5xl items-center gap-6 px-4 sm:px-6">
-        <Logo href="/" />
-        <nav className="flex items-center gap-1">
+    <header className="sticky top-0 z-30 glass-strong border-x-0 border-t-0 !shadow-none">
+      <div className="mx-auto flex h-14 max-w-5xl items-center gap-3 px-4 sm:gap-6 sm:px-6">
+        <Logo href="/" compact />
+        <nav className="flex items-center gap-0.5 sm:gap-1">
           {NAV.map((item) => {
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (

@@ -17,10 +17,10 @@ export function Stepper({ current }: { current: number }) {
                 <span
                   className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium transition ${
                     done
-                      ? 'bg-primary text-primary-fg'
+                      ? 'bg-brand text-white'
                       : active
-                        ? 'bg-accent text-white'
-                        : 'border border-line bg-surface text-faint'
+                        ? 'bg-brand text-white ring-4 ring-accent-soft'
+                        : 'glass text-faint'
                   }`}
                 >
                   {done ? <Icon name="check" size={13} strokeWidth={2.5} /> : num}
@@ -33,7 +33,7 @@ export function Stepper({ current }: { current: number }) {
                   {label}
                 </span>
               </div>
-              {num < STEPS.length && <span className={`h-px flex-1 ${done ? 'bg-primary' : 'bg-line'}`} />}
+              {num < STEPS.length && <span className={`h-px flex-1 ${done ? 'bg-brand' : 'bg-line-strong'}`} />}
             </li>
           );
         })}

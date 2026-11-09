@@ -4,7 +4,7 @@ import { Icon } from './Icon';
 import type { IconName } from './Icon';
 
 const FIELD_BASE =
-  'w-full rounded-lg border bg-surface text-sm text-fg placeholder:text-faint transition outline-none focus:ring-3 disabled:cursor-not-allowed disabled:opacity-60';
+  'w-full rounded-xl border bg-field text-sm text-fg placeholder:text-faint transition outline-none focus:ring-3 disabled:cursor-not-allowed disabled:opacity-60';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: IconName;

@@ -7,16 +7,17 @@ export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary: 'bg-primary text-primary-fg hover:opacity-90',
-  secondary: 'border border-line bg-surface text-fg hover:bg-subtle',
+  primary:
+    'bg-brand text-white shadow-[0_6px_20px_-6px_color-mix(in_srgb,var(--accent)_70%,transparent),inset_0_1px_0_rgba(255,255,255,0.25)] hover:brightness-110',
+  secondary: 'glass text-fg hover:bg-surface-strong',
   ghost: 'text-muted hover:bg-subtle hover:text-fg',
-  danger: 'border border-line bg-surface text-danger hover:bg-danger-soft',
+  danger: 'glass text-danger hover:bg-danger-soft',
 };
 
 const SIZES: Record<ButtonSize, string> = {
   sm: 'h-8 gap-1.5 rounded-md px-2.5 text-[13px]',
-  md: 'h-9 gap-2 rounded-lg px-3.5 text-sm',
-  lg: 'h-11 gap-2 rounded-lg px-5 text-[15px]',
+  md: 'h-9 gap-2 rounded-xl px-3.5 text-sm',
+  lg: 'h-11 gap-2 rounded-xl px-5 text-[15px]',
 };
 
 /** Class string for anything that should look like a button (e.g. <a> or <Link>). */

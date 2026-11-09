@@ -12,7 +12,7 @@ export function AuthCard({ title, description, children, footer }: { title: stri
         </Link>
         <h1 className="text-center text-xl font-semibold tracking-tight text-fg">{title}</h1>
         <p className="mt-1 text-center text-sm text-muted">{description}</p>
-        <div className="mt-8 rounded-xl border border-line bg-surface p-6 shadow-sm">{children}</div>
+        <div className="mt-8 glass rounded-2xl p-6">{children}</div>
         <p className="mt-6 text-center text-sm text-muted">{footer}</p>
       </div>
     </div>

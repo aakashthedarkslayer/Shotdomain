@@ -60,7 +60,7 @@ function NumberInput({ id, label, value, onChange }: { id: string; label: string
         min={1}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="h-9 w-28 rounded-lg border border-line bg-surface pr-2 pl-7 font-mono text-sm text-fg outline-none hover:border-line-strong focus:border-accent focus:ring-3 focus:ring-accent/15"
+        className="h-9 w-28 rounded-xl border border-line bg-field pr-2 pl-7 font-mono text-sm text-fg outline-none hover:border-line-strong focus:border-accent focus:ring-3 focus:ring-accent/15"
       />
     </div>
   );

@@ -251,7 +251,7 @@ export default function AppPage() {
     <div className="min-h-screen pb-24">
       <AppHeader>
         {rootUrl && currentStep > 1 && (
-          <span className="hidden max-w-[16rem] items-center gap-2 truncate rounded-md border border-line bg-surface px-2.5 py-1 font-mono text-xs text-muted sm:flex">
+          <span className="hidden max-w-[16rem] items-center gap-2 truncate glass rounded-lg px-2.5 py-1 font-mono text-xs text-muted sm:flex">
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-success" />
             <span className="truncate">{urlHost(rootUrl)}</span>
           </span>

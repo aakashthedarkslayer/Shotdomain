@@ -11,7 +11,7 @@ const LINKS = [
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-bg/85 backdrop-blur">
+    <header className="sticky top-0 z-30 glass-strong border-x-0 border-t-0 !shadow-none">
       <div className="mx-auto flex h-14 max-w-6xl items-center gap-8 px-4 sm:px-6">
         <Logo />
         <nav className="hidden items-center gap-6 md:flex">

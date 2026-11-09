@@ -23,7 +23,7 @@ export function Switch({
       aria-label={label}
       onClick={() => onChange(!checked)}
       className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors ${
-        checked ? 'bg-accent' : 'bg-line-strong'
+        checked ? 'bg-brand' : 'bg-line-strong'
       }`}
     >
       <span
@@ -73,7 +73,7 @@ export function Segmented<T extends string>({
   label?: string;
 }) {
   return (
-    <div role="radiogroup" aria-label={label} className="inline-flex rounded-lg bg-subtle p-0.5">
+    <div role="radiogroup" aria-label={label} className="inline-flex rounded-xl bg-subtle p-0.5">
       {options.map((opt) => {
         const active = opt.value === value;
         return (
@@ -83,9 +83,9 @@ export function Segmented<T extends string>({
             role="radio"
             aria-checked={active}
             onClick={() => onChange(opt.value)}
-            className={`cursor-pointer rounded-md font-medium transition ${
+            className={`cursor-pointer rounded-[10px] font-medium transition ${
               size === 'sm' ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-[13px]'
-            } ${active ? 'bg-surface text-fg shadow-sm' : 'text-muted hover:text-fg'}`}
+            } ${active ? 'bg-surface-strong text-fg shadow-sm' : 'text-muted hover:text-fg'}`}
           >
             {opt.label}
           </button>
@@ -99,7 +99,7 @@ export function ProgressBar({ value, tone = 'accent' }: { value: number; tone?: 
   return (
     <div className="h-1.5 w-full overflow-hidden rounded-full bg-subtle" role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100}>
       <div
-        className={`h-full rounded-full transition-[width] duration-300 ease-out ${tone === 'success' ? 'bg-success' : 'bg-accent'}`}
+        className={`h-full rounded-full transition-[width] duration-300 ease-out ${tone === 'success' ? 'bg-success' : 'bg-brand'}`}
         style={{ width: `${Math.max(0, Math.min(100, value))}%` }}
       />
     </div>

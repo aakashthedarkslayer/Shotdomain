@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'ShotDomain — Screenshot every page of a website',
+  title: 'ShotDomain — One Shot Every Domain',
   description:
     'Enter one URL. ShotDomain finds every page, captures it on desktop, tablet and mobile, and gives you a single ZIP.',
   icons: { icon: '/favicon.svg' },
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`h-full ${geistSans.variable} ${geistMono.variable}`}>
-      <body className="min-h-full bg-bg font-sans text-fg antialiased">{children}</body>
+      <body className="min-h-full font-sans text-fg antialiased">{children}</body>
     </html>
   );
 }

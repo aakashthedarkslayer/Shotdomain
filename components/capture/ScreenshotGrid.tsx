@@ -55,7 +55,7 @@ export function ScreenshotGrid({
       ) : (
         <ul className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2 sm:p-6 lg:grid-cols-3">
           {visible.map((item) => (
-            <li key={item.key} className="group overflow-hidden rounded-lg border border-line bg-surface">
+            <li key={item.key} className="glass group overflow-hidden rounded-xl transition hover:-translate-y-0.5">
               <button
                 type="button"
                 onClick={() => setPreview(item)}
@@ -72,7 +72,7 @@ export function ScreenshotGrid({
                 {item.badge && (
                   <span
                     className={`absolute top-2 left-2 rounded-md px-1.5 py-0.5 text-xs font-medium shadow-sm ${
-                      item.badge.tone === 'warning' ? 'bg-warning text-white' : 'bg-surface/90 text-muted'
+                      item.badge.tone === 'warning' ? 'bg-warning text-white' : 'glass-strong text-muted'
                     }`}
                   >
                     {item.badge.text}
@@ -142,7 +142,7 @@ export function ScreenshotGrid({
 export function FailedList({ items }: { items: { url: string; device?: string; error?: string }[] }) {
   if (items.length === 0) return null;
   return (
-    <details className="rounded-xl border border-line bg-surface">
+    <details className="glass rounded-2xl">
       <summary className="flex cursor-pointer list-none items-center gap-2 px-5 py-3.5 text-sm font-medium text-danger sm:px-6 [&::-webkit-details-marker]:hidden">
         <Icon name="alert" />
         {items.length} {items.length === 1 ? 'page' : 'pages'} failed

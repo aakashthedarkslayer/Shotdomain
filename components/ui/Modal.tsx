@@ -31,9 +31,9 @@ export function Modal({ open, onClose, title, description, children, footer, siz
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
       <div
-        className={`relative flex max-h-[90vh] w-full flex-col overflow-hidden rounded-xl border border-line bg-surface shadow-xl ${
+        className={`relative flex max-h-[90vh] w-full flex-col overflow-hidden glass-strong rounded-2xl ${
           size === 'xl' ? 'max-w-5xl' : 'max-w-lg'
         }`}
       >

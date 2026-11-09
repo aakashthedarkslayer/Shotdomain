@@ -264,7 +264,7 @@ export default function SchedulesPage() {
                       ) : runs.length === 0 ? (
                         <p className="py-3 text-sm text-muted">No runs yet. Use “Run now” to trigger one.</p>
                       ) : (
-                        <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
+                        <ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-field">
                           {runs.map((run) => (
                             <li key={run.id} className="px-4 py-2.5">
                               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">

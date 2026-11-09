@@ -7,39 +7,43 @@ import { Logo } from '@/components/ui/Logo';
 
 function SectionHeading({ eyebrow, title, description }: { eyebrow: string; title: string; description?: ReactNode }) {
   return (
-    <div className="mx-auto mb-12 max-w-2xl text-center">
-      <p className="text-sm font-medium text-accent">{eyebrow}</p>
-      <h2 className="mt-2 text-3xl font-semibold tracking-tight text-fg sm:text-4xl">{title}</h2>
-      {description && <p className="mt-3 text-base text-muted">{description}</p>}
+    <div className="mx-auto mb-14 max-w-2xl text-center">
+      <p className="text-brand text-sm font-semibold tracking-wide uppercase">{eyebrow}</p>
+      <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] text-fg sm:text-[2.6rem] sm:leading-tight">{title}</h2>
+      {description && <p className="mt-4 text-base leading-relaxed text-muted">{description}</p>}
     </div>
+  );
+}
+
+function IconTile({ name }: { name: IconName }) {
+  return (
+    <span className="bg-brand flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white shadow-[0_8px_20px_-8px_color-mix(in_srgb,var(--accent)_80%,transparent)]">
+      <Icon name={name} size={18} />
+    </span>
   );
 }
 
 /* ------------------------------------------------------------------------ */
 
 const STEPS: { icon: IconName; title: string; body: string }[] = [
-  { icon: 'globe', title: 'Enter a URL', body: 'We read sitemap.xml, or crawl internal links when there is no sitemap.' },
-  { icon: 'sitemap', title: 'Pick pages', body: 'Every page is listed and selected. Filter and untick what you don’t need.' },
+  { icon: 'globe', title: 'Enter a URL', body: 'We read the sitemap, or crawl the site — logged in, if it needs a login.' },
+  { icon: 'sitemap', title: 'Pick pages', body: 'Every page is listed and selected. Filter, untick, or add app pages by hand.' },
   { icon: 'monitor', title: 'Choose devices', body: 'Desktop, tablet, iOS and Android — set once, applied to every page.' },
-  { icon: 'zip', title: 'Download', body: 'Preview each screenshot, then grab them all as one ZIP sorted by device.' },
+  { icon: 'zip', title: 'Download & share', body: 'Preview everything, grab one ZIP sorted by device, or send a share link.' },
 ];
 
 export function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="scroll-mt-16 border-t border-line px-4 py-24 sm:px-6">
+    <section id="how-it-works" className="scroll-mt-20 px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <SectionHeading eyebrow="How it works" title="From domain to ZIP in four steps" />
         <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {STEPS.map((s, i) => (
-            <li key={s.title} className="rounded-xl border border-line bg-surface p-5">
-              <div className="flex items-center justify-between">
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-subtle text-fg">
-                  <Icon name={s.icon} size={18} />
-                </span>
-                <span className="font-mono text-xs text-faint">0{i + 1}</span>
-              </div>
-              <h3 className="mt-4 text-[15px] font-semibold text-fg">{s.title}</h3>
-              <p className="mt-1 text-sm text-muted">{s.body}</p>
+            <li key={s.title} className="glass relative rounded-2xl p-6">
+              <span className="absolute top-5 right-5 font-mono text-xs text-faint">0{i + 1}</span>
+              <IconTile name={s.icon} />
+              <h3 className="mt-5 text-[15px] font-semibold text-fg">{s.title}</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted">{s.body}</p>
             </li>
           ))}
         </ol>
@@ -50,34 +54,41 @@ export function HowItWorksSection() {
 
 /* ------------------------------------------------------------------------ */
 
-const FEATURES: { icon: IconName; title: string; body: string }[] = [
-  { icon: 'sitemap', title: 'Automatic page discovery', body: 'Sitemaps and sitemap indexes first, a polite same-origin crawl as the fallback.' },
-  { icon: 'layers', title: 'Real device emulation', body: 'Mobile and tablet captures use proper viewport, pixel density and touch settings.' },
-  { icon: 'maximize', title: 'Full-page or viewport', body: 'Capture the whole scrollable page, or just what is above the fold.' },
-  { icon: 'shield', title: 'Well-behaved by default', body: 'Respects robots.txt, rate-limits each host and identifies itself honestly.' },
-  { icon: 'sliders', title: 'Capture controls', body: 'Custom viewport size, PNG or JPG, ad blocking and background color.' },
-  { icon: 'clock', title: 'Scheduled captures', body: 'Re-run any capture daily, weekly or monthly and get results by email.' },
+const FEATURES: { icon: IconName; title: string; body: string; wide?: boolean }[] = [
+  {
+    icon: 'shield',
+    title: 'Pages behind a login — without your password',
+    body: 'Paste your session cookies or token and capture dashboards and web apps as you see them. Sessions are stored encrypted and die when you log out.',
+    wide: true,
+  },
+  { icon: 'sitemap', title: 'Automatic page discovery', body: 'Sitemaps first, a polite crawl as fallback, plus JavaScript-built navigation.' },
+  { icon: 'layers', title: 'Real device emulation', body: 'Proper viewport, pixel density and touch for tablet and phones.' },
+  { icon: 'sliders', title: 'Clean captures', body: 'Cookie banners accepted or hidden, elements removed, clicks and CSS before capture.' },
+  { icon: 'clock', title: 'Scheduled captures', body: 'Re-run any capture daily, weekly or monthly — every run lands in your history.' },
+  { icon: 'refresh', title: 'Change alerts', body: 'Scheduled runs are compared page by page — get an email only when something changed.' },
+  {
+    icon: 'link',
+    title: 'Share links',
+    body: 'Send a single screenshot, a whole capture, or an always-latest view of a schedule. Revoke anytime.',
+    wide: true,
+  },
 ];
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="scroll-mt-16 border-t border-line bg-surface px-4 py-24 sm:px-6">
+    <section id="features" className="scroll-mt-20 px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <SectionHeading
           eyebrow="Features"
           title="Built for capturing whole sites"
           description="Not one screenshot at a time — every page, every breakpoint, in a single run."
         />
-        <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3">
           {FEATURES.map((f) => (
-            <div key={f.title} className="flex gap-4">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-line text-fg">
-                <Icon name={f.icon} size={18} />
-              </span>
-              <div>
-                <h3 className="text-[15px] font-semibold text-fg">{f.title}</h3>
-                <p className="mt-1 text-sm text-muted">{f.body}</p>
-              </div>
+            <div key={f.title} className={`glass rounded-2xl p-6 ${f.wide ? 'md:col-span-2' : ''}`}>
+              <IconTile name={f.icon} />
+              <h3 className="mt-5 text-base font-semibold tracking-tight text-fg">{f.title}</h3>
+              <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-muted">{f.body}</p>
             </div>
           ))}
         </div>
@@ -90,22 +101,22 @@ export function FeaturesSection() {
 
 const USE_CASES = [
   { who: 'Agencies', title: 'Proof of work, without the busywork', body: 'Hand clients a complete visual record of a launch in minutes instead of an afternoon.' },
-  { who: 'Designers', title: 'Review every template at every size', body: 'Spot responsive layout problems across the whole site in one grid.' },
+  { who: 'Product teams', title: 'Snapshot your logged-in app', body: 'Capture every dashboard screen for release notes, docs and QA — no shared passwords.' },
   { who: 'Migrations', title: 'Archive the old site before cut-over', body: 'Keep a full visual snapshot of the legacy site before DNS moves to the new build.' },
-  { who: 'QA', title: 'Visual checks at scale', body: 'Check banners, overlays and layout regressions across hundreds of pages.' },
+  { who: 'Monitoring', title: 'Know when pages change', body: 'Schedule weekly captures of competitors or your own site and get alerted on changes.' },
 ];
 
 export function UseCasesSection() {
   return (
-    <section id="use-cases" className="scroll-mt-16 border-t border-line px-4 py-24 sm:px-6">
+    <section id="use-cases" className="scroll-mt-20 px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <SectionHeading eyebrow="Use cases" title="Who it’s for" />
         <div className="grid gap-4 sm:grid-cols-2">
           {USE_CASES.map((u) => (
-            <div key={u.who} className="rounded-xl border border-line bg-surface p-6">
-              <p className="text-xs font-medium text-muted">{u.who}</p>
+            <div key={u.who} className="glass rounded-2xl p-7">
+              <p className="text-brand text-xs font-semibold tracking-wide uppercase">{u.who}</p>
               <h3 className="mt-2 text-lg font-semibold tracking-tight text-fg">{u.title}</h3>
-              <p className="mt-1.5 text-sm text-muted">{u.body}</p>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted">{u.body}</p>
             </div>
           ))}
         </div>
@@ -174,28 +185,30 @@ const TIERS: Tier[] = [
 
 export function PricingSection() {
   return (
-    <section id="pricing" className="scroll-mt-16 border-t border-line bg-surface px-4 py-24 sm:px-6">
+    <section id="pricing" className="scroll-mt-20 px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <SectionHeading eyebrow="Pricing" title="Simple, predictable pricing" description="No per-screenshot credits." />
         <div className="grid items-stretch gap-4 md:grid-cols-3">
           {TIERS.map((t) => (
             <div
               key={t.name}
-              className={`flex flex-col rounded-xl border p-6 ${t.featured ? 'border-fg bg-bg ring-1 ring-fg' : 'border-line bg-bg'}`}
+              className={`relative flex flex-col rounded-2xl p-7 ${
+                t.featured ? 'glass-strong ring-2 ring-accent/60 shadow-[0_24px_60px_-20px_color-mix(in_srgb,var(--accent)_45%,transparent)]' : 'glass'
+              }`}
             >
-              <div className="flex items-center justify-between">
-                <h3 className="text-[15px] font-semibold text-fg">{t.name}</h3>
-                {t.badge && <span className="rounded-md bg-accent-soft px-1.5 py-0.5 text-xs font-medium text-accent">{t.badge}</span>}
-              </div>
+              {t.badge && (
+                <span className="bg-brand absolute -top-3 left-7 rounded-full px-2.5 py-0.5 text-xs font-semibold text-white shadow-sm">{t.badge}</span>
+              )}
+              <h3 className="text-[15px] font-semibold text-fg">{t.name}</h3>
               <p className="mt-1 text-sm text-muted">{t.description}</p>
               <p className="mt-6 flex items-baseline gap-1.5">
-                <span className="text-4xl font-semibold tracking-tight text-fg">{t.price}</span>
+                <span className={`text-5xl font-semibold tracking-tight ${t.featured ? 'text-brand' : 'text-fg'}`}>{t.price}</span>
                 <span className="text-sm text-muted">{t.cadence}</span>
               </p>
-              <ul className="mt-6 flex-1 space-y-2.5">
+              <ul className="mt-7 flex-1 space-y-2.5">
                 {t.features.map((f) => (
                   <li key={f} className="flex items-start gap-2.5 text-sm text-fg">
-                    <Icon name="check" size={16} className="mt-0.5 text-success" />
+                    <Icon name="check" size={16} className="mt-0.5 text-accent" />
                     {f}
                   </li>
                 ))}
@@ -215,44 +228,46 @@ export function PricingSection() {
 
 const FAQS = [
   {
+    q: 'Can it capture pages behind a login without my password?',
+    a: 'Yes. Log in to the site in your own browser, then paste your session cookies (or a token from Local Storage, or an Authorization header). ShotDomain never sees your password, works with 2FA and single sign-on, and the session stops working the moment you log out. Saved sessions are stored encrypted.',
+  },
+  {
     q: 'How are pages discovered? What if a site has no sitemap?',
-    a: 'We check /sitemap.xml, /sitemap_index.xml and any sitemaps listed in robots.txt, then de-duplicate the URLs. If there is no sitemap, we crawl internal links on the same origin from the homepage, respecting robots.txt. Discovery stops at 500 pages.',
+    a: 'We check /sitemap.xml, /sitemap_index.xml and any sitemaps listed in robots.txt. If there is no sitemap, we crawl internal links on the same origin, respecting robots.txt, and also read links that a web app builds with JavaScript. You can add pages by hand too. Discovery stops at 500 pages.',
   },
   {
     q: 'Are mobile screenshots just a narrow desktop window?',
-    a: 'No. Mobile and tablet captures use Playwright device profiles (iPhone 14 Pro, Pixel 7, iPad Pro 11) with the right viewport, pixel density and touch emulation, so mobile layouts render as they would on the device.',
+    a: 'No. Mobile and tablet captures use real device profiles (iPhone 14 Pro, Pixel 7, iPad Pro 11) with the right viewport, pixel density and touch emulation.',
   },
   {
-    q: 'Can I capture the whole page, not just the first screen?',
-    a: 'Yes — turn on “Full page” in capture settings to capture the full scrollable height. Pages that scroll inside an inner container rather than the window may not capture fully.',
+    q: 'What about cookie banners and chat widgets?',
+    a: 'Common consent banners are accepted or hidden automatically. You can also hide any element, click things before capture (menus, tabs, dialogs) and inject your own CSS.',
+  },
+  {
+    q: 'How do change alerts work?',
+    a: 'Each scheduled run is compared with the previous one, page by page. You see how much of each page changed, and can choose to be emailed only when something did.',
   },
   {
     q: 'Will this get my IP blocked?',
     a: 'ShotDomain is deliberately polite: at most 4 pages at a time, at least 300 ms between requests to the same host, robots.txt respected, and an honest user agent. If a site blocks automated access, we report it rather than work around it.',
   },
-  {
-    q: 'How fast is it?',
-    a: 'Pages are captured four at a time in a shared browser, so most small sites finish in a minute or two. Large sites and multiple devices take proportionally longer.',
-  },
-  {
-    q: 'Can captures run automatically?',
-    a: 'Yes. Save any capture as a schedule to re-run it daily, weekly or monthly. Each run is kept for download, and you can have results emailed to you.',
-  },
 ];
 
 export function FaqSection() {
   return (
-    <section id="faq" className="scroll-mt-16 border-t border-line px-4 py-24 sm:px-6">
+    <section id="faq" className="scroll-mt-20 px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-3xl">
         <SectionHeading eyebrow="FAQ" title="Questions & answers" />
-        <div className="divide-y divide-line rounded-xl border border-line bg-surface">
+        <div className="glass divide-y divide-line overflow-hidden rounded-2xl">
           {FAQS.map((f, i) => (
             <details key={f.q} className="group" open={i === 0}>
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-[15px] font-medium text-fg [&::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 text-[15px] font-medium text-fg transition hover:bg-subtle [&::-webkit-details-marker]:hidden">
                 {f.q}
-                <Icon name="chevronDown" className="text-muted transition-transform group-open:rotate-180" />
+                <span className="glass flex h-7 w-7 shrink-0 items-center justify-center rounded-full">
+                  <Icon name="chevronDown" size={14} className="text-muted transition-transform group-open:rotate-180" />
+                </span>
               </summary>
-              <p className="px-5 pb-5 text-sm leading-relaxed text-muted">{f.a}</p>
+              <p className="px-6 pb-6 text-sm leading-relaxed text-muted">{f.a}</p>
             </details>
           ))}
         </div>
@@ -265,14 +280,13 @@ export function FaqSection() {
 
 export function FinalCta() {
   return (
-    <section className="border-t border-line px-4 py-24 sm:px-6">
-      <div className="mx-auto max-w-3xl rounded-2xl bg-primary px-6 py-14 text-center text-primary-fg">
-        <h2 className="text-3xl font-semibold tracking-tight">Capture your first site</h2>
-        <p className="mx-auto mt-3 max-w-md opacity-70">Paste a URL and get every page back as a ZIP. No setup.</p>
-        <Link
-          href="/app"
-          className="mt-8 inline-flex h-11 items-center gap-2 rounded-lg bg-primary-fg px-5 text-[15px] font-medium text-primary transition hover:opacity-90"
-        >
+    <section className="px-4 py-24 sm:px-6">
+      <div className="glass-strong relative mx-auto max-w-4xl overflow-hidden rounded-3xl px-6 py-16 text-center">
+        <div className="bg-brand pointer-events-none absolute -top-24 left-1/2 h-48 w-[28rem] -translate-x-1/2 rounded-full opacity-30 blur-3xl" />
+        <p className="text-brand relative text-sm font-semibold tracking-wide uppercase">One Shot Every Domain</p>
+        <h2 className="relative mt-3 text-3xl font-semibold tracking-[-0.03em] text-fg sm:text-4xl">Capture your first site</h2>
+        <p className="relative mx-auto mt-3 max-w-md text-muted">Paste a URL and get every page back as a ZIP. No setup.</p>
+        <Link href="/app" className={buttonClass('primary', 'lg', 'relative mt-8')}>
           Open ShotDomain
           <Icon name="arrowRight" />
         </Link>
@@ -283,11 +297,11 @@ export function FinalCta() {
 
 export function Footer() {
   return (
-    <footer className="border-t border-line px-4 py-10 sm:px-6">
-      <div className="mx-auto flex max-w-6xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+    <footer className="px-4 pt-6 pb-12 sm:px-6">
+      <div className="glass mx-auto flex max-w-6xl flex-col gap-6 rounded-2xl px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
           <Logo />
-          <span className="text-sm text-faint">© {new Date().getFullYear()}</span>
+          <span className="text-sm text-faint">© {new Date().getFullYear()} · One Shot Every Domain</span>
         </div>
         <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
           <Link href="/app" className="hover:text-fg">

@@ -23,7 +23,7 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
 
   return (
     <div className="min-h-screen pb-24">
-      <header className="border-b border-line bg-bg/85">
+      <header className="glass-strong border-x-0 border-t-0 !shadow-none">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
           <Logo href="/" />
           <span className="text-xs text-muted">Shared read-only link</span>

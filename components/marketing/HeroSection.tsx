@@ -5,47 +5,7 @@ import type { FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
-
-function ProductPreview() {
-  const tiles = [
-    { path: '/', device: 'Desktop', w: 'col-span-2' },
-    { path: '/pricing', device: 'Mobile', w: '' },
-    { path: '/about', device: 'Desktop', w: '' },
-    { path: '/blog', device: 'Tablet', w: '' },
-    { path: '/contact', device: 'Mobile', w: '' },
-    { path: '/docs', device: 'Tablet', w: '' },
-    { path: '/careers', device: 'Desktop', w: '' },
-  ];
-  return (
-    <div className="overflow-hidden rounded-xl border border-line bg-surface shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)]">
-      <div className="flex items-center gap-2 border-b border-line px-4 py-2.5">
-        <span className="h-2.5 w-2.5 rounded-full bg-line-strong" />
-        <span className="h-2.5 w-2.5 rounded-full bg-line-strong" />
-        <span className="h-2.5 w-2.5 rounded-full bg-line-strong" />
-        <span className="ml-3 rounded-md bg-subtle px-2.5 py-0.5 font-mono text-xs text-muted">example.com · 24 screenshots</span>
-        <span className="ml-auto hidden items-center gap-1.5 rounded-md bg-primary px-2.5 py-1 text-xs font-medium text-primary-fg sm:flex">
-          <Icon name="download" size={12} /> Download ZIP
-        </span>
-      </div>
-      <div className="grid grid-cols-2 gap-3 bg-subtle/60 p-4 sm:grid-cols-4">
-        {tiles.map((t) => (
-          <div key={t.path} className={`overflow-hidden rounded-lg border border-line bg-surface ${t.w}`}>
-            <div className="space-y-2 p-3">
-              <div className="h-2 w-1/3 rounded bg-line-strong" />
-              <div className="h-12 rounded bg-subtle" />
-              <div className="h-2 w-3/4 rounded bg-line" />
-              <div className="h-2 w-1/2 rounded bg-line" />
-            </div>
-            <div className="flex items-center justify-between border-t border-line px-3 py-1.5">
-              <span className="font-mono text-[11px] text-fg">{t.path}</span>
-              <span className="text-[11px] text-muted">{t.device}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+import { ProductPreview } from './ProductPreview';
 
 export function HeroSection() {
   const router = useRouter();
@@ -58,44 +18,57 @@ export function HeroSection() {
   }
 
   return (
-    <section className="px-4 pt-16 pb-20 sm:px-6 md:pt-24">
+    <section className="relative px-4 pt-16 pb-24 sm:px-6 md:pt-24">
       <div className="mx-auto max-w-3xl text-center">
-        <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1 text-xs text-muted">
-          <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-          Full-site screenshots
-        </p>
-        <h1 className="text-4xl font-semibold tracking-tight text-fg sm:text-6xl">
+        <a
+          href="#features"
+          className="glass mb-7 inline-flex items-center gap-2 rounded-full py-1 pr-3 pl-1 text-xs text-muted transition hover:text-fg"
+        >
+          <span className="bg-brand rounded-full px-2 py-0.5 text-[11px] font-semibold text-white">New</span>
+          Logged-in captures & change alerts
+          <Icon name="arrowRight" size={12} />
+        </a>
+
+        <h1 className="text-[2.6rem] leading-[1.05] font-semibold tracking-[-0.035em] text-fg sm:text-6xl md:text-7xl">
           One URL. Every page.
           <br />
-          <span className="text-muted">Every device. One ZIP.</span>
+          Every device.
         </h1>
-        <p className="mx-auto mt-5 max-w-xl text-base text-muted sm:text-lg">
-          ShotDomain finds every page on a site, screenshots each one on desktop, tablet and mobile, and hands you a single
+        <p className="text-brand mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">One Shot Every Domain</p>
+        <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
+          ShotDomain finds every page on a site — even behind a login — screenshots it on desktop, tablet and mobile, and hands you one
           organized ZIP.
         </p>
 
-        <form onSubmit={handleSubmit} className="mx-auto mt-8 flex max-w-md flex-col gap-2 rounded-xl border border-line bg-surface p-1.5 shadow-sm sm:flex-row">
+        <form onSubmit={handleSubmit} className="glass mx-auto mt-9 flex max-w-lg flex-col gap-2 rounded-2xl p-2 sm:flex-row">
           <label htmlFor="hero-url" className="sr-only">
             Website URL
           </label>
           <div className="relative flex-1">
-            <Icon name="globe" className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-faint" />
+            <Icon name="globe" className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-faint" />
             <input
               id="hero-url"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="yourdomain.com"
-              className="h-10 w-full rounded-lg bg-transparent pr-3 pl-9 text-sm text-fg outline-none placeholder:text-faint"
+              className="h-11 w-full rounded-xl bg-transparent pr-3 pl-10 text-[15px] text-fg outline-none placeholder:text-faint"
             />
           </div>
-          <Button type="submit" iconRight="arrowRight" className="h-10">
+          <Button type="submit" size="lg" iconRight="arrowRight">
             Capture site
           </Button>
         </form>
-        <p className="mt-3 text-xs text-faint">Respects robots.txt · Up to 500 pages per run</p>
+        <ul className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] text-muted">
+          {['Respects robots.txt', 'Up to 500 pages per run', 'No password needed for logins'].map((t) => (
+            <li key={t} className="flex items-center gap-1.5">
+              <Icon name="check" size={14} className="text-success" />
+              {t}
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <div className="mx-auto mt-16 max-w-5xl">
+      <div className="mx-auto mt-20 max-w-5xl">
         <ProductPreview />
       </div>
     </section>
