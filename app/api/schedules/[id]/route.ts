@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { updateSchedule, deleteSchedule, getScheduledRuns } from '@/lib/scheduleStore';
 import type { Schedule } from '@/lib/scheduleStore';
-import { getOwnedSchedule } from '@/lib/scheduleAccess';
+import { getOwnedSchedule, publicSchedule } from '@/lib/scheduleAccess';
 import { registerScheduleCron, stopScheduleCron } from '@/lib/scheduler';
 
 export const dynamic = 'force-dynamic';
@@ -18,7 +18,7 @@ export async function GET(
   }
 
   const runs = await getScheduledRuns(id);
-  return NextResponse.json({ schedule, runs });
+  return NextResponse.json({ schedule: publicSchedule(schedule), runs });
 }
 
 export async function PATCH(
@@ -49,7 +49,7 @@ export async function PATCH(
       stopScheduleCron(id);
     }
 
-    return NextResponse.json(updated);
+    return NextResponse.json(publicSchedule(updated));
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to update schedule' },

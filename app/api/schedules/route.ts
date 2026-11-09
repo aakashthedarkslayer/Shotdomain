@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSchedule } from '@/lib/scheduleStore';
 import { initScheduler, registerScheduleCron } from '@/lib/scheduler';
-import { listOwnedSchedules } from '@/lib/scheduleAccess';
+import { listOwnedSchedules, publicSchedule } from '@/lib/scheduleAccess';
+import { sanitizeAuth, sanitizeCleanup } from '@/lib/captureOptions';
+import { seal } from '@/lib/secretBox';
 import { currentUserKey } from '@/auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   await initScheduler();
-  return NextResponse.json(await listOwnedSchedules());
+  return NextResponse.json((await listOwnedSchedules()).map(publicSchedule));
 }
 
 export async function POST(request: NextRequest) {
@@ -46,6 +48,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Login secrets are stored encrypted; cleanup options are sanitized like captures.
+    if (settings) {
+      settings.cleanup = sanitizeCleanup(settings.cleanup);
+      const auth = sanitizeAuth(settings.auth);
+      settings.auth = auth ? { method: auth.method, sealed: seal(auth) } : undefined;
+    }
+
     const schedule = await createSchedule({
       name,
       targetUrl,
@@ -66,7 +75,7 @@ export async function POST(request: NextRequest) {
       registerScheduleCron(schedule);
     }
 
-    return NextResponse.json(schedule, { status: 201 });
+    return NextResponse.json(publicSchedule(schedule), { status: 201 });
   } catch (error) {
     console.error('Error creating schedule:', error);
     return NextResponse.json(

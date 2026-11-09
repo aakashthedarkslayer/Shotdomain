@@ -21,6 +21,8 @@ const SKIP_EXTENSIONS = new Set([
 export interface CrawlOptions {
   isAllowed: (url: string) => boolean;
   crawlDelay: number; // ms between requests
+  /** Extra request headers per URL (login cookies / basic auth). */
+  headersFor?: (url: string) => Record<string, string>;
 }
 
 /**
@@ -60,7 +62,7 @@ export async function crawlSite(
   truncated: boolean;
   method: 'crawl';
 }> {
-  const { isAllowed, crawlDelay } = options;
+  const { isAllowed, crawlDelay, headersFor } = options;
   const rootHostname = new URL(rootUrl).hostname.toLowerCase();
 
   const visited = new Set<string>();
@@ -114,7 +116,7 @@ export async function crawlSite(
       const timeoutId = setTimeout(() => controller.abort(), PER_REQUEST_TIMEOUT);
 
       const response = await fetch(url, {
-        headers: { 'User-Agent': USER_AGENT },
+        headers: { 'User-Agent': USER_AGENT, ...(headersFor ? headersFor(url) : {}) },
         signal: controller.signal,
         redirect: 'follow',
       });
@@ -184,6 +186,11 @@ export async function crawlSite(
 
       // Skip non-HTML extensions
       if (hasSkippedExtension(resolvedString)) {
+        return;
+      }
+
+      // Never follow logout links: when crawling logged in they would end the session.
+      if (/log-?out|sign-?out/i.test(resolvedUrl.pathname)) {
         return;
       }
 

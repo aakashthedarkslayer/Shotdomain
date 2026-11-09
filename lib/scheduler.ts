@@ -12,6 +12,9 @@ import {
 } from './scheduleStore';
 import { createJob, getJob, updateResult } from './jobStore';
 import { saveCaptureFromJob } from './userData';
+import { unseal } from './secretBox';
+import type { SiteAuth } from './captureOptions';
+import type { CaptureSettings } from './jobStore';
 import { captureScreenshots } from './screenshot';
 import { createZipFile } from './zip';
 import { sendScheduledRunEmail } from './email';
@@ -109,14 +112,21 @@ export async function executeScheduledRun(
 
   console.log(`[Scheduler] Starting capture run for: "${schedule.name}" (${schedule.urls.length} URLs)`);
 
+  // Decrypt the saved login (if any) only for the duration of this run.
+  const runSettings: CaptureSettings = { ...schedule.settings };
+  if (runSettings.auth && 'sealed' in runSettings.auth) {
+    const auth = unseal<SiteAuth>(runSettings.auth.sealed);
+    if (auth) runSettings.auth = auth; // otherwise capture reports it couldn't decrypt
+  }
+
   // 1. Create a job in the existing job queue (owned by the schedule's owner)
-  const job = await createJob('capture', schedule.urls, schedule.settings, schedule.ownerKey);
+  const job = await createJob('capture', schedule.urls, runSettings, schedule.ownerKey);
 
   // 2. Execute capture through the existing Playwright capture queue.
   // Results are read back from the job afterwards: with several devices the
   // progress keys are "Device:url", so matching on the plain URL would miss them.
   try {
-    await captureScreenshots(job.id, schedule.urls, schedule.settings, (key, partial) => {
+    await captureScreenshots(job.id, schedule.urls, runSettings, (key, partial) => {
       updateResult(job.id, key, partial);
     });
   } catch (err) {

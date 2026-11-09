@@ -4,7 +4,7 @@ import { captureScreenshots } from '@/lib/screenshot';
 import { currentUserKey } from '@/auth';
 import { saveCaptureFromJob } from '@/lib/userData';
 import type { CaptureSettings } from '@/lib/jobStore';
-import { sanitizeCleanup } from '@/lib/captureOptions';
+import { sanitizeAuth, sanitizeCleanup } from '@/lib/captureOptions';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
       settings.format = 'png';
     }
     settings.cleanup = sanitizeCleanup(settings.cleanup);
+    settings.auth = sanitizeAuth(settings.auth);
 
     const ownerKey = (await currentUserKey()) ?? undefined;
     const job = await createJob('capture', urls, settings, ownerKey);

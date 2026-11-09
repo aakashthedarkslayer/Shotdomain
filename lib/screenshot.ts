@@ -1,4 +1,5 @@
-import { chromium, devices } from 'playwright';
+import { devices } from 'playwright';
+import { getBrowser, USER_AGENT } from './browser';
 import type { Browser, BrowserContext, Page } from 'playwright';
 import * as fs from 'fs/promises';
 import * as path from 'path';
@@ -7,8 +8,10 @@ import { getJob } from './jobStore';
 import { getDevicePreset, getDeviceFolder } from './devices';
 import { urlToFilename } from './dedupe';
 import { applyCleanup } from './pageCleanup';
+import { SiteLoginError, applyAuthToContext, resolveSiteAuth } from './siteAuth';
+import type { ResolvedAuth } from './siteAuth';
+import type { SiteAuth } from './captureOptions';
 
-const USER_AGENT = 'SiteScreenshotTool/1.0 (+local dev tool)';
 
 // Hardcoded ad/tracker domains to block
 const AD_DOMAINS = [
@@ -56,26 +59,6 @@ class Semaphore {
     } else {
       this.current--;
     }
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Browser singleton
-// ---------------------------------------------------------------------------
-
-let browserInstance: Browser | null = null;
-
-async function getBrowser(): Promise<Browser> {
-  if (!browserInstance || !browserInstance.isConnected()) {
-    browserInstance = await chromium.launch({ headless: true });
-  }
-  return browserInstance;
-}
-
-export async function closeBrowser(): Promise<void> {
-  if (browserInstance) {
-    await browserInstance.close();
-    browserInstance = null;
   }
 }
 
@@ -129,8 +112,20 @@ function isAdUrl(url: string): boolean {
 async function createContext(
   browser: Browser,
   settings: CaptureSettings,
+  auth: ResolvedAuth | undefined, // required on purpose: every context must carry the login
+): Promise<BrowserContext> {
+  const context = await newDeviceContext(browser, settings, auth);
+  await applyAuthToContext(context, auth);
+  return context;
+}
+
+async function newDeviceContext(
+  browser: Browser,
+  settings: CaptureSettings,
+  auth?: ResolvedAuth,
 ): Promise<BrowserContext> {
   const preset = getDevicePreset(settings.device || 'Desktop');
+  const httpCredentials = auth?.httpCredentials;
 
   // Desktop — no Playwright device descriptor
   if (!preset?.playwrightDevice) {
@@ -138,6 +133,7 @@ async function createContext(
       viewport: { width: settings.width, height: settings.height },
       userAgent: USER_AGENT,
       deviceScaleFactor: preset?.deviceScaleFactor ?? 1,
+      httpCredentials,
     });
   }
 
@@ -158,6 +154,7 @@ async function createContext(
   return browser.newContext({
     ...deviceDescriptor,
     viewport: { width: viewportWidth, height: viewportHeight },
+    httpCredentials,
   });
 }
 
@@ -358,6 +355,23 @@ export async function captureScreenshots(
     usedNamesPerDevice.set(dev, new Set<string>());
   }
 
+  // Log in once per job (login form) or parse cookies; every capture context reuses the result.
+  let resolvedAuth: ResolvedAuth | undefined;
+  if (settings.auth && settings.auth.method !== 'none') {
+    try {
+      if ('sealed' in settings.auth) throw new SiteLoginError('Saved login details could not be decrypted.');
+      resolvedAuth = await resolveSiteAuth(browser, settings.auth as SiteAuth, urls[0]);
+    } catch (err) {
+      const message = err instanceof SiteLoginError ? err.message : `Login failed: ${err instanceof Error ? err.message : String(err)}`;
+      for (const dev of targetDevices) {
+        for (const url of urls) {
+          onProgress(isMultiDevice ? `${dev}:${url}` : url, { status: 'failed', error: message, device: dev });
+        }
+      }
+      return;
+    }
+  }
+
   // Context cache — keyed by `${hostname}:${device}` when useCache is enabled
   const contextCache = new Map<string, BrowserContext>();
 
@@ -367,7 +381,7 @@ export async function captureScreenshots(
       const cached = contextCache.get(cacheKey);
       if (cached) return cached;
     }
-    const ctx = await createContext(browser, devSettings);
+    const ctx = await createContext(browser, devSettings, resolvedAuth);
     if (settings.useCache) {
       contextCache.set(cacheKey, ctx);
     }
@@ -433,7 +447,7 @@ export async function captureScreenshots(
         if (settings.useCache) {
           context = await getContext(hostname, item.devSettings);
         } else {
-          context = await createContext(browser, item.devSettings);
+          context = await createContext(browser, item.devSettings, resolvedAuth);
           ownedContext = true;
         }
 

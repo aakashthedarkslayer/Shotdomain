@@ -13,6 +13,8 @@ import { Alert } from '@/components/ui/Alert';
 import { DEFAULT_SETTINGS } from '@/components/capture/types';
 import type { CaptureResult, DeviceName, SettingsState } from '@/components/capture/types';
 import { isValidUrl, normalizeUrl, urlHost } from '@/lib/url';
+import { NO_AUTH, sanitizeAuth } from '@/lib/captureOptions';
+import type { SiteAuth } from '@/lib/captureOptions';
 
 export default function AppPage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -20,6 +22,8 @@ export default function AppPage() {
 
   // Step 1
   const [rootUrl, setRootUrl] = useState('');
+  const [auth, setAuth] = useState<SiteAuth>(NO_AUTH);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   // Step 2
   const [discoveredUrls, setDiscoveredUrls] = useState<string[]>([]);
@@ -58,11 +62,11 @@ export default function AppPage() {
 
   // Step 1 → 2: discover pages
   const handleDiscover = useCallback(async (url: string) => {
+    setDiscoveryStatus(sanitizeAuth(auth) ? 'Logging in…' : 'Checking sitemap.xml…');
     setIsLoading(true);
     setRootUrl(url);
     setIsDiscovering(true);
     setDiscoveryError(undefined);
-    setDiscoveryStatus('Checking sitemap.xml…');
     setCurrentStep(2);
 
     const crawlTimer = setTimeout(() => setDiscoveryStatus('No sitemap yet — crawling links…'), 2500);
@@ -71,10 +75,11 @@ export default function AppPage() {
       const response = await fetch('/api/discover', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url, auth: sanitizeAuth(auth) }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Discovery failed');
+      setLoggedIn(Boolean(data.loggedIn));
 
       setDiscoveredUrls(data.urls);
       setSelectedUrls([...data.urls]);
@@ -87,7 +92,7 @@ export default function AppPage() {
       setIsDiscovering(false);
       setIsLoading(false);
     }
-  }, []);
+  }, [auth]);
 
   // Landing page hands off with /app?url=example.com — start discovery right away.
   useEffect(() => {
@@ -149,6 +154,7 @@ export default function AppPage() {
             useCache: settings.useCache,
             backgroundColor: settings.showBackgroundColor ? settings.backgroundColor : undefined,
             cleanup: settings.cleanup,
+            auth: sanitizeAuth(auth),
           },
         }),
       });
@@ -169,7 +175,7 @@ export default function AppPage() {
     } finally {
       setIsStarting(false);
     }
-  }, [selectedUrls, settings, startPolling]);
+  }, [selectedUrls, settings, auth, startPolling]);
 
   // Step 4: retry one failed capture
   const handleRetry = useCallback(
@@ -231,6 +237,8 @@ export default function AppPage() {
     setStartError(undefined);
     setActionError(undefined);
     setSettings(DEFAULT_SETTINGS);
+    setAuth(NO_AUTH);
+    setLoggedIn(false);
   }, [stopPolling]);
 
   const handleSettingsChange = useCallback((partial: Partial<SettingsState>) => {
@@ -261,7 +269,7 @@ export default function AppPage() {
           </Alert>
         )}
 
-        {currentStep === 1 && <UrlInputStep onDiscover={handleDiscover} isLoading={isLoading} initialValue={rootUrl} />}
+        {currentStep === 1 && <UrlInputStep onDiscover={handleDiscover} isLoading={isLoading} initialValue={rootUrl} auth={auth} onAuthChange={setAuth} />}
 
         {currentStep === 2 && (
           <PageSelectionStep
@@ -276,6 +284,12 @@ export default function AppPage() {
             discoveryStatus={discoveryStatus}
             discoveryError={discoveryError}
             rootUrl={rootUrl}
+            loggedIn={loggedIn}
+            onAddUrls={(added) => {
+              const fresh = added.filter((u) => !discoveredUrls.includes(u));
+              setDiscoveredUrls((prev) => [...prev, ...fresh]);
+              setSelectedUrls((prev) => [...prev, ...fresh.filter((u) => !prev.includes(u))]);
+            }}
           />
         )}
 
@@ -289,6 +303,7 @@ export default function AppPage() {
             onSaveSchedule={() => setIsScheduleModalOpen(true)}
             isStarting={isStarting}
             error={startError}
+            authMethod={auth.method}
           />
         )}
 
@@ -332,6 +347,7 @@ export default function AppPage() {
           useCache: settings.useCache,
           backgroundColor: settings.showBackgroundColor ? settings.backgroundColor : undefined,
           cleanup: settings.cleanup,
+          auth: sanitizeAuth(auth),
         }}
       />
     </div>

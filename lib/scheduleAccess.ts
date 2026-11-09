@@ -28,3 +28,10 @@ export async function getOwnedSchedule(id: string): Promise<Schedule | null> {
   const schedule = await getSchedule(id);
   return schedule && visibleTo(schedule, key) ? schedule : null;
 }
+
+/** Schedule as returned to the browser: saved login secrets are never sent back. */
+export function publicSchedule(schedule: Schedule): Schedule {
+  const auth = schedule.settings?.auth;
+  if (!auth) return schedule;
+  return { ...schedule, settings: { ...schedule.settings, auth: { method: auth.method, sealed: '' } } };
+}

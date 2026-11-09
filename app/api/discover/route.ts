@@ -4,6 +4,11 @@ import { crawlSite } from '@/lib/crawler';
 import { fetchRobotsTxt } from '@/lib/robots';
 import { dedupeUrls } from '@/lib/dedupe';
 import { createJob } from '@/lib/jobStore';
+import { sanitizeAuth } from '@/lib/captureOptions';
+import { getBrowser } from '@/lib/browser';
+import { SiteLoginError, authHeadersFor, resolveSiteAuth } from '@/lib/siteAuth';
+import type { ResolvedAuth } from '@/lib/siteAuth';
+import { discoverRenderedLinks } from '@/lib/renderedLinks';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,6 +16,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { url } = body;
+    const auth = sanitizeAuth(body.auth);
 
     if (!url || typeof url !== 'string') {
       return Response.json(
@@ -38,13 +44,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Log in first (if the site needs it) so discovery sees the logged-in site.
+    let resolved: ResolvedAuth | undefined;
+    if (auth) {
+      try {
+        resolved = await resolveSiteAuth(getBrowser, auth, normalizedUrl);
+      } catch (err) {
+        const message = err instanceof SiteLoginError ? err.message : 'Login failed.';
+        return Response.json({ error: message }, { status: 400 });
+      }
+    }
+    const headersFor = (u: string) => authHeadersFor(resolved, u);
+
     // Try sitemap first
     let urls: string[] = [];
     let method: 'sitemap' | 'crawl' = 'sitemap';
     let truncated = false;
 
     try {
-      const sitemapResult = await discoverFromSitemap(origin);
+      const sitemapResult = await discoverFromSitemap(origin, headersFor);
       urls = sitemapResult.urls;
       truncated = sitemapResult.truncated;
       method = 'sitemap';
@@ -59,6 +77,7 @@ export async function POST(request: NextRequest) {
         const crawlResult = await crawlSite(normalizedUrl, {
           isAllowed: robots.isAllowed,
           crawlDelay: robots.getCrawlDelay(),
+          headersFor,
         });
         urls = crawlResult.urls;
         truncated = crawlResult.truncated;
@@ -70,6 +89,24 @@ export async function POST(request: NextRequest) {
           urls = [normalizedUrl];
         }
         method = 'crawl';
+      }
+    }
+
+    // Logged-in web apps often build their navigation with JavaScript; add links
+    // from the rendered page (including where the login redirected to).
+    let renderedFrom: string | undefined;
+    if (resolved && urls.length < 500) {
+      try {
+        const robots = await fetchRobotsTxt(origin);
+        const rendered = await discoverRenderedLinks(await getBrowser(), normalizedUrl, resolved, robots.isAllowed);
+        renderedFrom = rendered.finalUrl;
+        const seen = new Set(urls);
+        for (const link of rendered.links) {
+          if (urls.length >= 500) break;
+          if (!seen.has(link)) urls.push(link);
+        }
+      } catch (err) {
+        console.warn('Rendered link discovery failed:', err instanceof Error ? err.message : err);
       }
     }
 
@@ -94,6 +131,8 @@ export async function POST(request: NextRequest) {
       method,
       urls,
       truncated,
+      loggedIn: !!resolved,
+      renderedFrom,
     });
   } catch (error) {
     console.error('Discovery error:', error);

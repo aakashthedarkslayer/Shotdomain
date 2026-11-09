@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { Card, CardFooter, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Input } from '@/components/ui/Input';
+import { Input, Textarea } from '@/components/ui/Input';
 import { Alert } from '@/components/ui/Alert';
 import { Checkbox } from '@/components/ui/Controls';
 import { Icon, Spinner } from '@/components/ui/Icon';
@@ -22,6 +22,9 @@ interface PageSelectionStepProps {
   discoveryStatus?: string;
   discoveryError?: string;
   rootUrl?: string;
+  loggedIn?: boolean;
+  /** Add pages the discovery didn't find (they're appended and selected). */
+  onAddUrls?: (urls: string[]) => void;
 }
 
 const LARGE_SELECTION = 200;
@@ -38,8 +41,38 @@ export default function PageSelectionStep({
   discoveryStatus = 'Checking sitemap.xml…',
   discoveryError,
   rootUrl,
+  loggedIn,
+  onAddUrls,
 }: PageSelectionStepProps) {
   const [query, setQuery] = useState('');
+  const [addOpen, setAddOpen] = useState(false);
+  const [addText, setAddText] = useState('');
+  const [addError, setAddError] = useState('');
+
+  function addPages() {
+    if (!rootUrl || !onAddUrls) return;
+    const root = new URL(rootUrl);
+    const added: string[] = [];
+    const bad: string[] = [];
+    for (const line of addText.split(/\n|,/).map((l) => l.trim()).filter(Boolean)) {
+      try {
+        const u = new URL(line, root);
+        if (u.hostname !== root.hostname || !/^https?:$/.test(u.protocol)) throw new Error();
+        u.hash = '';
+        added.push(u.toString());
+      } catch {
+        bad.push(line);
+      }
+    }
+    if (bad.length) {
+      setAddError(`Not on ${root.hostname}: ${bad.slice(0, 3).join(', ')}${bad.length > 3 ? '…' : ''}`);
+      return;
+    }
+    if (added.length) onAddUrls(added);
+    setAddText('');
+    setAddError('');
+    setAddOpen(false);
+  }
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -100,7 +133,12 @@ export default function PageSelectionStep({
       <CardHeader
         title={`${urls.length} ${urls.length === 1 ? 'page' : 'pages'} found`}
         description={rootUrl ? urlHost(rootUrl) : undefined}
-        actions={<Badge tone={discoveryMethod === 'sitemap' ? 'success' : 'accent'}>{discoveryMethod === 'sitemap' ? 'From sitemap' : 'From crawl'}</Badge>}
+        actions={
+          <>
+            {loggedIn && <Badge tone="success" dot>Logged in</Badge>}
+            <Badge tone={discoveryMethod === 'sitemap' ? 'success' : 'accent'}>{discoveryMethod === 'sitemap' ? 'From sitemap' : 'From crawl'}</Badge>
+          </>
+        }
       />
 
       <div className="space-y-3 px-5 pt-4 sm:px-6">
@@ -110,6 +148,11 @@ export default function PageSelectionStep({
             <Input icon="search" placeholder="Filter by URL…" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Filter pages" />
           </div>
           <div className="flex items-center gap-1">
+            {onAddUrls && (
+              <Button variant="ghost" size="sm" icon="plus" onClick={() => setAddOpen((o) => !o)}>
+                Add pages
+              </Button>
+            )}
             <Button variant="ghost" size="sm" onClick={selectAll}>
               Select all
             </Button>
@@ -118,6 +161,25 @@ export default function PageSelectionStep({
             </Button>
           </div>
         </div>
+        {addOpen && (
+          <div className="space-y-2 rounded-lg border border-line bg-subtle/50 p-3">
+            <Textarea
+              aria-label="Pages to add"
+              rows={3}
+              placeholder={'/dashboard\n/settings/billing\nhttps://app.example.com/reports'}
+              value={addText}
+              onChange={(e) => setAddText(e.target.value)}
+            />
+            <div className="flex items-center justify-between gap-3">
+              <span className={`text-[13px] ${addError ? 'text-danger' : 'text-muted'}`}>
+                {addError || 'One path or URL per line, on the same site. Useful for app pages that aren’t linked.'}
+              </span>
+              <Button size="sm" onClick={addPages} disabled={!addText.trim()}>
+                Add
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="mx-5 mt-3 mb-4 overflow-hidden rounded-lg border border-line sm:mx-6">

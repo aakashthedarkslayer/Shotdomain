@@ -12,7 +12,8 @@ import type { IconName } from '@/components/ui/Icon';
 import { DEVICE_PRESETS } from '@/lib/devices';
 import type { SettingsState } from './types';
 import { selectorsToText, textToSelectors } from '@/lib/captureOptions';
-import type { CleanupOptions } from '@/lib/captureOptions';
+import type { AuthMethod, CleanupOptions } from '@/lib/captureOptions';
+import { describeAuth } from '@/lib/captureOptions';
 
 interface CaptureSettingsStepProps {
   settings: SettingsState;
@@ -23,6 +24,7 @@ interface CaptureSettingsStepProps {
   onSaveSchedule?: () => void;
   isStarting?: boolean;
   error?: string;
+  authMethod?: AuthMethod;
 }
 
 const DEVICES: { name: string; icon: IconName; model: string }[] = [
@@ -73,6 +75,7 @@ export default function CaptureSettingsStep({
   onSaveSchedule,
   isStarting,
   error,
+  authMethod = 'none',
 }: CaptureSettingsStepProps) {
   const [advancedOpen, setAdvancedOpen] = useState(false);
   // Keep raw textarea text locally so typing newlines isn't fought by normalisation.
@@ -189,6 +192,14 @@ export default function CaptureSettingsStep({
         <Row title="Full page" description={settings.fullPage ? 'Captures the full scrollable height.' : 'Captures the visible viewport only.'}>
           <Switch checked={settings.fullPage} onChange={(fullPage) => onSettingsChange({ fullPage })} label="Capture entire page" />
         </Row>
+
+        {authMethod !== 'none' && (
+          <Row title="Login" description="Set on the first step. Every page is captured logged in.">
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-success-soft px-2 py-1 text-xs font-medium text-success">
+              <Icon name="check" size={12} /> {describeAuth({ method: authMethod })}
+            </span>
+          </Row>
+        )}
 
         <Row title="Hide cookie banners" description="Accepts or hides common consent pop-ups (OneTrust, Cookiebot, Usercentrics…) before capturing.">
           <Switch
