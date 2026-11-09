@@ -322,6 +322,7 @@ export default function AppPage() {
         urls={selectedUrls.length > 0 ? selectedUrls : [rootUrl].filter(Boolean)}
         settings={{
           device: (settings.device as DeviceName) || 'Desktop',
+          devices: settings.devices as DeviceName[],
           width: settings.width,
           height: settings.height,
           fullPage: settings.fullPage,

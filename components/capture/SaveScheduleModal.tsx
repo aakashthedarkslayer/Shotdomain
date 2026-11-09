@@ -10,6 +10,7 @@ import { Alert } from '@/components/ui/Alert';
 import type { CaptureSettings } from '@/lib/jobStore';
 import type { FrequencyType } from '@/lib/scheduleStore';
 import { urlHost } from '@/lib/url';
+import { useCurrentUser } from '@/components/auth/UserContext';
 
 interface SaveScheduleModalProps {
   isOpen: boolean;
@@ -23,11 +24,13 @@ const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frida
 
 function ScheduleForm({ onClose, targetUrl, urls, settings }: Omit<SaveScheduleModalProps, 'isOpen'>) {
   const [name, setName] = useState(`${urlHost(targetUrl)} — recurring capture`);
+  const deviceList = settings.devices?.length ? settings.devices : [settings.device ?? 'Desktop'];
   const [frequency, setFrequency] = useState<FrequencyType>('weekly');
   const [timeOfDay, setTimeOfDay] = useState('09:00');
   const [dayOfWeek, setDayOfWeek] = useState(1);
   const [dayOfMonth, setDayOfMonth] = useState(1);
-  const [recipients, setRecipients] = useState('');
+  const user = useCurrentUser();
+  const [recipients, setRecipients] = useState(user?.email ?? '');
   const [retentionCount, setRetentionCount] = useState(10);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,6 +83,10 @@ function ScheduleForm({ onClose, targetUrl, urls, settings }: Omit<SaveScheduleM
     <form onSubmit={handleSubmit}>
       <div className="space-y-4 p-5">
         {error && <Alert tone="danger">{error}</Alert>}
+
+        <p className="text-[13px] text-muted">
+          Captures {urls.length} {urls.length === 1 ? 'page' : 'pages'} on {deviceList.join(', ')}. Each run is added to your capture history.
+        </p>
 
         <Field label="Name" htmlFor="schedule-name">
           <Input id="schedule-name" required value={name} onChange={(e) => setName(e.target.value)} />

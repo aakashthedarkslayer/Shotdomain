@@ -94,9 +94,11 @@ export default async function ProfilePage() {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           <span className="truncate text-sm font-medium text-fg">{hostOf(c.rootUrl)}</span>
+                          {c.scheduleName && <Badge tone="accent">Scheduled</Badge>}
                           {c.failed > 0 && <Badge tone="warning">{c.failed} failed</Badge>}
                         </div>
                         <p className="mt-0.5 truncate text-[13px] text-muted">
+                          {c.scheduleName ? `${c.scheduleName} · ` : ''}
                           {formatDateTime(c.createdAt)} · {c.done} {c.done === 1 ? 'screenshot' : 'screenshots'} · {c.devices.join(', ')}
                           {c.fullPage ? ' · Full page' : ''}
                         </p>

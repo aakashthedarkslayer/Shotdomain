@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getRunDir } from '@/lib/scheduleStore';
+import { getRunDir, isValidId } from '@/lib/scheduleStore';
+import { getOwnedSchedule } from '@/lib/scheduleAccess';
 import { createZipBufferFromDir } from '@/lib/zip';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -11,6 +12,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string; runId: string }> },
 ) {
   const { id, runId } = await params;
+  if (!isValidId(runId) || !(await getOwnedSchedule(id))) {
+    return NextResponse.json({ error: 'Run not found' }, { status: 404 });
+  }
   const runDir = getRunDir(id, runId);
 
   if (!fs.existsSync(runDir)) {

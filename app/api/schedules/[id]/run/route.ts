@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { executeScheduledRun } from '@/lib/scheduler';
+import { getOwnedSchedule } from '@/lib/scheduleAccess';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,6 +10,9 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
+    if (!(await getOwnedSchedule(id))) {
+      return NextResponse.json({ error: 'Schedule not found' }, { status: 404 });
+    }
     const run = await executeScheduledRun(id);
     return NextResponse.json(run);
   } catch (error) {

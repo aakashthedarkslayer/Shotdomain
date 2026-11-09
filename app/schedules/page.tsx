@@ -145,7 +145,7 @@ export default function SchedulesPage() {
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-fg">Schedules</h1>
             <p className="mt-1 text-sm text-muted">
-              Recurring captures that run automatically.
+              Your recurring captures. Each run is also saved to your history.
               {schedules.length > 0 && ` ${activeCount} of ${schedules.length} active.`}
             </p>
           </div>
@@ -202,6 +202,8 @@ export default function SchedulesPage() {
                         <span>{describeCadence(s)}</span>
                         <span>
                           {s.urls.length} {s.urls.length === 1 ? 'page' : 'pages'}
+                          {' · '}
+                          {(s.settings?.devices?.length ? s.settings.devices : [s.settings?.device ?? 'Desktop']).join(', ')}
                         </span>
                         {s.enabled && s.nextRunAt && <span>Next: {formatDate(s.nextRunAt)}</span>}
                       </div>
@@ -258,7 +260,7 @@ export default function SchedulesPage() {
                                 <Badge tone={RUN_TONE[run.status]}>{run.status}</Badge>
                                 <span className="text-fg">{formatDate(run.timestamp)}</span>
                                 <span className="text-muted">
-                                  {run.completedUrls}/{run.totalUrls} captured
+                                  {run.completedUrls}/{run.totalUrls} screenshots
                                 </span>
                               </div>
                               <div className="flex items-center gap-1.5">

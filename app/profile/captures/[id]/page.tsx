@@ -33,7 +33,7 @@ export default async function CaptureDetailPage({ params }: { params: Promise<{ 
         <Card>
           <CardHeader
             title={hostOf(capture.rootUrl)}
-            description={`${formatDateTime(capture.createdAt)} · ${capture.done} ${capture.done === 1 ? 'screenshot' : 'screenshots'} · ${capture.devices.join(', ')}${capture.fullPage ? ' · Full page' : ''} · ${capture.format.toUpperCase()}`}
+            description={`${capture.scheduleName ? `Scheduled run of “${capture.scheduleName}” · ` : ''}${formatDateTime(capture.createdAt)} · ${capture.done} ${capture.done === 1 ? 'screenshot' : 'screenshots'} · ${capture.devices.join(', ')}${capture.fullPage ? ' · Full page' : ''} · ${capture.format.toUpperCase()}`}
             actions={
               <>
                 <DeleteCaptureButton id={capture.id} />

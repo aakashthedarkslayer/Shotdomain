@@ -102,6 +102,8 @@ export interface CaptureMeta {
   done: number;
   failed: number;
   results: HistoryResult[];
+  /** Set when the capture came from a scheduled run. */
+  scheduleName?: string;
 }
 
 export async function listCaptures(userKey: string): Promise<CaptureMeta[]> {
@@ -151,6 +153,7 @@ export async function saveCaptureFromJob(
     settings?: { device?: string; devices?: string[]; fullPage: boolean; format: 'png' | 'jpeg' };
     results: Iterable<{ url: string; device?: string; status: string; fileName?: string; error?: string }>;
   },
+  extra: { scheduleName?: string } = {},
 ): Promise<void> {
   const results: HistoryResult[] = [];
   for (const r of job.results) {
@@ -184,6 +187,7 @@ export async function saveCaptureFromJob(
     done,
     failed: results.length - done,
     results,
+    ...(extra.scheduleName ? { scheduleName: extra.scheduleName } : {}),
   };
   await writeJson(path.join(dest, 'meta.json'), meta);
   await pruneCaptures(userKey);

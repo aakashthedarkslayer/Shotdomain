@@ -1,18 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSchedules, createSchedule } from '@/lib/scheduleStore';
+import { createSchedule } from '@/lib/scheduleStore';
 import { initScheduler, registerScheduleCron } from '@/lib/scheduler';
+import { listOwnedSchedules } from '@/lib/scheduleAccess';
+import { currentUserKey } from '@/auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   await initScheduler();
-  const schedules = await getSchedules();
-  return NextResponse.json(schedules);
+  return NextResponse.json(await listOwnedSchedules());
 }
 
 export async function POST(request: NextRequest) {
   try {
     await initScheduler();
+    const ownerKey = await currentUserKey();
+    if (!ownerKey) return NextResponse.json({ error: 'Sign in required' }, { status: 401 });
     const body = await request.json();
 
     const {
@@ -55,6 +58,7 @@ export async function POST(request: NextRequest) {
       enabled,
       recipients: Array.isArray(recipients) ? recipients : [],
       retentionCount: Number(retentionCount) || 10,
+      ownerKey,
     });
 
     // Register with active background scheduler

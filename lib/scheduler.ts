@@ -10,7 +10,8 @@ import {
   type ScheduledRun,
   type ScheduledRunResult,
 } from './scheduleStore';
-import { createJob, updateResult } from './jobStore';
+import { createJob, getJob, updateResult } from './jobStore';
+import { saveCaptureFromJob } from './userData';
 import { captureScreenshots } from './screenshot';
 import { createZipFile } from './zip';
 import { sendScheduledRunEmail } from './email';
@@ -108,36 +109,26 @@ export async function executeScheduledRun(
 
   console.log(`[Scheduler] Starting capture run for: "${schedule.name}" (${schedule.urls.length} URLs)`);
 
-  // 1. Create a job in the existing job queue
-  const job = await createJob('capture', schedule.urls, schedule.settings);
+  // 1. Create a job in the existing job queue (owned by the schedule's owner)
+  const job = await createJob('capture', schedule.urls, schedule.settings, schedule.ownerKey);
 
-  const results: ScheduledRunResult[] = schedule.urls.map((url) => ({
-    url,
-    status: 'failed',
-  }));
-
-  // 2. Execute capture through the existing Playwright capture queue
+  // 2. Execute capture through the existing Playwright capture queue.
+  // Results are read back from the job afterwards: with several devices the
+  // progress keys are "Device:url", so matching on the plain URL would miss them.
   try {
-    await captureScreenshots(
-      job.id,
-      schedule.urls,
-      schedule.settings,
-      (url, partial) => {
-        updateResult(job.id, url, partial);
-        const idx = results.findIndex((r) => r.url === url);
-        if (idx !== -1 && (partial.status === 'done' || partial.status === 'failed')) {
-          results[idx] = {
-            url,
-            status: partial.status,
-            fileName: partial.fileName,
-            error: partial.error,
-          };
-        }
-      },
-    );
+    await captureScreenshots(job.id, schedule.urls, schedule.settings, (key, partial) => {
+      updateResult(job.id, key, partial);
+    });
   } catch (err) {
     console.error(`[Scheduler] Capture error in job ${job.id}:`, err);
   }
+
+  const finishedJob = getJob(job.id) ?? job;
+  const results: ScheduledRunResult[] = Array.from(finishedJob.results.values()).map((r) =>
+    r.status === 'done'
+      ? { url: r.url, device: r.device, status: 'done', fileName: r.fileName }
+      : { url: r.url, device: r.device, status: 'failed', error: r.error ?? 'Not captured' },
+  );
 
   const completedCount = results.filter((r) => r.status === 'done').length;
   const failedCount = results.filter((r) => r.status === 'failed').length;
@@ -156,7 +147,7 @@ export async function executeScheduledRun(
   const pendingRun = await recordScheduledRun(schedule.id, {
     timestamp,
     status: runStatus,
-    totalUrls: schedule.urls.length,
+    totalUrls: results.length,
     completedUrls: completedCount,
     failedUrls: failedCount,
     jobId: job.id,
@@ -168,15 +159,8 @@ export async function executeScheduledRun(
 
   // Copy captured files from tmp/{job.id} to data/schedules/{schedule.id}/runs/{pendingRun.id}
   try {
-    const tmpFiles = await fs.readdir(tmpJobDir);
-    for (const file of tmpFiles) {
-      const src = path.join(tmpJobDir, file);
-      const dst = path.join(destRunDir, file);
-      const stat = await fs.stat(src);
-      if (stat.isFile()) {
-        await fs.copyFile(src, dst);
-      }
-    }
+    // Recursive: multi-device captures are stored in per-device subfolders.
+    await fs.cp(tmpJobDir, destRunDir, { recursive: true, filter: (src) => !src.endsWith('.zip') });
 
     // 4. Create persistent archive.zip for this historical run
     const zipPath = path.join(destRunDir, 'archive.zip');
@@ -199,6 +183,15 @@ export async function executeScheduledRun(
     }
     const manifestPath = path.join(destRunDir, 'manifest.json');
     await fs.writeFile(manifestPath, JSON.stringify(pendingRun, null, 2), 'utf-8');
+  }
+
+  // 6. Add the run to the owner's capture history
+  if (schedule.ownerKey) {
+    await saveCaptureFromJob(
+      schedule.ownerKey,
+      { ...finishedJob, results: finishedJob.results.values() },
+      { scheduleName: schedule.name },
+    ).catch((err) => console.error(`[Scheduler] Could not save run ${pendingRun.id} to history:`, err));
   }
 
   console.log(`[Scheduler] Completed scheduled run ${pendingRun.id} for "${schedule.name}". Status: ${runStatus}`);

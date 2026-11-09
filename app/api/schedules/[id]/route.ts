@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import {
-  getSchedule,
-  updateSchedule,
-  deleteSchedule,
-  getScheduledRuns,
-} from '@/lib/scheduleStore';
+import { updateSchedule, deleteSchedule, getScheduledRuns } from '@/lib/scheduleStore';
+import type { Schedule } from '@/lib/scheduleStore';
+import { getOwnedSchedule } from '@/lib/scheduleAccess';
 import { registerScheduleCron, stopScheduleCron } from '@/lib/scheduler';
 
 export const dynamic = 'force-dynamic';
@@ -14,7 +11,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const schedule = await getSchedule(id);
+  const schedule = await getOwnedSchedule(id);
 
   if (!schedule) {
     return NextResponse.json({ error: 'Schedule not found' }, { status: 404 });
@@ -30,9 +27,17 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
+    if (!(await getOwnedSchedule(id))) {
+      return NextResponse.json({ error: 'Schedule not found' }, { status: 404 });
+    }
     const body = await request.json();
 
-    const updated = await updateSchedule(id, body);
+    // Only user-editable fields; owner, cron expression and run state are server-managed.
+    const changes: Partial<Schedule> = {};
+    if (typeof body.enabled === 'boolean') changes.enabled = body.enabled;
+    if (typeof body.name === 'string' && body.name.trim()) changes.name = body.name.trim().slice(0, 120);
+
+    const updated = await updateSchedule(id, changes);
     if (!updated) {
       return NextResponse.json({ error: 'Schedule not found' }, { status: 404 });
     }
@@ -59,6 +64,9 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+    if (!(await getOwnedSchedule(id))) {
+      return NextResponse.json({ error: 'Schedule not found' }, { status: 404 });
+    }
     stopScheduleCron(id);
     const success = await deleteSchedule(id);
 
