@@ -25,6 +25,8 @@ interface PageSelectionStepProps {
   loggedIn?: boolean;
   /** Add pages the discovery didn't find (they're appended and selected). */
   onAddUrls?: (urls: string[]) => void;
+  /** Go back to step 1 with the login section opened. */
+  onAddLogin?: () => void;
 }
 
 const LARGE_SELECTION = 200;
@@ -43,6 +45,7 @@ export default function PageSelectionStep({
   rootUrl,
   loggedIn,
   onAddUrls,
+  onAddLogin,
 }: PageSelectionStepProps) {
   const [query, setQuery] = useState('');
   const [addOpen, setAddOpen] = useState(false);
@@ -143,6 +146,20 @@ export default function PageSelectionStep({
 
       <div className="space-y-3 px-5 pt-4 sm:px-6">
         {truncated && <Alert tone="warning">Discovery stopped at 500 pages — this site may have more.</Alert>}
+        {!loggedIn && urls.length <= 3 && onAddLogin && (
+          <div className="flex flex-col gap-3 rounded-xl bg-accent-soft px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-2.5 text-[13px] text-accent">
+              <Icon name="shield" size={16} className="mt-px shrink-0" />
+              <span>
+                <b>Only {urls.length} {urls.length === 1 ? 'page' : 'pages'} found.</b> If this site needs a login (a web app or dashboard),
+                ShotDomain only sees its public sign-in page. Add your session to find and capture the pages behind it.
+              </span>
+            </div>
+            <Button size="sm" icon="shield" onClick={onAddLogin}>
+              Add a login
+            </Button>
+          </div>
+        )}
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <div className="flex-1">
             <Input icon="search" placeholder="Filter by URL…" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Filter pages" />

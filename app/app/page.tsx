@@ -285,6 +285,10 @@ export default function AppPage() {
             discoveryError={discoveryError}
             rootUrl={rootUrl}
             loggedIn={loggedIn}
+            onAddLogin={() => {
+              setAuth((prev) => ({ ...prev, method: prev.method === 'none' ? 'cookies' : prev.method }));
+              setCurrentStep(1);
+            }}
             onAddUrls={(added) => {
               const fresh = added.filter((u) => !discoveredUrls.includes(u));
               setDiscoveredUrls((prev) => [...prev, ...fresh]);
