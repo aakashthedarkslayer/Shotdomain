@@ -24,7 +24,8 @@ Sign-in is enforced only when Google credentials are set. Once they are, `/app`,
    - Authorized redirect URIs: `http://localhost:3000/api/auth/callback/google`
      (and `https://YOUR-DOMAIN/api/auth/callback/google`)
 3. `cp .env.example .env.local` and fill in:
-   - `AUTH_SECRET` — run `npx auth secret` or any long random string
+   - `AUTH_SECRET` — a long random string. Generate one with
+     `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`
    - `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` — from step 2
    - `AUTH_ALLOWED_EMAILS` — optional allowlist, e.g. `you@gmail.com,@yourcompany.com`
 4. Restart `npm run dev`.
