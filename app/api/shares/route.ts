@@ -49,5 +49,24 @@ export async function POST(request: NextRequest) {
     return Response.json(share);
   }
 
+  if (kind === 'page') {
+    const schedule = await getOwnedSchedule(String(body.scheduleId ?? ''));
+    if (!schedule || schedule.ownerKey !== key) return Response.json({ error: 'Schedule not found' }, { status: 404 });
+    const pageUrl = String(body.pageUrl ?? '');
+    if (!schedule.urls.includes(pageUrl)) return Response.json({ error: 'That page is not part of this schedule' }, { status: 400 });
+    const devices = schedule.settings?.devices?.length ? schedule.settings.devices : [schedule.settings?.device ?? 'Desktop'];
+    const device = body.device ? String(body.device) : devices[0];
+    if (!devices.includes(device as (typeof devices)[number])) return Response.json({ error: 'Unknown device for this schedule' }, { status: 400 });
+    const share = await createShare({
+      ownerKey: key,
+      kind,
+      scheduleId: schedule.id,
+      pageUrl,
+      device,
+      label: `${hostOf(pageUrl)}${urlPath(pageUrl)} · ${device} (all screenshots)`,
+    });
+    return Response.json(share);
+  }
+
   return Response.json({ error: 'Unknown share type' }, { status: 400 });
 }

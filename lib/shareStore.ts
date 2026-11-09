@@ -11,10 +11,12 @@ import { captureDirPath } from './userData';
  *   - screenshot: one image from a saved capture
  *   - capture:    a saved capture (gallery + ZIP)
  *   - schedule:   whatever the schedule's latest run is (updates by itself)
+ *   - page:       one page (+ device) of a schedule across all kept runs —
+ *                 an "all screenshots" index plus an always-latest image
  * Stored in data/shares.json. Revoking deletes the token.
  */
 
-export type ShareKind = 'screenshot' | 'capture' | 'schedule';
+export type ShareKind = 'screenshot' | 'capture' | 'schedule' | 'page';
 
 export interface Share {
   token: string;
@@ -23,6 +25,9 @@ export interface Share {
   captureId?: string;
   file?: string;
   scheduleId?: string;
+  /** kind=page: the page and device within the schedule. */
+  pageUrl?: string;
+  device?: string;
   label: string;
   createdAt: number;
 }
@@ -63,7 +68,9 @@ export async function createShare(input: Omit<Share, 'token' | 'createdAt'>): Pr
       s.kind === input.kind &&
       s.captureId === input.captureId &&
       s.file === input.file &&
-      s.scheduleId === input.scheduleId,
+      s.scheduleId === input.scheduleId &&
+      s.pageUrl === input.pageUrl &&
+      s.device === input.device,
   );
   if (existing) return existing;
   const share: Share = { ...input, token: crypto.randomBytes(24).toString('base64url'), createdAt: Date.now() };
@@ -157,4 +164,85 @@ export function sharedFilePath(content: SharedContent, opts: { file?: string | n
   if (!match?.fileName) return null;
   const resolved = path.resolve(content.dir, match.fileName);
   return resolved.startsWith(content.dir + path.sep) ? resolved : null;
+}
+
+// ---------------------------------------------------------------------------
+// Page shares: one page of a schedule over time
+// ---------------------------------------------------------------------------
+
+export interface PageShot {
+  runId: string;
+  timestamp: number;
+  /** Absolute path of the image file. */
+  path: string;
+  fileName: string;
+}
+
+export interface PageTimeline {
+  scheduleName: string;
+  pageUrl: string;
+  device?: string;
+  /** Newest first. Only runs still kept by the schedule's retention. */
+  shots: PageShot[];
+}
+
+export async function resolvePageShare(share: Share): Promise<PageTimeline | null> {
+  if (share.kind !== 'page' || !share.scheduleId || !share.pageUrl) return null;
+  const schedule = await getSchedule(share.scheduleId);
+  if (!schedule || schedule.ownerKey !== share.ownerKey) return null;
+  const shots: PageShot[] = [];
+  for (const run of await getScheduledRuns(schedule.id)) {
+    const r = run.results.find(
+      (x) => x.status === 'done' && x.fileName && x.url === share.pageUrl && (!share.device || x.device === share.device),
+    );
+    if (!r?.fileName) continue;
+    const dir = getRunDir(schedule.id, run.id);
+    const abs = path.resolve(dir, r.fileName);
+    if (abs.startsWith(dir + path.sep)) shots.push({ runId: run.id, timestamp: run.timestamp, path: abs, fileName: r.fileName });
+  }
+  return { scheduleName: schedule.name, pageUrl: share.pageUrl, device: share.device, shots };
+}
+
+// ---------------------------------------------------------------------------
+// Schedule shares: every kept run of the domain ("All Screenshots")
+// ---------------------------------------------------------------------------
+
+export interface RunShot {
+  url: string;
+  device?: string;
+  fileName: string;
+  changePct?: number | null;
+}
+
+export interface ScheduleIndex {
+  scheduleName: string;
+  targetUrl: string;
+  /** Newest first. */
+  runs: { runId: string; timestamp: number; changedPages?: number; compared: boolean; shots: RunShot[] }[];
+}
+
+export async function resolveScheduleShare(share: Share): Promise<ScheduleIndex | null> {
+  if (share.kind !== 'schedule' || !share.scheduleId) return null;
+  const schedule = await getSchedule(share.scheduleId);
+  if (!schedule || schedule.ownerKey !== share.ownerKey) return null;
+  const runs = (await getScheduledRuns(schedule.id)).map((run) => ({
+    runId: run.id,
+    timestamp: run.timestamp,
+    changedPages: run.changedPages,
+    compared: !!run.comparedToRunId,
+    shots: run.results
+      .filter((r) => r.status === 'done' && r.fileName)
+      .map((r) => ({ url: r.url, device: r.device, fileName: r.fileName!, changePct: r.changePct })),
+  }));
+  return { scheduleName: schedule.name, targetUrl: schedule.targetUrl, runs };
+}
+
+/** Path of `file` within `runId` of a shared schedule — only files listed in that run. */
+export async function scheduleRunFilePath(share: Share, runId: string, file: string): Promise<string | null> {
+  const index = await resolveScheduleShare(share);
+  const run = index?.runs.find((r) => r.runId === runId);
+  if (!run?.shots.some((s) => s.fileName === file)) return null;
+  const dir = getRunDir(share.scheduleId!, runId);
+  const abs = path.resolve(dir, file);
+  return abs.startsWith(dir + path.sep) ? abs : null;
 }

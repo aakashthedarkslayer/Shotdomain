@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { getShare, resolveShare, sharedFilePath } from '@/lib/shareStore';
+import { getShare, resolvePageShare, resolveShare, scheduleRunFilePath, sharedFilePath } from '@/lib/shareStore';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,11 +14,22 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
   const share = await getShare(token);
-  const content = share ? await resolveShare(share) : null;
-  if (!content) return new Response('Not found', { status: 404 });
-
+  if (!share) return new Response('Not found', { status: 404 });
   const sp = request.nextUrl.searchParams;
-  const file = sharedFilePath(content, { file: sp.get('file'), pageUrl: sp.get('url'), device: sp.get('device') });
+
+  let file: string | null = null;
+  if (share.kind === 'page') {
+    // One page over time: ?run=<id> picks a run, otherwise the newest.
+    const timeline = await resolvePageShare(share);
+    const run = sp.get('run');
+    file = (run ? timeline?.shots.find((s) => s.runId === run) : timeline?.shots[0])?.path ?? null;
+  } else if (share.kind === 'schedule' && sp.get('run') && sp.get('file')) {
+    // A screenshot from any kept run (the "All Screenshots" index)
+    file = await scheduleRunFilePath(share, sp.get('run')!, sp.get('file')!);
+  } else {
+    const content = await resolveShare(share);
+    if (content) file = sharedFilePath(content, { file: sp.get('file'), pageUrl: sp.get('url'), device: sp.get('device') });
+  }
   if (!file) return new Response('Not found', { status: 404 });
 
   try {

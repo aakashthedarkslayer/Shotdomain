@@ -10,6 +10,7 @@ import { Alert } from '@/components/ui/Alert';
 import { Icon, Spinner } from '@/components/ui/Icon';
 import type { Schedule, ScheduledRun } from '@/lib/scheduleStore';
 import { ShareDialog } from '@/components/share/ShareDialog';
+import { SharePagesList } from '@/components/share/SharePagesList';
 import type { ShareTarget } from '@/components/share/ShareDialog';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -256,6 +257,13 @@ export default function SchedulesPage() {
 
                   {open && (
                     <div className="border-t border-line bg-subtle/50 px-5 py-4 sm:px-6">
+                      {s.ownerKey && (
+                        <SharePagesList
+                          scheduleId={s.id}
+                          urls={s.urls}
+                          devices={s.settings?.devices?.length ? s.settings.devices : [s.settings?.device ?? 'Desktop']}
+                        />
+                      )}
                       <h3 className="mb-3 text-xs font-medium text-muted">Last {s.retentionCount || 10} runs are kept</h3>
                       {isLoadingRuns ? (
                         <div className="flex items-center gap-2 py-3 text-sm text-muted">

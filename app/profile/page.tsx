@@ -121,7 +121,7 @@ export default async function ProfilePage() {
             <ul className="divide-y divide-line">
               {shares.map((sh) => (
                 <li key={sh.token} className="flex items-center gap-3 px-5 py-3 sm:px-6">
-                  <Badge>{sh.kind === 'schedule' ? 'Schedule' : sh.kind === 'capture' ? 'Capture' : 'Screenshot'}</Badge>
+                  <Badge>{sh.kind === 'schedule' ? 'Schedule' : sh.kind === 'capture' ? 'Capture' : sh.kind === 'page' ? 'Page' : 'Screenshot'}</Badge>
                   <div className="min-w-0 flex-1">
                     <a href={`/share/${sh.token}`} target="_blank" rel="noreferrer" className="block truncate text-sm font-medium text-fg hover:underline">
                       {sh.label}
