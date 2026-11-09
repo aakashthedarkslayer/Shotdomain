@@ -62,8 +62,15 @@ export type AuthMethod = 'none' | 'cookies' | 'basic' | 'form';
 
 export interface SiteAuth {
   method: AuthMethod;
-  /** method=cookies: "name=value; name2=value2" (Cookie header) or a JSON cookie export. */
+  /**
+   * method=cookies ("Session — no password"): any of
+   *   - "name=value; name2=value2" (Cookie header), a JSON cookie export, or a cookies.txt file
+   */
   cookies?: string;
+  /** method=cookies: localStorage entries as JSON {"key":"value"} or "key=value" lines (SPA tokens). */
+  localStorage?: string;
+  /** method=cookies: extra request headers, one "Name: value" per line (sent only to the site's host). */
+  headers?: string;
   /** method=basic and method=form */
   username?: string;
   password?: string;
@@ -90,8 +97,10 @@ export function sanitizeAuth(input: unknown): SiteAuth | undefined {
   const method = o.method as AuthMethod;
   switch (method) {
     case 'cookies': {
-      const cookies = str(o.cookies, 20_000)?.trim();
-      return cookies ? { method, cookies } : undefined;
+      const cookies = str(o.cookies, 50_000)?.trim() || undefined;
+      const localStorage = str(o.localStorage, 50_000)?.trim() || undefined;
+      const headers = str(o.headers, 10_000)?.trim() || undefined;
+      return cookies || localStorage || headers ? { method, cookies, localStorage, headers } : undefined;
     }
     case 'basic': {
       const username = str(o.username, 300) ?? '';
@@ -120,7 +129,7 @@ export function sanitizeAuth(input: unknown): SiteAuth | undefined {
 export function describeAuth(auth?: { method: AuthMethod } | null): string {
   switch (auth?.method) {
     case 'cookies':
-      return 'Custom cookies';
+      return 'Session (no password)';
     case 'basic':
       return 'HTTP basic auth';
     case 'form':

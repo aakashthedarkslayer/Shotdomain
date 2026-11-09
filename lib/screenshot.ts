@@ -247,7 +247,8 @@ async function captureOne(
         if (isAdUrl(route.request().url())) {
           return route.abort();
         }
-        return route.continue();
+        // fallback (not continue) so context-level routes, e.g. session headers, still apply
+        return route.fallback();
       });
     }
 

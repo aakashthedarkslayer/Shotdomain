@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/Button';
 import { Field, Input, Textarea } from '@/components/ui/Input';
 import { Segmented } from '@/components/ui/Controls';
 import { Alert } from '@/components/ui/Alert';
-import type { AuthMethod, SiteAuth } from '@/lib/captureOptions';
+import { Icon } from '@/components/ui/Icon';
+import type { SiteAuth } from '@/lib/captureOptions';
 import { normalizeUrl } from '@/lib/url';
 
 interface TestResult {
@@ -15,11 +16,47 @@ interface TestResult {
   finalUrl?: string;
   title?: string;
   image?: string;
+  cookieCount?: number;
+  cookiesExpireAt?: number;
 }
 
-/** Login settings for sites that need one, with a "Test login" preview. */
+function CookieHelp() {
+  return (
+    <details className="group rounded-lg border border-line bg-subtle/50 text-[13px]">
+      <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2 font-medium text-fg [&::-webkit-details-marker]:hidden">
+        <Icon name="info" size={14} className="text-accent" />
+        How do I get my session cookies?
+        <Icon name="chevronDown" size={14} className="ml-auto text-muted transition-transform group-open:rotate-180" />
+      </summary>
+      <div className="space-y-3 border-t border-line px-3 py-3 text-muted">
+        <div>
+          <p className="font-medium text-fg">Option A — from DevTools (no extension)</p>
+          <ol className="mt-1 list-decimal space-y-0.5 pl-5">
+            <li>Log in to the site in Chrome, Edge or Firefox as you normally would.</li>
+            <li>Open DevTools (F12) → <b>Network</b> tab, then reload the page.</li>
+            <li>Click the first request (the page itself) → <b>Headers</b> → <b>Request Headers</b>.</li>
+            <li>Copy the value of <code className="font-mono">cookie:</code> and paste it below.</li>
+          </ol>
+        </div>
+        <div>
+          <p className="font-medium text-fg">Option B — with a cookie extension</p>
+          <p className="mt-1">
+            Use an extension such as Cookie-Editor (Export → JSON) or “Get cookies.txt”, and paste the export below. Both formats work.
+          </p>
+        </div>
+        <p>
+          Some web apps keep the login token in <b>Local Storage</b> instead of cookies (DevTools → Application → Local Storage). Add those
+          entries under “Token in browser storage”.
+        </p>
+      </div>
+    </details>
+  );
+}
+
+/** Login settings for sites that need one. Passwordless session first; passwords are opt-in. */
 export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; auth: SiteAuth; onChange: (auth: SiteAuth) => void }) {
   const [showSelectors, setShowSelectors] = useState(Boolean(auth.usernameSelector || auth.passwordSelector || auth.submitSelector));
+  const [showExtra, setShowExtra] = useState(Boolean(auth.localStorage || auth.headers));
   const [testing, setTesting] = useState(false);
   const [result, setResult] = useState<TestResult | null>(null);
 
@@ -28,6 +65,7 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
     onChange({ ...auth, ...partial });
   };
   const method = auth.method === 'none' ? 'cookies' : auth.method;
+  const usingPassword = method === 'form' || method === 'basic';
 
   async function test() {
     setTesting(true);
@@ -48,84 +86,130 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
 
   return (
     <div className="space-y-4">
-      <Segmented<Exclude<AuthMethod, 'none'>>
-        label="Login method"
-        value={method}
-        onChange={(m) => set({ method: m })}
-        options={[
-          { value: 'cookies', label: 'Cookies' },
-          { value: 'form', label: 'Login form' },
-          { value: 'basic', label: 'Basic auth' },
-        ]}
-      />
-
-      {method === 'cookies' && (
-        <Field
-          label="Session cookies"
-          htmlFor="auth-cookies"
-          hint="Log in to the site in your browser, then paste the Cookie request header from DevTools (Network tab), or a JSON export from a cookie extension. Works with 2FA and SSO logins."
-        >
-          <Textarea
-            id="auth-cookies"
-            rows={4}
-            placeholder={'session_id=abc123; csrftoken=xyz\n— or —\n[{"name":"session_id","value":"abc123","domain":".example.com"}]'}
-            value={auth.cookies ?? ''}
-            onChange={(e) => set({ cookies: e.target.value })}
-          />
-        </Field>
-      )}
-
-      {method === 'form' && (
+      {!usingPassword ? (
         <>
-          <Field label="Login page URL" htmlFor="auth-login-url">
-            <Input id="auth-login-url" placeholder="https://app.example.com/login" value={auth.loginUrl ?? ''} onChange={(e) => set({ loginUrl: e.target.value })} />
-          </Field>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Username or email" htmlFor="auth-username">
-              <Input id="auth-username" autoComplete="off" value={auth.username ?? ''} onChange={(e) => set({ username: e.target.value })} />
-            </Field>
-            <Field label="Password" htmlFor="auth-password">
-              <Input id="auth-password" type="password" autoComplete="new-password" value={auth.password ?? ''} onChange={(e) => set({ password: e.target.value })} />
-            </Field>
+          <div className="flex items-start gap-2.5 rounded-lg bg-accent-soft px-3 py-2.5 text-[13px] text-accent">
+            <Icon name="shield" size={16} className="mt-px" />
+            <span>
+              <b>No password needed.</b> Log in to the site in your own browser and paste your session below. Treat it like a key: it works
+              until it expires or you log out, which instantly revokes it. Saved sessions are stored encrypted.
+            </span>
           </div>
-          <button type="button" onClick={() => setShowSelectors((v) => !v)} className="cursor-pointer text-[13px] font-medium text-muted hover:text-fg">
-            {showSelectors ? 'Hide' : 'Set'} field selectors (if auto-detect fails)
+
+          <CookieHelp />
+
+          <Field label="Session cookies" htmlFor="auth-cookies" hint="A Cookie header, a JSON export, or a cookies.txt file.">
+            <Textarea
+              id="auth-cookies"
+              rows={4}
+              placeholder={'session_id=abc123; csrftoken=xyz\n— or —\n[{"name":"session_id","value":"abc123","domain":".example.com"}]'}
+              value={auth.cookies ?? ''}
+              onChange={(e) => set({ cookies: e.target.value })}
+            />
+          </Field>
+
+          <button type="button" onClick={() => setShowExtra((v) => !v)} className="flex cursor-pointer items-center gap-1 text-[13px] font-medium text-muted hover:text-fg">
+            <Icon name="chevronDown" size={14} className={`transition-transform ${showExtra ? 'rotate-180' : ''}`} />
+            Token in browser storage or custom headers
           </button>
-          {showSelectors && (
-            <div className="grid gap-4 sm:grid-cols-3">
-              <Field label="Username field" htmlFor="auth-sel-user">
-                <Input id="auth-sel-user" placeholder="#email" value={auth.usernameSelector ?? ''} onChange={(e) => set({ usernameSelector: e.target.value })} />
+          {showExtra && (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Token in browser storage" htmlFor="auth-ls" hint="Local Storage entries, as JSON or key=value lines.">
+                <Textarea
+                  id="auth-ls"
+                  rows={3}
+                  placeholder={'{"auth_token":"eyJhbGciOi..."}\n— or —\nauth_token=eyJhbGciOi...'}
+                  value={auth.localStorage ?? ''}
+                  onChange={(e) => set({ localStorage: e.target.value })}
+                />
               </Field>
-              <Field label="Password field" htmlFor="auth-sel-pass">
-                <Input id="auth-sel-pass" placeholder="#password" value={auth.passwordSelector ?? ''} onChange={(e) => set({ passwordSelector: e.target.value })} />
-              </Field>
-              <Field label="Submit button" htmlFor="auth-sel-submit">
-                <Input id="auth-sel-submit" placeholder="button[type=submit]" value={auth.submitSelector ?? ''} onChange={(e) => set({ submitSelector: e.target.value })} />
+              <Field label="Custom headers" htmlFor="auth-headers" hint="One per line. Sent only to this site’s domain, never to third parties.">
+                <Textarea
+                  id="auth-headers"
+                  rows={3}
+                  placeholder={'Authorization: Bearer eyJhbGciOi...'}
+                  value={auth.headers ?? ''}
+                  onChange={(e) => set({ headers: e.target.value })}
+                />
               </Field>
             </div>
           )}
-          <p className="text-[13px] text-muted">
-            Logins that need a CAPTCHA, 2FA code or SSO pop-up can’t be automated — use the Cookies method for those.
-          </p>
-        </>
-      )}
 
-      {method === 'basic' && (
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Username" htmlFor="auth-basic-user" hint="For sites behind a browser username/password prompt (common on staging).">
-            <Input id="auth-basic-user" autoComplete="off" value={auth.username ?? ''} onChange={(e) => set({ username: e.target.value })} />
-          </Field>
-          <Field label="Password" htmlFor="auth-basic-pass">
-            <Input id="auth-basic-pass" type="password" autoComplete="new-password" value={auth.password ?? ''} onChange={(e) => set({ password: e.target.value })} />
-          </Field>
-        </div>
+          <button type="button" onClick={() => set({ method: 'form' })} className="cursor-pointer text-[13px] text-faint underline-offset-2 hover:text-muted hover:underline">
+            Use a username and password instead
+          </button>
+        </>
+      ) : (
+        <>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <Segmented
+              label="Password method"
+              value={method}
+              onChange={(m) => set({ method: m })}
+              options={[
+                { value: 'form', label: 'Login form' },
+                { value: 'basic', label: 'Basic auth' },
+              ]}
+            />
+            <button type="button" onClick={() => set({ method: 'cookies' })} className="flex cursor-pointer items-center gap-1 text-[13px] font-medium text-accent hover:underline">
+              <Icon name="arrowLeft" size={14} /> Back to session login (no password)
+            </button>
+          </div>
+          <Alert tone="warning">
+            Your password is stored encrypted and only used to log in, but a session login avoids sharing it at all. Logins with a CAPTCHA, 2FA
+            code or SSO pop-up can’t be automated — use a session for those.
+          </Alert>
+
+          {method === 'form' && (
+            <>
+              <Field label="Login page URL" htmlFor="auth-login-url">
+                <Input id="auth-login-url" placeholder="https://app.example.com/login" value={auth.loginUrl ?? ''} onChange={(e) => set({ loginUrl: e.target.value })} />
+              </Field>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="Username or email" htmlFor="auth-username">
+                  <Input id="auth-username" autoComplete="off" value={auth.username ?? ''} onChange={(e) => set({ username: e.target.value })} />
+                </Field>
+                <Field label="Password" htmlFor="auth-password">
+                  <Input id="auth-password" type="password" autoComplete="new-password" value={auth.password ?? ''} onChange={(e) => set({ password: e.target.value })} />
+                </Field>
+              </div>
+              <button type="button" onClick={() => setShowSelectors((v) => !v)} className="cursor-pointer text-[13px] font-medium text-muted hover:text-fg">
+                {showSelectors ? 'Hide' : 'Set'} field selectors (if auto-detect fails)
+              </button>
+              {showSelectors && (
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <Field label="Username field" htmlFor="auth-sel-user">
+                    <Input id="auth-sel-user" placeholder="#email" value={auth.usernameSelector ?? ''} onChange={(e) => set({ usernameSelector: e.target.value })} />
+                  </Field>
+                  <Field label="Password field" htmlFor="auth-sel-pass">
+                    <Input id="auth-sel-pass" placeholder="#password" value={auth.passwordSelector ?? ''} onChange={(e) => set({ passwordSelector: e.target.value })} />
+                  </Field>
+                  <Field label="Submit button" htmlFor="auth-sel-submit">
+                    <Input id="auth-sel-submit" placeholder="button[type=submit]" value={auth.submitSelector ?? ''} onChange={(e) => set({ submitSelector: e.target.value })} />
+                  </Field>
+                </div>
+              )}
+            </>
+          )}
+
+          {method === 'basic' && (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Username" htmlFor="auth-basic-user" hint="For sites behind a browser username/password prompt (common on staging).">
+                <Input id="auth-basic-user" autoComplete="off" value={auth.username ?? ''} onChange={(e) => set({ username: e.target.value })} />
+              </Field>
+              <Field label="Password" htmlFor="auth-basic-pass">
+                <Input id="auth-basic-pass" type="password" autoComplete="new-password" value={auth.password ?? ''} onChange={(e) => set({ password: e.target.value })} />
+              </Field>
+            </div>
+          )}
+        </>
       )}
 
       <div className="flex items-center gap-3">
         <Button variant="secondary" size="sm" icon="refresh" isLoading={testing} onClick={test}>
           Test login
         </Button>
-        <span className="text-[13px] text-muted">Logs in and shows you the first page.</span>
+        <span className="text-[13px] text-muted">Opens the site with these details and shows you the page.</span>
       </div>
 
       {result && (
@@ -136,6 +220,13 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
             <Alert tone={result.ok && !result.warning ? 'success' : 'warning'}>
               {result.warning ?? 'Looks logged in.'} Landed on <span className="font-mono">{result.finalUrl}</span>
               {result.title ? ` — “${result.title}”` : ''}
+              {!usingPassword && !!result.cookieCount && (
+                <span className="mt-1 block">
+                  {result.cookiesExpireAt
+                    ? `Your cookies expire on ${new Date(result.cookiesExpireAt).toLocaleDateString(undefined, { dateStyle: 'medium' })} — schedules will need fresh cookies after that.`
+                    : 'These are browser-session cookies — they may stop working when the site ends your session.'}
+                </span>
+              )}
             </Alert>
           )}
           {result.image && (

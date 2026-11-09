@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { getBrowser, USER_AGENT } from '@/lib/browser';
 import { sanitizeAuth } from '@/lib/captureOptions';
-import { SiteLoginError, applyAuthToContext, resolveSiteAuth } from '@/lib/siteAuth';
+import { SiteLoginError, applyAuthToContext, earliestExpiry, resolveSiteAuth } from '@/lib/siteAuth';
 import { isValidUrl, normalizeUrl } from '@/lib/url';
 
 export const dynamic = 'force-dynamic';
@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
       finalUrl: page.url(),
       title: await page.title(),
       cookieCount: resolved.cookies.length,
+      cookiesExpireAt: earliestExpiry(resolved.cookies),
       warning: stillOnLogin
         ? 'The page still shows a password field — you may not be logged in.'
         : status === 401 || status === 403
