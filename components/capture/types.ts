@@ -1,3 +1,6 @@
+import { DEFAULT_CLEANUP } from '@/lib/captureOptions';
+import type { CleanupOptions } from '@/lib/captureOptions';
+
 export type DeviceName = 'Desktop' | 'Tablet' | 'Mobile (iOS)' | 'Mobile (Android)';
 
 export interface CaptureResult {
@@ -6,6 +9,7 @@ export interface CaptureResult {
   status: 'queued' | 'capturing' | 'done' | 'failed';
   fileName?: string;
   error?: string;
+  warning?: string;
 }
 
 /** UI-side settings state (superset of what the API receives). */
@@ -22,6 +26,7 @@ export interface SettingsState {
   showBackgroundColor: boolean;
   aspectRatio: string;
   linked: boolean;
+  cleanup: CleanupOptions;
 }
 
 export const DEFAULT_SETTINGS: SettingsState = {
@@ -37,6 +42,7 @@ export const DEFAULT_SETTINGS: SettingsState = {
   showBackgroundColor: false,
   aspectRatio: '16:9',
   linked: false,
+  cleanup: DEFAULT_CLEANUP,
 };
 
 export function thumbnailUrl(jobId: string, fileName: string) {

@@ -92,6 +92,11 @@ export default function CaptureProgressStep({
                   </span>
                   {showDevice && r.device && <Badge>{r.device}</Badge>}
                 </div>
+                {r.status === 'done' && r.warning && (
+                  <p className="truncate text-xs text-warning" title={r.warning}>
+                    {r.warning}
+                  </p>
+                )}
                 {r.status === 'failed' && r.error && (
                   <p className="truncate text-xs text-danger" title={r.error}>
                     {r.error}

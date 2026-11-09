@@ -6,6 +6,7 @@ import type { CaptureSettings, CaptureResult } from './jobStore';
 import { getJob } from './jobStore';
 import { getDevicePreset, getDeviceFolder } from './devices';
 import { urlToFilename } from './dedupe';
+import { applyCleanup } from './pageCleanup';
 
 const USER_AGENT = 'SiteScreenshotTool/1.0 (+local dev tool)';
 
@@ -238,8 +239,9 @@ async function captureOne(
   url: string,
   settings: CaptureSettings,
   outputPath: string,
-): Promise<void> {
+): Promise<{ warning?: string }> {
   const page = await context.newPage();
+  let warning: string | undefined;
 
   try {
     // Ad blocking via route interception
@@ -270,6 +272,9 @@ async function captureOne(
       await page.waitForTimeout(2_000);
     }
 
+    // Page cleanup: consent banners, user click/hide selectors, custom CSS
+    warning = await applyCleanup(page, settings.cleanup);
+
     // Inject custom background color
     if (settings.backgroundColor) {
       await page.addStyleTag({
@@ -291,6 +296,7 @@ async function captureOne(
       type: settings.format,
       ...(settings.format === 'jpeg' ? { quality: 85 } : {}),
     });
+    return { warning };
   } finally {
     await page.close();
   }
@@ -447,8 +453,8 @@ export async function captureScreenshots(
         }
 
         try {
-          await captureOne(context, item.url, item.devSettings, outputPath);
-          onProgress(item.key, { status: 'done', fileName: relativeFileName, device: item.device });
+          const { warning } = await captureOne(context, item.url, item.devSettings, outputPath);
+          onProgress(item.key, { status: 'done', fileName: relativeFileName, device: item.device, warning });
         } catch (err) {
           const message = errorToMessage(err);
           onProgress(item.key, { status: 'failed', error: message, device: item.device });

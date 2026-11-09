@@ -148,6 +148,7 @@ export default function AppPage() {
             blockAds: settings.blockAds,
             useCache: settings.useCache,
             backgroundColor: settings.showBackgroundColor ? settings.backgroundColor : undefined,
+            cleanup: settings.cleanup,
           },
         }),
       });
@@ -330,6 +331,7 @@ export default function AppPage() {
           blockAds: settings.blockAds,
           useCache: settings.useCache,
           backgroundColor: settings.showBackgroundColor ? settings.backgroundColor : undefined,
+          cleanup: settings.cleanup,
         }}
       />
     </div>

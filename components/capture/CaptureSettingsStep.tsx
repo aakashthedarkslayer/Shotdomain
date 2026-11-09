@@ -4,13 +4,15 @@ import { useCallback, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Card, CardFooter, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Select } from '@/components/ui/Input';
+import { Select, Textarea } from '@/components/ui/Input';
 import { Alert } from '@/components/ui/Alert';
 import { Segmented, Switch } from '@/components/ui/Controls';
 import { Icon } from '@/components/ui/Icon';
 import type { IconName } from '@/components/ui/Icon';
 import { DEVICE_PRESETS } from '@/lib/devices';
 import type { SettingsState } from './types';
+import { selectorsToText, textToSelectors } from '@/lib/captureOptions';
+import type { CleanupOptions } from '@/lib/captureOptions';
 
 interface CaptureSettingsStepProps {
   settings: SettingsState;
@@ -73,6 +75,10 @@ export default function CaptureSettingsStep({
   error,
 }: CaptureSettingsStepProps) {
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  // Keep raw textarea text locally so typing newlines isn't fought by normalisation.
+  const [hideText, setHideText] = useState(() => selectorsToText(settings.cleanup.hideSelectors));
+  const [clickText, setClickText] = useState(() => selectorsToText(settings.cleanup.clickSelectors));
+  const setCleanup = (partial: Partial<CleanupOptions>) => onSettingsChange({ cleanup: { ...settings.cleanup, ...partial } });
 
   const selectedDevices = useMemo(
     () => (settings.devices.length > 0 ? settings.devices : [settings.device || 'Desktop']),
@@ -184,6 +190,14 @@ export default function CaptureSettingsStep({
           <Switch checked={settings.fullPage} onChange={(fullPage) => onSettingsChange({ fullPage })} label="Capture entire page" />
         </Row>
 
+        <Row title="Hide cookie banners" description="Accepts or hides common consent pop-ups (OneTrust, Cookiebot, Usercentrics…) before capturing.">
+          <Switch
+            checked={settings.cleanup.hideCookieBanners}
+            onChange={(hideCookieBanners) => setCleanup({ hideCookieBanners })}
+            label="Hide cookie banners"
+          />
+        </Row>
+
         <Row title="Format">
           <Segmented
             label="Image format"
@@ -208,6 +222,41 @@ export default function CaptureSettingsStep({
           </button>
           {advancedOpen && (
             <div className="divide-y divide-line border-t border-line bg-subtle/40">
+              <Row
+                title="Click before capture"
+                description="CSS selectors to click first, one per line — e.g. open a menu, switch a tab, dismiss a dialog."
+                stacked
+              >
+                <Textarea
+                  aria-label="Selectors to click"
+                  placeholder={'#accept-terms\nbutton.close-modal'}
+                  value={clickText}
+                  onChange={(e) => {
+                    setClickText(e.target.value);
+                    setCleanup({ clickSelectors: textToSelectors(e.target.value) });
+                  }}
+                />
+              </Row>
+              <Row title="Hide elements" description="CSS selectors to hide, one per line — chat widgets, promo bars, sticky headers." stacked>
+                <Textarea
+                  aria-label="Selectors to hide"
+                  placeholder={'#intercom-container\n.promo-bar'}
+                  value={hideText}
+                  onChange={(e) => {
+                    setHideText(e.target.value);
+                    setCleanup({ hideSelectors: textToSelectors(e.target.value) });
+                  }}
+                />
+              </Row>
+              <Row title="Custom CSS" description="Injected into every page before capturing." stacked>
+                <Textarea
+                  aria-label="Custom CSS"
+                  rows={4}
+                  placeholder={'.header { position: static !important; }'}
+                  value={settings.cleanup.customCss}
+                  onChange={(e) => setCleanup({ customCss: e.target.value })}
+                />
+              </Row>
               <Row title="Block ads and trackers" description="Aborts requests to common ad and tracking domains.">
                 <Switch checked={settings.blockAds} onChange={(blockAds) => onSettingsChange({ blockAds })} label="Block ads" />
               </Row>
