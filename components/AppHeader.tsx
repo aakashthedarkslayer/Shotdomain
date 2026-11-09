@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { Logo } from '@/components/ui/Logo';
+import { UserMenu } from '@/components/auth/UserMenu';
 
 const NAV = [
   { href: '/app', label: 'Capture' },
@@ -33,7 +34,10 @@ export function AppHeader({ children }: { children?: ReactNode }) {
             );
           })}
         </nav>
-        <div className="ml-auto flex min-w-0 items-center gap-2">{children}</div>
+        <div className="ml-auto flex min-w-0 items-center gap-3">
+          {children}
+          <UserMenu />
+        </div>
       </div>
     </header>
   );
