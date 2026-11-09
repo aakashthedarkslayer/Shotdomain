@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/Badge';
 import { Alert } from '@/components/ui/Alert';
 import { Icon, Spinner } from '@/components/ui/Icon';
 import type { Schedule, ScheduledRun } from '@/lib/scheduleStore';
+import { ShareDialog } from '@/components/share/ShareDialog';
+import type { ShareTarget } from '@/components/share/ShareDialog';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -41,6 +43,7 @@ export default function SchedulesPage() {
   const [runningId, setRunningId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [shareTarget, setShareTarget] = useState<ShareTarget | null>(null);
 
   const fetchSchedules = useCallback(async () => {
     try {
@@ -224,6 +227,11 @@ export default function SchedulesPage() {
                           Latest
                         </a>
                       )}
+                      {s.ownerKey && (
+                        <Button size="sm" variant="ghost" icon="link" onClick={() => setShareTarget({ kind: 'schedule', scheduleId: s.id })}>
+                          Share
+                        </Button>
+                      )}
                       <Button size="sm" variant="ghost" onClick={() => toggleHistory(s.id)} aria-expanded={open}>
                         History
                         <Icon name="chevronDown" size={14} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -291,6 +299,7 @@ export default function SchedulesPage() {
           </Card>
         )}
       </main>
+      <ShareDialog target={shareTarget} onClose={() => setShareTarget(null)} />
     </div>
   );
 }

@@ -13,10 +13,21 @@ export interface GridItem {
   device?: string;
   src: string;
   fileName: string;
+  /** Path of the file inside its capture (used for share links). */
+  file?: string;
 }
 
 /** Thumbnail grid with a device filter and a full-size preview; used by Results and History. */
-export function ScreenshotGrid({ items, emptyText = 'No screenshots.' }: { items: GridItem[]; emptyText?: string }) {
+export function ScreenshotGrid({
+  items,
+  emptyText = 'No screenshots.',
+  onShare,
+}: {
+  items: GridItem[];
+  emptyText?: string;
+  /** Shows a share button on each screenshot when provided. */
+  onShare?: (item: GridItem) => void;
+}) {
   const [device, setDevice] = useState('all');
   const [preview, setPreview] = useState<GridItem | null>(null);
 
@@ -64,6 +75,17 @@ export function ScreenshotGrid({ items, emptyText = 'No screenshots.' }: { items
                   </p>
                   {item.device && <p className="text-xs text-muted">{item.device}</p>}
                 </div>
+                {onShare && (
+                  <button
+                    type="button"
+                    onClick={() => onShare(item)}
+                    title="Share"
+                    aria-label={`Share ${item.fileName}`}
+                    className="cursor-pointer rounded-md p-1.5 text-muted hover:bg-subtle hover:text-fg"
+                  >
+                    <Icon name="link" />
+                  </button>
+                )}
                 <a
                   href={item.src}
                   download={item.fileName}

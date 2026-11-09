@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { currentUser, currentUserKey } from '@/auth';
 import { PROFILE_LIMITS, deleteCapture, saveProfile } from '@/lib/userData';
+import { revokeShare, revokeSharesFor } from '@/lib/shareStore';
 
 export interface ProfileFormState {
   status: 'idle' | 'saved' | 'error';
@@ -34,9 +35,17 @@ export async function deleteCaptureAction(formData: FormData) {
   if (!key) redirect('/login');
   try {
     await deleteCapture(key, id);
+    await revokeSharesFor({ captureId: id });
   } catch {
     // invalid id — nothing to delete
   }
   revalidatePath('/profile');
   redirect('/profile');
+}
+
+export async function revokeShareAction(formData: FormData) {
+  const key = await currentUserKey();
+  if (!key) redirect('/login');
+  await revokeShare(key, String(formData.get('token') ?? ''));
+  revalidatePath('/profile');
 }

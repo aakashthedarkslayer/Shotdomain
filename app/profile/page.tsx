@@ -10,6 +10,8 @@ import { Icon } from '@/components/ui/Icon';
 import { ProfileForm } from '@/components/profile/ProfileForm';
 import { MAX_CAPTURES_PER_USER, listCaptures } from '@/lib/userData';
 import { formatDateTime, hostOf } from '@/lib/format';
+import { listShares } from '@/lib/shareStore';
+import { revokeShareAction } from '@/app/actions/profile';
 
 export const metadata = { title: 'Profile — ShotDomain' };
 // History is read from disk on every request; never prerender it.
@@ -24,6 +26,7 @@ export default async function ProfilePage() {
   if (!key) redirect('/login?callbackUrl=/profile');
   const user = await currentUser();
   const captures = await listCaptures(key);
+  const shares = await listShares(key);
 
   return (
     <div className="min-h-screen pb-24">
@@ -111,6 +114,31 @@ export default async function ProfilePage() {
             </ul>
           )}
         </Card>
+        {/* Shared links */}
+        {shares.length > 0 && (
+          <Card>
+            <CardHeader title="Shared links" description="Anyone with one of these links can view it without signing in." />
+            <ul className="divide-y divide-line">
+              {shares.map((sh) => (
+                <li key={sh.token} className="flex items-center gap-3 px-5 py-3 sm:px-6">
+                  <Badge>{sh.kind === 'schedule' ? 'Schedule' : sh.kind === 'capture' ? 'Capture' : 'Screenshot'}</Badge>
+                  <div className="min-w-0 flex-1">
+                    <a href={`/share/${sh.token}`} target="_blank" rel="noreferrer" className="block truncate text-sm font-medium text-fg hover:underline">
+                      {sh.label}
+                    </a>
+                    <p className="text-xs text-muted">Shared {formatDateTime(sh.createdAt)}</p>
+                  </div>
+                  <form action={revokeShareAction}>
+                    <input type="hidden" name="token" value={sh.token} />
+                    <button type="submit" className={buttonClass('danger', 'sm')}>
+                      Stop sharing
+                    </button>
+                  </form>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        )}
       </main>
     </div>
   );

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { updateSchedule, deleteSchedule, getScheduledRuns } from '@/lib/scheduleStore';
 import type { Schedule } from '@/lib/scheduleStore';
 import { getOwnedSchedule, publicSchedule } from '@/lib/scheduleAccess';
+import { revokeSharesFor } from '@/lib/shareStore';
 import { registerScheduleCron, stopScheduleCron } from '@/lib/scheduler';
 
 export const dynamic = 'force-dynamic';
@@ -69,6 +70,7 @@ export async function DELETE(
     }
     stopScheduleCron(id);
     const success = await deleteSchedule(id);
+    if (success) await revokeSharesFor({ scheduleId: id });
 
     if (!success) {
       return NextResponse.json({ error: 'Schedule not found' }, { status: 404 });

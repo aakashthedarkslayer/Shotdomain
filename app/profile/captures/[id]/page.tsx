@@ -5,7 +5,8 @@ import { AppHeader } from '@/components/AppHeader';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { buttonClass } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
-import { FailedList, ScreenshotGrid } from '@/components/capture/ScreenshotGrid';
+import { FailedList } from '@/components/capture/ScreenshotGrid';
+import { ShareCaptureButton, ShareableCaptureGrid } from '@/components/share/CaptureShareControls';
 import { DeleteCaptureButton } from '@/components/profile/DeleteCaptureButton';
 import { getCapture } from '@/lib/userData';
 import { baseName, formatDateTime, hostOf } from '@/lib/format';
@@ -37,6 +38,7 @@ export default async function CaptureDetailPage({ params }: { params: Promise<{ 
             actions={
               <>
                 <DeleteCaptureButton id={capture.id} />
+                <ShareCaptureButton captureId={capture.id} />
                 <a href={`/api/history/${capture.id}/download`} download className={buttonClass('primary', 'md')}>
                   <Icon name="download" />
                   Download ZIP
@@ -44,8 +46,10 @@ export default async function CaptureDetailPage({ params }: { params: Promise<{ 
               </>
             }
           />
-          <ScreenshotGrid
+          <ShareableCaptureGrid
+            captureId={capture.id}
             items={done.map((r, idx) => ({
+              file: r.fileName!,
               key: `${r.device ?? ''}-${r.fileName}-${idx}`,
               url: r.url,
               device: r.device,
