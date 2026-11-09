@@ -5,15 +5,15 @@ import * as fsp from 'fs/promises';
 /**
  * Helper to recursively collect all file paths relative to a root directory.
  */
-async function collectRelativeFiles(dir: string, baseRel: string = ''): Promise<string[]> {
+async function collectRelativeFiles(dir: string, baseRel: string = '', exclude: string[] = []): Promise<string[]> {
   const entries = await fsp.readdir(dir, { withFileTypes: true });
   const result: string[] = [];
   for (const entry of entries) {
-    if (entry.name.endsWith('.zip') || entry.name === 'manifest.json') continue;
+    if (entry.name.endsWith('.zip') || entry.name === 'manifest.json' || exclude.includes(entry.name)) continue;
     const rel = baseRel ? `${baseRel}/${entry.name}` : entry.name;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      const sub = await collectRelativeFiles(full, rel);
+      const sub = await collectRelativeFiles(full, rel, exclude);
       result.push(...sub);
     } else if (entry.isFile()) {
       result.push(rel);
@@ -141,3 +141,29 @@ export async function createZipBufferFromDir(sourceDir: string): Promise<Buffer>
   });
 }
 
+
+/**
+ * Stream a ZIP of every file in `dir` (recursively), skipping names in `exclude`.
+ * Returns null when there is nothing to zip.
+ */
+export async function createZipStreamFromDir(dir: string, exclude: string[] = []): Promise<ZipArchive | null> {
+  const files = await collectRelativeFiles(dir, '', exclude);
+  if (files.length === 0) return null;
+  const archive = new ZipArchive({ zlib: { level: 5 } });
+  for (const relName of files) {
+    archive.file(path.join(dir, relName), { name: relName.replace(/\\/g, '/') });
+  }
+  archive.finalize();
+  return archive;
+}
+
+/** Wrap an archiver stream as a Web ReadableStream for a Response body. */
+export function toWebStream(archive: ZipArchive): ReadableStream<Uint8Array> {
+  return new ReadableStream({
+    start(controller) {
+      archive.on('data', (chunk: Buffer) => controller.enqueue(new Uint8Array(chunk)));
+      archive.on('end', () => controller.close());
+      archive.on('error', (err: Error) => controller.error(err));
+    },
+  });
+}

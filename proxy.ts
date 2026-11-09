@@ -24,6 +24,6 @@ export default function proxy(req: NextRequest, event: NextFetchEvent) {
 }
 
 export const config = {
-  // The tool, schedules, and every API route except Auth.js's own endpoints.
-  matcher: ['/app/:path*', '/schedules/:path*', '/api/((?!auth/).*)'],
+  // The tool, schedules, profile/history, and every API route except Auth.js's own endpoints.
+  matcher: ['/app/:path*', '/schedules/:path*', '/profile/:path*', '/api/((?!auth/).*)'],
 };

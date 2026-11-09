@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server';
-import { createJob, getJob } from '@/lib/jobStore';
+import { createJob, getJob, updateResult } from '@/lib/jobStore';
 import { captureScreenshots } from '@/lib/screenshot';
-import { updateResult } from '@/lib/jobStore';
+import { currentUserKey } from '@/auth';
+import { saveCaptureFromJob } from '@/lib/userData';
 import type { CaptureSettings } from '@/lib/jobStore';
 
 export const dynamic = 'force-dynamic';
@@ -33,7 +34,8 @@ export async function POST(request: NextRequest) {
       settings.format = 'png';
     }
 
-    const job = await createJob('capture', urls, settings);
+    const ownerKey = (await currentUserKey()) ?? undefined;
+    const job = await createJob('capture', urls, settings, ownerKey);
 
     // Start capture asynchronously (don't await)
     captureScreenshots(
@@ -43,9 +45,15 @@ export async function POST(request: NextRequest) {
       (url: string, result) => {
         updateResult(job.id, url, result);
       }
-    ).catch((error) => {
-      console.error(`Capture job ${job.id} failed:`, error);
-    });
+    )
+      .then(async () => {
+        // Keep a copy in the user's history (tmp/ is wiped after 1h).
+        const finished = getJob(job.id);
+        if (finished?.ownerKey) await saveCaptureFromJob(finished.ownerKey, { ...finished, results: finished.results.values() });
+      })
+      .catch((error) => {
+        console.error(`Capture job ${job.id} failed:`, error);
+      });
 
     return Response.json({ jobId: job.id });
   } catch (error) {

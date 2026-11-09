@@ -9,6 +9,7 @@ import { UserMenu } from '@/components/auth/UserMenu';
 const NAV = [
   { href: '/app', label: 'Capture' },
   { href: '/schedules', label: 'Schedules' },
+  { href: '/profile', label: 'History' },
 ];
 
 /** Top bar shared by the tool pages (/app, /schedules). */
@@ -20,7 +21,7 @@ export function AppHeader({ children }: { children?: ReactNode }) {
         <Logo href="/" />
         <nav className="flex items-center gap-1">
           {NAV.map((item) => {
-            const active = pathname === item.href;
+            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link
                 key={item.href}

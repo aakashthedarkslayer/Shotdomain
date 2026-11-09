@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { signOutAction } from '@/app/actions/auth';
 import { useCurrentUser } from './UserContext';
@@ -42,7 +43,10 @@ export function UserMenu() {
             {user.name && <p className="truncate text-sm font-medium text-fg">{user.name}</p>}
             <p className="truncate text-xs text-muted">{user.email}</p>
           </div>
-          <form action={signOutAction}>
+          <Link href="/profile" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-fg hover:bg-subtle">
+            Profile &amp; history
+          </Link>
+          <form action={signOutAction} className="border-t border-line">
             <button type="submit" className="w-full cursor-pointer px-3 py-2 text-left text-sm text-fg hover:bg-subtle">
               Sign out
             </button>

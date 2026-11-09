@@ -1,5 +1,7 @@
 import { NextRequest } from 'next/server';
 import { getJob, updateResult } from '@/lib/jobStore';
+import { getOwnedJob } from '@/lib/jobAccess';
+import { saveCaptureFromJob } from '@/lib/userData';
 import { captureScreenshots } from '@/lib/screenshot';
 import type { CaptureResult } from '@/lib/jobStore';
 
@@ -17,7 +19,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const job = getJob(jobId);
+    const job = await getOwnedJob(jobId);
     if (!job) {
       return Response.json(
         { error: 'Job not found' },
@@ -82,9 +84,15 @@ export async function POST(request: NextRequest) {
       (key: string, retryResult: Partial<CaptureResult>) => {
         updateResult(jobId, key, retryResult);
       }
-    ).catch((error) => {
-      console.error(`Retry capture for ${url} in job ${jobId} failed:`, error);
-    });
+    )
+      .then(async () => {
+        // Refresh the saved history copy so the retried screenshot is included.
+        const latest = getJob(jobId);
+        if (latest?.ownerKey) await saveCaptureFromJob(latest.ownerKey, { ...latest, results: latest.results.values() });
+      })
+      .catch((error) => {
+        console.error(`Retry capture for ${url} in job ${jobId} failed:`, error);
+      });
 
     return Response.json({ success: true });
   } catch (error) {

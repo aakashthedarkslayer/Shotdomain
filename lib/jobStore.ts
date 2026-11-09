@@ -40,6 +40,8 @@ export interface Job {
   completed: number;
   failed: number;
   cancelled: boolean;
+  /** userKey of whoever started the job; scheduler jobs have none. */
+  ownerKey?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -68,6 +70,7 @@ export async function createJob(
   type: JobType,
   urls: string[],
   settings?: CaptureSettings,
+  ownerKey?: string,
 ): Promise<Job> {
   const id = uuidv4();
 
@@ -98,6 +101,7 @@ export async function createJob(
     completed: 0,
     failed: 0,
     cancelled: false,
+    ownerKey,
   };
 
   jobs.set(id, job);
