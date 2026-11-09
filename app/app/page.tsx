@@ -24,6 +24,7 @@ export default function AppPage() {
   const [rootUrl, setRootUrl] = useState('');
   const [auth, setAuth] = useState<SiteAuth>(NO_AUTH);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [pathPrefix, setPathPrefix] = useState<string | undefined>(undefined);
 
   // Step 2
   const [discoveredUrls, setDiscoveredUrls] = useState<string[]>([]);
@@ -80,6 +81,7 @@ export default function AppPage() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Discovery failed');
       setLoggedIn(Boolean(data.loggedIn));
+      setPathPrefix(data.pathPrefix);
 
       setDiscoveredUrls(data.urls);
       setSelectedUrls([...data.urls]);
@@ -239,6 +241,7 @@ export default function AppPage() {
     setSettings(DEFAULT_SETTINGS);
     setAuth(NO_AUTH);
     setLoggedIn(false);
+    setPathPrefix(undefined);
   }, [stopPolling]);
 
   const handleSettingsChange = useCallback((partial: Partial<SettingsState>) => {
@@ -285,6 +288,7 @@ export default function AppPage() {
             discoveryError={discoveryError}
             rootUrl={rootUrl}
             loggedIn={loggedIn}
+            pathPrefix={pathPrefix}
             onAddLogin={() => {
               setAuth((prev) => ({ ...prev, method: prev.method === 'none' ? 'cookies' : prev.method }));
               setCurrentStep(1);

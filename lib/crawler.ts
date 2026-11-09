@@ -1,3 +1,4 @@
+import { inPathScope, siteKey } from './url';
 import * as cheerio from 'cheerio';
 import { normalizeUrl } from './dedupe';
 
@@ -23,6 +24,8 @@ export interface CrawlOptions {
   crawlDelay: number; // ms between requests
   /** Extra request headers per URL (login cookies / basic auth). */
   headersFor?: (url: string) => Record<string, string>;
+  /** Only follow links at or below this path (e.g. "/owner/repo"). */
+  pathPrefix?: string;
 }
 
 /**
@@ -62,8 +65,8 @@ export async function crawlSite(
   truncated: boolean;
   method: 'crawl';
 }> {
-  const { isAllowed, crawlDelay, headersFor } = options;
-  const rootHostname = new URL(rootUrl).hostname.toLowerCase();
+  const { isAllowed, crawlDelay, headersFor, pathPrefix } = options;
+  const rootSite = siteKey(new URL(rootUrl).hostname); // www.x.com and x.com are the same site
 
   const visited = new Set<string>();
   const collectedUrls: string[] = [];
@@ -173,7 +176,12 @@ export async function crawlSite(
       resolvedUrl.hash = '';
 
       // Same hostname only
-      if (resolvedUrl.hostname.toLowerCase() !== rootHostname) {
+      if (siteKey(resolvedUrl.hostname) !== rootSite) {
+        return;
+      }
+
+      // Stay inside the section the user asked for
+      if (!inPathScope(resolvedUrl.toString(), pathPrefix)) {
         return;
       }
 

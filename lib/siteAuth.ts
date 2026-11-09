@@ -101,7 +101,12 @@ export function parseCookieText(text: string, targetUrl: string): PlaywrightCook
       });
   }
 
-  // "Cookie:" header format
+  // "Cookie:" header format. Cookies are set on both example.com and
+  // www.example.com, since sites often redirect one to the other.
+  const bare = host.replace(/^www\./, '');
+  const widen = bare.includes('.') && !/^[\d.]+$/.test(bare);
+  // Host-only cookies on both hosts: never sent to other subdomains.
+  const domains = widen ? [bare, `www.${bare}`] : [host];
   return trimmed
     .replace(/^cookie:\s*/i, '')
     .split(/;|\n/)
@@ -109,9 +114,17 @@ export function parseCookieText(text: string, targetUrl: string): PlaywrightCook
     .filter((part) => part.includes('='))
     .map((part) => {
       const i = part.indexOf('=');
-      return { name: part.slice(0, i).trim(), value: part.slice(i + 1).trim(), domain: host, path: '/', secure: secureSite };
+      return { name: part.slice(0, i).trim(), value: part.slice(i + 1).trim() };
     })
-    .filter((c) => c.name);
+    .filter((c) => c.name)
+    .flatMap((c): PlaywrightCookie[] =>
+      domains.map((domain) => ({
+        ...c,
+        domain,
+        path: '/',
+        secure: secureSite || c.name.startsWith('__Secure-') || c.name.startsWith('__Host-'),
+      })),
+    );
 }
 
 /** localStorage entries from JSON {"k":"v"} or "key=value" lines. */
@@ -185,6 +198,7 @@ export function cookieHeaderFor(cookies: PlaywrightCookie[], url: string): strin
       const d = c.domain.replace(/^\./, '');
       return (host === d || host.endsWith(`.${d}`)) && u.pathname.startsWith(c.path || '/');
     })
+    .filter((c, i, all) => all.findIndex((o) => o.name === c.name) === i) // same cookie on www + bare domain
     .map((c) => `${c.name}=${c.value}`)
     .join('; ');
 }

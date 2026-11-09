@@ -8,7 +8,7 @@ import { Input, Textarea } from '@/components/ui/Input';
 import { Alert } from '@/components/ui/Alert';
 import { Checkbox } from '@/components/ui/Controls';
 import { Icon, Spinner } from '@/components/ui/Icon';
-import { urlHost, urlPath } from '@/lib/url';
+import { siteKey, urlHost, urlPath } from '@/lib/url';
 
 interface PageSelectionStepProps {
   urls: string[];
@@ -23,6 +23,8 @@ interface PageSelectionStepProps {
   discoveryError?: string;
   rootUrl?: string;
   loggedIn?: boolean;
+  /** Discovery was limited to this path (the URL entered had one). */
+  pathPrefix?: string;
   /** Add pages the discovery didn't find (they're appended and selected). */
   onAddUrls?: (urls: string[]) => void;
   /** Go back to step 1 with the login section opened. */
@@ -44,6 +46,7 @@ export default function PageSelectionStep({
   discoveryError,
   rootUrl,
   loggedIn,
+  pathPrefix,
   onAddUrls,
   onAddLogin,
 }: PageSelectionStepProps) {
@@ -60,7 +63,7 @@ export default function PageSelectionStep({
     for (const line of addText.split(/\n|,/).map((l) => l.trim()).filter(Boolean)) {
       try {
         const u = new URL(line, root);
-        if (u.hostname !== root.hostname || !/^https?:$/.test(u.protocol)) throw new Error();
+        if (siteKey(u.hostname) !== siteKey(root.hostname) || !/^https?:$/.test(u.protocol)) throw new Error();
         u.hash = '';
         added.push(u.toString());
       } catch {
@@ -68,7 +71,7 @@ export default function PageSelectionStep({
       }
     }
     if (bad.length) {
-      setAddError(`Not on ${root.hostname}: ${bad.slice(0, 3).join(', ')}${bad.length > 3 ? '…' : ''}`);
+      setAddError(`Not on ${siteKey(root.hostname)}: ${bad.slice(0, 3).join(', ')}${bad.length > 3 ? '…' : ''}`);
       return;
     }
     if (added.length) onAddUrls(added);
@@ -138,6 +141,7 @@ export default function PageSelectionStep({
         description={rootUrl ? urlHost(rootUrl) : undefined}
         actions={
           <>
+            {pathPrefix && <Badge tone="accent">Only {pathPrefix}</Badge>}
             {loggedIn && <Badge tone="success" dot>Logged in</Badge>}
             <Badge tone={discoveryMethod === 'sitemap' ? 'success' : 'accent'}>{discoveryMethod === 'sitemap' ? 'From sitemap' : 'From crawl'}</Badge>
           </>

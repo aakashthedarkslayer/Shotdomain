@@ -41,7 +41,7 @@ export default function UrlInputStep({ onDiscover, isLoading, initialValue = '',
         <p className="text-brand mb-2 text-sm font-semibold tracking-wide uppercase">One Shot Every Domain</p>
         <h1 className="text-3xl font-semibold tracking-[-0.03em] text-fg sm:text-4xl">Screenshot an entire website</h1>
         <p className="mt-2 text-[15px] text-muted">
-          Enter a domain. We&apos;ll find its pages from the sitemap, or crawl it if there isn&apos;t one.
+          Enter a domain — or a deeper URL like a repo or docs section to capture just that part.
         </p>
       </div>
 

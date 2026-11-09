@@ -1,6 +1,7 @@
 import type { Browser } from 'playwright';
 import { USER_AGENT } from './browser';
 import { applyAuthToContext } from './siteAuth';
+import { inPathScope, siteKey } from './url';
 import type { ResolvedAuth } from './siteAuth';
 
 /**
@@ -14,6 +15,7 @@ export async function discoverRenderedLinks(
   startUrl: string,
   auth: ResolvedAuth | undefined,
   isAllowed: (url: string) => boolean,
+  pathPrefix?: string,
 ): Promise<{ links: string[]; finalUrl: string; title: string }> {
   const context = await browser.newContext({
     userAgent: USER_AGENT,
@@ -29,14 +31,15 @@ export async function discoverRenderedLinks(
       await page.goto(startUrl, { waitUntil: 'load', timeout: 15_000 });
       await page.waitForTimeout(1_500);
     }
-    const host = new URL(startUrl).hostname;
+    const site = siteKey(new URL(startUrl).hostname);
     const hrefs = await page.$$eval('a[href]', (as) => as.map((a) => (a as HTMLAnchorElement).href));
     const finalUrl = page.url();
     const links = new Set<string>();
     for (const href of [finalUrl, ...hrefs]) {
       try {
         const u = new URL(href);
-        if (u.hostname !== host || !/^https?:$/.test(u.protocol)) continue;
+        if (siteKey(u.hostname) !== site || !/^https?:$/.test(u.protocol)) continue;
+        if (!inPathScope(u.toString(), pathPrefix)) continue;
         u.hash = '';
         if (/\.(pdf|zip|png|jpe?g|gif|svg|webp|mp4|css|js|xml|json)$/i.test(u.pathname)) continue;
         if (/log-?out|sign-?out/i.test(u.pathname)) continue; // never visit logout links

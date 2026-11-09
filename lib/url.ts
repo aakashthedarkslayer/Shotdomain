@@ -37,3 +37,28 @@ export function urlHost(url: string): string {
     return url;
   }
 }
+
+/** "www.example.com" and "example.com" are the same site. */
+export function siteKey(host: string): string {
+  return host.toLowerCase().replace(/^www\./, '');
+}
+
+export function sameSite(a: string, b: string): boolean {
+  try {
+    return siteKey(new URL(a).hostname) === siteKey(new URL(b).hostname);
+  } catch {
+    return false;
+  }
+}
+
+/** True if `url`'s path is `prefix` or below it ("/docs" matches "/docs" and "/docs/a", not "/docs2"). */
+export function inPathScope(url: string, prefix?: string): boolean {
+  if (!prefix || prefix === '/') return true;
+  try {
+    const p = new URL(url).pathname.replace(/\/+$/, '') || '/';
+    const base = prefix.replace(/\/+$/, '');
+    return p.toLowerCase() === base.toLowerCase() || p.toLowerCase().startsWith(`${base.toLowerCase()}/`);
+  } catch {
+    return false;
+  }
+}
