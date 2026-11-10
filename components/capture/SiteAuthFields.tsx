@@ -6,6 +6,8 @@ import { Field, Input, Textarea } from '@/components/ui/Input';
 import { Segmented } from '@/components/ui/Controls';
 import { Alert } from '@/components/ui/Alert';
 import { Icon } from '@/components/ui/Icon';
+import { Modal } from '@/components/ui/Modal';
+import { CookieGuide } from './CookieGuide';
 import type { SiteAuth } from '@/lib/captureOptions';
 import { normalizeUrl } from '@/lib/url';
 import { classifyCookie, pastedCookieNames, presetFor, rowsToCookieHeader } from '@/lib/cookiePresets';
@@ -22,12 +24,41 @@ interface TestResult {
   cookiesExpireAt?: number;
 }
 
+/** "Show me how" button + animated guide in a dialog. */
 function CookieHelp() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="glass group flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-surface-strong"
+      >
+        <span className="bg-brand flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white">
+          <Icon name="play" size={15} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-sm font-medium text-fg">Show me how to copy my cookies</span>
+          <span className="block text-xs text-muted">A 20-second animated guide — no technical knowledge needed</span>
+        </span>
+        <Icon name="arrowRight" size={14} className="text-muted transition group-hover:translate-x-0.5" />
+      </button>
+      <Modal open={open} onClose={() => setOpen(false)} size="lg" title="How to copy your session cookies" description="Works in Chrome, Edge, Brave and other Chromium browsers.">
+        <div className="space-y-4 p-5">
+          <CookieGuide />
+          <CookieTextHelp />
+        </div>
+      </Modal>
+    </>
+  );
+}
+
+function CookieTextHelp() {
   return (
     <details className="group rounded-lg border border-line bg-subtle/50 text-[13px]">
       <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2 font-medium text-fg [&::-webkit-details-marker]:hidden">
         <Icon name="info" size={14} className="text-accent" />
-        How do I get my session cookies?
+        Prefer text? Step-by-step instructions
         <Icon name="chevronDown" size={14} className="ml-auto text-muted transition-transform group-open:rotate-180" />
       </summary>
       <div className="space-y-3 border-t border-line px-3 py-3 text-muted">

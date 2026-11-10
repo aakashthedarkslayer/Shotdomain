@@ -11,7 +11,7 @@ interface ModalProps {
   description?: ReactNode;
   children: ReactNode;
   footer?: ReactNode;
-  size?: 'md' | 'xl';
+  size?: 'md' | 'lg' | 'xl';
 }
 
 export function Modal({ open, onClose, title, description, children, footer, size = 'md' }: ModalProps) {
@@ -34,7 +34,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
       <div
         className={`relative flex max-h-[90vh] w-full flex-col overflow-hidden glass-strong rounded-2xl ${
-          size === 'xl' ? 'max-w-5xl' : 'max-w-lg'
+          size === 'xl' ? 'max-w-5xl' : size === 'lg' ? 'max-w-2xl' : 'max-w-lg'
         }`}
       >
         {(title || description) && (
