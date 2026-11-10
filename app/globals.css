@@ -178,6 +178,15 @@
   }
 }
 
+@keyframes guide-progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
 @keyframes guide-slide-up {
   from {
     transform: translateY(100%);
@@ -194,5 +203,15 @@
     animation-duration: 0.001s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001s !important;
+  }
+}
+
+/* A visitor who presses "Play" on a reduced-motion device opted in: restore motion inside. */
+@media (prefers-reduced-motion: reduce) {
+  .allow-motion,
+  .allow-motion * {
+    animation-duration: revert-layer !important;
+    animation-iteration-count: revert-layer !important;
+    transition-duration: revert-layer !important;
   }
 }

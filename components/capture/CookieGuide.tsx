@@ -269,14 +269,16 @@ export function CookieGuide() {
   const [step, setStep] = useState(0);
   const [phase, setPhase] = useState(0);
   const [playing, setPlaying] = useState(true);
-  const [hovered, setHovered] = useState(false);
-  const [reduced, setReduced] = useState(false);
+  const [systemReduced, setSystemReduced] = useState(false);
+  // Visitors with "reduce animations" on can still choose to play it.
+  const [forceMotion, setForceMotion] = useState(false);
+  const reduced = systemReduced && !forceMotion;
   const frameRef = useRef<HTMLDivElement>(null);
   const [cursor, setCursor] = useState({ x: 50, y: 50, visible: false });
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const apply = () => setReduced(mq.matches);
+    const apply = () => setSystemReduced(mq.matches);
     apply();
     mq.addEventListener('change', apply);
     return () => mq.removeEventListener('change', apply);
@@ -286,7 +288,7 @@ export function CookieGuide() {
   const shownPhase = reduced ? PHASES - 1 : phase;
 
   useEffect(() => {
-    if (!playing || hovered || reduced) return;
+    if (!playing || reduced) return;
     const t = setTimeout(() => {
       if (phase < PHASES - 1) setPhase((p) => p + 1);
       else {
@@ -295,7 +297,7 @@ export function CookieGuide() {
       }
     }, PHASE_MS);
     return () => clearTimeout(t);
-  }, [playing, hovered, reduced, phase, step]);
+  }, [playing, reduced, phase, step]);
 
   // Move the cursor to this phase's target element.
   useLayoutEffect(() => {
@@ -331,7 +333,7 @@ export function CookieGuide() {
     );
 
   return (
-    <div className="space-y-3" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+    <div className={`space-y-3 ${forceMotion ? 'allow-motion' : ''}`}>
       <div
         ref={frameRef}
         className="relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-line shadow-inner"
@@ -345,6 +347,33 @@ export function CookieGuide() {
         <span className="absolute top-2 right-2 z-40 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-medium text-white">
           {step + 1} / {STEPS.length}
         </span>
+        {reduced && (
+          <button
+            type="button"
+            onClick={() => {
+              setForceMotion(true);
+              setPlaying(true);
+              setPhase(0);
+            }}
+            className="absolute inset-0 z-50 flex cursor-pointer flex-col items-center justify-center gap-2 bg-black/35 text-white backdrop-blur-[1px] transition hover:bg-black/25"
+          >
+            <span className="bg-brand flex h-14 w-14 items-center justify-center rounded-full shadow-lg">
+              <Icon name="play" size={22} />
+            </span>
+            <span className="text-sm font-semibold">Play walkthrough</span>
+            <span className="text-[11px] opacity-80">Animations are reduced on this device — click to play anyway</span>
+          </button>
+        )}
+      </div>
+
+      {/* Step progress: fills over each step while playing */}
+      <div className="h-1 overflow-hidden rounded-full bg-line">
+        <div
+          key={`${step}-${reduced}`}
+          // duration = PHASE_MS × PHASES (kept in the class so the reduced-motion opt-in can restore it)
+          className={`bg-brand h-full rounded-full ${reduced ? 'w-full opacity-40' : 'animate-[guide-progress_4600ms_linear_forwards]'}`}
+          style={reduced ? undefined : { animationPlayState: playing ? 'running' : 'paused' }}
+        />
       </div>
 
       <div className="min-h-[3.5rem]">
