@@ -4,6 +4,7 @@ import { buttonClass } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import type { IconName } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
+import { CookieGuide } from '@/components/capture/CookieGuide';
 
 function SectionHeading({ eyebrow, title, description }: { eyebrow: string; title: string; description?: ReactNode }) {
   return (
@@ -99,6 +100,71 @@ export function FeaturesSection() {
 
 /* ------------------------------------------------------------------------ */
 
+const LOGIN_POINTS: { icon: IconName; title: string; body: string }[] = [
+  { icon: 'shield', title: 'No password shared', body: 'Paste your session from your own browser. Works with 2FA, SSO and magic-link logins.' },
+  { icon: 'refresh', title: 'Test before you capture', body: 'Test login opens the site with your session and shows you the page you’ll get.' },
+  { icon: 'sitemap', title: 'Finds app pages too', body: 'Discovery runs logged in and reads JavaScript-built menus — or add pages by hand.' },
+  { icon: 'link', title: 'You stay in control', body: 'Sessions are stored encrypted. Log out of the site and access ends instantly.' },
+];
+
+/** Premium feature: capture pages behind a login, with the animated cookie guide. */
+export function LoginPagesSection() {
+  return (
+    <section id="login-pages" className="scroll-mt-20 px-4 py-24 sm:px-6">
+      <div className="mx-auto max-w-6xl">
+        <div className="mx-auto mb-14 max-w-2xl text-center">
+          <p className="inline-flex items-center gap-2">
+            <span className="text-brand text-sm font-semibold tracking-wide uppercase">Access login pages</span>
+            <span className="bg-brand rounded-full px-2 py-0.5 text-[11px] font-semibold text-white">Premium</span>
+          </p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] text-fg sm:text-[2.6rem] sm:leading-tight">
+            Screenshot what’s behind the login
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-muted">
+            Dashboards, web apps, client portals, staging sites — capture them exactly as you see them when signed in. It takes about 20 seconds
+            to set up, and you never hand over a password.
+          </p>
+        </div>
+
+        <div className="grid items-center gap-8 lg:grid-cols-[1fr_1.15fr]">
+          <ul className="space-y-4">
+            {LOGIN_POINTS.map((p) => (
+              <li key={p.title} className="glass flex gap-4 rounded-2xl p-5">
+                <IconTile name={p.icon} />
+                <div>
+                  <h3 className="text-[15px] font-semibold text-fg">{p.title}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted">{p.body}</p>
+                </div>
+              </li>
+            ))}
+            <li className="flex flex-wrap items-center gap-3 pt-2">
+              <Link href="/app" className={buttonClass('primary', 'md')}>
+                Try it on your app
+                <Icon name="arrowRight" />
+              </Link>
+              <a href="#pricing" className="text-sm text-muted hover:text-fg">
+                Included in Studio and Lifetime →
+              </a>
+            </li>
+          </ul>
+
+          <div className="glass-strong rounded-3xl p-4 sm:p-5">
+            <div className="mb-3 flex items-center gap-2 px-1 text-sm font-medium text-fg">
+              <span className="bg-brand flex h-6 w-6 items-center justify-center rounded-md text-white">
+                <Icon name="play" size={12} />
+              </span>
+              How it works — copy your session in 4 clicks
+            </div>
+            <CookieGuide />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------------ */
+
 const USE_CASES = [
   { who: 'Agencies', title: 'Proof of work, without the busywork', body: 'Hand clients a complete visual record of a launch in minutes instead of an afternoon.' },
   { who: 'Product teams', title: 'Snapshot your logged-in app', body: 'Capture every dashboard screen for release notes, docs and QA — no shared passwords.' },
@@ -160,6 +226,7 @@ const TIERS: Tier[] = [
       'All 4 devices in one run',
       'High-DPI capture',
       'ZIP sorted by device',
+      'Capture pages behind a login',
       'Recurring schedules',
       'Email when a run finishes',
       'Ad and tracker blocking',
@@ -175,6 +242,7 @@ const TIERS: Tier[] = [
       'Unlimited pages per run',
       'All 4 devices + custom viewports',
       'High-DPI capture',
+      'Capture pages behind a login',
       'Unlimited schedules',
       'Email with ZIP link',
       'Permanent capture history',

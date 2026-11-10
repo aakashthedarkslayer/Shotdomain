@@ -6,6 +6,7 @@ import {
   FinalCta,
   Footer,
   HowItWorksSection,
+  LoginPagesSection,
   PricingSection,
   UseCasesSection,
 } from '@/components/marketing/Sections';
@@ -18,6 +19,7 @@ export default function LandingPage() {
         <HeroSection />
         <HowItWorksSection />
         <FeaturesSection />
+        <LoginPagesSection />
         <UseCasesSection />
         <PricingSection />
         <FaqSection />

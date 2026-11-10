@@ -5,6 +5,7 @@ import { buttonClass } from '@/components/ui/Button';
 const LINKS = [
   { href: '#how-it-works', label: 'How it works' },
   { href: '#features', label: 'Features' },
+  { href: '#login-pages', label: 'Login pages' },
   { href: '#pricing', label: 'Pricing' },
   { href: '#faq', label: 'FAQ' },
 ];
