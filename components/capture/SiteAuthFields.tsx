@@ -170,7 +170,7 @@ function CookieInput({ siteUrl, auth, set }: { siteUrl: string; auth: SiteAuth; 
         </Field>
         <PastedCookieSummary text={auth.cookies ?? ''} />
         <button type="button" onClick={() => set({ cookieInput: 'fields', cookies: rowsToCookieHeader(rows, preset) })} className="cursor-pointer text-[13px] font-medium text-accent hover:underline">
-          {preset ? 'Enter cookie values one by one instead' : 'I know the cookie name — enter it as a field instead'}
+          {preset ? 'Enter cookie values one by one instead' : 'Copied one cookie from the Application tab? Enter its name and value'}
         </button>
       </div>
     );

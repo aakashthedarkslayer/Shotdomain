@@ -28,7 +28,7 @@ const Kbd = ({ children }: { children: ReactNode }) => (
   </kbd>
 );
 
-const STEPS: Step[] = [
+const NETWORK_STEPS: Step[] = [
   {
     title: 'Log in to the site as usual',
     body: 'Open the site in Chrome or Edge and sign in — with 2FA or SSO if it uses them.',
@@ -72,6 +72,46 @@ const STEPS: Step[] = [
     clicks: [0, 1],
   },
 ];
+
+/** Application tab: copy the one cookie that keeps you logged in. */
+const APP_STEPS: Step[] = [
+  NETWORK_STEPS[0],
+  NETWORK_STEPS[1],
+  {
+    title: 'Application → Cookies → your site',
+    body: (
+      <>
+        Open the <b>Application</b> tab (under <b>»</b> if it’s hidden). In the left panel, expand <b>Storage → Cookies</b> and click your
+        site’s address.
+      </>
+    ),
+    cursor: ['app-tab', 'cookies-node', 'site-node', 'site-node'],
+    clicks: [0, 1, 2],
+  },
+  {
+    title: 'Copy the login cookie’s value',
+    body: (
+      <>
+        Find the cookie with <b>session</b>, <b>auth</b> or <b>token</b> in its name. Double-click its <b>Value</b> and press <Kbd>Ctrl</Kbd>{' '}
+        <Kbd>C</Kbd>. Not sure which one? Use the <b>Network tab</b> method to copy them all at once.
+      </>
+    ),
+    cursor: ['session-name', 'session-value', 'session-value', 'session-value'],
+    clicks: [1],
+  },
+  {
+    title: 'Paste it into ShotDomain',
+    body: (
+      <>
+        Choose <b>Enter its name and value</b>, type the cookie’s name, paste the value, then click <b>Test login</b>.
+      </>
+    ),
+    cursor: ['name-box', 'value-box', 'test-btn', null],
+    clicks: [0, 1, 2],
+  },
+];
+
+export type GuideMethod = 'application' | 'network';
 
 function Cursor({ x, y, visible, clicking }: { x: number; y: number; visible: boolean; clicking: boolean }) {
   return (
@@ -213,6 +253,95 @@ function DevTools({ step, phase }: { step: number; phase: number }) {
   );
 }
 
+function AppDevTools({ step, phase }: { step: number; phase: number }) {
+  const appOn = step > 2 || (step === 2 && phase >= 0);
+  const cookiesOpen = step > 2 || (step === 2 && phase >= 1);
+  const siteOn = step > 2 || (step === 2 && phase >= 2);
+  const rowHot = step === 3;
+  const valueSelected = step === 3 && phase >= 1;
+  const copied = step === 3 && phase >= 3;
+  const tabs = ['Elements', 'Console', 'Sources', 'Network', 'Application'];
+  const rows = [
+    { name: '_ga', value: 'GA1.1.811289…' },
+    { name: 'session_id', value: 'a8f3e1c94b7d…', login: true },
+    { name: 'theme', value: 'dark' },
+  ];
+  return (
+    <div className="absolute inset-x-0 bottom-0 z-10 flex h-[58%] flex-col border-t border-slate-600 bg-[#202124] text-[9px] text-slate-300 animate-[guide-slide-up_.45s_ease-out]">
+      <div className="flex shrink-0 items-center gap-3 border-b border-slate-700 px-2 py-1">
+        {tabs.map((t) => (
+          <span
+            key={t}
+            data-guide={t === 'Application' ? 'app-tab' : undefined}
+            className={`pb-0.5 ${t === 'Application' && appOn ? 'border-b-2 border-sky-400 text-white' : ''}`}
+          >
+            {t}
+          </span>
+        ))}
+      </div>
+      {appOn ? (
+        <div className="flex min-h-0 flex-1">
+          <div className="w-[32%] space-y-0.5 border-r border-slate-700 px-1.5 py-1">
+            <div className="text-slate-500">Application</div>
+            <div className="pl-2">Manifest</div>
+            <div className="pt-0.5 text-slate-500">Storage</div>
+            <div className="pl-2">▸ Local storage</div>
+            <div data-guide="cookies-node" className={`pl-2 ${cookiesOpen ? 'text-white' : ''}`}>
+              {cookiesOpen ? '▾' : '▸'} Cookies
+            </div>
+            {cookiesOpen && (
+              <div
+                data-guide="site-node"
+                className={`ml-4 truncate rounded px-1 animate-[guide-fade-in_.3s_ease-out] ${siteOn ? 'bg-sky-900/80 text-white' : ''}`}
+              >
+                https://yoursite.com
+              </div>
+            )}
+          </div>
+          <div className="relative flex-1 overflow-hidden">
+            {siteOn ? (
+              <>
+                <div className="grid grid-cols-[38%_62%] border-b border-slate-700 bg-slate-800/60 px-2 py-0.5 text-slate-400">
+                  <span>Name</span>
+                  <span>Value</span>
+                </div>
+                {rows.map((r) => (
+                  <div
+                    key={r.name}
+                    className={`grid grid-cols-[38%_62%] items-center border-b border-slate-800 px-2 py-[3px] font-mono animate-[guide-fade-in_.3s_ease-out] ${
+                      r.login && rowHot ? 'bg-amber-400/15' : ''
+                    }`}
+                  >
+                    <span data-guide={r.login ? 'session-name' : undefined} className={`flex items-center gap-1 truncate ${r.login && rowHot ? 'text-amber-200' : ''}`}>
+                      {r.name}
+                      {r.login && rowHot && <span className="rounded bg-amber-400 px-1 font-sans text-[7px] font-bold text-slate-900">LOGIN</span>}
+                    </span>
+                    <span
+                      data-guide={r.login ? 'session-value' : undefined}
+                      className={`truncate ${r.login && valueSelected ? 'rounded-sm bg-sky-600 px-0.5 text-white ring-1 ring-sky-300' : ''}`}
+                    >
+                      {r.value}
+                    </span>
+                  </div>
+                ))}
+                {copied && (
+                  <div className="absolute right-2 bottom-2 rounded-md bg-emerald-500 px-2 py-0.5 font-sans font-semibold text-white animate-[guide-fade-in_.25s_ease-out]">
+                    ✓ Copied
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="pt-6 text-center text-slate-500">Select a site under Cookies</div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="flex-1 pt-6 text-center text-slate-500">Elements</div>
+      )}
+    </div>
+  );
+}
+
 function KeysOverlay({ phase, keys }: { phase: number; keys: string[] }) {
   return (
     <div className="absolute inset-0 z-20 flex items-center justify-center gap-2 bg-slate-900/25">
@@ -263,9 +392,47 @@ function ShotDomainScene({ phase }: { phase: number }) {
   );
 }
 
+function ShotDomainFieldsScene({ phase }: { phase: number }) {
+  const named = phase >= 0;
+  const pasted = phase >= 1;
+  const tested = phase >= 2;
+  return (
+    <div className="absolute inset-0 flex flex-col gap-2 bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950 p-[4%] text-[10px] text-slate-200">
+      <div className="flex items-center gap-1.5 text-[11px] font-semibold text-white">
+        <span className="h-3.5 w-3.5 rounded bg-gradient-to-br from-indigo-500 to-fuchsia-500" /> ShotDomain · This site needs a login
+      </div>
+      <div className="flex items-center justify-between text-slate-400">
+        <span>Session cookies</span>
+        <span className="text-indigo-300">Enter its name and value</span>
+      </div>
+      <div className="flex items-center gap-1.5">
+        <span data-guide="name-box" className={`w-[34%] rounded-md border bg-white/5 px-2 py-1.5 font-mono text-[9px] ${phase === 0 ? 'border-indigo-400' : 'border-white/15'}`}>
+          {named ? <span className="animate-[guide-fade-in_.4s_ease-out]">session_id</span> : <span className="text-slate-500">cookie name</span>}
+        </span>
+        <span className="text-slate-500">=</span>
+        <span data-guide="value-box" className={`flex-1 truncate rounded-md border bg-white/5 px-2 py-1.5 font-mono text-[9px] ${phase === 1 ? 'border-indigo-400' : 'border-white/15'}`}>
+          {pasted ? <span className="animate-[guide-fade-in_.4s_ease-out]">a8f3e1c94b7d…</span> : <span className="text-slate-500">paste the value only</span>}
+        </span>
+      </div>
+      <div className="flex items-center gap-2 pt-1">
+        <span data-guide="test-btn" className="rounded-md border border-white/15 bg-white/10 px-2 py-1">
+          ↻ Test login
+        </span>
+        {tested && (
+          <span className="rounded-md bg-emerald-500/20 px-2 py-1 font-semibold text-emerald-300 animate-[guide-fade-in_.3s_ease-out]">
+            ✓ Looks logged in
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /* ----------------------------------------------------------------- guide */
 
-export function CookieGuide() {
+export function CookieGuide({ initialMethod = 'application' }: { initialMethod?: GuideMethod } = {}) {
+  const [method, setMethod] = useState<GuideMethod>(initialMethod);
+  const steps = method === 'application' ? APP_STEPS : NETWORK_STEPS;
   const [step, setStep] = useState(0);
   const [phase, setPhase] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -292,16 +459,16 @@ export function CookieGuide() {
     const t = setTimeout(() => {
       if (phase < PHASES - 1) setPhase((p) => p + 1);
       else {
-        setStep((s) => (s + 1) % STEPS.length);
+        setStep((s) => (s + 1) % steps.length);
         setPhase(0);
       }
     }, PHASE_MS);
     return () => clearTimeout(t);
-  }, [playing, reduced, phase, step]);
+  }, [playing, reduced, phase, step, steps.length]);
 
   // Move the cursor to this phase's target element.
   useLayoutEffect(() => {
-    const target = STEPS[step].cursor[shownPhase] ?? null;
+    const target = steps[step].cursor[shownPhase] ?? null;
     const frame = frameRef.current;
     const el = target && frame?.querySelector<HTMLElement>(`[data-guide="${target}"]`);
     if (!frame || !el || reduced) {
@@ -311,41 +478,73 @@ export function CookieGuide() {
     const f = frame.getBoundingClientRect();
     const r = el.getBoundingClientRect();
     setCursor({ x: ((r.left + r.width / 2 - f.left) / f.width) * 100, y: ((r.top + r.height / 2 - f.top) / f.height) * 100, visible: true });
-  }, [step, shownPhase, reduced]);
+  }, [step, shownPhase, reduced, steps]);
 
-  const go = useCallback((s: number) => {
-    setStep((s + STEPS.length) % STEPS.length);
+  const go = useCallback(
+    (s: number) => {
+      setStep((s + steps.length) % steps.length);
+      setPhase(0);
+    },
+    [steps.length],
+  );
+
+  const switchMethod = (m: GuideMethod) => {
+    setMethod(m);
+    setStep(0);
     setPhase(0);
-  }, []);
+  };
 
-  const current = STEPS[step];
+  const current = steps[step];
   const clicking = !reduced && current.clicks.includes(phase);
 
   let scene: ReactNode;
-  if (step === 4) scene = <ShotDomainScene phase={shownPhase} />;
+  if (step === 4) scene = method === 'application' ? <ShotDomainFieldsScene phase={shownPhase} /> : <ShotDomainScene phase={shownPhase} />;
   else
     scene = (
       <BrowserChrome loggedIn={step > 0 || shownPhase >= 2}>
         {step === 1 && shownPhase < 3 && <KeysOverlay phase={shownPhase} keys={['Ctrl', 'Shift', 'I']} />}
-        {step === 2 && shownPhase === 2 && <KeysOverlay phase={0} keys={['F5']} />}
-        {(step >= 2 || (step === 1 && shownPhase >= 3)) && <DevTools step={step} phase={shownPhase} />}
+        {method === 'network' && step === 2 && shownPhase === 2 && <KeysOverlay phase={0} keys={['F5']} />}
+        {method === 'application' && step === 3 && shownPhase === 2 && <KeysOverlay phase={1} keys={['Ctrl', 'C']} />}
+        {(step >= 2 || (step === 1 && shownPhase >= 3)) &&
+          (method === 'application' ? <AppDevTools step={step} phase={shownPhase} /> : <DevTools step={step} phase={shownPhase} />)}
       </BrowserChrome>
     );
 
   return (
     <div className={`space-y-3 ${forceMotion ? 'allow-motion' : ''}`}>
+      <div role="radiogroup" aria-label="Method" className="flex rounded-xl bg-subtle p-0.5 text-[13px]">
+        {(
+          [
+            ['application', 'Application tab', 'copy one cookie'],
+            ['network', 'Network tab', 'copy all cookies at once'],
+          ] as const
+        ).map(([m, label, hint]) => (
+          <button
+            key={m}
+            type="button"
+            role="radio"
+            aria-checked={method === m}
+            onClick={() => switchMethod(m)}
+            className={`flex-1 cursor-pointer rounded-[10px] px-3 py-1.5 text-center transition ${
+              method === m ? 'bg-surface-strong font-medium text-fg shadow-sm' : 'text-muted hover:text-fg'
+            }`}
+          >
+            {label} <span className="hidden text-xs font-normal text-muted sm:inline">· {hint}</span>
+          </button>
+        ))}
+      </div>
       <div
         ref={frameRef}
         className="relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-line shadow-inner"
         role="img"
-        aria-label={`Step ${step + 1} of ${STEPS.length}: ${current.title}`}
+        aria-label={`Step ${step + 1} of ${steps.length}: ${current.title}`}
       >
-        <div key={step} className="absolute inset-0 animate-[guide-fade-in_.35s_ease-out]">
+        <div key={`${method}-${step}`} className="absolute inset-0 animate-[guide-fade-in_.35s_ease-out]">
           {scene}
         </div>
         <Cursor x={cursor.x} y={cursor.y} visible={cursor.visible} clicking={clicking} />
         <span className="absolute top-2 right-2 z-40 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-medium text-white">
-          {step + 1} / {STEPS.length}
+          {step + 1} / {steps.length}
         </span>
         {reduced && (
           <button
@@ -369,7 +568,7 @@ export function CookieGuide() {
       {/* Step progress: fills over each step while playing */}
       <div className="h-1 overflow-hidden rounded-full bg-line">
         <div
-          key={`${step}-${reduced}`}
+          key={`${method}-${step}-${reduced}`}
           // duration = PHASE_MS × PHASES (kept in the class so the reduced-motion opt-in can restore it)
           className={`bg-brand h-full rounded-full ${reduced ? 'w-full opacity-40' : 'animate-[guide-progress_4600ms_linear_forwards]'}`}
           style={reduced ? undefined : { animationPlayState: playing ? 'running' : 'paused' }}
@@ -386,7 +585,7 @@ export function CookieGuide() {
 
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-1.5">
-          {STEPS.map((s, i) => (
+          {steps.map((s, i) => (
             <button
               key={s.title}
               type="button"
