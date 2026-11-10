@@ -8,7 +8,7 @@ import { Alert } from '@/components/ui/Alert';
 import { Icon } from '@/components/ui/Icon';
 import type { SiteAuth } from '@/lib/captureOptions';
 import { normalizeUrl } from '@/lib/url';
-import { presetFor, rowsToCookieHeader } from '@/lib/cookiePresets';
+import { classifyCookie, pastedCookieNames, presetFor, rowsToCookieHeader } from '@/lib/cookiePresets';
 import type { CookiePreset, CookieRow } from '@/lib/cookiePresets';
 
 interface TestResult {
@@ -66,6 +66,42 @@ function CookieHelp() {
   );
 }
 
+/** What was found in the pasted cookies: likely login cookies vs. analytics noise. */
+function PastedCookieSummary({ text }: { text: string }) {
+  const names = pastedCookieNames(text);
+  if (names.length === 0) return null;
+  const login = names.filter((c) => classifyCookie(c.name) === 'login' && !c.empty);
+  const analytics = names.filter((c) => classifyCookie(c.name) === 'analytics');
+  const other = names.filter((c) => !login.includes(c) && !analytics.includes(c));
+  const chip = (c: { name: string }, tone: string) => (
+    <span key={c.name} className={`rounded-md px-1.5 py-0.5 font-mono text-[11px] ${tone}`}>
+      {c.name}
+    </span>
+  );
+  return (
+    <div className="space-y-2 rounded-xl border border-line bg-subtle/60 px-3 py-2.5 text-[13px]">
+      <div className="text-fg">
+        Found <b>{names.length}</b> {names.length === 1 ? 'cookie' : 'cookies'} — all of them are sent, like your browser does.
+      </div>
+      {login.length > 0 ? (
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-success">Likely login:</span>
+          {login.map((c) => chip(c, 'bg-success-soft text-success'))}
+        </div>
+      ) : (
+        <div className="text-warning">No obvious login cookie — if Test login fails, make sure you copied them while logged in.</div>
+      )}
+      {other.length > 0 && <div className="flex flex-wrap items-center gap-1.5"><span className="text-muted">Other:</span>{other.map((c) => chip(c, 'bg-subtle text-muted'))}</div>}
+      {analytics.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-faint">Analytics (not needed, harmless):</span>
+          {analytics.map((c) => chip(c, 'text-faint line-through decoration-faint/50'))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function defaultRows(preset?: CookiePreset): CookieRow[] {
   return preset ? preset.fields.map((f) => ({ name: f.name, value: '' })) : [{ name: '', value: '' }];
 }
@@ -76,7 +112,8 @@ function defaultRows(preset?: CookiePreset): CookieRow[] {
  */
 function CookieInput({ siteUrl, auth, set }: { siteUrl: string; auth: SiteAuth; set: (p: Partial<SiteAuth>) => void }) {
   const preset = presetFor(siteUrl);
-  const mode = auth.cookieInput ?? 'fields';
+  // Known sites: one named field. Others: paste everything — no need to know which cookie logs you in.
+  const mode = auth.cookieInput ?? (preset ? 'fields' : 'paste');
   const presetNames = new Set(preset?.fields.map((f) => f.name) ?? []);
   // Keep the user's rows once they've typed something; otherwise follow the site's preset.
   const rows = auth.cookieRows?.some((r) => r.value.trim() || r.name.trim()) ? auth.cookieRows : defaultRows(preset);
@@ -87,7 +124,11 @@ function CookieInput({ siteUrl, auth, set }: { siteUrl: string; auth: SiteAuth; 
   if (mode === 'paste') {
     return (
       <div className="space-y-2">
-        <Field label="All session cookies" htmlFor="auth-cookies" hint="A Cookie header, a JSON export, or a cookies.txt file.">
+        <Field
+          label="All cookies for this site"
+          htmlFor="auth-cookies"
+          hint="Paste them all — you don’t need to know which one logs you in. A Cookie header, a JSON export, or a cookies.txt file."
+        >
           <Textarea
             id="auth-cookies"
             rows={4}
@@ -96,8 +137,9 @@ function CookieInput({ siteUrl, auth, set }: { siteUrl: string; auth: SiteAuth; 
             onChange={(e) => set({ cookies: e.target.value })}
           />
         </Field>
+        <PastedCookieSummary text={auth.cookies ?? ''} />
         <button type="button" onClick={() => set({ cookieInput: 'fields', cookies: rowsToCookieHeader(rows, preset) })} className="cursor-pointer text-[13px] font-medium text-accent hover:underline">
-          Enter cookie values one by one instead
+          {preset ? 'Enter cookie values one by one instead' : 'I know the cookie name — enter it as a field instead'}
         </button>
       </div>
     );
