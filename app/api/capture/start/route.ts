@@ -5,6 +5,8 @@ import { currentUserKey } from '@/auth';
 import { saveCaptureFromJob } from '@/lib/userData';
 import type { CaptureSettings } from '@/lib/jobStore';
 import { sanitizeAuth, sanitizeCleanup } from '@/lib/captureOptions';
+import { planInfoFor } from '@/lib/billing';
+import { checkCapture, limitResponse } from '@/lib/entitlements';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,6 +40,8 @@ export async function POST(request: NextRequest) {
     settings.auth = sanitizeAuth(settings.auth);
 
     const ownerKey = (await currentUserKey()) ?? undefined;
+    const denial = checkCapture(await planInfoFor(ownerKey ?? null), urls.length, settings);
+    if (denial) return limitResponse(denial);
     const job = await createJob('capture', urls, settings, ownerKey);
 
     // Start capture asynchronously (don't await)

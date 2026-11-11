@@ -11,6 +11,12 @@ import type { CaptureSettings } from '@/lib/jobStore';
 import type { FrequencyType } from '@/lib/scheduleStore';
 import { urlHost } from '@/lib/url';
 import { useCurrentUser } from '@/components/auth/UserContext';
+import { usePlan } from '@/components/billing/PlanContext';
+import { LimitAwareError } from '@/components/billing/Upgrade';
+import { PLANS } from '@/lib/plans';
+import Link from 'next/link';
+import { buttonClass } from '@/components/ui/Button';
+import { Icon } from '@/components/ui/Icon';
 
 interface SaveScheduleModalProps {
   isOpen: boolean;
@@ -22,7 +28,38 @@ interface SaveScheduleModalProps {
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-function ScheduleForm({ onClose, targetUrl, urls, settings }: Omit<SaveScheduleModalProps, 'isOpen'>) {
+/** Shown instead of the form when the plan has no schedules. */
+function SchedulesLocked({ onClose }: { onClose: () => void }) {
+  const studio = PLANS.studio.limits;
+  return (
+    <div className="space-y-4 p-5 text-sm">
+      <div className="flex items-start gap-3 rounded-xl bg-accent-soft px-4 py-3">
+        <Icon name="lock" size={16} className="mt-0.5 shrink-0 text-accent" />
+        <div>
+          <p className="font-medium text-fg">Schedules are included in Studio</p>
+          <p className="mt-1 text-muted">
+            Monitor up to {studio.schedules} sites automatically, {studio.pagesPerSchedule} key pages each — daily, weekly or monthly — and get an
+            email when a page changes.
+          </p>
+        </div>
+      </div>
+      <div className="flex justify-end gap-2">
+        <Button variant="ghost" onClick={onClose}>
+          Not now
+        </Button>
+        <Link href="/billing?plan=studio" className={buttonClass('primary', 'md')}>
+          See plans
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+function ScheduleForm({ onClose, targetUrl, urls: selected, settings }: Omit<SaveScheduleModalProps, 'isOpen'>) {
+  const { limits } = usePlan();
+  // Schedules monitor key pages: beyond the plan's per-schedule cap, the first ones are kept.
+  const urls = selected.slice(0, limits.pagesPerSchedule);
+  const trimmed = selected.length - urls.length;
   const [name, setName] = useState(`${urlHost(targetUrl)} — recurring capture`);
   const deviceList = settings.devices?.length ? settings.devices : [settings.device ?? 'Desktop'];
   const [frequency, setFrequency] = useState<FrequencyType>('weekly');
@@ -31,7 +68,7 @@ function ScheduleForm({ onClose, targetUrl, urls, settings }: Omit<SaveScheduleM
   const [dayOfMonth, setDayOfMonth] = useState(1);
   const user = useCurrentUser();
   const [recipients, setRecipients] = useState(user?.email ?? '');
-  const [retentionCount, setRetentionCount] = useState(10);
+  const [retentionCount, setRetentionCount] = useState(Math.min(10, limits.runsKept));
   const [notifyOn, setNotifyOn] = useState<'every' | 'changes'>('every');
   const [changeThreshold, setChangeThreshold] = useState(1);
   const [submitting, setSubmitting] = useState(false);
@@ -86,7 +123,14 @@ function ScheduleForm({ onClose, targetUrl, urls, settings }: Omit<SaveScheduleM
   return (
     <form onSubmit={handleSubmit}>
       <div className="space-y-4 p-5">
-        {error && <Alert tone="danger">{error}</Alert>}
+        {error && <LimitAwareError message={error} />}
+
+        {trimmed > 0 && (
+          <Alert tone="warning">
+            A schedule monitors up to {limits.pagesPerSchedule} key pages on your plan, so this one will capture the first{' '}
+            {limits.pagesPerSchedule} of the {selected.length} you selected. To pick which, go back and select just your key pages.
+          </Alert>
+        )}
 
         <p className="text-[13px] text-muted">
           Captures {urls.length} {urls.length === 1 ? 'page' : 'pages'} on {deviceList.join(', ')}. Each run is added to your capture history.
@@ -166,9 +210,13 @@ function ScheduleForm({ onClose, targetUrl, urls, settings }: Omit<SaveScheduleM
 
         <Field label="Keep history" htmlFor="schedule-retention">
           <Select id="schedule-retention" value={retentionCount} onChange={(e) => setRetentionCount(Number(e.target.value))}>
-            <option value={5}>Last 5 runs</option>
-            <option value={10}>Last 10 runs</option>
-            <option value={20}>Last 20 runs</option>
+            {[5, 10, 20, 30]
+              .filter((n) => n <= limits.runsKept)
+              .map((n) => (
+                <option key={n} value={n}>
+                  Last {n} runs
+                </option>
+              ))}
           </Select>
         </Field>
       </div>
@@ -185,15 +233,20 @@ function ScheduleForm({ onClose, targetUrl, urls, settings }: Omit<SaveScheduleM
 }
 
 export default function SaveScheduleModal({ isOpen, onClose, ...rest }: SaveScheduleModalProps) {
+  const { limits } = usePlan();
   return (
     <Modal
       open={isOpen}
       onClose={onClose}
       title="Save as schedule"
-      description={`Re-capture ${rest.urls.length} ${rest.urls.length === 1 ? 'page' : 'pages'} automatically.`}
+      description={
+        limits.schedules === 0
+          ? 'Re-capture these pages automatically, on a schedule.'
+          : `Re-capture ${Math.min(rest.urls.length, limits.pagesPerSchedule)} ${rest.urls.length === 1 ? 'page' : 'pages'} automatically.`
+      }
     >
       {/* Mounted only while open, so the form resets each time. */}
-      {isOpen && <ScheduleForm onClose={onClose} {...rest} />}
+      {isOpen && (limits.schedules === 0 ? <SchedulesLocked onClose={onClose} /> : <ScheduleForm onClose={onClose} {...rest} />)}
     </Modal>
   );
 }

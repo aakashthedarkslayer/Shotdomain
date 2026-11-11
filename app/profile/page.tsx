@@ -8,7 +8,8 @@ import { Alert } from '@/components/ui/Alert';
 import { buttonClass } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { ProfileForm } from '@/components/profile/ProfileForm';
-import { MAX_CAPTURES_PER_USER, listCaptures } from '@/lib/userData';
+import { listCaptures } from '@/lib/userData';
+import { planInfoFor } from '@/lib/billing';
 import { formatDateTime, hostOf } from '@/lib/format';
 import { listShares } from '@/lib/shareStore';
 import { revokeShareAction } from '@/app/actions/profile';
@@ -27,6 +28,7 @@ export default async function ProfilePage() {
   const user = await currentUser();
   const captures = await listCaptures(key);
   const shares = await listShares(key);
+  const historyKept = (await planInfoFor(key)).limits.historyKept;
 
   return (
     <div className="min-h-screen pb-24">
@@ -65,7 +67,7 @@ export default async function ProfilePage() {
         <Card id="history">
           <CardHeader
             title="Capture history"
-            description={`Your last ${MAX_CAPTURES_PER_USER} captures are kept. Older ones are removed automatically.`}
+            description={`Your last ${historyKept} captures are kept. Older ones are removed automatically.`}
             actions={
               <Link href="/app" className={buttonClass('secondary', 'sm')}>
                 <Icon name="plus" size={14} />

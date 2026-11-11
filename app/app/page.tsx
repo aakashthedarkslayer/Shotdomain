@@ -10,6 +10,7 @@ import CaptureProgressStep from '@/components/capture/CaptureProgressStep';
 import ResultsStep from '@/components/capture/ResultsStep';
 import SaveScheduleModal from '@/components/capture/SaveScheduleModal';
 import { Alert } from '@/components/ui/Alert';
+import { usePlan } from '@/components/billing/PlanContext';
 import { DEFAULT_SETTINGS } from '@/components/capture/types';
 import type { CaptureResult, DeviceName, SettingsState } from '@/components/capture/types';
 import { isValidUrl, normalizeUrl, urlHost } from '@/lib/url';
@@ -17,6 +18,7 @@ import { NO_AUTH, sanitizeAuth } from '@/lib/captureOptions';
 import type { SiteAuth } from '@/lib/captureOptions';
 
 export default function AppPage() {
+  const { limits } = usePlan();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -84,7 +86,8 @@ export default function AppPage() {
       setPathPrefix(data.pathPrefix);
 
       setDiscoveredUrls(data.urls);
-      setSelectedUrls([...data.urls]);
+      // Pre-select as many pages as the plan captures at once.
+      setSelectedUrls(data.urls.slice(0, limits.pagesPerRun));
       setDiscoveryMethod(data.method);
       setTruncated(data.truncated);
     } catch (error) {
@@ -94,7 +97,7 @@ export default function AppPage() {
       setIsDiscovering(false);
       setIsLoading(false);
     }
-  }, [auth]);
+  }, [auth, limits.pagesPerRun]);
 
   // Landing page hands off with /app?url=example.com — start discovery right away.
   useEffect(() => {
@@ -289,6 +292,7 @@ export default function AppPage() {
             rootUrl={rootUrl}
             loggedIn={loggedIn}
             pathPrefix={pathPrefix}
+            pageLimit={limits.pagesPerRun}
             onAddLogin={() => {
               setAuth((prev) => ({ ...prev, method: prev.method === 'none' ? 'cookies' : prev.method }));
               setCurrentStep(1);

@@ -9,6 +9,9 @@ import { Alert } from '@/components/ui/Alert';
 import { Checkbox } from '@/components/ui/Controls';
 import { Icon, Spinner } from '@/components/ui/Icon';
 import { siteKey, urlHost, urlPath } from '@/lib/url';
+import { LimitAwareError } from '@/components/billing/Upgrade';
+import { usePlan } from '@/components/billing/PlanContext';
+import { PLANS, cheapestPlanWith } from '@/lib/plans';
 
 interface PageSelectionStepProps {
   urls: string[];
@@ -29,6 +32,8 @@ interface PageSelectionStepProps {
   onAddUrls?: (urls: string[]) => void;
   /** Go back to step 1 with the login section opened. */
   onAddLogin?: () => void;
+  /** Most pages one capture may include (plan limit). */
+  pageLimit?: number;
 }
 
 const LARGE_SELECTION = 200;
@@ -49,7 +54,11 @@ export default function PageSelectionStep({
   pathPrefix,
   onAddUrls,
   onAddLogin,
+  pageLimit = Infinity,
 }: PageSelectionStepProps) {
+  const { plan } = usePlan();
+  const overLimit = selectedUrls.length > pageLimit;
+  const nextPlan = overLimit ? cheapestPlanWith((l) => l.pagesPerRun >= selectedUrls.length) : undefined;
   const [query, setQuery] = useState('');
   const [addOpen, setAddOpen] = useState(false);
   const [addText, setAddText] = useState('');
@@ -124,7 +133,9 @@ export default function PageSelectionStep({
           <Icon name="alert" size={20} />
         </span>
         <h2 className="mt-4 text-base font-semibold text-fg">Couldn&apos;t discover pages</h2>
-        <p className="mx-auto mt-1 max-w-sm text-sm text-muted">{discoveryError}</p>
+        <div className="mx-auto mt-3 max-w-md text-left">
+          <LimitAwareError message={discoveryError} />
+        </div>
         <Button className="mt-6" variant="secondary" icon="arrowLeft" onClick={onBack}>
           Try another URL
         </Button>
@@ -233,6 +244,21 @@ export default function PageSelectionStep({
         </ul>
       </div>
 
+      {overLimit && (
+        <div className="px-5 pb-4 sm:px-6">
+          <LimitAwareError
+            message={`${selectedUrls.length} pages selected — the ${PLANS[plan].name} plan captures up to ${pageLimit} at a time. Deselect some pages${nextPlan ? `, or Upgrade to ${nextPlan.name} for up to ${nextPlan.limits.pagesPerRun}` : ''}.`}
+          />
+          <button
+            type="button"
+            onClick={() => onSelectionChange(selectedUrls.slice(0, pageLimit))}
+            className="mt-2 cursor-pointer text-[13px] font-medium text-accent hover:underline"
+          >
+            Keep the first {pageLimit} pages
+          </button>
+        </div>
+      )}
+
       {selectedUrls.length > LARGE_SELECTION && (
         <div className="px-5 pb-4 sm:px-6">
           <Alert tone="warning">
@@ -249,7 +275,7 @@ export default function PageSelectionStep({
           <span className="text-sm text-muted">
             <span className="font-medium text-fg">{selectedUrls.length}</span> of {urls.length} selected
           </span>
-          <Button iconRight="arrowRight" disabled={selectedUrls.length === 0} onClick={onContinue}>
+          <Button iconRight="arrowRight" disabled={selectedUrls.length === 0 || overLimit} onClick={onContinue}>
             Continue
           </Button>
         </div>

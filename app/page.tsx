@@ -10,6 +10,7 @@ import {
   PricingSection,
   UseCasesSection,
 } from '@/components/marketing/Sections';
+import { billingEnabled } from '@/lib/billing';
 
 export default function LandingPage() {
   return (
@@ -21,7 +22,7 @@ export default function LandingPage() {
         <FeaturesSection />
         <LoginPagesSection />
         <UseCasesSection />
-        <PricingSection />
+        <PricingSection billingEnabled={billingEnabled()} />
         <FaqSection />
         <FinalCta />
       </main>

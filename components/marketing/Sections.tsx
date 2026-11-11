@@ -5,6 +5,7 @@ import { Icon } from '@/components/ui/Icon';
 import type { IconName } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
 import { CookieGuide } from '@/components/capture/CookieGuide';
+import { MarketingPricing } from '@/components/billing/MarketingPricing';
 
 function SectionHeading({ eyebrow, title, description }: { eyebrow: string; title: string; description?: ReactNode }) {
   return (
@@ -143,7 +144,7 @@ export function LoginPagesSection() {
                 <Icon name="arrowRight" />
               </Link>
               <a href="#pricing" className="text-sm text-muted hover:text-fg">
-                Included in Studio and Lifetime →
+                Included in Studio, Agency and Lifetime →
               </a>
             </li>
           </ul>
@@ -193,100 +194,16 @@ export function UseCasesSection() {
 
 /* ------------------------------------------------------------------------ */
 
-interface Tier {
-  name: string;
-  price: string;
-  cadence: string;
-  description: string;
-  cta: string;
-  featured?: boolean;
-  badge?: string;
-  features: string[];
-}
-
-const TIERS: Tier[] = [
-  {
-    name: 'Free',
-    price: '$0',
-    cadence: 'forever',
-    description: 'Try the full workflow on smaller sites.',
-    cta: 'Start free',
-    features: ['Up to 15 pages per run', 'Desktop viewport', 'Sitemap auto-discovery', 'Full-page PNG or JPG', 'ZIP download', 'No watermark'],
-  },
-  {
-    name: 'Studio',
-    price: '$5',
-    cadence: 'per month',
-    description: 'For agencies, designers and QA who capture sites weekly.',
-    cta: 'Get Studio',
-    featured: true,
-    badge: 'Most popular',
-    features: [
-      'Up to 100 pages per run',
-      'All 4 devices in one run',
-      'High-DPI capture',
-      'ZIP sorted by device',
-      'Capture pages behind a login',
-      'Recurring schedules',
-      'Email when a run finishes',
-      'Ad and tracker blocking',
-    ],
-  },
-  {
-    name: 'Lifetime',
-    price: '$50',
-    cadence: 'one-time',
-    description: 'Pay once, keep it forever, including future updates.',
-    cta: 'Get Lifetime',
-    features: [
-      'Unlimited pages per run',
-      'All 4 devices + custom viewports',
-      'High-DPI capture',
-      'Capture pages behind a login',
-      'Unlimited schedules',
-      'Email with ZIP link',
-      'Permanent capture history',
-      'All future updates',
-    ],
-  },
-];
-
-export function PricingSection() {
+export function PricingSection({ billingEnabled = false }: { billingEnabled?: boolean }) {
   return (
     <section id="pricing" className="scroll-mt-20 px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-6xl">
-        <SectionHeading eyebrow="Pricing" title="Simple, predictable pricing" description="No per-screenshot credits." />
-        <div className="grid items-stretch gap-4 md:grid-cols-3">
-          {TIERS.map((t) => (
-            <div
-              key={t.name}
-              className={`relative flex flex-col rounded-2xl p-7 ${
-                t.featured ? 'glass-strong ring-2 ring-accent/60 shadow-[0_24px_60px_-20px_color-mix(in_srgb,var(--accent)_45%,transparent)]' : 'glass'
-              }`}
-            >
-              {t.badge && (
-                <span className="bg-brand absolute -top-3 left-7 rounded-full px-2.5 py-0.5 text-xs font-semibold text-white shadow-sm">{t.badge}</span>
-              )}
-              <h3 className="text-[15px] font-semibold text-fg">{t.name}</h3>
-              <p className="mt-1 text-sm text-muted">{t.description}</p>
-              <p className="mt-6 flex items-baseline gap-1.5">
-                <span className={`text-5xl font-semibold tracking-tight ${t.featured ? 'text-brand' : 'text-fg'}`}>{t.price}</span>
-                <span className="text-sm text-muted">{t.cadence}</span>
-              </p>
-              <ul className="mt-7 flex-1 space-y-2.5">
-                {t.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm text-fg">
-                    <Icon name="check" size={16} className="mt-0.5 text-accent" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/app" className={buttonClass(t.featured ? 'primary' : 'secondary', 'md', 'mt-8 w-full')}>
-                {t.cta}
-              </Link>
-            </div>
-          ))}
-        </div>
+        <SectionHeading
+          eyebrow="Pricing"
+          title="Simple, predictable pricing"
+          description="No per-screenshot credits. Prices in USD; taxes are calculated at checkout. Cancel anytime."
+        />
+        <MarketingPricing billingEnabled={billingEnabled} />
       </div>
     </section>
   );
@@ -314,6 +231,10 @@ const FAQS = [
   {
     q: 'How do change alerts work?',
     a: 'Each scheduled run is compared with the previous one, page by page. You see how much of each page changed, and can choose to be emailed only when something did.',
+  },
+  {
+    q: 'Can I cancel or change plans anytime?',
+    a: 'Yes. Switch between Studio and Agency or monthly and yearly from Plan & billing — the difference is prorated. If you cancel, your plan stays active until the end of the period you paid for, then you move to Free. Payments are handled by Paddle, our reseller, which also takes care of invoices, VAT/GST and refunds.',
   },
   {
     q: 'Will this get my IP blocked?',

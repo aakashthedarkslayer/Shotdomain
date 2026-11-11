@@ -7,6 +7,9 @@ import { Card } from '@/components/ui/Card';
 import { Button, buttonClass } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Alert } from '@/components/ui/Alert';
+import { usePlan } from '@/components/billing/PlanContext';
+import { LimitAwareError } from '@/components/billing/Upgrade';
+import { PLANS } from '@/lib/plans';
 import { Icon, Spinner } from '@/components/ui/Icon';
 import type { Schedule, ScheduledRun } from '@/lib/scheduleStore';
 import { ShareDialog } from '@/components/share/ShareDialog';
@@ -43,6 +46,7 @@ export default function SchedulesPage() {
   const [isLoadingRuns, setIsLoadingRuns] = useState(false);
   const [runningId, setRunningId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const planInfo = usePlan();
   const [notice, setNotice] = useState<string | null>(null);
   const [shareTarget, setShareTarget] = useState<ShareTarget | null>(null);
 
@@ -152,6 +156,15 @@ export default function SchedulesPage() {
               Your recurring captures. Each run is also saved to your history.
               {schedules.length > 0 && ` ${activeCount} of ${schedules.length} active.`}
             </p>
+            {planInfo.billingEnabled && (
+              <p className="mt-1 text-[13px] text-muted">
+                {PLANS[planInfo.plan].name} plan: {schedules.length} of {planInfo.limits.schedules} schedules used ·{' '}
+                {planInfo.limits.pagesPerSchedule} pages each.{' '}
+                <Link href="/billing" className="font-medium text-accent hover:underline">
+                  {planInfo.plan === 'agency' ? 'Manage plan' : 'Upgrade'}
+                </Link>
+              </p>
+            )}
           </div>
           <Link href="/app" className={buttonClass('primary', 'md')}>
             <Icon name="plus" />
@@ -160,9 +173,9 @@ export default function SchedulesPage() {
         </div>
 
         {error && (
-          <Alert tone="danger" className="mb-4">
-            {error}
-          </Alert>
+          <div className="mb-4">
+            <LimitAwareError message={error} />
+          </div>
         )}
         {notice && (
           <Alert tone="success" className="mb-4">

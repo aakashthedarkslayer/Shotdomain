@@ -11,6 +11,8 @@ import { isValidUrl, normalizeUrl } from '@/lib/url';
 import { sanitizeAuth } from '@/lib/captureOptions';
 import type { SiteAuth } from '@/lib/captureOptions';
 import { SiteAuthFields } from './SiteAuthFields';
+import { usePlan } from '@/components/billing/PlanContext';
+import { PlanLock } from '@/components/billing/Upgrade';
 
 interface UrlInputStepProps {
   onDiscover: (url: string) => void;
@@ -23,7 +25,9 @@ interface UrlInputStepProps {
 export default function UrlInputStep({ onDiscover, isLoading, initialValue = '', auth, onAuthChange }: UrlInputStepProps) {
   const [value, setValue] = useState(initialValue);
   const [error, setError] = useState('');
-  const needsLogin = auth.method !== 'none';
+  const { limits } = usePlan();
+  const loginLocked = !limits.loginPages;
+  const needsLogin = auth.method !== 'none' && !loginLocked;
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -76,11 +80,14 @@ export default function UrlInputStep({ onDiscover, isLoading, initialValue = '',
       <Card className="mt-6">
         <div className="flex items-center justify-between gap-4 px-5 py-4">
           <div>
-            <div className="text-sm font-medium text-fg">This site needs a login</div>
+            <div className="flex items-center gap-2 text-sm font-medium text-fg">
+              This site needs a login {loginLocked && <PlanLock />}
+            </div>
             <div className="mt-0.5 text-[13px] text-muted">Capture pages behind a login — dashboards, web apps, staging sites.</div>
           </div>
           <Switch
             label="This site needs a login"
+            disabled={loginLocked}
             checked={needsLogin}
             onChange={(on) => onAuthChange(on ? { ...auth, method: 'cookies' } : { ...auth, method: 'none' })}
           />
@@ -93,7 +100,7 @@ export default function UrlInputStep({ onDiscover, isLoading, initialValue = '',
       </Card>
 
       <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] text-muted">
-        {['Reads sitemap.xml', 'Respects robots.txt', 'Up to 500 pages'].map((t) => (
+        {['Reads sitemap.xml', 'Respects robots.txt', `Up to ${limits.pagesPerRun} pages per capture`].map((t) => (
           <li key={t} className="flex items-center gap-1.5">
             <Icon name="check" size={14} className="text-success" />
             {t}

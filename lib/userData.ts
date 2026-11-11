@@ -1,6 +1,7 @@
 import * as crypto from 'crypto';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { planInfoFor } from './billing';
 
 /**
  * Per-user data on disk (no database):
@@ -13,9 +14,6 @@ import * as path from 'path';
 
 export const LOCAL_USER_KEY = 'local';
 const USERS_DIR = path.join(process.cwd(), 'data', 'users');
-
-/** Oldest captures beyond this are deleted so one user can't fill the disk. */
-export const MAX_CAPTURES_PER_USER = 50;
 
 const KEY_RE = /^(local|[a-f0-9]{24})$/;
 const ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -199,5 +197,6 @@ export async function saveCaptureFromJob(
 
 async function pruneCaptures(userKey: string): Promise<void> {
   const all = await listCaptures(userKey);
-  await Promise.all(all.slice(MAX_CAPTURES_PER_USER).map((m) => deleteCapture(userKey, m.id)));
+  const keep = (await planInfoFor(userKey)).limits.historyKept;
+  await Promise.all(all.slice(keep).map((m) => deleteCapture(userKey, m.id)));
 }

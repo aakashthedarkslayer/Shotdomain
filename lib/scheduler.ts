@@ -20,6 +20,11 @@ import { captureScreenshots } from './screenshot';
 import { createZipFile } from './zip';
 import { percentChanged } from './imageDiff';
 import { sendScheduledRunEmail } from './email';
+import { planInfoFor } from './billing';
+import { checkScheduledRun } from './entitlements';
+
+/** A run that the owner's plan doesn't allow (e.g. after a downgrade). */
+export class PlanLimitError extends Error {}
 
 // Global registry of active cron tasks
 const activeCronTasks = new Map<string, ScheduledTask>();
@@ -112,7 +117,17 @@ export async function executeScheduledRun(
     throw new Error(`Schedule not found: ${scheduleId}`);
   }
 
-  console.log(`[Scheduler] Starting capture run for: "${schedule.name}" (${schedule.urls.length} URLs)`);
+  // Re-check the owner's plan on every run: they may have downgraded since saving.
+  const info = await planInfoFor(schedule.ownerKey ?? null);
+  const position = (await getSchedules())
+    .filter((s) => s.ownerKey === schedule.ownerKey)
+    .sort((a, b) => a.createdAt - b.createdAt)
+    .findIndex((s) => s.id === schedule.id);
+  const denial = checkScheduledRun(info, Math.max(0, position), schedule.settings);
+  if (denial) throw new PlanLimitError(denial.error);
+  const urls = schedule.urls.slice(0, info.limits.pagesPerSchedule);
+
+  console.log(`[Scheduler] Starting capture run for: "${schedule.name}" (${urls.length} URLs)`);
 
   // Decrypt the saved login (if any) only for the duration of this run.
   const runSettings: CaptureSettings = { ...schedule.settings };
@@ -122,13 +137,13 @@ export async function executeScheduledRun(
   }
 
   // 1. Create a job in the existing job queue (owned by the schedule's owner)
-  const job = await createJob('capture', schedule.urls, runSettings, schedule.ownerKey);
+  const job = await createJob('capture', urls, runSettings, schedule.ownerKey);
 
   // 2. Execute capture through the existing Playwright capture queue.
   // Results are read back from the job afterwards: with several devices the
   // progress keys are "Device:url", so matching on the plain URL would miss them.
   try {
-    await captureScreenshots(job.id, schedule.urls, runSettings, (key, partial) => {
+    await captureScreenshots(job.id, urls, runSettings, (key, partial) => {
       updateResult(job.id, key, partial);
     });
   } catch (err) {

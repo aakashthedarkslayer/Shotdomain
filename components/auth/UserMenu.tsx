@@ -46,6 +46,9 @@ export function UserMenu() {
           <Link href="/profile" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-fg hover:bg-subtle">
             Profile &amp; history
           </Link>
+          <Link href="/billing" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-fg hover:bg-subtle">
+            Plan &amp; billing
+          </Link>
           <form action={signOutAction} className="border-t border-line">
             <button type="submit" className="w-full cursor-pointer px-3 py-2 text-left text-sm text-fg hover:bg-subtle">
               Sign out

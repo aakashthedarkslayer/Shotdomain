@@ -1,15 +1,18 @@
 'use client';
 
+import Link from 'next/link';
 import { useCallback, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Card, CardFooter, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Select, Textarea } from '@/components/ui/Input';
-import { Alert } from '@/components/ui/Alert';
 import { Segmented, Switch } from '@/components/ui/Controls';
 import { Icon } from '@/components/ui/Icon';
 import type { IconName } from '@/components/ui/Icon';
 import { DEVICE_PRESETS } from '@/lib/devices';
+import { usePlan } from '@/components/billing/PlanContext';
+import { LimitAwareError, PlanLock } from '@/components/billing/Upgrade';
+import type { DeviceName } from '@/lib/plans';
 import type { SettingsState } from './types';
 import { selectorsToText, textToSelectors } from '@/lib/captureOptions';
 import type { AuthMethod, CleanupOptions } from '@/lib/captureOptions';
@@ -83,6 +86,7 @@ export default function CaptureSettingsStep({
   const [clickText, setClickText] = useState(() => selectorsToText(settings.cleanup.clickSelectors));
   const setCleanup = (partial: Partial<CleanupOptions>) => onSettingsChange({ cleanup: { ...settings.cleanup, ...partial } });
 
+  const { limits } = usePlan();
   const selectedDevices = useMemo(
     () => (settings.devices.length > 0 ? settings.devices : [settings.device || 'Desktop']),
     [settings.devices, settings.device],
@@ -134,16 +138,23 @@ export default function CaptureSettingsStep({
             {DEVICES.map((d) => {
               const active = selectedDevices.includes(d.name);
               const preset = DEVICE_PRESETS[d.name];
+              const locked = !limits.devices.includes(d.name as DeviceName);
               return (
                 <button
                   key={d.name}
                   type="button"
                   aria-pressed={active}
+                  disabled={locked && !active}
                   onClick={() => toggleDevice(d.name)}
-                  className={`relative flex cursor-pointer flex-col items-start gap-2 rounded-lg border p-3 text-left transition ${
+                  className={`relative flex cursor-pointer flex-col items-start gap-2 rounded-lg border p-3 text-left transition disabled:cursor-not-allowed disabled:opacity-60 ${
                     active ? 'border-accent bg-accent-soft/60 ring-1 ring-accent' : 'border-line hover:border-line-strong hover:bg-subtle'
                   }`}
                 >
+                  {locked && !active && (
+                    <span className="absolute top-2 right-2">
+                      <PlanLock link={false} />
+                    </span>
+                  )}
                   <Icon name={d.icon} size={18} className={active ? 'text-accent' : 'text-muted'} />
                   <div>
                     <div className="text-sm font-medium text-fg">{d.name}</div>
@@ -161,6 +172,14 @@ export default function CaptureSettingsStep({
               );
             })}
           </div>
+          {limits.devices.length < DEVICES.length && (
+            <p className="mt-2 text-[13px] text-muted">
+              Tablet and phone screenshots are included in Studio.{' '}
+              <Link href="/billing?plan=studio" className="font-medium text-accent hover:underline">
+                See plans
+              </Link>
+            </p>
+          )}
         </Row>
 
         <Row title="Viewport" description="Browser window size in CSS pixels.">
@@ -302,7 +321,7 @@ export default function CaptureSettingsStep({
 
       {error && (
         <div className="px-5 pb-4 sm:px-6">
-          <Alert tone="danger">{error}</Alert>
+          <LimitAwareError message={error} />
         </div>
       )}
 

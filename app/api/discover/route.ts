@@ -10,6 +10,7 @@ import { SiteLoginError, authHeadersFor, resolveSiteAuth } from '@/lib/siteAuth'
 import type { ResolvedAuth } from '@/lib/siteAuth';
 import { discoverRenderedLinks } from '@/lib/renderedLinks';
 import { inPathScope, sameSite } from '@/lib/url';
+import { checkLoginPages, currentPlanInfo, limitResponse } from '@/lib/entitlements';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,6 +44,11 @@ export async function POST(request: NextRequest) {
         { error: 'Invalid URL format' },
         { status: 400 }
       );
+    }
+
+    if (auth) {
+      const denial = checkLoginPages(await currentPlanInfo());
+      if (denial) return limitResponse(denial);
     }
 
     // Log in first (if the site needs it) so discovery sees the logged-in site.

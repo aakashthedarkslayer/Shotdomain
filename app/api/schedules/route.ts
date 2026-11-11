@@ -5,6 +5,8 @@ import { listOwnedSchedules, publicSchedule } from '@/lib/scheduleAccess';
 import { sanitizeAuth, sanitizeCleanup } from '@/lib/captureOptions';
 import { seal } from '@/lib/secretBox';
 import { currentUserKey } from '@/auth';
+import { planInfoFor } from '@/lib/billing';
+import { checkNewSchedule, limitResponse } from '@/lib/entitlements';
 
 export const dynamic = 'force-dynamic';
 
@@ -55,6 +57,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const info = await planInfoFor(ownerKey);
+    const denial = checkNewSchedule(info, (await listOwnedSchedules()).length, urls.length, frequency, settings);
+    if (denial) return limitResponse(denial);
+
     // Login secrets are stored encrypted; cleanup options are sanitized like captures.
     if (settings) {
       settings.cleanup = sanitizeCleanup(settings.cleanup);
@@ -73,7 +79,7 @@ export async function POST(request: NextRequest) {
       dayOfMonth: dayOfMonth !== undefined ? Number(dayOfMonth) : 1,
       enabled,
       recipients: Array.isArray(recipients) ? recipients : [],
-      retentionCount: Number(retentionCount) || 10,
+      retentionCount: Math.min(Number(retentionCount) || 10, info.limits.runsKept),
       ownerKey,
       notifyOn: notifyOn === 'changes' ? 'changes' : 'every',
       changeThreshold: clampThreshold(changeThreshold),
