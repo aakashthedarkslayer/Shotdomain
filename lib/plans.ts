@@ -67,7 +67,7 @@ export const PLANS: Record<PlanId, Plan> = {
       runsKept: 0,
       historyKept: 10,
     },
-    highlights: ['Up to 15 pages per capture', 'Desktop screenshots', 'Sitemap + crawl discovery', 'ZIP download and share links', 'Last 10 captures kept', 'No watermark'],
+    highlights: ['Up to 15 pages per capture', 'Desktop screenshots', 'Sitemap + crawl discovery', 'ZIP download and share links', 'Last 10 captures kept', 'Clean screenshots, no watermark'],
   },
   studio: {
     id: 'studio',
