@@ -12,6 +12,8 @@ import type { SiteAuth } from '@/lib/captureOptions';
 import { normalizeUrl } from '@/lib/url';
 import { classifyCookie, pastedCookieNames, presetFor, rowsToCookieHeader } from '@/lib/cookiePresets';
 import type { CookiePreset, CookieRow } from '@/lib/cookiePresets';
+import { FORMAT_LABEL, mergeHeaderLines, parseCopiedRequest } from '@/lib/copiedRequest';
+import type { CopiedRequest } from '@/lib/copiedRequest';
 
 interface TestResult {
   ok: boolean;
@@ -38,7 +40,7 @@ function CookieHelp() {
           <Icon name="play" size={15} />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-medium text-fg">Show me how to copy my cookies</span>
+          <span className="block text-sm font-medium text-fg">Show me how to copy my login</span>
           <span className="block text-xs text-muted">A 20-second animated guide — no technical knowledge needed</span>
         </span>
         <Icon name="arrowRight" size={14} className="text-muted transition group-hover:translate-x-0.5" />
@@ -63,23 +65,24 @@ function CookieTextHelp() {
       </summary>
       <div className="space-y-3 border-t border-line px-3 py-3 text-muted">
         <div>
-          <p className="font-medium text-fg">Option A — copy the values (easiest)</p>
+          <p className="font-medium text-fg">Option A — Copy as cURL (easiest, copies everything)</p>
           <ol className="mt-1 list-decimal space-y-0.5 pl-5">
             <li>Log in to the site in Chrome or Edge as you normally would.</li>
             <li>
-              Open DevTools (<b>Ctrl+Shift+I</b>, or right-click → <b>Inspect</b>) → <b>Application</b> tab (under <b>»</b> if hidden).
+              Open DevTools (<b>Ctrl+Shift+I</b>, or right-click → <b>Inspect</b>) → <b>Network</b> tab → <b>Doc</b> filter → press <b>F5</b>{' '}
+              to reload.
             </li>
             <li>
-              <b>Storage → Cookies</b> → the site’s address. Double-click the <b>Value</b> of each cookie listed below, copy it, and paste it
-              into its box.
+              Right-click the page request → <b>Copy</b> → <b>Copy as cURL</b> (on Windows either “cmd” or “bash” works).
             </li>
+            <li>Paste the whole thing into the box. ShotDomain keeps only the cookies and login headers.</li>
           </ol>
         </div>
         <div>
-          <p className="font-medium text-fg">Option B — copy the whole Cookie header</p>
+          <p className="font-medium text-fg">Option B — copy one cookie from the Application tab</p>
           <p className="mt-1">
-            DevTools → <b>Network</b> → <b>Doc</b> filter → reload → click the page request → <b>Request Headers</b> → right-click{' '}
-            <code className="font-mono">cookie</code> → <b>Copy value</b>. Then choose “Paste all cookies at once”.
+            DevTools → <b>Application</b> (under <b>»</b> if hidden) → <b>Storage → Cookies</b> → the site’s address. Double-click the{' '}
+            <b>Value</b> of the login cookie, copy it, and enter its name and value.
           </p>
         </div>
         <div>
@@ -133,6 +136,77 @@ function PastedCookieSummary({ text }: { text: string }) {
   );
 }
 
+/** Registrable-ish domain (last two labels) for a loose "same site" check. */
+function baseDomain(host: string): string {
+  return host.toLowerCase().split('.').slice(-2).join('.');
+}
+
+function hostOf(url: string): string | undefined {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return undefined;
+  }
+}
+
+/** What we kept from a pasted request (and a heads-up when it's for another site or has no cookies). */
+function CopiedRequestNote({ req, siteUrl }: { req: CopiedRequest; siteUrl: string }) {
+  const label = FORMAT_LABEL[req.format];
+  const cookieCount = pastedCookieNames(req.cookie).length;
+  const headerNames = Object.keys(req.headers);
+  const target = req.url ? hostOf(req.url) : undefined;
+  const site = siteUrl.trim() ? hostOf(normalizeUrl(siteUrl)) : undefined;
+  const otherSite = target && site && baseDomain(target) !== baseDomain(site);
+
+  if (!req.cookie && headerNames.length === 0) {
+    return (
+      <Alert tone="warning">
+        That copied {label} has no cookies in it.{' '}
+        {req.format === 'fetch'
+          ? 'Chrome leaves cookies out of “Copy as fetch” — use Copy → Copy as cURL instead.'
+          : 'Copy it while you’re logged in, from the page request (Network → Doc filter).'}
+      </Alert>
+    );
+  }
+  return (
+    <div className="space-y-2">
+      <div className="flex items-start gap-2 rounded-xl bg-success-soft px-3 py-2.5 text-[13px] text-success">
+        <Icon name="check" size={15} className="mt-px shrink-0" />
+        <span>
+          Read your copied {label}
+          {target ? (
+            <>
+              {' '}
+              for <b className="font-semibold">{target}</b>
+            </>
+          ) : null}
+          . Kept {cookieCount} {cookieCount === 1 ? 'cookie' : 'cookies'}
+          {headerNames.length > 0 && (
+            <>
+              {' '}
+              and the <span className="font-mono">{headerNames.join(', ')}</span> {headerNames.length === 1 ? 'header' : 'headers'} (under Custom
+              headers)
+            </>
+          )}
+          .
+          {req.ignored > 0 && (
+            <span className="text-muted">
+              {' '}
+              Left out {req.ignored} browser {req.ignored === 1 ? 'header' : 'headers'} such as User-Agent — they aren’t needed to log in.
+            </span>
+          )}
+        </span>
+      </div>
+      {otherSite && (
+        <Alert tone="warning">
+          This request went to <span className="font-mono">{target}</span>, not <span className="font-mono">{site}</span>. Copy the request for the
+          page itself (Network → <b>Doc</b> filter) so the cookies belong to this site.
+        </Alert>
+      )}
+    </div>
+  );
+}
+
 function defaultRows(preset?: CookiePreset): CookieRow[] {
   return preset ? preset.fields.map((f) => ({ name: f.name, value: '' })) : [{ name: '', value: '' }];
 }
@@ -141,7 +215,17 @@ function defaultRows(preset?: CookiePreset): CookieRow[] {
  * Cookies as name/value fields (only paste values; known sites pre-name the
  * cookies that matter), or one box for a Cookie header / JSON / cookies.txt.
  */
-function CookieInput({ siteUrl, auth, set }: { siteUrl: string; auth: SiteAuth; set: (p: Partial<SiteAuth>) => void }) {
+function CookieInput({
+  siteUrl,
+  auth,
+  set,
+  onHeadersAdded,
+}: {
+  siteUrl: string;
+  auth: SiteAuth;
+  set: (p: Partial<SiteAuth>) => void;
+  onHeadersAdded: () => void;
+}) {
   const preset = presetFor(siteUrl);
   // Known sites: one named field. Others: paste everything — no need to know which cookie logs you in.
   const mode = auth.cookieInput ?? (preset ? 'fields' : 'paste');
@@ -149,25 +233,56 @@ function CookieInput({ siteUrl, auth, set }: { siteUrl: string; auth: SiteAuth; 
   // Keep the user's rows once they've typed something; otherwise follow the site's preset.
   const rows = auth.cookieRows?.some((r) => r.value.trim() || r.name.trim()) ? auth.cookieRows : defaultRows(preset);
 
+  // The last request the user pasted (Copy as cURL, ...), for the "here's what we kept" note.
+  const [copied, setCopied] = useState<CopiedRequest | null>(null);
+
+  /**
+   * A whole copied request pasted anywhere: keep its cookies and login headers,
+   * drop the rest, and show the paste box with the result. Returns false for plain text.
+   */
+  const takeCopiedRequest = (text: string): boolean => {
+    const req = parseCopiedRequest(text);
+    if (!req) return false;
+    setCopied(req);
+    const hasHeaders = Object.keys(req.headers).length > 0;
+    if (!req.cookie && !hasHeaders) {
+      set({ cookieInput: 'paste', cookies: text }); // nothing usable — keep it visible next to the warning
+      return true;
+    }
+    set({ cookieInput: 'paste', cookies: req.cookie, ...(hasHeaders ? { headers: mergeHeaderLines(auth.headers ?? '', req.headers) } : {}) });
+    if (hasHeaders) onHeadersAdded();
+    return true;
+  };
+
   const updateRows = (next: CookieRow[]) => set({ cookieRows: next, cookies: rowsToCookieHeader(next, preset) });
-  const setRow = (i: number, patch: Partial<CookieRow>) => updateRows(rows.map((r, j) => (j === i ? { ...r, ...patch } : r)));
+  const setRow = (i: number, patch: Partial<CookieRow>) => {
+    if (patch.value !== undefined && takeCopiedRequest(patch.value)) return;
+    updateRows(rows.map((r, j) => (j === i ? { ...r, ...patch } : r)));
+  };
 
   if (mode === 'paste') {
     return (
       <div className="space-y-2">
         <Field
-          label="All cookies for this site"
+          label="Your copied request or cookies"
           htmlFor="auth-cookies"
-          hint="Paste them all — you don’t need to know which one logs you in. A Cookie header, a JSON export, or a cookies.txt file."
+          hint="Easiest: DevTools → Network → right-click the page request → Copy → Copy as cURL, and paste it here. A Cookie header, JSON export or cookies.txt also work."
         >
           <Textarea
             id="auth-cookies"
             rows={4}
-            placeholder={'session_id=abc123; csrftoken=xyz\n— or —\n[{"name":"session_id","value":"abc123","domain":".example.com"}]'}
+            spellCheck={false}
+            placeholder={"curl 'https://yoursite.com/dashboard' -H 'cookie: session_id=…' …\n— or —\nsession_id=abc123; csrftoken=xyz"}
             value={auth.cookies ?? ''}
-            onChange={(e) => set({ cookies: e.target.value })}
+            onChange={(e) => {
+              if (!takeCopiedRequest(e.target.value)) {
+                setCopied(null);
+                set({ cookies: e.target.value });
+              }
+            }}
           />
         </Field>
+        {copied && <CopiedRequestNote req={copied} siteUrl={siteUrl} />}
         <PastedCookieSummary text={auth.cookies ?? ''} />
         <button type="button" onClick={() => set({ cookieInput: 'fields', cookies: rowsToCookieHeader(rows, preset) })} className="cursor-pointer text-[13px] font-medium text-accent hover:underline">
           {preset ? 'Enter cookie values one by one instead' : 'Copied one cookie from the Application tab? Enter its name and value'}
@@ -181,7 +296,7 @@ function CookieInput({ siteUrl, auth, set }: { siteUrl: string; auth: SiteAuth; 
       <div className="flex items-baseline justify-between gap-3">
         <span className="text-[13px] font-medium text-fg">{preset ? `${preset.site} session cookie` : 'Session cookies'}</span>
         <button type="button" onClick={() => set({ cookieInput: 'paste' })} className="cursor-pointer text-[13px] font-medium text-accent hover:underline">
-          Paste all cookies at once
+          Paste a cURL or all cookies at once
         </button>
       </div>
       {rows.map((row, i) => {
@@ -271,7 +386,7 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
 
           <CookieHelp />
 
-          <CookieInput siteUrl={siteUrl} auth={auth} set={set} />
+          <CookieInput siteUrl={siteUrl} auth={auth} set={set} onHeadersAdded={() => setShowExtra(true)} />
 
           <button type="button" onClick={() => setShowExtra((v) => !v)} className="flex cursor-pointer items-center gap-1 text-[13px] font-medium text-muted hover:text-fg">
             <Icon name="chevronDown" size={14} className={`transition-transform ${showExtra ? 'rotate-180' : ''}`} />

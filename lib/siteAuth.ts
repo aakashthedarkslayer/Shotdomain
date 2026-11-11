@@ -1,6 +1,7 @@
 import type { Browser, BrowserContext, Page } from 'playwright';
 import { USER_AGENT } from './browser';
 import type { SiteAuth } from './captureOptions';
+import { parseCopiedRequest } from './copiedRequest';
 
 /**
  * Logging in to sites that need it, with the user's own credentials.
@@ -339,9 +340,11 @@ export async function resolveSiteAuth(
 ): Promise<ResolvedAuth> {
   switch (auth?.method) {
     case 'cookies': {
-      const cookies = parseCookieText(auth.cookies ?? '', targetUrl);
+      // A whole request copied from DevTools (Copy as cURL, ...): use its cookies and login headers.
+      const copied = parseCopiedRequest(auth.cookies ?? '');
+      const cookies = parseCookieText(copied ? copied.cookie : (auth.cookies ?? ''), targetUrl);
       const entries = parseLocalStorageText(auth.localStorage ?? '');
-      const headers = parseHeaderText(auth.headers ?? '');
+      const headers = { ...(copied?.headers ?? {}), ...parseHeaderText(auth.headers ?? '') };
       if (cookies.length === 0 && Object.keys(entries).length === 0 && Object.keys(headers).length === 0) {
         throw new SiteLoginError('Nothing to log in with. Paste your session cookies (or a token / header).');
       }

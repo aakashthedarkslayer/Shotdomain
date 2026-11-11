@@ -297,7 +297,7 @@ export function PricingSection() {
 const FAQS = [
   {
     q: 'Can it capture pages behind a login without my password?',
-    a: 'Yes. Log in to the site in your own browser, then paste your session cookies (or a token from Local Storage, or an Authorization header). ShotDomain never sees your password, works with 2FA and single sign-on, and the session stops working the moment you log out. Saved sessions are stored encrypted.',
+    a: 'Yes. Log in to the site in your own browser, then copy the page request as cURL from DevTools and paste it — ShotDomain keeps only your session cookies and login headers. ShotDomain never sees your password, works with 2FA and single sign-on, and the session stops working the moment you log out. Saved sessions are stored encrypted.',
   },
   {
     q: 'How are pages discovered? What if a site has no sitemap?',

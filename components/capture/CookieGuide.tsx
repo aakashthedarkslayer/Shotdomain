@@ -28,7 +28,7 @@ const Kbd = ({ children }: { children: ReactNode }) => (
   </kbd>
 );
 
-const NETWORK_STEPS: Step[] = [
+const CURL_STEPS: Step[] = [
   {
     title: 'Log in to the site as usual',
     body: 'Open the site in Chrome or Edge and sign in — with 2FA or SSO if it uses them.',
@@ -56,18 +56,18 @@ const NETWORK_STEPS: Step[] = [
     clicks: [0, 1],
   },
   {
-    title: 'Copy the cookie line',
+    title: 'Right-click → Copy → Copy as cURL',
     body: (
       <>
-        Click the page request → <b>Headers</b>. Under <b>Request Headers</b>, right-click <b>cookie</b> → <b>Copy value</b>.
+        Right-click the page request, choose <b>Copy</b>, then <b>Copy as cURL</b>. On Windows you’ll see “cmd” and “bash” — either works.
       </>
     ),
-    cursor: ['request-row', 'cookie-line', 'copy-value', 'copy-value'],
-    clicks: [0, 1, 2],
+    cursor: ['request-row', 'copy-menu', 'copy-curl', 'copy-curl'],
+    clicks: [0, 2],
   },
   {
     title: 'Paste it into ShotDomain',
-    body: 'Paste into “All cookies for this site” and click Test login. You don’t need to know which cookie logs you in.',
+    body: 'Paste the whole thing and click Test login. ShotDomain keeps just your cookies and login headers — no need to know which cookie logs you in.',
     cursor: ['paste-box', 'test-btn', 'test-btn', null],
     clicks: [0, 1],
   },
@@ -75,8 +75,8 @@ const NETWORK_STEPS: Step[] = [
 
 /** Application tab: copy the one cookie that keeps you logged in. */
 const APP_STEPS: Step[] = [
-  NETWORK_STEPS[0],
-  NETWORK_STEPS[1],
+  CURL_STEPS[0],
+  CURL_STEPS[1],
   {
     title: 'Application → Cookies → your site',
     body: (
@@ -93,7 +93,7 @@ const APP_STEPS: Step[] = [
     body: (
       <>
         Find the cookie with <b>session</b>, <b>auth</b> or <b>token</b> in its name. Double-click its <b>Value</b> and press <Kbd>Ctrl</Kbd>{' '}
-        <Kbd>C</Kbd>. Not sure which one? Use the <b>Network tab</b> method to copy them all at once.
+        <Kbd>C</Kbd>. Not sure which one? Use <b>Copy as cURL</b> to copy them all at once.
       </>
     ),
     cursor: ['session-name', 'session-value', 'session-value', 'session-value'],
@@ -111,7 +111,7 @@ const APP_STEPS: Step[] = [
   },
 ];
 
-export type GuideMethod = 'application' | 'network';
+export type GuideMethod = 'curl' | 'application';
 
 function Cursor({ x, y, visible, clicking }: { x: number; y: number; visible: boolean; clicking: boolean }) {
   return (
@@ -173,8 +173,9 @@ function DevTools({ step, phase }: { step: number; phase: number }) {
   const docOn = step > 2 || (step === 2 && phase >= 1);
   const rowShown = step > 2 || (step === 2 && phase >= 2);
   const rowSelected = step === 3;
-  const cookieHot = step === 3 && phase >= 1;
-  const menuOpen = step === 3 && phase === 2;
+  const menuOpen = step === 3 && phase <= 2;
+  const copyHot = step === 3 && phase >= 1 && phase <= 2;
+  const curlHot = step === 3 && phase === 2;
   const copied = step === 3 && phase >= 3;
   const tabs = ['Elements', 'Console', 'Sources', 'Network', 'Application'];
   return (
@@ -201,53 +202,54 @@ function DevTools({ step, phase }: { step: number; phase: number }) {
           </span>
         ))}
       </div>
-      <div className="flex min-h-0 flex-1">
-        <div className="w-[38%] border-r border-slate-700">
-          <div className="border-b border-slate-700 px-2 py-0.5 text-slate-500">Name</div>
-          {rowShown && (
-            <div
-              data-guide="request-row"
-              className={`flex items-center gap-1 px-2 py-1 animate-[guide-fade-in_.35s_ease-out] ${rowSelected ? 'bg-sky-900/70 text-white' : ''}`}
-            >
+      <div className="relative min-h-0 flex-1">
+        <div className="grid grid-cols-[38%_14%_14%_1fr] border-b border-slate-700 px-2 py-0.5 text-slate-500">
+          <span>Name</span>
+          <span>Status</span>
+          <span>Type</span>
+          <span>Size</span>
+        </div>
+        {rowShown ? (
+          <div
+            className={`grid grid-cols-[38%_14%_14%_1fr] items-center px-2 py-1 animate-[guide-fade-in_.35s_ease-out] ${rowSelected ? 'bg-sky-900/70 text-white' : ''}`}
+          >
+            <span data-guide="request-row" className="flex items-center gap-1">
               <span className="h-2 w-2 rounded-sm bg-sky-400" /> dashboard
+            </span>
+            <span>200</span>
+            <span>document</span>
+            <span>14.2 kB</span>
+          </div>
+        ) : (
+          <div className="pt-4 text-center text-slate-500">Reload to record requests</div>
+        )}
+        {menuOpen && (
+          <div className="absolute top-[24%] left-[14%] z-20 flex items-start animate-[guide-fade-in_.2s_ease-out]">
+            <div className="w-28 rounded-md border border-slate-600 bg-[#2a2b2e] py-1 shadow-xl">
+              <div className="px-2 py-0.5 text-slate-400">Open in new tab</div>
+              <div className="px-2 py-0.5 text-slate-400">Clear browser cache</div>
+              <div className="my-0.5 border-t border-slate-600" />
+              <div data-guide="copy-menu" className={`flex justify-between px-2 py-0.5 ${copyHot ? 'bg-sky-600 text-white' : 'text-slate-300'}`}>
+                Copy <span>▸</span>
+              </div>
+              <div className="px-2 py-0.5 text-slate-400">Block request URL</div>
             </div>
-          )}
-        </div>
-        <div className="relative flex-1 space-y-0.5 overflow-hidden px-2 py-1 font-mono">
-          {rowSelected ? (
-            <>
-              <div className="font-sans font-semibold text-slate-200">▾ Request Headers</div>
-              <div>
-                <span className="text-sky-300">accept:</span> text/html
-              </div>
-              <div
-                data-guide="cookie-line"
-                className={`truncate rounded px-0.5 transition-colors ${cookieHot ? 'bg-amber-400/25 text-amber-100 ring-1 ring-amber-300/70' : ''}`}
-              >
-                <span className="text-sky-300">cookie:</span> session_id=a8f3…; _ga=GA1.1…
-              </div>
-              <div>
-                <span className="text-sky-300">user-agent:</span> Mozilla/5.0…
-              </div>
-              {menuOpen && (
-                <div className="absolute top-[30%] left-[34%] z-20 w-28 rounded-md border border-slate-600 bg-[#2a2b2e] py-1 font-sans shadow-xl animate-[guide-fade-in_.2s_ease-out]">
-                  <div className="px-2 py-0.5 text-slate-400">Copy name</div>
-                  <div data-guide="copy-value" className="bg-sky-600 px-2 py-0.5 text-white">
-                    Copy value
-                  </div>
-                  <div className="px-2 py-0.5 text-slate-400">Copy as fetch</div>
+            {copyHot && (
+              <div className="-ml-1 mt-[22px] w-32 rounded-md border border-slate-600 bg-[#2a2b2e] py-1 shadow-xl animate-[guide-fade-in_.2s_ease-out]">
+                <div className="px-2 py-0.5 text-slate-400">Copy URL</div>
+                <div data-guide="copy-curl" className={`px-2 py-0.5 ${curlHot ? 'bg-sky-600 text-white' : 'text-slate-200'}`}>
+                  Copy as cURL
                 </div>
-              )}
-              {copied && (
-                <div className="absolute right-2 bottom-2 rounded-md bg-emerald-500 px-2 py-0.5 font-sans font-semibold text-white animate-[guide-fade-in_.25s_ease-out]">
-                  ✓ Copied
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="pt-4 text-center font-sans text-slate-500">{rowShown ? 'Click a request to see its headers' : 'Reload to record requests'}</div>
-          )}
-        </div>
+                <div className="px-2 py-0.5 text-slate-400">Copy as fetch</div>
+              </div>
+            )}
+          </div>
+        )}
+        {copied && (
+          <div className="absolute right-2 bottom-2 rounded-md bg-emerald-500 px-2 py-0.5 font-semibold text-white animate-[guide-fade-in_.25s_ease-out]">
+            ✓ Copied
+          </div>
+        )}
       </div>
     </div>
   );
@@ -361,21 +363,34 @@ function KeysOverlay({ phase, keys }: { phase: number; keys: string[] }) {
 
 function ShotDomainScene({ phase }: { phase: number }) {
   const pasted = phase >= 0;
+  const read = phase >= 1;
   const tested = phase >= 2;
   return (
     <div className="absolute inset-0 flex flex-col gap-2 bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950 p-[4%] text-[10px] text-slate-200">
       <div className="flex items-center gap-1.5 text-[11px] font-semibold text-white">
         <span className="h-3.5 w-3.5 rounded bg-gradient-to-br from-indigo-500 to-fuchsia-500" /> ShotDomain · This site needs a login
       </div>
-      <div className="text-slate-400">All cookies for this site</div>
-      <div data-guide="paste-box" className="min-h-[22%] rounded-lg border border-indigo-400/60 bg-white/5 p-2 font-mono text-[9px]">
-        {pasted ? <span className="animate-[guide-fade-in_.4s_ease-out]">session_id=a8f3e1…; _ga=GA1.1.811…; theme=dark</span> : <span className="text-slate-500">Paste here…</span>}
+      <div className="text-slate-400">Your copied request or cookies</div>
+      <div data-guide="paste-box" className="min-h-[22%] rounded-lg border border-indigo-400/60 bg-white/5 p-2 font-mono text-[9px] leading-relaxed">
+        {!pasted ? (
+          <span className="text-slate-500">Paste here…</span>
+        ) : read ? (
+          <span key="read" className="animate-[guide-fade-in_.4s_ease-out]">session_id=a8f3e1…; _ga=GA1.1.811…; theme=dark</span>
+        ) : (
+          <span key="curl" className="animate-[guide-fade-in_.4s_ease-out]">
+            curl &apos;https://yoursite.com/dashboard&apos; -H &apos;accept: text/html&apos; -b &apos;session_id=a8f3e1…; _ga=GA1.1.811…; theme=dark&apos; -H
+            &apos;user-agent: Mozilla/5.0…&apos;
+          </span>
+        )}
       </div>
-      {pasted && (
-        <div className="flex flex-wrap items-center gap-1 rounded-lg bg-white/5 px-2 py-1.5 animate-[guide-fade-in_.4s_ease-out]">
-          Found 3 cookies · Likely login:
-          <span className="rounded bg-emerald-500/20 px-1 font-mono text-emerald-300">session_id</span>
-          <span className="ml-1 text-slate-500 line-through">_ga</span>
+      {read && (
+        <div className="space-y-1 rounded-lg bg-emerald-500/10 px-2 py-1.5 animate-[guide-fade-in_.4s_ease-out]">
+          <div className="text-emerald-300">✓ Read your copied cURL · kept 3 cookies · left out 12 browser headers</div>
+          <div className="flex flex-wrap items-center gap-1 text-slate-300">
+            Likely login:
+            <span className="rounded bg-emerald-500/20 px-1 font-mono text-emerald-300">session_id</span>
+            <span className="ml-1 text-slate-500 line-through">_ga</span>
+          </div>
         </div>
       )}
       <div className="flex items-center gap-2">
@@ -430,9 +445,9 @@ function ShotDomainFieldsScene({ phase }: { phase: number }) {
 
 /* ----------------------------------------------------------------- guide */
 
-export function CookieGuide({ initialMethod = 'application' }: { initialMethod?: GuideMethod } = {}) {
+export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideMethod } = {}) {
   const [method, setMethod] = useState<GuideMethod>(initialMethod);
-  const steps = method === 'application' ? APP_STEPS : NETWORK_STEPS;
+  const steps = method === 'application' ? APP_STEPS : CURL_STEPS;
   const [step, setStep] = useState(0);
   const [phase, setPhase] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -503,7 +518,7 @@ export function CookieGuide({ initialMethod = 'application' }: { initialMethod?:
     scene = (
       <BrowserChrome loggedIn={step > 0 || shownPhase >= 2}>
         {step === 1 && shownPhase < 3 && <KeysOverlay phase={shownPhase} keys={['Ctrl', 'Shift', 'I']} />}
-        {method === 'network' && step === 2 && shownPhase === 2 && <KeysOverlay phase={0} keys={['F5']} />}
+        {method === 'curl' && step === 2 && shownPhase === 2 && <KeysOverlay phase={0} keys={['F5']} />}
         {method === 'application' && step === 3 && shownPhase === 2 && <KeysOverlay phase={1} keys={['Ctrl', 'C']} />}
         {(step >= 2 || (step === 1 && shownPhase >= 3)) &&
           (method === 'application' ? <AppDevTools step={step} phase={shownPhase} /> : <DevTools step={step} phase={shownPhase} />)}
@@ -515,8 +530,8 @@ export function CookieGuide({ initialMethod = 'application' }: { initialMethod?:
       <div role="radiogroup" aria-label="Method" className="flex rounded-xl bg-subtle p-0.5 text-[13px]">
         {(
           [
+            ['curl', 'Copy as cURL', 'easiest · copies everything'],
             ['application', 'Application tab', 'copy one cookie'],
-            ['network', 'Network tab', 'copy all cookies at once'],
           ] as const
         ).map(([m, label, hint]) => (
           <button

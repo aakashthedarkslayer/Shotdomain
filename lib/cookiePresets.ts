@@ -4,6 +4,8 @@
  * Client-safe (used by the login form).
  */
 
+import { parseCopiedRequest } from './copiedRequest';
+
 export interface CookieField {
   name: string;
   hint: string;
@@ -117,7 +119,8 @@ export function classifyCookie(name: string): CookieKind {
 
 /** Cookie names (and whether each has a value) from any supported paste format. */
 export function pastedCookieNames(text: string): { name: string; empty: boolean }[] {
-  const t = text.trim();
+  const copied = parseCopiedRequest(text);
+  const t = (copied ? copied.cookie : text).trim();
   if (!t) return [];
   if (t.startsWith('[') || t.startsWith('{')) {
     try {
