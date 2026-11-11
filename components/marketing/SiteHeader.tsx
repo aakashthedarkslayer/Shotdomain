@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Logo } from '@/components/ui/Logo';
 import { buttonClass } from '@/components/ui/Button';
+import { currentUserKey } from '@/auth';
 
 const LINKS = [
   { href: '#how-it-works', label: 'How it works' },
@@ -10,7 +11,9 @@ const LINKS = [
   { href: '#faq', label: 'FAQ' },
 ];
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  // Signed in (or local mode, which has no sign-in): go to the app. Signed out: log in.
+  const signedIn = (await currentUserKey()) !== null;
   return (
     <header className="sticky top-0 z-30 glass-strong border-x-0 border-t-0 !shadow-none">
       <div className="mx-auto flex h-14 max-w-6xl items-center gap-8 px-4 sm:px-6">
@@ -23,12 +26,15 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-2">
-          <Link href="/login" className={buttonClass('ghost', 'sm', 'hidden sm:inline-flex')}>
-            Log in
-          </Link>
-          <Link href="/app" className={buttonClass('primary', 'sm')}>
-            Open app
-          </Link>
+          {signedIn ? (
+            <Link href="/app" className={buttonClass('primary', 'sm')}>
+              Open app
+            </Link>
+          ) : (
+            <Link href="/login" className={buttonClass('ghost', 'sm')}>
+              Log in
+            </Link>
+          )}
         </div>
       </div>
     </header>
