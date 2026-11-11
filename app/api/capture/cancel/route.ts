@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getJob } from '@/lib/jobStore';
+import { getOwnedJob } from '@/lib/jobAccess';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const job = getJob(jobId);
+    const job = await getOwnedJob(jobId);
     if (!job) {
       return Response.json(
         { error: 'Job not found' },

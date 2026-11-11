@@ -1,13 +1,17 @@
-import { chromium, devices } from 'playwright';
-import type { Browser, BrowserContext } from 'playwright';
+import { devices } from 'playwright';
+import { getBrowser, USER_AGENT } from './browser';
+import type { Browser, BrowserContext, Page } from 'playwright';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import type { CaptureSettings, CaptureResult } from './jobStore';
 import { getJob } from './jobStore';
 import { getDevicePreset, getDeviceFolder } from './devices';
 import { urlToFilename } from './dedupe';
+import { applyCleanup } from './pageCleanup';
+import { SiteLoginError, applyAuthToContext, resolveSiteAuth } from './siteAuth';
+import type { ResolvedAuth } from './siteAuth';
+import type { SiteAuth } from './captureOptions';
 
-const USER_AGENT = 'SiteScreenshotTool/1.0 (+local dev tool)';
 
 // Hardcoded ad/tracker domains to block
 const AD_DOMAINS = [
@@ -55,26 +59,6 @@ class Semaphore {
     } else {
       this.current--;
     }
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Browser singleton
-// ---------------------------------------------------------------------------
-
-let browserInstance: Browser | null = null;
-
-async function getBrowser(): Promise<Browser> {
-  if (!browserInstance || !browserInstance.isConnected()) {
-    browserInstance = await chromium.launch({ headless: true });
-  }
-  return browserInstance;
-}
-
-export async function closeBrowser(): Promise<void> {
-  if (browserInstance) {
-    await browserInstance.close();
-    browserInstance = null;
   }
 }
 
@@ -128,8 +112,20 @@ function isAdUrl(url: string): boolean {
 async function createContext(
   browser: Browser,
   settings: CaptureSettings,
+  auth: ResolvedAuth | undefined, // required on purpose: every context must carry the login
+): Promise<BrowserContext> {
+  const context = await newDeviceContext(browser, settings, auth);
+  await applyAuthToContext(context, auth);
+  return context;
+}
+
+async function newDeviceContext(
+  browser: Browser,
+  settings: CaptureSettings,
+  auth?: ResolvedAuth,
 ): Promise<BrowserContext> {
   const preset = getDevicePreset(settings.device || 'Desktop');
+  const httpCredentials = auth?.httpCredentials;
 
   // Desktop — no Playwright device descriptor
   if (!preset?.playwrightDevice) {
@@ -137,6 +133,7 @@ async function createContext(
       viewport: { width: settings.width, height: settings.height },
       userAgent: USER_AGENT,
       deviceScaleFactor: preset?.deviceScaleFactor ?? 1,
+      httpCredentials,
     });
   }
 
@@ -157,7 +154,77 @@ async function createContext(
   return browser.newContext({
     ...deviceDescriptor,
     viewport: { width: viewportWidth, height: viewportHeight },
+    httpCredentials,
   });
+}
+
+// ---------------------------------------------------------------------------
+// Pre-capture scroll (full-page only)
+// ---------------------------------------------------------------------------
+
+/** Hard cap so infinite-scroll pages can't hang a capture (~MAX_SCROLL_STEPS × 100ms). */
+const MAX_SCROLL_STEPS = 80;
+const SCROLL_STEP_DELAY_MS = 100;
+/** How long to wait for lazy images/requests triggered by the scroll to settle. */
+const SETTLE_TIMEOUT_MS = 5_000;
+
+/**
+ * Scroll the window to the bottom in viewport-sized steps so lazy-loaded
+ * content (IntersectionObserver reveals, loading="lazy" images, "load more"
+ * sentinels) renders before a full-page screenshot, then return to the top.
+ *
+ * `fullPage: true` only captures the DOM's current height, so without this
+ * anything below the fold that waits for scroll is blank or missing.
+ *
+ * Known limitation: pages that scroll inside an inner container instead of
+ * the window are not handled.
+ */
+async function autoScroll(page: Page): Promise<void> {
+  await page.evaluate(
+    async ({ maxSteps, delay }) => {
+      await new Promise<void>((resolve) => {
+        let steps = 0;
+        const timer = setInterval(() => {
+          // 75% of a viewport per step so every element is fully in view at some point.
+          const step = Math.max(300, Math.floor(window.innerHeight * 0.75));
+          window.scrollBy({ top: step, behavior: 'instant' });
+          steps++;
+          // Re-read the height every tick: pages that grow as you scroll extend the run.
+          const atBottom =
+            window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+          if (atBottom || steps >= maxSteps) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, delay);
+      });
+    },
+    { maxSteps: MAX_SCROLL_STEPS, delay: SCROLL_STEP_DELAY_MS },
+  );
+
+  // Let images and requests kicked off by the scroll finish (bounded).
+  await page.waitForLoadState('networkidle', { timeout: SETTLE_TIMEOUT_MS }).catch(() => {});
+  await page
+    .evaluate(
+      (timeout) =>
+        Promise.race([
+          Promise.all(
+            Array.from(document.images)
+              .filter((img) => !img.complete)
+              .map((img) => new Promise((done) => {
+                img.addEventListener('load', done, { once: true });
+                img.addEventListener('error', done, { once: true });
+              })),
+          ),
+          new Promise((done) => setTimeout(done, timeout)),
+        ]),
+      SETTLE_TIMEOUT_MS,
+    )
+    .catch(() => {});
+
+  // Back to the top so sticky headers and scroll-linked effects sit in their initial state.
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  await page.waitForTimeout(500);
 }
 
 // ---------------------------------------------------------------------------
@@ -169,8 +236,9 @@ async function captureOne(
   url: string,
   settings: CaptureSettings,
   outputPath: string,
-): Promise<void> {
+): Promise<{ warning?: string }> {
   const page = await context.newPage();
+  let warning: string | undefined;
 
   try {
     // Ad blocking via route interception
@@ -179,7 +247,8 @@ async function captureOne(
         if (isAdUrl(route.request().url())) {
           return route.abort();
         }
-        return route.continue();
+        // fallback (not continue) so context-level routes, e.g. session headers, still apply
+        return route.fallback();
       });
     }
 
@@ -201,6 +270,9 @@ async function captureOne(
       await page.waitForTimeout(2_000);
     }
 
+    // Page cleanup: consent banners, user click/hide selectors, custom CSS
+    warning = await applyCleanup(page, settings.cleanup);
+
     // Inject custom background color
     if (settings.backgroundColor) {
       await page.addStyleTag({
@@ -210,6 +282,11 @@ async function captureOne(
       await page.waitForTimeout(100);
     }
 
+    // Full-page: scroll first so lazy-loaded content below the fold renders.
+    if (settings.fullPage) {
+      await autoScroll(page);
+    }
+
     // Take the screenshot
     await page.screenshot({
       path: outputPath,
@@ -217,6 +294,7 @@ async function captureOne(
       type: settings.format,
       ...(settings.format === 'jpeg' ? { quality: 85 } : {}),
     });
+    return { warning };
   } finally {
     await page.close();
   }
@@ -237,8 +315,9 @@ async function captureOne(
  *   3. Navigate with waitUntil: 'networkidle', 30s timeout
  *      If networkidle fails, fall back to waitUntil: 'load' + 3s extra wait
  *   4. If backgroundColor: inject <style>html,body{background:COLOR}</style>
- *   5. Screenshot with fullPage and format options
- *   6. Save to tmp/{jobId}/{filename}
+ *   5. If fullPage: scroll to the bottom (capped) so lazy content renders, back to top
+ *   6. Screenshot with fullPage and format options
+ *   7. Save to tmp/{jobId}/{filename}
  * - Handle errors: timeout, navigation failure, etc. Mark as failed with reason.
  * - If useCache: reuse one BrowserContext per domain
  *
@@ -277,6 +356,23 @@ export async function captureScreenshots(
     usedNamesPerDevice.set(dev, new Set<string>());
   }
 
+  // Log in once per job (login form) or parse cookies; every capture context reuses the result.
+  let resolvedAuth: ResolvedAuth | undefined;
+  if (settings.auth && settings.auth.method !== 'none') {
+    try {
+      if ('sealed' in settings.auth) throw new SiteLoginError('Saved login details could not be decrypted.');
+      resolvedAuth = await resolveSiteAuth(browser, settings.auth as SiteAuth, urls[0]);
+    } catch (err) {
+      const message = err instanceof SiteLoginError ? err.message : `Login failed: ${err instanceof Error ? err.message : String(err)}`;
+      for (const dev of targetDevices) {
+        for (const url of urls) {
+          onProgress(isMultiDevice ? `${dev}:${url}` : url, { status: 'failed', error: message, device: dev });
+        }
+      }
+      return;
+    }
+  }
+
   // Context cache — keyed by `${hostname}:${device}` when useCache is enabled
   const contextCache = new Map<string, BrowserContext>();
 
@@ -286,7 +382,7 @@ export async function captureScreenshots(
       const cached = contextCache.get(cacheKey);
       if (cached) return cached;
     }
-    const ctx = await createContext(browser, devSettings);
+    const ctx = await createContext(browser, devSettings, resolvedAuth);
     if (settings.useCache) {
       contextCache.set(cacheKey, ctx);
     }
@@ -352,7 +448,7 @@ export async function captureScreenshots(
         if (settings.useCache) {
           context = await getContext(hostname, item.devSettings);
         } else {
-          context = await createContext(browser, item.devSettings);
+          context = await createContext(browser, item.devSettings, resolvedAuth);
           ownedContext = true;
         }
 
@@ -372,8 +468,8 @@ export async function captureScreenshots(
         }
 
         try {
-          await captureOne(context, item.url, item.devSettings, outputPath);
-          onProgress(item.key, { status: 'done', fileName: relativeFileName, device: item.device });
+          const { warning } = await captureOne(context, item.url, item.devSettings, outputPath);
+          onProgress(item.key, { status: 'done', fileName: relativeFileName, device: item.device, warning });
         } catch (err) {
           const message = errorToMessage(err);
           onProgress(item.key, { status: 'failed', error: message, device: item.device });

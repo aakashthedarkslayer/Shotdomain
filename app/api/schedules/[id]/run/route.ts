@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { executeScheduledRun } from '@/lib/scheduler';
+import { PlanLimitError, executeScheduledRun } from '@/lib/scheduler';
+import { getOwnedSchedule } from '@/lib/scheduleAccess';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,9 +10,13 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
+    if (!(await getOwnedSchedule(id))) {
+      return NextResponse.json({ error: 'Schedule not found' }, { status: 404 });
+    }
     const run = await executeScheduledRun(id);
     return NextResponse.json(run);
   } catch (error) {
+    if (error instanceof PlanLimitError) return NextResponse.json({ error: error.message, upgrade: true }, { status: 402 });
     console.error('Error executing scheduled run:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to execute scheduled run' },

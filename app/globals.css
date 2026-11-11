@@ -1,51 +1,201 @@
 @import "tailwindcss";
 
-@theme {
-  --font-serif: var(--font-serif), Georgia, serif;
-  --font-sans: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-
-  --color-safelight: #e54d2e;
-  --color-safelight-hover: #d43d1f;
-  --color-safelight-dark: #ff5733;
-
-  --color-paper: #fbfbfa;
-  --color-paper-subtle: #f4f4f0;
-  --color-paper-border: #e4e4df;
-
-  --color-ink: #121315;
-  --color-ink-muted: #6b6d74;
+/*
+ * Design tokens — "glass" theme. Components use semantic names
+ * (bg-surface, text-muted, border-line, glass, ...) so light/dark and the
+ * look itself are defined here and nowhere else.
+ */
+:root {
+  --bg: #f4f5fb;
+  --surface: rgba(255, 255, 255, 0.58);
+  --surface-strong: rgba(255, 255, 255, 0.86);
+  --field: rgba(255, 255, 255, 0.72);
+  --subtle: rgba(15, 23, 42, 0.045);
+  --line: rgba(15, 23, 42, 0.08);
+  --line-strong: rgba(15, 23, 42, 0.16);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-highlight: rgba(255, 255, 255, 0.9);
+  --glass-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 40px -12px rgba(30, 27, 75, 0.14);
+  --fg: #0f172a;
+  --muted: #566078;
+  --faint: #929bb2;
+  --primary: #0f172a;
+  --primary-fg: #ffffff;
+  --accent: #5b5bf0;
+  --accent-2: #a855f7;
+  --accent-3: #06b6d4;
+  /* Button/brand fills stay saturated in both modes so white text keeps contrast. */
+  --brand-1: #5b5bf0;
+  --brand-2: #9d4df3;
+  --accent-soft: rgba(91, 91, 240, 0.1);
+  --success: #059669;
+  --success-soft: rgba(5, 150, 105, 0.1);
+  --warning: #c2410c;
+  --warning-soft: rgba(234, 88, 12, 0.1);
+  --danger: #dc2626;
+  --danger-soft: rgba(220, 38, 38, 0.08);
+  --blob-1: rgba(129, 140, 248, 0.45);
+  --blob-2: rgba(192, 132, 252, 0.35);
+  --blob-3: rgba(34, 211, 238, 0.3);
 }
 
-@keyframes shutter-flash {
-  0% {
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #06070d;
+    --surface: rgba(255, 255, 255, 0.045);
+    --surface-strong: rgba(18, 20, 32, 0.88);
+    --field: rgba(255, 255, 255, 0.05);
+    --subtle: rgba(255, 255, 255, 0.05);
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.16);
+    --glass-border: rgba(255, 255, 255, 0.09);
+    --glass-highlight: rgba(255, 255, 255, 0.12);
+    --glass-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 48px -16px rgba(0, 0, 0, 0.6);
+    --fg: #eef0f7;
+    --muted: #9aa2b8;
+    --faint: #626a80;
+    --primary: #eef0f7;
+    --primary-fg: #06070d;
+    --accent: #8b8dff;
+    --accent-2: #c084fc;
+    --accent-3: #22d3ee;
+    --accent-soft: rgba(139, 141, 255, 0.14);
+    --success: #34d399;
+    --success-soft: rgba(52, 211, 153, 0.12);
+    --warning: #fb923c;
+    --warning-soft: rgba(251, 146, 60, 0.12);
+    --danger: #f87171;
+    --danger-soft: rgba(248, 113, 113, 0.12);
+    --blob-1: rgba(99, 102, 241, 0.32);
+    --blob-2: rgba(168, 85, 247, 0.22);
+    --blob-3: rgba(6, 182, 212, 0.16);
+  }
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-field: var(--field);
+  --color-subtle: var(--subtle);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
+  --color-accent-soft: var(--accent-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+}
+
+/* Frosted panel: translucent fill, blur, hairline light border, soft shadow. */
+@utility glass {
+  background: var(--surface);
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  backdrop-filter: blur(22px) saturate(170%);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+}
+
+/* Nearly opaque glass for things that float over content: menus, modals, bars. */
+@utility glass-strong {
+  background: var(--surface-strong);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+}
+
+/* Brand gradient fill (buttons, step markers, logo). */
+@utility bg-brand {
+  background-image: linear-gradient(135deg, var(--brand-1) 0%, var(--brand-2) 100%);
+}
+
+@utility text-brand {
+  background-image: linear-gradient(100deg, var(--accent) 0%, var(--accent-2) 55%, var(--accent-3) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@layer base {
+  html {
+    color-scheme: light dark;
+    background: var(--bg);
+  }
+
+  body {
+    background: transparent;
+    color: var(--fg);
+  }
+
+  /* Ambient gradient mesh behind everything — what the glass panels blur. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(38rem 30rem at 12% -6%, var(--blob-1), transparent 70%),
+      radial-gradient(34rem 28rem at 92% 8%, var(--blob-2), transparent 70%),
+      radial-gradient(40rem 32rem at 70% 105%, var(--blob-3), transparent 70%),
+      radial-gradient(30rem 26rem at -5% 85%, var(--blob-2), transparent 70%);
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 28%, transparent);
+  }
+
+  /* Default keyboard focus ring; utilities like outline-none can override it. */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+/* Cookie guide animations */
+@keyframes guide-fade-in {
+  from {
     opacity: 0;
+    transform: translateY(4px);
   }
-  15% {
-    opacity: 0.95;
-  }
-  100% {
-    opacity: 0;
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
-.animate-shutter-flash {
-  animation: shutter-flash 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+@keyframes guide-progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
 }
 
-/* Mechanical film / contact sheet details */
-.crop-mark {
-  position: relative;
-}
-.crop-mark::before,
-.crop-mark::after {
-  content: '';
-  position: absolute;
-  pointer-events: none;
-  border-color: currentColor;
+@keyframes guide-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
 }
 
-/* Accessible reduced motion override */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -53,5 +203,15 @@
     animation-duration: 0.001s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001s !important;
+  }
+}
+
+/* A visitor who presses "Play" on a reduced-motion device opted in: restore motion inside. */
+@media (prefers-reduced-motion: reduce) {
+  .allow-motion,
+  .allow-motion * {
+    animation-duration: revert-layer !important;
+    animation-iteration-count: revert-layer !important;
+    transition-duration: revert-layer !important;
   }
 }

@@ -1,3 +1,4 @@
+import { inPathScope, siteKey } from './url';
 import * as cheerio from 'cheerio';
 import { normalizeUrl } from './dedupe';
 
@@ -21,6 +22,10 @@ const SKIP_EXTENSIONS = new Set([
 export interface CrawlOptions {
   isAllowed: (url: string) => boolean;
   crawlDelay: number; // ms between requests
+  /** Extra request headers per URL (login cookies / basic auth). */
+  headersFor?: (url: string) => Record<string, string>;
+  /** Only follow links at or below this path (e.g. "/owner/repo"). */
+  pathPrefix?: string;
 }
 
 /**
@@ -60,8 +65,8 @@ export async function crawlSite(
   truncated: boolean;
   method: 'crawl';
 }> {
-  const { isAllowed, crawlDelay } = options;
-  const rootHostname = new URL(rootUrl).hostname.toLowerCase();
+  const { isAllowed, crawlDelay, headersFor, pathPrefix } = options;
+  const rootSite = siteKey(new URL(rootUrl).hostname); // www.x.com and x.com are the same site
 
   const visited = new Set<string>();
   const collectedUrls: string[] = [];
@@ -114,7 +119,7 @@ export async function crawlSite(
       const timeoutId = setTimeout(() => controller.abort(), PER_REQUEST_TIMEOUT);
 
       const response = await fetch(url, {
-        headers: { 'User-Agent': USER_AGENT },
+        headers: { 'User-Agent': USER_AGENT, ...(headersFor ? headersFor(url) : {}) },
         signal: controller.signal,
         redirect: 'follow',
       });
@@ -171,7 +176,12 @@ export async function crawlSite(
       resolvedUrl.hash = '';
 
       // Same hostname only
-      if (resolvedUrl.hostname.toLowerCase() !== rootHostname) {
+      if (siteKey(resolvedUrl.hostname) !== rootSite) {
+        return;
+      }
+
+      // Stay inside the section the user asked for
+      if (!inPathScope(resolvedUrl.toString(), pathPrefix)) {
         return;
       }
 
@@ -184,6 +194,11 @@ export async function crawlSite(
 
       // Skip non-HTML extensions
       if (hasSkippedExtension(resolvedString)) {
+        return;
+      }
+
+      // Never follow logout links: when crawling logged in they would end the session.
+      if (/log-?out|sign-?out/i.test(resolvedUrl.pathname)) {
         return;
       }
 

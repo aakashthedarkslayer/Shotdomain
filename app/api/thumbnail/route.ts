@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getJob } from '@/lib/jobStore';
+import { getOwnedJob } from '@/lib/jobAccess';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const job = getJob(jobId);
+  const job = await getOwnedJob(jobId);
   if (!job) {
     return Response.json(
       { error: 'Job not found' },

@@ -26,10 +26,19 @@ export interface Schedule {
   lastRunStatus?: 'success' | 'partial' | 'failed' | 'running';
   lastRunJobId?: string;
   nextRunAt?: number;
+  /** userKey of the creator. Schedules without one predate per-user schedules. */
+  ownerKey?: string;
+  /** Email after every run (default) or only when pages changed since the previous run. */
+  notifyOn?: 'every' | 'changes';
+  /** % of a page that must differ to count as "changed" (default 1). */
+  changeThreshold?: number;
 }
 
 export interface ScheduledRunResult {
   url: string;
+  device?: string;
+  /** % of the page that differs from the previous run (null: couldn't compare). */
+  changePct?: number | null;
   fileName?: string;
   status: 'done' | 'failed';
   error?: string;
@@ -48,6 +57,10 @@ export interface ScheduledRun {
   results: ScheduledRunResult[];
   notificationSent: boolean;
   emailPreviewUrl?: string;
+  /** Previous run this one was compared against (absent on the first run). */
+  comparedToRunId?: string;
+  /** Pages whose change is at or above the schedule's threshold. */
+  changedPages?: number;
 }
 
 const DATA_DIR = path.join(process.cwd(), 'data');
@@ -267,7 +280,15 @@ export async function deleteSchedule(id: string): Promise<boolean> {
 /**
  * Get the path to a schedule's runs directory
  */
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+/** Schedule and run ids are UUIDs; anything else is rejected before it reaches a path. */
+export function isValidId(id: string): boolean {
+  return UUID_RE.test(id);
+}
+
 export function getScheduleRunsDir(scheduleId: string): string {
+  if (!isValidId(scheduleId)) throw new Error('Invalid schedule id');
   return path.join(SCHEDULES_STORAGE_DIR, scheduleId, 'runs');
 }
 
@@ -275,6 +296,7 @@ export function getScheduleRunsDir(scheduleId: string): string {
  * Get the path to a specific run directory
  */
 export function getRunDir(scheduleId: string, runId: string): string {
+  if (!isValidId(runId)) throw new Error('Invalid run id');
   return path.join(getScheduleRunsDir(scheduleId), runId);
 }
 

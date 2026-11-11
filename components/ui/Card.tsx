@@ -1,25 +1,38 @@
-import React from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  header?: React.ReactNode;
-  footer?: React.ReactNode;
+export function Card({ className = '', children, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={`glass rounded-2xl ${className}`} {...props}>
+      {children}
+    </div>
+  );
 }
 
-export const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ children, header, footer, className = '', ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={`rounded-2xl border border-stone-200/90 bg-white p-6 sm:p-8 shadow-xs dark:border-stone-800 dark:bg-stone-900/90 transition-colors ${className}`}
-        {...props}
-      >
-        {header && <div className="border-b border-stone-100 pb-5 mb-6 dark:border-stone-800">{header}</div>}
-        <div>{children}</div>
-        {footer && <div className="border-t border-stone-100 pt-5 mt-6 dark:border-stone-800">{footer}</div>}
-      </div>
-    );
-  },
-);
+interface CardHeaderProps {
+  title: ReactNode;
+  description?: ReactNode;
+  actions?: ReactNode;
+  className?: string;
+}
 
-Card.displayName = 'Card';
+export function CardHeader({ title, description, actions, className = '' }: CardHeaderProps) {
+  return (
+    <div className={`flex flex-wrap items-start justify-between gap-4 border-b border-line px-5 py-4 sm:px-6 ${className}`}>
+      <div className="min-w-0">
+        <h2 className="text-base font-semibold tracking-tight text-fg">{title}</h2>
+        {description && <p className="mt-0.5 text-sm text-muted">{description}</p>}
+      </div>
+      {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
+    </div>
+  );
+}
+
+export function CardFooter({ className = '', children }: { className?: string; children: ReactNode }) {
+  return (
+    <div className={`flex flex-wrap items-center justify-between gap-3 border-t border-line px-5 py-3.5 sm:px-6 ${className}`}>
+      {children}
+    </div>
+  );
+}
+
 export default Card;

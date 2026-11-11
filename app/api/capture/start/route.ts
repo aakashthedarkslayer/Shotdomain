@@ -1,8 +1,12 @@
 import { NextRequest } from 'next/server';
-import { createJob, getJob } from '@/lib/jobStore';
+import { createJob, getJob, updateResult } from '@/lib/jobStore';
 import { captureScreenshots } from '@/lib/screenshot';
-import { updateResult } from '@/lib/jobStore';
+import { currentUserKey } from '@/auth';
+import { saveCaptureFromJob } from '@/lib/userData';
 import type { CaptureSettings } from '@/lib/jobStore';
+import { sanitizeAuth, sanitizeCleanup } from '@/lib/captureOptions';
+import { planInfoFor } from '@/lib/billing';
+import { checkCapture, limitResponse } from '@/lib/entitlements';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,8 +36,13 @@ export async function POST(request: NextRequest) {
     if (settings.format !== 'png' && settings.format !== 'jpeg') {
       settings.format = 'png';
     }
+    settings.cleanup = sanitizeCleanup(settings.cleanup);
+    settings.auth = sanitizeAuth(settings.auth);
 
-    const job = await createJob('capture', urls, settings);
+    const ownerKey = (await currentUserKey()) ?? undefined;
+    const denial = checkCapture(await planInfoFor(ownerKey ?? null), urls.length, settings);
+    if (denial) return limitResponse(denial);
+    const job = await createJob('capture', urls, settings, ownerKey);
 
     // Start capture asynchronously (don't await)
     captureScreenshots(
@@ -43,9 +52,15 @@ export async function POST(request: NextRequest) {
       (url: string, result) => {
         updateResult(job.id, url, result);
       }
-    ).catch((error) => {
-      console.error(`Capture job ${job.id} failed:`, error);
-    });
+    )
+      .then(async () => {
+        // Keep a copy in the user's history (tmp/ is wiped after 1h).
+        const finished = getJob(job.id);
+        if (finished?.ownerKey) await saveCaptureFromJob(finished.ownerKey, { ...finished, results: finished.results.values() });
+      })
+      .catch((error) => {
+        console.error(`Capture job ${job.id} failed:`, error);
+      });
 
     return Response.json({ jobId: job.id });
   } catch (error) {

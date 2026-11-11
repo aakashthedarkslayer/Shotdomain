@@ -4,6 +4,13 @@ import { crawlSite } from '@/lib/crawler';
 import { fetchRobotsTxt } from '@/lib/robots';
 import { dedupeUrls } from '@/lib/dedupe';
 import { createJob } from '@/lib/jobStore';
+import { sanitizeAuth } from '@/lib/captureOptions';
+import { getBrowser } from '@/lib/browser';
+import { SiteLoginError, authHeadersFor, resolveSiteAuth } from '@/lib/siteAuth';
+import type { ResolvedAuth } from '@/lib/siteAuth';
+import { discoverRenderedLinks } from '@/lib/renderedLinks';
+import { inPathScope, sameSite } from '@/lib/url';
+import { checkLoginPages, currentPlanInfo, limitResponse } from '@/lib/entitlements';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,6 +18,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { url } = body;
+    const auth = sanitizeAuth(body.auth);
 
     if (!url || typeof url !== 'string') {
       return Response.json(
@@ -38,15 +46,37 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (auth) {
+      const denial = checkLoginPages(await currentPlanInfo());
+      if (denial) return limitResponse(denial);
+    }
+
+    // Log in first (if the site needs it) so discovery sees the logged-in site.
+    let resolved: ResolvedAuth | undefined;
+    if (auth) {
+      try {
+        resolved = await resolveSiteAuth(getBrowser, auth, normalizedUrl);
+      } catch (err) {
+        const message = err instanceof SiteLoginError ? err.message : 'Login failed.';
+        return Response.json({ error: message }, { status: 400 });
+      }
+    }
+    const headersFor = (u: string) => authHeadersFor(resolved, u);
+
+    // A URL with a path (e.g. github.com/owner/repo) limits discovery to that section.
+    const startPath = new URL(normalizedUrl).pathname.replace(/\/+$/, '');
+    const pathPrefix = startPath && startPath !== '/' ? startPath : undefined;
+    const inScope = (u: string) => sameSite(u, normalizedUrl) && inPathScope(u, pathPrefix);
+
     // Try sitemap first
     let urls: string[] = [];
     let method: 'sitemap' | 'crawl' = 'sitemap';
     let truncated = false;
 
     try {
-      const sitemapResult = await discoverFromSitemap(origin);
-      urls = sitemapResult.urls;
-      truncated = sitemapResult.truncated;
+      const sitemapResult = await discoverFromSitemap(origin, headersFor);
+      urls = sitemapResult.urls.filter(inScope);
+      truncated = sitemapResult.truncated && urls.length >= 500;
       method = 'sitemap';
     } catch {
       // Sitemap failed, will try crawl
@@ -59,6 +89,8 @@ export async function POST(request: NextRequest) {
         const crawlResult = await crawlSite(normalizedUrl, {
           isAllowed: robots.isAllowed,
           crawlDelay: robots.getCrawlDelay(),
+          headersFor,
+          pathPrefix,
         });
         urls = crawlResult.urls;
         truncated = crawlResult.truncated;
@@ -73,16 +105,37 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Deduplicate
-    urls = dedupeUrls(urls, normalizedUrl);
-
-    // Ensure root URL is included
-    if (!urls.some(u => {
+    // Logged-in web apps often build their navigation with JavaScript; add links
+    // from the rendered page (including where the login redirected to).
+    let renderedFrom: string | undefined;
+    if (resolved && urls.length < 500) {
       try {
-        const parsed = new URL(u);
-        return parsed.pathname === '/' || parsed.pathname === '';
-      } catch { return false; }
-    })) {
+        const robots = await fetchRobotsTxt(origin);
+        const rendered = await discoverRenderedLinks(await getBrowser(), normalizedUrl, resolved, robots.isAllowed, pathPrefix);
+        renderedFrom = rendered.finalUrl;
+        const seen = new Set(urls);
+        for (const link of rendered.links) {
+          if (urls.length >= 500) break;
+          if (!seen.has(link)) urls.push(link);
+        }
+      } catch (err) {
+        console.warn('Rendered link discovery failed:', err instanceof Error ? err.message : err);
+      }
+    }
+
+    // Deduplicate, keep only the requested site/section
+    urls = dedupeUrls(urls.filter(inScope), normalizedUrl);
+
+    // Ensure the start URL itself is included
+    const startKey = (u: string) => {
+      try {
+        const p = new URL(u);
+        return p.pathname.replace(/\/+$/, '') || '/';
+      } catch {
+        return u;
+      }
+    };
+    if (!urls.some((u) => startKey(u) === (startPath || '/'))) {
       urls.unshift(normalizedUrl);
     }
 
@@ -94,6 +147,9 @@ export async function POST(request: NextRequest) {
       method,
       urls,
       truncated,
+      loggedIn: !!resolved,
+      renderedFrom,
+      pathPrefix,
     });
   } catch (error) {
     console.error('Discovery error:', error);

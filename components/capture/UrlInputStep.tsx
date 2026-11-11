@@ -1,0 +1,112 @@
+'use client';
+
+import { useState } from 'react';
+import type { FormEvent } from 'react';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { Icon } from '@/components/ui/Icon';
+import { Card } from '@/components/ui/Card';
+import { Switch } from '@/components/ui/Controls';
+import { isValidUrl, normalizeUrl } from '@/lib/url';
+import { sanitizeAuth } from '@/lib/captureOptions';
+import type { SiteAuth } from '@/lib/captureOptions';
+import { SiteAuthFields } from './SiteAuthFields';
+import { usePlan } from '@/components/billing/PlanContext';
+import { PlanLock } from '@/components/billing/Upgrade';
+
+interface UrlInputStepProps {
+  onDiscover: (url: string) => void;
+  isLoading: boolean;
+  initialValue?: string;
+  auth: SiteAuth;
+  onAuthChange: (auth: SiteAuth) => void;
+}
+
+export default function UrlInputStep({ onDiscover, isLoading, initialValue = '', auth, onAuthChange }: UrlInputStepProps) {
+  const [value, setValue] = useState(initialValue);
+  const [error, setError] = useState('');
+  const { limits } = usePlan();
+  const loginLocked = !limits.loginPages;
+  const needsLogin = auth.method !== 'none' && !loginLocked;
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const normalized = normalizeUrl(value);
+    if (!normalized) return setError('Enter a website address.');
+    if (!isValidUrl(normalized)) return setError("That doesn't look like a valid website address.");
+    if (needsLogin && !sanitizeAuth(auth)) return setError('Fill in the login details, or turn off “This site needs a login”.');
+    setError('');
+    onDiscover(normalized);
+  }
+
+  return (
+    <div className="mx-auto max-w-xl pt-6 sm:pt-12">
+      <div className="mb-8 text-center">
+        <p className="text-brand mb-2 text-sm font-semibold tracking-wide uppercase">One Shot Every Domain</p>
+        <h1 className="text-3xl font-semibold tracking-[-0.03em] text-fg sm:text-4xl">Screenshot an entire website</h1>
+        <p className="mt-2 text-[15px] text-muted">
+          Enter a domain — or a deeper URL like a repo or docs section to capture just that part.
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-2 sm:flex-row">
+        <label htmlFor="website-url" className="sr-only">
+          Website URL
+        </label>
+        <Input
+          id="website-url"
+          icon="globe"
+          inputSize="lg"
+          autoFocus
+          placeholder="example.com"
+          value={value}
+          invalid={!!error}
+          disabled={isLoading}
+          onChange={(e) => {
+            setValue(e.target.value);
+            if (error) setError('');
+          }}
+        />
+        <Button type="submit" size="lg" isLoading={isLoading} iconRight="arrowRight">
+          Find pages
+          </Button>
+      </form>
+      {error && (
+        <p role="alert" className="mt-2 px-1 text-[13px] text-danger">
+          {error}
+        </p>
+      )}
+
+      <Card className="mt-6">
+        <div className="flex items-center justify-between gap-4 px-5 py-4">
+          <div>
+            <div className="flex items-center gap-2 text-sm font-medium text-fg">
+              This site needs a login {loginLocked && <PlanLock />}
+            </div>
+            <div className="mt-0.5 text-[13px] text-muted">Capture pages behind a login — dashboards, web apps, staging sites.</div>
+          </div>
+          <Switch
+            label="This site needs a login"
+            disabled={loginLocked}
+            checked={needsLogin}
+            onChange={(on) => onAuthChange(on ? { ...auth, method: 'cookies' } : { ...auth, method: 'none' })}
+          />
+        </div>
+        {needsLogin && (
+          <div className="border-t border-line px-5 py-4">
+            <SiteAuthFields siteUrl={value} auth={auth} onChange={onAuthChange} />
+          </div>
+        )}
+      </Card>
+
+      <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] text-muted">
+        {['Reads sitemap.xml', 'Respects robots.txt', `Up to ${limits.pagesPerRun} pages per capture`].map((t) => (
+          <li key={t} className="flex items-center gap-1.5">
+            <Icon name="check" size={14} className="text-success" />
+            {t}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}

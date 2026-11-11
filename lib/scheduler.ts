@@ -6,14 +6,25 @@ import {
   getSchedule,
   recordScheduledRun,
   getRunDir,
+  getScheduledRuns,
   type Schedule,
   type ScheduledRun,
   type ScheduledRunResult,
 } from './scheduleStore';
-import { createJob, updateResult } from './jobStore';
+import { createJob, getJob, updateResult } from './jobStore';
+import { saveCaptureFromJob } from './userData';
+import { unseal } from './secretBox';
+import type { SiteAuth } from './captureOptions';
+import type { CaptureSettings } from './jobStore';
 import { captureScreenshots } from './screenshot';
 import { createZipFile } from './zip';
+import { percentChanged } from './imageDiff';
 import { sendScheduledRunEmail } from './email';
+import { planInfoFor } from './billing';
+import { checkScheduledRun } from './entitlements';
+
+/** A run that the owner's plan doesn't allow (e.g. after a downgrade). */
+export class PlanLimitError extends Error {}
 
 // Global registry of active cron tasks
 const activeCronTasks = new Map<string, ScheduledTask>();
@@ -106,38 +117,45 @@ export async function executeScheduledRun(
     throw new Error(`Schedule not found: ${scheduleId}`);
   }
 
-  console.log(`[Scheduler] Starting capture run for: "${schedule.name}" (${schedule.urls.length} URLs)`);
+  // Re-check the owner's plan on every run: they may have downgraded since saving.
+  const info = await planInfoFor(schedule.ownerKey ?? null);
+  const position = (await getSchedules())
+    .filter((s) => s.ownerKey === schedule.ownerKey)
+    .sort((a, b) => a.createdAt - b.createdAt)
+    .findIndex((s) => s.id === schedule.id);
+  const denial = checkScheduledRun(info, Math.max(0, position), schedule.settings);
+  if (denial) throw new PlanLimitError(denial.error);
+  const urls = schedule.urls.slice(0, info.limits.pagesPerSchedule);
 
-  // 1. Create a job in the existing job queue
-  const job = await createJob('capture', schedule.urls, schedule.settings);
+  console.log(`[Scheduler] Starting capture run for: "${schedule.name}" (${urls.length} URLs)`);
 
-  const results: ScheduledRunResult[] = schedule.urls.map((url) => ({
-    url,
-    status: 'failed',
-  }));
+  // Decrypt the saved login (if any) only for the duration of this run.
+  const runSettings: CaptureSettings = { ...schedule.settings };
+  if (runSettings.auth && 'sealed' in runSettings.auth) {
+    const auth = unseal<SiteAuth>(runSettings.auth.sealed);
+    if (auth) runSettings.auth = auth; // otherwise capture reports it couldn't decrypt
+  }
 
-  // 2. Execute capture through the existing Playwright capture queue
+  // 1. Create a job in the existing job queue (owned by the schedule's owner)
+  const job = await createJob('capture', urls, runSettings, schedule.ownerKey);
+
+  // 2. Execute capture through the existing Playwright capture queue.
+  // Results are read back from the job afterwards: with several devices the
+  // progress keys are "Device:url", so matching on the plain URL would miss them.
   try {
-    await captureScreenshots(
-      job.id,
-      schedule.urls,
-      schedule.settings,
-      (url, partial) => {
-        updateResult(job.id, url, partial);
-        const idx = results.findIndex((r) => r.url === url);
-        if (idx !== -1 && (partial.status === 'done' || partial.status === 'failed')) {
-          results[idx] = {
-            url,
-            status: partial.status,
-            fileName: partial.fileName,
-            error: partial.error,
-          };
-        }
-      },
-    );
+    await captureScreenshots(job.id, urls, runSettings, (key, partial) => {
+      updateResult(job.id, key, partial);
+    });
   } catch (err) {
     console.error(`[Scheduler] Capture error in job ${job.id}:`, err);
   }
+
+  const finishedJob = getJob(job.id) ?? job;
+  const results: ScheduledRunResult[] = Array.from(finishedJob.results.values()).map((r) =>
+    r.status === 'done'
+      ? { url: r.url, device: r.device, status: 'done', fileName: r.fileName }
+      : { url: r.url, device: r.device, status: 'failed', error: r.error ?? 'Not captured' },
+  );
 
   const completedCount = results.filter((r) => r.status === 'done').length;
   const failedCount = results.filter((r) => r.status === 'failed').length;
@@ -156,7 +174,7 @@ export async function executeScheduledRun(
   const pendingRun = await recordScheduledRun(schedule.id, {
     timestamp,
     status: runStatus,
-    totalUrls: schedule.urls.length,
+    totalUrls: results.length,
     completedUrls: completedCount,
     failedUrls: failedCount,
     jobId: job.id,
@@ -168,15 +186,8 @@ export async function executeScheduledRun(
 
   // Copy captured files from tmp/{job.id} to data/schedules/{schedule.id}/runs/{pendingRun.id}
   try {
-    const tmpFiles = await fs.readdir(tmpJobDir);
-    for (const file of tmpFiles) {
-      const src = path.join(tmpJobDir, file);
-      const dst = path.join(destRunDir, file);
-      const stat = await fs.stat(src);
-      if (stat.isFile()) {
-        await fs.copyFile(src, dst);
-      }
-    }
+    // Recursive: multi-device captures are stored in per-device subfolders.
+    await fs.cp(tmpJobDir, destRunDir, { recursive: true, filter: (src) => !src.endsWith('.zip') });
 
     // 4. Create persistent archive.zip for this historical run
     const zipPath = path.join(destRunDir, 'archive.zip');
@@ -190,15 +201,47 @@ export async function executeScheduledRun(
     console.error(`[Scheduler] Error copying files for run ${pendingRun.id}:`, copyErr);
   }
 
-  // 5. Send Email notification
-  const emailRes = await sendScheduledRunEmail(schedule, pendingRun);
+  // 5. Compare with the previous run, page by page (same URL + device).
+  const changes = new Map<string, number | null>();
+  const previous = (await getScheduledRuns(schedule.id)).find((r) => r.id !== pendingRun.id && r.timestamp <= pendingRun.timestamp);
+  if (previous) {
+    const threshold = schedule.changeThreshold ?? 1;
+    const prevDir = getRunDir(schedule.id, previous.id);
+    let changedPages = 0;
+    for (const r of pendingRun.results) {
+      if (r.status !== 'done' || !r.fileName) continue;
+      const before = previous.results.find((p) => p.status === 'done' && p.fileName && p.url === r.url && p.device === r.device);
+      if (!before?.fileName) continue;
+      r.changePct = await percentChanged(path.join(prevDir, before.fileName), path.join(destRunDir, r.fileName));
+      changes.set(`${r.device ?? ''}|${r.url}`, r.changePct);
+      if (r.changePct !== null && r.changePct >= threshold) changedPages++;
+    }
+    pendingRun.comparedToRunId = previous.id;
+    pendingRun.changedPages = changedPages;
+    await fs.writeFile(path.join(destRunDir, 'manifest.json'), JSON.stringify(pendingRun, null, 2), 'utf-8');
+  }
+
+  // 6. Email: after every run, or only when something changed. No recipients -> no email.
+  const onlyOnChange = schedule.notifyOn === 'changes';
+  const shouldEmail =
+    (schedule.recipients?.length ?? 0) > 0 && (!onlyOnChange || (pendingRun.changedPages ?? 0) > 0);
+  const emailRes = shouldEmail ? await sendScheduledRunEmail(schedule, pendingRun) : { success: false as const };
   if (emailRes.success) {
     pendingRun.notificationSent = true;
-    if (emailRes.previewUrl) {
+    if ('previewUrl' in emailRes && emailRes.previewUrl) {
       pendingRun.emailPreviewUrl = emailRes.previewUrl;
     }
     const manifestPath = path.join(destRunDir, 'manifest.json');
     await fs.writeFile(manifestPath, JSON.stringify(pendingRun, null, 2), 'utf-8');
+  }
+
+  // 7. Add the run to the owner's capture history
+  if (schedule.ownerKey) {
+    await saveCaptureFromJob(
+      schedule.ownerKey,
+      { ...finishedJob, results: finishedJob.results.values() },
+      { scheduleName: schedule.name, changes },
+    ).catch((err) => console.error(`[Scheduler] Could not save run ${pendingRun.id} to history:`, err));
   }
 
   console.log(`[Scheduler] Completed scheduled run ${pendingRun.id} for "${schedule.name}". Status: ${runStatus}`);
