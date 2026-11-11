@@ -174,6 +174,8 @@ interface PaddleEvent {
     subscription_id?: string | null;
     transaction_id?: string;
     action?: string;
+    /** adjustment: "full" or "partial" refund. */
+    type?: string;
     custom_data?: { userKey?: string } | null;
     items?: { price?: { id?: string }; price_id?: string }[];
     current_billing_period?: { ends_at?: string } | null;
@@ -237,7 +239,7 @@ export async function applyPaddleEvent(evt: PaddleEvent): Promise<string> {
     }
 
     // A full refund of the lifetime purchase removes it.
-    if ((type === 'adjustment.created' || type === 'adjustment.updated') && d.action === 'refund' && d.status === 'approved') {
+    if ((type === 'adjustment.created' || type === 'adjustment.updated') && d.action === 'refund' && d.status === 'approved' && d.type !== 'partial') {
       const userKey = findUser(all, (r) => r.lifetime?.transactionId === d.transaction_id);
       if (!userKey) return 'ignored: refund not for a lifetime purchase';
       delete all[userKey].lifetime;
@@ -270,6 +272,24 @@ export async function portalUrl(record: BillingRecord): Promise<string> {
     subscription_ids: record.subscription ? [record.subscription.id] : [],
   });
   return data.urls.general.overview;
+}
+
+/**
+ * Side effects that need Paddle's API, run after an event is stored. A full
+ * refund of a subscription payment cancels that subscription right away (as
+ * the Refund Policy says); Paddle then sends subscription.canceled.
+ */
+export async function afterPaddleEvent(evt: PaddleEvent): Promise<string | null> {
+  const d = evt.data;
+  const isFullRefund =
+    (evt.event_type === 'adjustment.created' || evt.event_type === 'adjustment.updated') &&
+    d?.action === 'refund' &&
+    d.status === 'approved' &&
+    d.type === 'full' &&
+    typeof d.subscription_id === 'string';
+  if (!isFullRefund) return null;
+  await paddleApi('POST', `/subscriptions/${d!.subscription_id}/cancel`, { effective_from: 'immediately' });
+  return `cancelled ${d!.subscription_id} after full refund`;
 }
 
 /** Switch an existing subscription to another plan/interval, prorated now. */

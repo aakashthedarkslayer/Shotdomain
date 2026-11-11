@@ -299,17 +299,26 @@ export function Footer() {
           <Link href="/schedules" className="hover:text-fg">
             Schedules
           </Link>
-          <a href="#pricing" className="hover:text-fg">
+          <Link href="/#pricing" className="hover:text-fg">
             Pricing
-          </a>
-          <a href="#faq" className="hover:text-fg">
+          </Link>
+          <Link href="/#faq" className="hover:text-fg">
             FAQ
-          </a>
+          </Link>
           <Link href="/login" className="hover:text-fg">
             Log in
           </Link>
           <Link href="/signup" className="hover:text-fg">
             Sign up
+          </Link>
+          <Link href="/terms" className="hover:text-fg">
+            Terms
+          </Link>
+          <Link href="/privacy" className="hover:text-fg">
+            Privacy
+          </Link>
+          <Link href="/refunds" className="hover:text-fg">
+            Refunds
           </Link>
         </nav>
       </div>

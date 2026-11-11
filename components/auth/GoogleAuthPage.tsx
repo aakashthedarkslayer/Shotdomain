@@ -80,7 +80,17 @@ export async function GoogleAuthPage({ mode, searchParams }: GoogleAuthPageProps
         </div>
       )}
 
-      <p className="mt-4 text-center text-xs text-faint">We only use your name, email and profile picture.</p>
+      <p className="mt-4 text-center text-xs text-faint">
+        We only use your name, email and profile picture. By continuing you agree to our{' '}
+        <Link href="/terms" className="underline underline-offset-2 hover:text-muted">
+          Terms
+        </Link>{' '}
+        and{' '}
+        <Link href="/privacy" className="underline underline-offset-2 hover:text-muted">
+          Privacy Policy
+        </Link>
+        .
+      </p>
     </AuthCard>
   );
 }

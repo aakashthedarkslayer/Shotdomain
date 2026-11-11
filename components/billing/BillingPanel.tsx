@@ -10,6 +10,7 @@ import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
 import { PricingCards } from './PricingCards';
 import { PLANS, isPlanId } from '@/lib/plans';
+import { LEGAL } from '@/lib/legal';
 import type { Interval, Plan, PlanId } from '@/lib/plans';
 import type { CheckoutConfig } from '@/lib/billing';
 
@@ -316,7 +317,15 @@ export function BillingPanel({ enabled, plan, subscription, lifetime, hasCustome
 
       <p className="text-center text-xs text-muted">
         Payments are processed by Paddle, our reseller and merchant of record — they handle taxes, invoices and refunds. Prices in USD; local
-        taxes are added at checkout.
+        taxes are added at checkout. {LEGAL.refundDays}-day money-back guarantee —{' '}
+        <a href="/refunds" className="underline underline-offset-2 hover:text-fg">
+          Refund Policy
+        </a>{' '}
+        ·{' '}
+        <a href="/terms" className="underline underline-offset-2 hover:text-fg">
+          Terms
+        </a>
+        .
       </p>
     </div>
   );

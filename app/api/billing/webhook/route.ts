@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { applyPaddleEvent, verifyPaddleSignature } from '@/lib/billing';
+import { afterPaddleEvent, applyPaddleEvent, verifyPaddleSignature } from '@/lib/billing';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,6 +22,12 @@ export async function POST(request: NextRequest) {
   try {
     const outcome = await applyPaddleEvent(event);
     console.log(`[Billing] ${event.event_type} ${event.event_id ?? ''}: ${outcome}`);
+    const followUp = await afterPaddleEvent(event).catch((err) => {
+      // Logged, not retried: the refund itself is already recorded by Paddle.
+      console.error('[Billing] follow-up failed:', err);
+      return null;
+    });
+    if (followUp) console.log(`[Billing] ${followUp}`);
     return Response.json({ ok: true, outcome });
   } catch (err) {
     // 5xx makes Paddle retry later.
