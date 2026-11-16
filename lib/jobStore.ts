@@ -181,14 +181,18 @@ export async function deleteJob(jobId: string): Promise<void> {
 }
 
 /**
- * Deletes every job whose `createdAt` timestamp is older than 1 hour.
+ * Deletes finished jobs older than an hour (their files live on in the
+ * owner's history) and abandoned ones older than three.
  */
 export async function cleanupOldJobs(): Promise<void> {
   const oneHourAgo = Date.now() - 60 * 60 * 1000;
+  // A big capture can legitimately run longer than an hour; give it three.
+  const threeHoursAgo = Date.now() - 3 * 60 * 60 * 1000;
 
   const deletions: Promise<void>[] = [];
   for (const [id, job] of jobs) {
-    if (job.createdAt < oneHourAgo) {
+    const finished = job.cancelled || job.completed + job.failed >= job.total;
+    if (job.createdAt < (finished ? oneHourAgo : threeHoursAgo)) {
       deletions.push(deleteJob(id));
     }
   }

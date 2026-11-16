@@ -33,6 +33,30 @@ Sign-in is enforced only when Google credentials are set. Once they are, `/app`,
 When hosting (Railway, Render, Fly, a VPS), set the same variables in the host's
 dashboard plus `AUTH_TRUST_HOST=true`. Never commit `.env.local`.
 
+## How captures work
+
+For every page the engine:
+
+1. navigates once, waiting for the DOM, then (bounded) for the load event and
+   for the network to go quiet — sites with chat widgets or analytics never go
+   fully idle, so that wait is capped rather than failing;
+2. lets the page settle: web fonts, and CSS animations/transitions jumped to
+   their end state, so screenshots are stable and comparable between runs;
+3. hides consent banners and applies your cleanup selectors/CSS (injected in
+   a way a site's Content-Security-Policy can't block);
+4. for full-page shots, makes lazy content load, lets app shells that scroll
+   inside a container grow to their full height, scrolls through the page and
+   back to the top; very tall pages are clipped at 16,000 px;
+5. screenshots, and makes a small JPEG preview for grids and lists;
+6. attaches honest notes to the result: HTTP errors, bot checks (never
+   bypassed), login forms, off-site redirects, plain-HTTP fallbacks.
+
+Phone and tablet captures use real device screen metrics but keep the honest
+`SiteScreenshotTool/1.0` User-Agent with a `Mobile`/`Tablet` hint. With sign-in
+enabled, private-network addresses are refused before a job starts and again
+on every browser request (so redirects can't reach them either); see
+`ALLOW_PRIVATE_TARGETS` in `.env.example`.
+
 ## Payments (Paddle)
 
 Plans, prices and limits live in one file: `lib/plans.ts`. The homepage, the

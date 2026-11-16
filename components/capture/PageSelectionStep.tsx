@@ -145,6 +145,21 @@ export default function PageSelectionStep({
 
   const allFilteredSelected = filtered.length > 0 && filtered.every((u) => selectedSet.has(u));
 
+  // Home page and top-level sections, shortest first; capped so it fits a schedule.
+  const keyPageCap = Math.min(25, Number.isFinite(pageLimit) ? pageLimit : 25);
+  const selectKeyPages = () => {
+    const depth = (u: string) => {
+      try {
+        return new URL(u).pathname.split('/').filter(Boolean).length;
+      } catch {
+        return 99;
+      }
+    };
+    const ranked = [...urls].sort((a, b) => depth(a) - depth(b) || a.length - b.length);
+    const top = ranked.filter((u) => depth(u) <= 1);
+    onSelectionChange((top.length >= 3 ? top : ranked).slice(0, keyPageCap));
+  };
+
   return (
     <Card>
       <CardHeader
@@ -185,6 +200,15 @@ export default function PageSelectionStep({
                 Add pages
               </Button>
             )}
+            <Button
+              variant="ghost"
+              size="sm"
+              icon="sparkle"
+              onClick={selectKeyPages}
+              title={`Home page and top-level sections (up to ${keyPageCap}) — the pages worth monitoring on a schedule`}
+            >
+              Key pages
+            </Button>
             <Button variant="ghost" size="sm" onClick={selectAll}>
               Select all
             </Button>

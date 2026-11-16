@@ -99,6 +99,19 @@ export default function AppPage() {
     }
   }, [auth, limits.pagesPerRun]);
 
+  // Step 1 → 3: one page, no discovery.
+  const handleQuickCapture = useCallback((url: string) => {
+    setRootUrl(url);
+    setDiscoveredUrls([url]);
+    setSelectedUrls([url]);
+    setDiscoveryMethod('crawl');
+    setTruncated(false);
+    setDiscoveryError(undefined);
+    setLoggedIn(false);
+    setPathPrefix(undefined);
+    setCurrentStep(3);
+  }, []);
+
   // Landing page hands off with /app?url=example.com — start discovery right away.
   useEffect(() => {
     const param = new URLSearchParams(window.location.search).get('url');
@@ -275,7 +288,16 @@ export default function AppPage() {
           </Alert>
         )}
 
-        {currentStep === 1 && <UrlInputStep onDiscover={handleDiscover} isLoading={isLoading} initialValue={rootUrl} auth={auth} onAuthChange={setAuth} />}
+        {currentStep === 1 && (
+          <UrlInputStep
+            onDiscover={handleDiscover}
+            onQuickCapture={handleQuickCapture}
+            isLoading={isLoading}
+            initialValue={rootUrl}
+            auth={auth}
+            onAuthChange={setAuth}
+          />
+        )}
 
         {currentStep === 2 && (
           <PageSelectionStep

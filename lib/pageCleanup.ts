@@ -60,6 +60,27 @@ function cookieBannerCss(): string {
   );
 }
 
+/**
+ * Add CSS to the page. Uses a constructed stylesheet, which a site's
+ * Content-Security-Policy can't block (unlike an injected <style> tag);
+ * falls back to a style tag on very old engines.
+ */
+export async function injectCss(page: Page, css: string): Promise<boolean> {
+  const ok = await page
+    .evaluate((text) => {
+      const sheet = new CSSStyleSheet();
+      sheet.replaceSync(text);
+      document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
+      return true;
+    }, css)
+    .catch(() => false);
+  if (ok) return true;
+  return page
+    .addStyleTag({ content: css })
+    .then(() => true)
+    .catch(() => false);
+}
+
 async function clickFirstVisible(page: Page, selectors: string[]): Promise<boolean> {
   for (const sel of selectors) {
     const el = page.locator(sel).first();
@@ -97,7 +118,7 @@ export async function applyCleanup(page: Page, cleanup?: CleanupOptions): Promis
   for (const sel of cleanup.hideSelectors) css += `${sel} { display: none !important; }\n`;
   if (cleanup.customCss.trim()) css += `${cleanup.customCss}\n`;
   if (css) {
-    await page.addStyleTag({ content: css }).catch(() => warnings.push('custom CSS could not be injected'));
+    if (!(await injectCss(page, css))) warnings.push('custom CSS could not be injected');
     await page.waitForTimeout(100);
   }
 

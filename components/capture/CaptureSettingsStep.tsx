@@ -182,6 +182,20 @@ export default function CaptureSettingsStep({
           )}
         </Row>
 
+        {selectedDevices.length > 1 ? (
+          <Row title="Screen sizes" description="With several devices, each uses its own screen size.">
+            <div className="flex flex-wrap gap-1.5">
+              {selectedDevices.map((d) => {
+                const p = DEVICE_PRESETS[d];
+                return (
+                  <span key={d} className="rounded-md bg-subtle px-2 py-0.5 font-mono text-xs text-muted">
+                    {d} {p ? `${p.width}×${p.height}` : ''}
+                  </span>
+                );
+              })}
+            </div>
+          </Row>
+        ) : (
         <Row title="Viewport" description="Browser window size in CSS pixels.">
           <div className="flex flex-wrap items-center gap-2">
             <NumberInput id="viewport-width" label="W" value={settings.width} onChange={setWidth} />
@@ -207,8 +221,12 @@ export default function CaptureSettingsStep({
             </Select>
           </div>
         </Row>
+        )}
 
-        <Row title="Full page" description={settings.fullPage ? 'Captures the full scrollable height.' : 'Captures the visible viewport only.'}>
+        <Row
+          title="Full page"
+          description={settings.fullPage ? 'The whole page, top to bottom — lazy-loaded sections included.' : 'Only the first screen (above the fold).'}
+        >
           <Switch checked={settings.fullPage} onChange={(fullPage) => onSettingsChange({ fullPage })} label="Capture entire page" />
         </Row>
 

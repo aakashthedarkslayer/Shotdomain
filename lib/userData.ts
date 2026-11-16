@@ -89,6 +89,8 @@ export interface HistoryResult {
   status: 'done' | 'failed';
   fileName?: string;
   error?: string;
+  /** Non-fatal note from the capture (HTTP error, login form, bot check, …). */
+  warning?: string;
 }
 
 export interface CaptureMeta {
@@ -151,7 +153,7 @@ export async function saveCaptureFromJob(
     createdAt: number;
     urls: string[];
     settings?: { device?: string; devices?: string[]; fullPage: boolean; format: 'png' | 'jpeg' };
-    results: Iterable<{ url: string; device?: string; status: string; fileName?: string; error?: string }>;
+    results: Iterable<{ url: string; device?: string; status: string; fileName?: string; error?: string; warning?: string }>;
   },
   extra: { scheduleName?: string; changes?: Map<string, number | null> } = {},
 ): Promise<void> {
@@ -159,7 +161,14 @@ export async function saveCaptureFromJob(
   for (const r of job.results) {
     const changePct = extra.changes?.get(`${r.device ?? ''}|${r.url}`);
     if (r.status === 'done' && r.fileName)
-      results.push({ url: r.url, device: r.device, status: 'done', fileName: r.fileName, ...(changePct !== undefined ? { changePct } : {}) });
+      results.push({
+        url: r.url,
+        device: r.device,
+        status: 'done',
+        fileName: r.fileName,
+        ...(changePct !== undefined ? { changePct } : {}),
+        ...(r.warning ? { warning: r.warning } : {}),
+      });
     else if (r.status === 'failed') results.push({ url: r.url, device: r.device, status: 'failed', error: r.error });
   }
   const done = results.filter((r) => r.status === 'done').length;

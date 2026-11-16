@@ -34,7 +34,7 @@ export const DEFAULT_SETTINGS: SettingsState = {
   devices: ['Desktop'],
   width: 1920,
   height: 1080,
-  fullPage: false,
+  fullPage: true,
   format: 'png',
   blockAds: false,
   useCache: false,
@@ -45,6 +45,12 @@ export const DEFAULT_SETTINGS: SettingsState = {
   cleanup: DEFAULT_CLEANUP,
 };
 
+/** Full-size screenshot from a running/finished job. */
 export function thumbnailUrl(jobId: string, fileName: string) {
   return `/api/thumbnail?jobId=${encodeURIComponent(jobId)}&file=${encodeURIComponent(fileName)}`;
+}
+
+/** Small preview of the same screenshot (JPEG, 480px wide). */
+export function previewUrl(jobId: string, fileName: string) {
+  return `${thumbnailUrl(jobId, fileName)}&thumb=1`;
 }

@@ -5,7 +5,6 @@ import { normalizeUrl } from './dedupe';
 const USER_AGENT = 'SiteScreenshotTool/1.0 (+local dev tool)';
 const MAX_URLS = 500;
 const MAX_DEPTH = 4;
-const DEFAULT_CRAWL_DELAY = 300; // ms
 const PER_REQUEST_TIMEOUT = 10_000; // 10s
 const OVERALL_TIMEOUT = 30_000; // 30s
 

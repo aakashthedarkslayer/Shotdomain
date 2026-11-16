@@ -11,8 +11,13 @@ export interface GridItem {
   key: string;
   url: string;
   device?: string;
+  /** Image for the grid (a small preview when available). */
   src: string;
+  /** Full-size image for the preview dialog and download (defaults to src). */
+  fullSrc?: string;
   fileName: string;
+  /** Note from the capture, e.g. "The page returned HTTP 404". */
+  warning?: string;
   /** Path of the file inside its capture (used for share links). */
   file?: string;
   /** Small label over the thumbnail, e.g. "12% changed". */
@@ -78,13 +83,24 @@ export function ScreenshotGrid({
                     {item.badge.text}
                   </span>
                 )}
+                {item.warning && (
+                  <span title={item.warning} className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-warning text-white shadow-sm">
+                    <Icon name="alert" size={13} />
+                  </span>
+                )}
               </button>
               <div className="flex items-center gap-2 px-3 py-2.5">
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-mono text-[13px] text-fg" title={item.url}>
                     {urlPath(item.url)}
                   </p>
-                  {item.device && <p className="text-xs text-muted">{item.device}</p>}
+                  {item.warning ? (
+                    <p className="truncate text-xs text-warning" title={item.warning}>
+                      {item.warning}
+                    </p>
+                  ) : (
+                    item.device && <p className="text-xs text-muted">{item.device}</p>
+                  )}
                 </div>
                 {onShare && (
                   <button
@@ -98,7 +114,7 @@ export function ScreenshotGrid({
                   </button>
                 )}
                 <a
-                  href={item.src}
+                  href={item.fullSrc ?? item.src}
                   download={item.fileName}
                   title="Download"
                   aria-label={`Download ${item.fileName}`}
@@ -120,7 +136,7 @@ export function ScreenshotGrid({
         description={preview?.device}
         footer={
           preview && (
-            <a href={preview.src} download={preview.fileName} className={buttonClass('primary', 'md')}>
+            <a href={preview.fullSrc ?? preview.src} download={preview.fileName} className={buttonClass('primary', 'md')}>
               <Icon name="download" />
               Download
             </a>
@@ -129,8 +145,14 @@ export function ScreenshotGrid({
       >
         {preview && (
           <div className="bg-subtle p-4">
+            {preview.warning && (
+              <p className="mb-3 flex items-start gap-2 rounded-lg bg-warning-soft px-3 py-2 text-[13px] text-warning">
+                <Icon name="alert" size={15} className="mt-px shrink-0" />
+                {preview.warning}
+              </p>
+            )}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={preview.src} alt={`Screenshot of ${preview.url}`} className="mx-auto w-auto max-w-full rounded border border-line" />
+            <img src={preview.fullSrc ?? preview.src} alt={`Screenshot of ${preview.url}`} className="mx-auto w-auto max-w-full rounded border border-line" />
           </div>
         )}
       </Modal>

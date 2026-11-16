@@ -314,7 +314,6 @@ export async function recordScheduledRun(
     scheduleId,
   };
 
-  const runsDir = getScheduleRunsDir(scheduleId);
   const currentRunDir = getRunDir(scheduleId, runId);
   await fs.mkdir(currentRunDir, { recursive: true });
 

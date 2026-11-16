@@ -59,8 +59,10 @@ export default async function CaptureDetailPage({ params }: { params: Promise<{ 
               key: `${r.device ?? ''}-${r.fileName}-${idx}`,
               url: r.url,
               device: r.device,
-              src: `/api/history/${capture.id}/file?name=${encodeURIComponent(r.fileName!)}`,
+              src: `/api/history/${capture.id}/file?name=${encodeURIComponent(r.fileName!)}&thumb=1`,
+              fullSrc: `/api/history/${capture.id}/file?name=${encodeURIComponent(r.fileName!)}`,
               fileName: baseName(r.fileName),
+              warning: r.warning,
             }))}
           />
         </Card>

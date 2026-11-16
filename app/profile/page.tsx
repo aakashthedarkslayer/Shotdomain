@@ -19,7 +19,7 @@ export const metadata = { title: 'Profile — ShotDomain' };
 export const dynamic = 'force-dynamic';
 
 function historyImageUrl(id: string, file: string) {
-  return `/api/history/${id}/file?name=${encodeURIComponent(file)}`;
+  return `/api/history/${id}/file?name=${encodeURIComponent(file)}&thumb=1`;
 }
 
 export default async function ProfilePage() {

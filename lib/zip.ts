@@ -1,6 +1,7 @@
 import { ZipArchive } from 'archiver';
 import * as path from 'path';
 import * as fsp from 'fs/promises';
+import { isThumbFile } from './thumbnails';
 
 /**
  * Helper to recursively collect all file paths relative to a root directory.
@@ -9,7 +10,7 @@ async function collectRelativeFiles(dir: string, baseRel: string = '', exclude: 
   const entries = await fsp.readdir(dir, { withFileTypes: true });
   const result: string[] = [];
   for (const entry of entries) {
-    if (entry.name.endsWith('.zip') || entry.name === 'manifest.json' || exclude.includes(entry.name)) continue;
+    if (entry.name.endsWith('.zip') || entry.name === 'manifest.json' || isThumbFile(entry.name) || exclude.includes(entry.name)) continue;
     const rel = baseRel ? `${baseRel}/${entry.name}` : entry.name;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
@@ -57,8 +58,8 @@ export async function createZipStream(jobId: string): Promise<{
   const archive = new ZipArchive({ zlib: { level: 5 } });
 
   // Handle archiver warnings (e.g. stat failures)
-  archive.on('warning', (err: any) => {
-    if (err && err.code === 'ENOENT') {
+  archive.on('warning', (err: Error & { code?: string }) => {
+    if (err.code === 'ENOENT') {
       console.warn(`[zip] Warning for job ${jobId}:`, err.message);
     } else {
       throw err;
@@ -66,7 +67,7 @@ export async function createZipStream(jobId: string): Promise<{
   });
 
   // Handle archiver errors
-  archive.on('error', (err: any) => {
+  archive.on('error', (err: Error) => {
     throw err;
   });
 
@@ -132,7 +133,7 @@ export async function createZipBufferFromDir(sourceDir: string): Promise<Buffer>
 
     archive.on('data', (chunk: Buffer) => chunks.push(chunk));
     archive.on('end', () => resolve(Buffer.concat(chunks)));
-    archive.on('error', (err: any) => reject(err));
+    archive.on('error', (err: Error) => reject(err));
 
     for (const relName of files) {
       archive.file(path.join(sourceDir, relName), { name: relName.replace(/\\/g, '/') });

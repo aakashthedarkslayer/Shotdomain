@@ -3,6 +3,7 @@ import { getRunDir, isValidId } from '@/lib/scheduleStore';
 import { getOwnedSchedule } from '@/lib/scheduleAccess';
 import * as fs from 'fs';
 import * as path from 'path';
+import { imageResponse } from '@/lib/thumbnails';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,14 +34,5 @@ export async function GET(
     return NextResponse.json({ error: 'File not found' }, { status: 404 });
   }
 
-  const fileBuffer = fs.readFileSync(filePath);
-  const ext = path.extname(sanitizedFile).toLowerCase();
-  const contentType = ext === '.png' ? 'image/png' : 'image/jpeg';
-
-  return new Response(fileBuffer, {
-    headers: {
-      'Content-Type': contentType,
-      'Cache-Control': 'public, max-age=86400',
-    },
-  });
+  return imageResponse(filePath, request.nextUrl.searchParams.get('thumb') === '1', { 'Cache-Control': 'private, max-age=86400' });
 }

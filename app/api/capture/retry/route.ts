@@ -3,7 +3,8 @@ import { getJob, updateResult } from '@/lib/jobStore';
 import { getOwnedJob } from '@/lib/jobAccess';
 import { saveCaptureFromJob } from '@/lib/userData';
 import { captureScreenshots } from '@/lib/screenshot';
-import type { CaptureResult } from '@/lib/jobStore';
+import type { CaptureResult, CaptureSettings } from '@/lib/jobStore';
+import * as path from 'path';
 
 export const dynamic = 'force-dynamic';
 
@@ -64,17 +65,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Reset the result counters
-    // Decrement failed counter since we're retrying
+    // It's leaving the failed state; `completed` was never counted for it.
     job.failed = Math.max(0, job.failed - 1);
-    job.completed = Math.max(0, job.completed - 1);
-
-    // Reset status to queued
     updateResult(jobId, resultKey, { status: 'queued', error: undefined, fileName: undefined });
 
-    const retrySettings = result.device
-      ? { ...job.settings, devices: [result.device as any], device: result.device as any }
-      : job.settings;
+    const retryDevice = result.device as NonNullable<CaptureSettings['devices']>[number] | undefined;
+    const retrySettings: CaptureSettings = retryDevice ? { ...job.settings, devices: [retryDevice], device: retryDevice } : job.settings;
+    // A multi-device job keeps its per-device folders and "Device:url" keys; a
+    // retried page must never take the file name of a page that succeeded.
+    const multiDevice = (job.settings.devices?.length ?? 0) > 1;
+    const reservedNames = Array.from(job.results.values())
+      .filter((r) => r.fileName && r.device === result.device)
+      .map((r) => path.basename(r.fileName!));
 
     // Start retry asynchronously
     captureScreenshots(
@@ -83,7 +85,8 @@ export async function POST(request: NextRequest) {
       retrySettings,
       (key: string, retryResult: Partial<CaptureResult>) => {
         updateResult(jobId, key, retryResult);
-      }
+      },
+      { deviceFolders: multiDevice, reservedNames },
     )
       .then(async () => {
         // Refresh the saved history copy so the retried screenshot is included.

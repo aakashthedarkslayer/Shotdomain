@@ -1,6 +1,5 @@
 import { NextRequest } from 'next/server';
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import { imageResponse } from '@/lib/thumbnails';
 import { currentUserKey } from '@/auth';
 import { captureFilePath, getCapture } from '@/lib/userData';
 
@@ -18,11 +17,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   if (!filePath) return Response.json({ error: 'Invalid file path' }, { status: 400 });
 
   try {
-    const data = await fs.readFile(filePath);
-    const type = path.extname(filePath).toLowerCase() === '.png' ? 'image/png' : 'image/jpeg';
-    return new Response(new Uint8Array(data), {
-      headers: { 'Content-Type': type, 'Cache-Control': 'private, max-age=86400' },
-    });
+    return await imageResponse(filePath, request.nextUrl.searchParams.get('thumb') === '1', { 'Cache-Control': 'private, max-age=86400' });
   } catch {
     return Response.json({ error: 'Not found' }, { status: 404 });
   }

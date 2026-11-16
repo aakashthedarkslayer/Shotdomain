@@ -11,6 +11,7 @@ import type { ResolvedAuth } from '@/lib/siteAuth';
 import { discoverRenderedLinks } from '@/lib/renderedLinks';
 import { inPathScope, sameSite } from '@/lib/url';
 import { checkLoginPages, currentPlanInfo, limitResponse } from '@/lib/entitlements';
+import { checkTargetUrl } from '@/lib/ssrf';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,6 +46,9 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    const problem = await checkTargetUrl(normalizedUrl);
+    if (problem) return Response.json({ error: problem }, { status: 400 });
 
     if (auth) {
       const denial = checkLoginPages(await currentPlanInfo());
@@ -95,7 +99,7 @@ export async function POST(request: NextRequest) {
         urls = crawlResult.urls;
         truncated = crawlResult.truncated;
         method = 'crawl';
-      } catch (error) {
+      } catch {
         // If crawl also fails, return whatever we have from sitemap
         if (urls.length === 0) {
           // Include the root URL at minimum

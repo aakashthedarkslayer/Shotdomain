@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { Button, buttonClass } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
-import { thumbnailUrl } from './types';
+import { previewUrl, thumbnailUrl } from './types';
 import type { CaptureResult } from './types';
 import { FailedList, ScreenshotGrid } from './ScreenshotGrid';
 import { baseName } from '@/lib/format';
@@ -19,6 +19,7 @@ interface ResultsStepProps {
 export default function ResultsStep({ jobId, results, onStartNew, onSaveSchedule }: ResultsStepProps) {
   const done = results.filter((r) => r.status === 'done' && r.fileName);
   const failed = results.filter((r) => r.status === 'failed');
+  const notes = done.filter((r) => r.warning).length;
 
   return (
     <div className="space-y-4">
@@ -28,6 +29,7 @@ export default function ResultsStep({ jobId, results, onStartNew, onSaveSchedule
           description={
             <>
               {failed.length > 0 ? `${failed.length} failed — see below. ` : ''}
+              {notes > 0 ? `${notes} ${notes === 1 ? 'page has' : 'pages have'} a note (the ⚠ badge). ` : ''}
               Saved to your{' '}
               <Link href="/profile" className="font-medium text-fg underline-offset-2 hover:underline">
                 capture history
@@ -58,8 +60,10 @@ export default function ResultsStep({ jobId, results, onStartNew, onSaveSchedule
             key: `${r.device ?? ''}-${r.fileName}-${idx}`,
             url: r.url,
             device: r.device,
-            src: thumbnailUrl(jobId, r.fileName!),
+            src: previewUrl(jobId, r.fileName!),
+            fullSrc: thumbnailUrl(jobId, r.fileName!),
             fileName: baseName(r.fileName),
+            warning: r.warning,
           }))}
         />
       </Card>

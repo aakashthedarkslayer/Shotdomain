@@ -7,6 +7,7 @@ import type { CaptureSettings } from '@/lib/jobStore';
 import { sanitizeAuth, sanitizeCleanup } from '@/lib/captureOptions';
 import { planInfoFor } from '@/lib/billing';
 import { checkCapture, limitResponse } from '@/lib/entitlements';
+import { checkTargetUrl } from '@/lib/ssrf';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,6 +39,11 @@ export async function POST(request: NextRequest) {
     }
     settings.cleanup = sanitizeCleanup(settings.cleanup);
     settings.auth = sanitizeAuth(settings.auth);
+
+    for (const url of urls) {
+      const problem = await checkTargetUrl(String(url));
+      if (problem) return Response.json({ error: problem }, { status: 400 });
+    }
 
     const ownerKey = (await currentUserKey()) ?? undefined;
     const denial = checkCapture(await planInfoFor(ownerKey ?? null), urls.length, settings);

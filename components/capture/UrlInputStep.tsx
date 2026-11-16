@@ -16,27 +16,44 @@ import { PlanLock } from '@/components/billing/Upgrade';
 
 interface UrlInputStepProps {
   onDiscover: (url: string) => void;
+  /** Skip discovery and capture only the entered URL. */
+  onQuickCapture?: (url: string) => void;
   isLoading: boolean;
   initialValue?: string;
   auth: SiteAuth;
   onAuthChange: (auth: SiteAuth) => void;
 }
 
-export default function UrlInputStep({ onDiscover, isLoading, initialValue = '', auth, onAuthChange }: UrlInputStepProps) {
+export default function UrlInputStep({ onDiscover, onQuickCapture, isLoading, initialValue = '', auth, onAuthChange }: UrlInputStepProps) {
   const [value, setValue] = useState(initialValue);
   const [error, setError] = useState('');
   const { limits } = usePlan();
   const loginLocked = !limits.loginPages;
   const needsLogin = auth.method !== 'none' && !loginLocked;
 
+  /** The normalized URL if everything checks out, otherwise shows why not. */
+  function validate(): string | null {
+    const normalized = normalizeUrl(value);
+    if (!normalized) {
+      setError('Enter a website address.');
+      return null;
+    }
+    if (!isValidUrl(normalized)) {
+      setError("That doesn't look like a valid website address.");
+      return null;
+    }
+    if (needsLogin && !sanitizeAuth(auth)) {
+      setError('Fill in the login details, or turn off “This site needs a login”.');
+      return null;
+    }
+    setError('');
+    return normalized;
+  }
+
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const normalized = normalizeUrl(value);
-    if (!normalized) return setError('Enter a website address.');
-    if (!isValidUrl(normalized)) return setError("That doesn't look like a valid website address.");
-    if (needsLogin && !sanitizeAuth(auth)) return setError('Fill in the login details, or turn off “This site needs a login”.');
-    setError('');
-    onDiscover(normalized);
+    const url = validate();
+    if (url) onDiscover(url);
   }
 
   return (
@@ -74,6 +91,22 @@ export default function UrlInputStep({ onDiscover, isLoading, initialValue = '',
       {error && (
         <p role="alert" className="mt-2 px-1 text-[13px] text-danger">
           {error}
+        </p>
+      )}
+      {onQuickCapture && (
+        <p className="mt-2 px-1 text-[13px] text-muted">
+          Only need one page?{' '}
+          <button
+            type="button"
+            disabled={isLoading}
+            onClick={() => {
+              const url = validate();
+              if (url) onQuickCapture(url);
+            }}
+            className="cursor-pointer font-medium text-accent underline-offset-2 hover:underline disabled:cursor-default disabled:opacity-60"
+          >
+            Capture just this URL
+          </button>
         </p>
       )}
 

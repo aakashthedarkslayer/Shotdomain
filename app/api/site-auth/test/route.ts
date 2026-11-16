@@ -4,6 +4,7 @@ import { sanitizeAuth } from '@/lib/captureOptions';
 import { SiteLoginError, applyAuthToContext, earliestExpiry, resolveSiteAuth } from '@/lib/siteAuth';
 import { isValidUrl, normalizeUrl } from '@/lib/url';
 import { checkLoginPages, currentPlanInfo } from '@/lib/entitlements';
+import { checkTargetUrl } from '@/lib/ssrf';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +18,8 @@ export async function POST(request: NextRequest) {
   const auth = sanitizeAuth(body.auth);
   if (!isValidUrl(url)) return Response.json({ ok: false, error: 'Enter a valid website URL first.' }, { status: 400 });
   if (!auth) return Response.json({ ok: false, error: 'Fill in the login details first.' }, { status: 400 });
+  const problem = await checkTargetUrl(url);
+  if (problem) return Response.json({ ok: false, error: problem }, { status: 400 });
   const denial = checkLoginPages(await currentPlanInfo());
   if (denial) return Response.json({ ok: false, ...denial }, { status: 402 });
 

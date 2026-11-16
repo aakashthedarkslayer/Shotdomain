@@ -32,6 +32,7 @@ function ShareHeader() {
 function PageTimelineView({ token, timeline }: { token: string; timeline: PageTimeline }) {
   const [latest, ...older] = timeline.shots;
   const img = (runId: string) => `/share/${token}/image?run=${runId}`;
+  const thumb = (runId: string) => `${img(runId)}&thumb=1`;
   return (
     <div className="min-h-screen pb-24">
       <ShareHeader />
@@ -80,7 +81,7 @@ function PageTimelineView({ token, timeline }: { token: string; timeline: PageTi
                 <li key={s.runId} className="glass group overflow-hidden rounded-xl">
                   <a href={img(s.runId)} target="_blank" rel="noreferrer" className="block aspect-[4/3] overflow-hidden border-b border-line bg-subtle">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={img(s.runId)} alt={`Screenshot from ${utc(s.timestamp)}`} loading="lazy" className="h-full w-full object-cover object-top transition group-hover:scale-[1.02]" />
+                    <img src={thumb(s.runId)} alt={`Screenshot from ${utc(s.timestamp)}`} loading="lazy" className="h-full w-full object-cover object-top transition group-hover:scale-[1.02]" />
                   </a>
                   <div className="flex items-center justify-between gap-2 px-3 py-2">
                     <span className="truncate text-xs text-fg">{utc(s.timestamp)}</span>
@@ -131,7 +132,8 @@ function ScheduleIndexView({ token, index, latestOnly }: { token: string; index:
             key: `${run.runId}-${j}`,
             url: shot.url,
             device: shot.device,
-            src: `/share/${token}/image?run=${run.runId}&file=${encodeURIComponent(shot.fileName)}`,
+            src: `/share/${token}/image?run=${run.runId}&file=${encodeURIComponent(shot.fileName)}&thumb=1`,
+            fullSrc: `/share/${token}/image?run=${run.runId}&file=${encodeURIComponent(shot.fileName)}`,
             fileName: baseName(shot.fileName),
             badge:
               typeof shot.changePct === 'number' && shot.changePct >= 1
@@ -278,7 +280,8 @@ export default async function SharePage({
                 key: `${r.device ?? ''}-${r.fileName}-${i}`,
                 url: r.url,
                 device: r.device,
-                src: img(r.fileName!),
+                src: `${img(r.fileName!)}&thumb=1`,
+                fullSrc: img(r.fileName!),
                 fileName: baseName(r.fileName),
               }))}
             />

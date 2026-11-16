@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-import * as fs from 'fs/promises';
 import * as path from 'path';
+import { imageResponse } from '@/lib/thumbnails';
 import { getShare, resolvePageShare, resolveShare, scheduleRunFilePath, sharedFilePath } from '@/lib/shareStore';
 
 export const dynamic = 'force-dynamic';
@@ -38,14 +38,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   if (rel.startsWith('..') || path.isAbsolute(rel)) return new Response('Not found', { status: 404 });
 
   try {
-    const data = await fs.readFile(path.join(process.cwd(), 'data', rel));
-    return new Response(new Uint8Array(data), {
-      headers: {
-        'Content-Type': path.extname(file).toLowerCase() === '.png' ? 'image/png' : 'image/jpeg',
-        // Short cache: schedule links change when a new run lands; revoked links should stop soon.
-        'Cache-Control': 'public, max-age=300',
-        'X-Robots-Tag': 'noindex',
-      },
+    return await imageResponse(path.join(process.cwd(), 'data', rel), sp.get('thumb') === '1', {
+      // Short cache: schedule links change when a new run lands; revoked links should stop soon.
+      'Cache-Control': 'public, max-age=300',
+      'X-Robots-Tag': 'noindex',
     });
   } catch {
     return new Response('Not found', { status: 404 });

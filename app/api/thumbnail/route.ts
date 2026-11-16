@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { getOwnedJob } from '@/lib/jobAccess';
 import * as fs from 'fs';
 import * as path from 'path';
+import { imageResponse } from '@/lib/thumbnails';
 
 export const dynamic = 'force-dynamic';
 
@@ -46,16 +47,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const fileBuffer = fs.readFileSync(filePath);
-    const ext = path.extname(filePath).toLowerCase();
-    const contentType = ext === '.png' ? 'image/png' : 'image/jpeg';
-
-    return new Response(fileBuffer, {
-      headers: {
-        'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=3600',
-      },
-    });
+    // ?thumb=1: the small JPEG preview (made during capture, or now).
+    return await imageResponse(filePath, request.nextUrl.searchParams.get('thumb') === '1', { 'Cache-Control': 'private, max-age=3600' });
   } catch (error) {
     console.error('Thumbnail error:', error);
     return Response.json(
