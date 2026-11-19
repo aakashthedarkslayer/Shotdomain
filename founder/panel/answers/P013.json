@@ -1,0 +1,13 @@
+{
+  "id": "P013",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "I can throw together a Playwright script that walks the sitemap and dumps full-page shots at a few viewports in an afternoon, and I already have something like it. Nine bucks a month isn't much, but I'm not paying for something I can run myself for free.",
+  "objection": "The change alerts are the only bit I can't knock out quickly, and in my experience those tools flag every cookie banner, carousel and lazy-loaded image as a change, so I'd end up ignoring the emails. Plus it's brand new with no reviews, and I'd be pasting client session cookies into it.",
+  "would_change_my_mind": "Seeing on one of my own client sites that the change detection ignores dynamic noise and only flags real layout or content changes, with a free trial of the scheduling so I can check that first.",
+  "price_too_cheap": 2,
+  "price_cheap": 5,
+  "price_expensive": 15,
+  "price_too_expensive": 30
+}

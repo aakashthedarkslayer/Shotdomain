@@ -1,0 +1,13 @@
+{
+  "id": "P016",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "It has no reviews yet, and I won't put a new tool on client sites until other people have shown it works on real ones. I'd also only need full-site screenshots a few times a year, so a monthly plan doesn't fit. I'd try the free tier once and leave it at that.",
+  "objection": "Nobody has reviewed it yet, and the free tier is desktop only. Mobile is the part I actually care about, so I can't test it properly before I pay.",
+  "would_change_my_mind": "Real reviews from other freelancers, plus a free trial that includes iPhone and Android captures so I can see it handle one of my clients' sites first. After that I'd consider the $99 lifetime plan.",
+  "price_too_cheap": 2,
+  "price_cheap": 5,
+  "price_expensive": 15,
+  "price_too_expensive": 30
+}

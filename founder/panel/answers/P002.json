@@ -1,0 +1,13 @@
+{
+  "id": "P002",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "I can write a Playwright script that crawls the sitemap and shoots every page at mobile and desktop sizes in an afternoon, and it runs on our own machines. Nine dollars a month isn't much, but I'd be paying for something I already have.",
+  "objection": "The login-page feature means pasting a live browser session into a brand-new tool with no reviews. That's basically handing over the keys to our admin. I wouldn't be allowed to do that, and I wouldn't want to. Also, emulated iPhone and Android viewports are not real devices.",
+  "would_change_my_mind": "If my team needed scheduled visual diffs with email alerts across lots of sites and I had no time to maintain scripts, and it ran self-hosted or never touched session cookies, I might pay for it.",
+  "price_too_cheap": 2,
+  "price_cheap": 5,
+  "price_expensive": 15,
+  "price_too_expensive": 30
+}

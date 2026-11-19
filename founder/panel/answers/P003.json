@@ -1,0 +1,13 @@
+{
+  "id": "P003",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "I only need full-site screenshots now and then, and my browser extension plus the free 15-page tier covers most of my small client sites. I'd try the free plan, but I'm not adding another subscription on my income for something I do a few times a year.",
+  "objection": "It's a nice-to-have, not a must-have. The change alerts don't interest me because tools like this are always noisy with false positives, so I'd really just be paying for batch screenshots I can already do by hand.",
+  "would_change_my_mind": "Landing a big client site with 50+ pages where I need every page on mobile and desktop for a before/after. Then I'd pay $9 for one month and cancel.",
+  "price_too_cheap": 2,
+  "price_cheap": 5,
+  "price_expensive": 12,
+  "price_too_expensive": 20
+}

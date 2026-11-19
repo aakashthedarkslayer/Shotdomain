@@ -1,0 +1,13 @@
+{
+  "id": "P006",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "The scheduled before-and-after captures would actually fix my 'what did the site look like before?' problem, and I like that there's a lifetime option. But $99 lifetime from a brand-new tool with zero reviews is a bet that it will still exist next year, so I'd poke at the free tier and wait for reviews or an AppSumo-style deal first.",
+  "objection": "A lifetime deal is only worth it if the company survives, and this one has no track record. On top of that, pasting my company's logged-in browser sessions into a third-party tool I know nothing about is a security risk I'm not comfortable taking.",
+  "would_change_my_mind": "A launch lifetime deal around $49-59 with real reviews from other agencies or QA people, plus a clear explanation of how session cookies are stored and deleted.",
+  "price_too_cheap": 15,
+  "price_cheap": 49,
+  "price_expensive": 99,
+  "price_too_expensive": 149
+}
