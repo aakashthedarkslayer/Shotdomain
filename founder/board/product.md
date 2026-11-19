@@ -2,27 +2,31 @@
 Score: 5/10 | Vote: FUND IF
 
 ## What is strong
-- The core job is real and simple to describe: "every page of a site, screenshotted on every device, in one click." That sentence works. It is a chore people do by hand today.
-- Care has gone into the parts nobody sees: lazy content loaded first, animations settled so runs compare, cookie banners hidden, app shells expanded to full height. That is good craft.
-- The notes on each screenshot (bot check shown, login form hit, redirect) turn a silent failure into an honest one. Telling the customer the truth is part of the experience.
-- The ethical hard rule (no CAPTCHA bypass, honest User-Agent, robots.txt) is a clean product decision, and it lowers legal risk.
+- **One buyer, one sentence.** "Every client site. Every page, on record." is aimed at small agencies. The paid plans now lead with monitoring, which meets the first meeting's focus conditions.
+- **Craft in the hidden parts.** Captures settle animations, load lazy content and hide cookie banners. A blocked page gets an honest note, not a silent bad image.
+- **The right moment exists.** An agency sends its client a branded link, and the client compares any two dates.
 
 ## What would kill it (the top 3, most dangerous first)
-1. **No one thing.** It is two products sold as one. One is an occasional capture job (a redesign, a handover, an audit). The other is ongoing monitoring (schedules, diffs, alerts, a "time machine"). Add login capture, public share links, archives, ZIPs, four tiers and a lifetime deal, and the pitch needs a paragraph. The Product lens reads that as an unclear product, not a rich one. The capture job is also episodic, so a monthly plan may not match how often people need it.
-2. **No customer has used it yet.** It runs on the founder's machine only. No outside user has done the first five minutes, so nobody knows if the magic moment lands. And the free tier hides that moment: desktop only, 15 pages. The thing that sets it apart (the whole site, on all devices) is what a free user never sees.
-3. **Seams the founder does not control.** Bot protection and login walls will make real client sites come back half-captured. Pasting a "Copy as cURL" request is a lot of effort and a trust ask for a freelancer. Sign-in, Paddle checkout, email alerts and one always-on Chrome server are each a handoff that can break. A run that fails on the customer's own client site is the moment they leave.
+1. **Nobody else has used it.** It runs only on the founder's machine. The first meeting's key condition is not done: 5-10 target users testing it on their own client sites, with the clean-capture rate recorded. The panel's top objection is the same question (9 of 20 asked "will it work on my clients' sites?"). Since then the effort went into the interface instead. Only that test can measure the clean-capture rate.
+2. **The free tier shows what free tools already do.** Free is one-off capture, which free tools already offer. Alerts, timelines and the client compare link never appear in the trial. A monitoring product proves itself on the second run, and Free never gets one.
+3. **The alert is the product, and it is untested.** False alerts are Visualping's main complaint. ShotDomain claims to avoid them but has never run on real client sites with carousels or ads. Each of these weak spots could cost a paying agency's trust:
+   - a scheduled login session can expire;
+   - alert emails may land in spam;
+   - the legal pages have blank business details;
+   - there is no public domain yet.
 
 ## The questions I would ask the founder
-- In one sentence, with no "and": what is ShotDomain for?
-- Walk me through the first five minutes of a freelancer who pastes their client's URL. What do they see at second 10, minute 1, minute 5?
-- Which do buyers want: the capture or the monitoring? If you had to delete one, which goes? (The consumer panel answers this.)
-- On real agency client sites, what share of pages come back clean versus blocked or half-loaded? (Open question, nobody has this number. A test run on sample sites answers it before launch.)
-- What happens when a capture of 500 pages on 4 devices fails at page 300?
-- How does a customer log in to a client's site in practice: cURL paste, cookies or password? What does each one feel like?
-- Can storage per heavy user be paid for at $9? (Open question for the CFO step, using the founder's 1–5 MB per PNG figure.)
+- In one sentence, without "and", what does a Studio buyer get?
+- When, in a freelancer's first five minutes, do they first see a change?
+- What does the user see when a scheduled login session expires?
+- The plans say "every run kept (last 10 per site)" and "100 captures kept". Can a buyer tell a run from a capture?
+- "Every page" in the headline sits beside 25 key pages per site on Studio. Which promise holds?
+- What would you cut? Candidates: four devices on every scheduled run, 500-page one-offs, ZIP downloads, Lifetime.
+- How much storage does a maxed-out Agency account use? That is 25 sites × 100 pages × 30 runs × devices, at 1-5 MB per image. The CFO has priced only the $9 plan, so the CFO answers this.
 
 ## If FUND IF: the conditions
-1. **Pick the one thing.** Write a one-sentence pitch. Lead the product, landing page and free tier with it, and push the other job behind it or cut it.
-2. **Let free users feel the magic.** The free tier should show the main idea (a whole small site, at least two devices) even if it holds fewer pages or keeps them for less time.
-3. **Test it on outside users before launch.** Deploy it publicly. Watch 5–10 target users (freelancers or agencies) run it on their own client sites. Report the clean-capture rate and where each one got stuck.
-4. **Cut the price list down.** Use at most three choices. Decide what to do with the lifetime deal, Starter and regional pricing before launch, not after.
+1. Go live on a public domain with complete legal pages. Then have 5-10 real agencies or freelancers use it on their own client sites. Record the clean-capture rate and false-alert rate over at least two scheduled runs. Fix what breaks before any channel spend.
+2. Let Free reach the paid moment: one site on a schedule, a second run, one before/after compare. Keep it to a size the CFO approves.
+3. Count retention in one unit (runs or captures), and make the limits match the headline.
+4. Pause Lifetime until the outside test is done, so there are three choices.
+5. Cut whatever those users never touch.

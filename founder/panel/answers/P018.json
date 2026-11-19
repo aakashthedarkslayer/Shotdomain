@@ -2,12 +2,12 @@
   "id": "P018",
   "buys": false,
   "purchases_first_month": 0,
-  "reason_code": "habit",
-  "reason": "We already have a Playwright script one of my devs threw together, and it covers the before/after shots I send clients. I'm not adding another subscription for something I can script in an afternoon.",
-  "objection": "It's brand new with no reviews, and I'd be pasting client login sessions into it. If the screenshots come out broken on lazy-loaded or cookie-banner pages, that's my name on the client report.",
-  "would_change_my_mind": "A branded, client-ready PDF or share page with side-by-side before/after diffs and my agency logo on it. Our script doesn't do that, and it would save me real time on reports.",
-  "price_too_cheap": 3,
-  "price_cheap": 9,
-  "price_expensive": 29,
-  "price_too_expensive": 50
+  "reason_code": "trust",
+  "reason": "It's aimed right at how I report to clients, but it's brand new with no reviews, and the part I'd actually pay for, the branded before/after links, isn't in the free plan, so I can't see it before I pay. I'll run the free tier on one client site this month and decide after that.",
+  "objection": "I'd be putting my agency's name on links from a service nobody has heard of yet. If a capture comes out wrong or the link dies, that's my credibility with the client, not theirs. And part of me still thinks my developer could script full-page screenshots on a cron job in an afternoon.",
+  "would_change_my_mind": "Seeing a real branded before/after link before I pay, ideally opened on my phone the way my clients would see it, through a sample page or a short free trial of the Agency plan.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 35,
+  "price_too_expensive": 60
 }

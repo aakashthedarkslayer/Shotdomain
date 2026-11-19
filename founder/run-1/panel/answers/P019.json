@@ -1,0 +1,13 @@
+{
+  "id": "P019",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "It's brand new with zero reviews, and I only need full-site screenshots a few times a year. I'd try the free tier on a small client site, but I'm not paying a monthly fee for something I use a handful of times.",
+  "objection": "No reviews, no proof it handles real client sites with lazy-loaded images, sticky headers and cookie banners, and I don't need a subscription for a few handovers a year.",
+  "would_change_my_mind": "Solid reviews from other freelancers showing clean full-page captures on real sites, plus a pay-per-capture option instead of a monthly plan.",
+  "price_too_cheap": 2,
+  "price_cheap": 5,
+  "price_expensive": 15,
+  "price_too_expensive": 30
+}

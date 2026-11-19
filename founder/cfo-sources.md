@@ -11,3 +11,12 @@
 | Email | $0 | **Estimate**: free tiers cover low volume |
 | Marketing | $0 | Not stated by founder |
 | Plan (25 subscribers) and ramp | | **Illustrative assumption**, not a forecast. Panel buy rate was 0/20 |
+
+## Second run additions
+
+| input | value | source |
+|---|---|---|
+| Object storage | $0.015/GB-month, egress free | [Cloudflare R2 pricing](https://developers.cloudflare.com/r2/pricing) (via search summary; check the page) |
+| Full-page PNG size | 1.5 MB mean | **Estimate** (real sites, high-DPI phones; 0.5-3 MB). Local test pages averaged 0.11 MB but are not representative |
+| Plan limits for the maxed account | sites, pages, runs kept, history kept, pages per capture | `lib/plans.ts` |
+| Scheduled runs stored twice | run folder + copy in history | `lib/scheduler.ts` (step 7), `lib/userData.ts` (`fs.cp`) |

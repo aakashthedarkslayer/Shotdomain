@@ -1,0 +1,13 @@
+{
+  "id": "P010",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "I hand over a site about once a month, and most of my client sites are well under 15 pages, so the free tier or my browser extension already covers it. If I ever need all devices in bulk, I'd write a quick Playwright script over the sitemap and be done.",
+  "objection": "This is something I could build myself in an afternoon, and I don't do it often enough to pay a monthly fee for it, even a small one.",
+  "would_change_my_mind": "A client asking for ongoing visual change monitoring that I could bill them for, so the scheduled diff emails pay for themselves.",
+  "price_too_cheap": 2,
+  "price_cheap": 4,
+  "price_expensive": 9,
+  "price_too_expensive": 15
+}

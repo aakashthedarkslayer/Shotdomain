@@ -4,7 +4,7 @@
 
 - ✓ Each subscriber-month earns $7.40 before fixed costs (82% contribution).
 - ✓ Year 1 operating profit: $304.
-- ✗ 0 of 20 simulated buyers buy (0%, the bar is 25%).
+- ✗ 2 of 20 simulated buyers buy (10%, the bar is 25%).
 
 | key number | |
 | --- | ---: |
@@ -15,85 +15,94 @@
 | Startup spend | $15 |
 | Cash needed before it pays for itself | $147 |
 | Startup money earned back | month 10 |
-| Buyer panel | 0 buy · 20 pass |
+| Buyer panel | 2 buy · 18 pass |
 
 ## The idea
 
-- What it is: a web app that finds every page of a website (sitemap + crawl) and screenshots them all, full page, on desktop, tablet and phone in one run, then keeps them, compares runs and shares them.
-- Who it is for: freelancers, web designers, small web agencies and QA testers who need screenshots of whole client sites (before/after a redesign, client handover, audits, monitoring key pages over time).
-- What it sells, at what price: a SaaS subscription. Free $0 (15 pages per capture, desktop only, last 10 captures); Studio $9/month or $90/year (150 pages per capture, all 4 devices, pages behind a login, 5 schedules of 25 pages, change alerts, 100 captures kept); Agency $29/month or $290/year (500 pages per capture, 25 schedules of 100 pages, 30 runs kept, 500 captures kept); Lifetime $99 one-time (Studio limits forever).
-- Where and how: online, sold worldwide in USD. Self-serve: sign in with Google, checkout through Paddle (merchant of record, handles VAT/GST). Customers would find it through search and word of mouth (no channel tested yet).
-- Budget and constraints: solo founder. Product is built and working locally; not yet hosted on a public domain, no paying customers yet, Paddle sandbox being set up. Marketing budget not stated. Must stay honest: no CAPTCHA solving or bot-detection evasion, honest User-Agent, respects robots.txt.
+- What it is: a web service that keeps a dated, browsable record of every page of the websites an agency looks after, on desktop and phone: it captures them, flags what changed between runs, and gives the client a link they can open.
+- Who it is for: small web agencies (2-15 people) and freelance web designers who look after client sites; secondarily in-house web/QA staff.
+- What it sells, at what price: SaaS, USD. Free $0 (15 pages per capture, desktop + iPhone, last 10 captures). Studio $9/month or $90/year (5 client sites monitored x 25 key pages, daily/weekly/monthly runs kept, change alerts, all 4 devices, pages behind a login, 150 pages per one-off capture). Agency $29/month or $290/year (25 client sites x 100 pages, share links with the agency's own logo and name, before/after compare links for clients, 30 runs kept per site, 500 pages per one-off capture). Lifetime $79 one-time, founding batch capped at 100 buyers (Studio limits forever).
+- Where and how: online, worldwide, self-serve. Sign in with Google; Paddle checkout (merchant of record). No acquisition channel tested yet.
+- Budget and constraints: solo founder. Built and working on the founder's machine; not yet on a public domain; no outside users, customers or reviews yet. Marketing budget not stated. Never bypasses CAPTCHAs or bot protection; honest User-Agent; respects robots.txt.
 
 ## Summary
 
-**Verdict: Not yet** (computed by `compile.py`). The economics pass; demand does not. **0 of 20 simulated buyers bought** (bar: 25%).
+**Verdict: Not yet.** 2 of 20 simulated buyers buy (10%), against a bar of 25%. The money checks pass:
 
-**What has to change first:** let a stranger see the product work on *their own* site before paying. Then re-run the panel (`/founder-offer`, then `/founder-consumer`).
+- Each $9 Studio subscriber-month leaves $7.40 (82%).
+- 6 subscribers break even.
+- Year 1 shows +$304 on an illustrative ramp to 25 subscribers, which is not a forecast.
 
-### The business
+First run: 0 of 20.
 
-ShotDomain screenshots every page of a website on desktop, tablet and phone in one run, and can re-capture and compare pages on a schedule. It is for freelance web designers, small agencies and in-house web/QA staff. Studio $9/month, Agency $29/month, Lifetime $99.
+**What it is.** A web service that keeps a dated record of every page of a client's site on desktop and phone. It finds the pages, re-captures them on a schedule, flags what changed and gives the client a link. It is for small agencies and freelancers who look after client sites. Free covers 15 pages on two devices; Studio is $9, Agency $29, and Lifetime $79 once (first 100 buyers).
 
-### The three numbers
+**What has to change, and which skill changes it:**
 
-- **Contribution: $7.40 per $9 subscriber-month (82%).**
-- **Break-even: 6 paying subscribers** (fixed costs ~$41/month).
-- **Year 1: +$304** on an *illustrative* ramp to 25 subscribers. That ramp is an assumption, not a forecast; no channel or conversion exists yet.
+1. **Proof on real sites**, the top blocker for both the board and the panel.
+   - Trust: 6 buyers passed on it, the same theme as run 1's 9.
+   - Habit: 3 can script it themselves.
+   - Every "what would flip me" answer asks to see clean captures and quiet alerts on their own hardest site first.
+   - Fix: `/founder-launch`. Run 5-10 outside agencies over two scheduled runs and publish the clean-capture and false-alert rates.
+2. **Need: 9 buyers only capture a few times a year**, up from 3 in run 1.
+   - The agency-first pitch made the monitoring explicit, and occasional users now say outright that it's not for them.
+   - Fix: `/founder-offer`. Either a one-off full-site capture they can pay for, or accept them as Free users and stop counting them as the market.
+3. **Agency buyers can't see what they'd pay for.**
+   - Both agency owners would pay for branded before/after links but can't see one before paying.
+   - Fix: `/founder-offer`. Add a public sample link and a short Agency trial.
+4. **Storage before Lifetime and Agency.**
+   - A fully used Agency account on the current disk storage costs ~$112-292 a month against $27 net.
+   - Lifetime $79 covers a maxed Studio account for 5 months.
+   - Scheduled runs are stored twice.
+   - Fix: `/founder-cfo` and code. Object storage, GB caps, store runs once.
 
-### Where the board and the panel agree
+**Board and panel agree** that nothing desk work can change remains: proof, and a first channel, need strangers. The board rose from 4.3 to 4.7 and every desk condition is met. **They disagree** on price: Offers calls $9 "cheap by accident", the panel's monthly range is $4 to $20, and no buyer passed on price.
 
-- **The core job is episodic.** Every panelist said some version of "I only need this a few times a year" (board: "two products in one, the main one is episodic").
-- **No proof, no trust.** 9 of 20 passed on trust: new, no reviews, "will it work on my clients' sites?" (board: no outside users yet).
-- **Price is not the blocker.** Only 1 of 20 passed on price; $9 sits on the panel's indifference price ($9.04).
+**Biggest risk.** The only sales came from lifetime-deal hunters who said they would never take the monthly plan. A Lifetime launch could sell out the cap to people who never become recurring revenue, on the account type that costs most to store.
 
-Where they disagree: the board's Offers lens says *raise* value and price for agencies; the panel's freelancers say even $9 is a subscription they will cancel. Both point to the same answer: sell the ongoing record to agencies, use one-off capture as the free trial.
+**What the founder needs to start.** About $147 of cash on the illustrative ramp, plus a public domain and the legal pages completed. The first test is an outside one: real agencies on their own client sites.
 
-### Biggest risk
+**This week:**
+- Recruit 5 agencies or freelancers to put one real client site on a schedule.
+- Fix the double storage of scheduled runs and add a storage cap before selling Lifetime.
 
-The free tier hides the magic (desktop only, 15 pages). Over half the panel said the one thing that would flip them is **one free run on a real client site with phone screenshots included**. Fix: free tier includes one mobile device, or a one-time free "full run" per account.
-
-### What the founder needs to start
-
-~$147 cash on the CFO's ramp, plus a public deployment. The first real test (from the board): put it in front of 5-10 freelancers/agencies on their own client sites and record the clean-capture rate.
-
-### The one thing to do this week
-
-Deploy it on a real domain and get 5 real web designers to run it on one client site each, with mobile included, and watch.
-
-*The panel is simulated buyers and the numbers are projections; real customers and real quotes confirm them. Not financial, legal or tax advice.*
+These are simulated buyers and projected numbers; real customers confirm them. Not financial, legal or tax advice.
 
 ## What the board said
 
-**Vote: 2 FUND IF, 1 PASS. Average score 4.3 / 10** (Offers 5, Monopoly 3, Product 5).
+**Vote: 2 FUND IF, 1 PASS. Average score 4.7 / 10** (Offers 5, Monopoly 4, Product 5).
+First meeting: 2 FUND IF, 1 PASS, average 4.3 (Offers 5, Monopoly 3, Product 5).
 
-The lenses are summaries of published frameworks (Offers, from *$100M Offers*; Monopoly, from *Zero to One*; Product, from Isaacson's *Steve Jobs*). They are not those people. Full memos: `board/offers.md`, `board/monopoly.md`, `board/product.md`.
+The lenses are summaries of published frameworks (Offers, from *$100M Offers*; Monopoly, from *Zero to One*; Product, from Isaacson's *Steve Jobs*). They are not those people. Memos: `board/offers.md`, `board/monopoly.md`, `board/product.md`; the first meeting is in `run-1/`.
+
+### The board's read in one line
+
+Every condition that could be met at a desk has been met; the two that need strangers (outside users, paying users) have not, and they are the only ones that create proof. The score moved only where desk work could move it.
 
 ### Risks more than one member raised
 
-1. **Two products in one, and the main one is episodic** (all three). Whole-site capture is a per-project job (redesign, handover, audit). Only monitoring (schedules, diffs, history) gives a reason to keep paying. A buyer can subscribe for one month, capture, and cancel; Lifetime at $99 makes that cheaper still.
-2. **No distribution and no proof** (all three). No public domain, no outside users, no tested channel, no marketing budget, customer-acquisition cost unknown.
-3. **Commodity positioning** (Offers, Monopoly). The offer is a feature list with page counts, the open questions are all about pricing lower, and nothing is ten times better than the alternatives.
-4. **Storage cost vs. price, worst with Lifetime** (all three). Founder's own figures: a full Studio capture can be 600 PNGs at 1–5 MB. Lifetime turns a growing monthly cost into one payment.
+1. **No proof, no distribution** (all three). Still no public domain, no outside user, no channel, no customer. Trust was the top reason simulated buyers passed. Unchanged since the first meeting.
+2. **The alert is the product and it is untested** (Product, Monopoly, Offers). Fewer false alerts than Visualping is the one claim that could become real know-how, but no clean-capture or false-alert rate has been measured on a single outside site.
+3. **Retention caps undercut "on record"** (Monopoly, Product). Studio keeps 10 runs per site, Agency 30: on a daily schedule that is 10 or 30 days, so leaving costs little and "every page, on record" overpromises. Product also notes "runs" and "captures" are two units a buyer can't tell apart.
+4. **The free tier shows one-off capture, not the paid moment** (Product, with Offers' "monitoring pays off weeks after signup"). Free never sees a second run, an alert or a before/after link.
+5. **Storage of a maxed account is not priced** (Offers, Product). A full Studio/Lifetime account could hold ~5,000 full-page PNGs (5-25 GB); Agency far more. The CFO priced only a typical $9 subscriber.
 
-Disagreement worth keeping: Monopoly sees no durable advantage at all and passes; Offers and Product think the product is real and would fund it once it is focused and proven. Monopoly and Offers both see the "time machine" history as the only thing that could become sticky; Product warns it is the second product, not the first.
+Disagreements kept: Offers calls the $9 price "cheap by accident" (looks like a hobby next to Stillio's $29 for 5 pages) and would test Agency higher; Monopoly sees the price gap as no edge at all because an incumbent can close it by editing a page. Monopoly also wants a ShotDomain mark on Agency's branded links (the only built-in way new agencies discover it), which pulls against the white-label value Offers likes.
 
-### Conditions (checklist for the rest of the pack)
+### Conditions (checklist)
 
-- [ ] **One buyer, one outcome, one sentence.** Pick the buyer (e.g. agencies handing a redesign to a client) and lead the offer, name, landing page and free tier with that outcome. (Offers, Product) → consumer panel, offer
-- [ ] **Know the competitors**: who serves this buyer, at what price, and where ShotDomain is ten times better. (Monopoly, Offers) → competitors
-- [ ] **Decide capture vs. monitoring**: which one buyers would keep paying for. (all) → consumer panel
-- [ ] **Do not cut price**: drop the $4–5 Starter; test Agency higher with client-facing extras before deciding $290/yr is too much. (Offers) → pricing
-- [ ] **Cap or remove Lifetime** until storage cost per user is known. (all) → CFO
-- [ ] **Storage and server cost per user at $9** modelled, including a heavy user. (all) → CFO
-- [ ] **Free tier shows the magic**: a whole small site on at least two devices. (Product) → offer
-- [ ] **At most three price choices** before launch. (Product) → pricing
-- [ ] **Outside users before launch**: deploy publicly, watch 5–10 target users run it on their own client sites, record the clean-capture rate. (Product) → launch
-- [ ] **One tested channel** that brings paying customers at a recoverable cost; ~10 paying users from the chosen group. (Monopoly, Offers) → marketing, launch
+- [ ] **Go live** on a public domain with the legal pages completed. (Product, Offers) → launch
+- [ ] **5-10 outside agencies/freelancers** on their own client sites over at least two scheduled runs; record **clean-capture and false-alert rates**, ideally against Visualping on the same pages, against a bar set in advance. Fix what breaks before any channel spend. (all) → launch
+- [ ] **Let Free reach the paid moment:** one site on a schedule, a second run, one before/after compare, at a size the CFO approves. (Product) → offer, CFO
+- [ ] **Deeper history** that grows with tenure (e.g. a year per site) if the CFO shows it is affordable; count retention in one unit and make it match the headline. (Monopoly, Product) → CFO, offer
+- [ ] **Price a maxed account** (Studio/Lifetime and Agency) and cap Lifetime storage before the first Lifetime sale, or pause Lifetime until the outside test is done. (Offers, Product) → CFO
+- [ ] **An outcome guarantee** in the users' words ("if it can't capture your client's site cleanly, you pay nothing") that the CFO signs off. (Offers) → offer, CFO
+- [ ] **One tested channel** to ~10 paying users with cost per customer recorded, before new features. (Offers, Monopoly) → marketing, launch
+- [ ] Decide whether Agency's branded links carry a small ShotDomain mark. (Monopoly) → offer
 
 ### The strongest version the board can see
 
-Not "screenshots of every page". The strongest version is a **website history service for small web agencies**: point it at each client site once, and it keeps a dated, browsable record of every page on desktop and phone, flags what changed, and gives the client a branded link. The one-off whole-site capture becomes the free trial (it shows the magic in five minutes), and the paid plans sell the ongoing record, priced per client site rather than per page. That differs from the pitch as written, which leads with capture and treats monitoring as an add-on.
+Unchanged in direction, sharper in what's missing: a **client-facing website history service for small agencies**, where the trial already shows the payoff (a site on a schedule, a second run, a before/after link the agency can forward to its client) and the paid plans sell depth of history that becomes harder to leave every month. What separates this from a desk exercise is a measured clean-capture and false-alert rate on real client sites. None of the three members will move further without it.
 
 ## The competition
 
@@ -168,7 +177,7 @@ Honest caveat: the gap is mostly **price and bundling**, not a capability nobody
 
 ## The buyer panel
 
-**0 buy · 20 pass** (0% buy) out of 20 simulated buyers. Seed 172409, so the same cards can be dealt again.
+**2 buy · 18 pass** (10% buy) out of 20 simulated buyers. Seed 172409, so the same cards can be dealt again.
 
 These are simulated buyers, not customers. Use this to find objections and weak spots, then confirm the big ones with real people before you spend.
 
@@ -176,7 +185,7 @@ These are simulated buyers, not customers. Use this to find objections and weak 
 
 | group | buyers | buy rate |
 | --- | ---: | ---: |
-| In-house marketing, web or QA staff at a company | 5 | 0%  (thin) |
+| In-house marketing, web or QA staff at a company | 5 | 40%  (thin) |
 | Freelance web designer or developer | 8 | 0% |
 | Small web agency owner or project manager (2-15 people) | 7 | 0%  (thin) |
 
@@ -184,9 +193,9 @@ These are simulated buyers, not customers. Use this to find objections and weak 
 
 | group | buyers | buy rate |
 | --- | ---: | ---: |
+| Lifetime-deal hunter | 3 | 67%  (thin) |
 | Does it by hand today | 5 | 0%  (thin) |
 | Would script it | 3 | 0%  (thin) |
-| Lifetime-deal hunter | 3 | 0%  (thin) |
 | Tight budget | 2 | 0%  (thin) |
 | Already pays for a monitoring tool | 2 | 0%  (thin) |
 | Client reporting focused | 2 | 0%  (thin) |
@@ -196,71 +205,93 @@ These are simulated buyers, not customers. Use this to find objections and weak 
 
 | group | buyers | buy rate |
 | --- | ---: | ---: |
-| $92,000 and up | 7 | 0%  (thin) |
+| $92,000 and up | 7 | 14%  (thin) |
+| $75,000 to $92,000 | 7 | 14%  (thin) |
 | under $75,000 | 6 | 0%  (thin) |
-| $75,000 to $92,000 | 7 | 0%  (thin) |
 
 ### Why they pass
 
 | reason | buyers | in their words |
 | --- | ---: | --- |
-| trust | 9 | "I'd run the free tier on one of our sites, but it's desktop only, and mobile is the part I actually care about. I'm not paying for something with no reviews before I've seen it handle our cookie banner and bot protection. I only need full-site screenshots when a project comes up, and my extension gets me through that." (P001) · "I'd run the free 15-page tier on one client site and see what comes back, but I wouldn't pay this month. Full-site captures only come up a few times a quarter for me, and my extension does the job well enough." (P004) |
-| habit | 6 | "I can write a Playwright script that crawls the sitemap and shoots every page at mobile and desktop sizes in an afternoon, and it runs on our own machines. Nine dollars a month isn't much, but I'd be paying for something I already have." (P002) · "I only need full-site screenshots now and then, and my browser extension plus the free 15-page tier covers most of my small client sites. I'd try the free plan, but I'm not adding another subscription on my income for something I do a few times a year." (P003) |
-| need | 3 | "I hand over a site about once a month, and most of my client sites are well under 15 pages, so the free tier or my browser extension already covers it. If I ever need all devices in bulk, I'd write a quick Playwright script over the sitemap and be done." (P010) · "I only need full-site screenshots now and then, when a project calls for it, and my extension gets it done for free. I'd poke at the free tier, but it's desktop only, and mobile is the view I actually care about, so it wouldn't prove anything to me." (P011) |
-| price | 1 | "The lifetime option is the only plan I'd even look at, but $99 for something I'd fire up three or four times a year is steep, and the free tier will probably cover a small client site when I actually need one. I've bought lots of lifetime deals in the $39-$69 range and I'd wait for this one to land there." (P005) |
-| quality | 1 | "I already pay for a monitoring tool that watches the few pages I care about. The free tier lets me test it, but it says it never gets past bot protection and says nothing about cookie banners, so half my client sites would probably come back as challenge pages or with a banner over the hero, and that's useless for my portfolio folder." (P015) |
+| need | 9 | "I mostly build a site, hand it off and grab before/after shots for my portfolio. The free plan's 15 pages on desktop and iPhone already covers that, so I'd sign up free and not pay. On $29k a year I'm not adding another monthly bill for monitoring I don't really do." (P003) · "What I actually do is grab a before set when a redesign starts and an after set at launch for the portfolio, and the free 15 pages covers that for one site. I don't need daily monitoring and change alerts badly enough to pay this month, so I'd sign up free, try it on a client site and see." (P004) |
+| trust | 6 | "It literally says it never gets past bot protection, and half the sites I look after sit behind Cloudflare, so my first question isn't answered, it's confirmed. I'd throw one site at the free tier and see what comes back before I pay anything, and I only need full-site screenshots when a project comes up anyway." (P001) · "I'd sign up for the free tier and point it at one client site to see if the iPhone captures and change alerts are actually accurate, but I'm not paying a brand-new tool with zero reviews in month one. The free plan covers the test, so there's no reason to upgrade until it's proven itself." (P007) |
+| habit | 3 | "I can write a Playwright script in an afternoon that crawls our sitemap, takes full-page shots at an iPhone viewport and diffs them, and I already have the CI box to run it on. For one company site I'd rather own that than add another subscription I have to justify." (P002) · "I'd sign up for the free tier and poke at it, but I'm not paying for this. I can write a Playwright script with a cron job in an afternoon, and my clients have never asked me for a dated archive of their pages, so it's not something I can bill them for." (P008) |
 
 ### Why they buy
 
 | reason | buyers | in their words |
 | --- | ---: | --- |
+| price | 1 | "I'd run the free 15-page plan on one site first, and if the captures come out clean I'd grab the $79 lifetime before the 100 spots go, because the 14-day refund covers me. I would never take the $9 a month plan; I'm not adding another subscription for something I only need now and then." (P006) |
+| habit | 1 | "A $79 one-time lifetime deal with a 14-day refund is exactly how I buy tools, and the phone captures match how I check our site. I'd run the free 15 pages for a week first, and if the alerts aren't junk I'd grab the lifetime before the 100 spots go." (P020) |
 
 ### What would flip a no
 
-- Letting me run one full mobile and desktop capture of my own site for free, so I can see whether the banner gets dismissed and the pages behind protection actually come out right.
-- If my team needed scheduled visual diffs with email alerts across lots of sites and I had no time to maintain scripts, and it ran self-hosted or never touched session cookies, I might pay for it.
-- Landing a big client site with 50+ pages where I need every page on mobile and desktop for a before/after. Then I'd pay $9 for one month and cancel.
-- A free run on a real client site that comes back clean, with no cookie banner over the content and lazy-loaded images actually rendered, on more than desktop. Then the $99 lifetime would be an easy call.
-- A launch lifetime deal around $49-$59 with real reviews from other agency people, or a client project landing that week where I need all devices on a 100-page site.
-- A launch lifetime deal around $49-59 with real reviews from other agencies or QA people, plus a clear explanation of how session cookies are stored and deleted.
-- Letting the free tier do one full run with iPhone and Android shots on a real client site, so I can see the mobile captures are accurate before paying.
-- Seeing it handle cookie banners and lazy-loaded content cleanly on one of my real client sites on the free tier, plus a client asking me for ongoing visual change monitoring that I could bill them for.
-- A few months of it running with real reviews from other freelancers, plus a free trial of Studio so I can run a full client site on all devices and compare it with what I use now.
-- A client asking for ongoing visual change monitoring that I could bill them for, so the scheduled diff emails pay for themselves.
-- A big redesign or audit project landing on my desk where I need every page on iPhone and Android at once. Letting the free tier capture one mobile device would also help, so I could see the quality before paying.
-- If the scheduled change-detection emails actually caught a broken client page before the client did, that's something I wouldn't bother building myself, and I'd pay for it, probably the $99 lifetime.
+- The free tier giving me clean desktop and iPhone captures of my actual sites, including the protected ones and a logged-in page, with the cookie banner really gone.
+- A version that runs on my own machine or in our CI so the session cookies never leave our network, with the hosted part only for storing captures and sending the before/after links.
+- Landing two or three maintenance retainers where clients want proof of what changed. Then $9 a month for Studio, or the $79 lifetime if it's still open, pays for itself, as long as the free plan shows me the alerts aren't junk.
+- If the free run captures my hardest client site cleanly (the Cloudflare one with the logged-in area, no cookie banner in the shot) and before/after compare came with Studio, I'd grab the $79 lifetime.
+- A lifetime deal around $49 that covers more client sites, with some real reviews or a public track record so I believe it'll still be running in two years.
+- The free tier catching a real change on a client site that I'd have missed, plus some proof the company will stick around, like real users or an export of my capture history so I'm not locked in if it shuts down.
+- Seeing it capture a real client site that's behind Cloudflare and a cookie banner on the free tier without me babysitting it, or a client asking for before/after reports I could charge for. If either happened, the $79 lifetime deal would be an easy yes.
+- A couple of months of the free tier catching real changes on a client site without false alerts, plus a way to export or download all my captures so the archive survives even if they go under.
+- If a client started paying me for an ongoing care plan where I have to prove nothing broke each month, the change alerts and a before/after link I can send them would earn the $9.
+- If I took on a few maintenance retainers where clients expect a monthly record and change alerts, a link I can send them would earn its keep, and the $79 lifetime would get me to pay once the free tier had proved the phone captures are accurate.
+- A client actually asking for monthly visual proof of their site, or getting burned by a change I missed, so the $79 lifetime Studio deal pays for itself on one job.
+- A few weeks of free-tier alerts on a real client site that only flagged real changes, plus a branded before/after link a client actually found useful. That would make the Agency plan worth more than my script.
+
+Buyers say they would buy **1.0 times** in the first month on average.
 
 20 buyers gave all four price answers. Run founder-pricing's van_westendorp.py on the answers folder.
 
 ## Pricing
 
-### What buyers said (20 simulated buyers, `--quick` panel)
+### What buyers said (the same 20 simulated buyers, new pitch)
 
-Run on all 20 answers: acceptable range **$5.02-$29.20** (`pricing-curve.md`). But 3 lifetime-deal hunters (P005, P006, P020) answered in one-time dollars ($39-$49 "bargain", $99-$129 "expensive"), which mixes units. On the **17 monthly answers** (`pricing-curve-monthly.md`): acceptable range **$3.08-$19.94**, indifference price **$9.04**, median "bargain" $5, "getting expensive" $15, "too expensive" $30. The agency/client-reporting buyers (P014, P018) put "expensive" at $29 and "too expensive" at $49-50.
+Two curves, because two buyers (P005, P020) answered in one-time lifetime prices rather than per month:
 
-Lifetime hunters (3 of 3) named **$49-59** as the price they would pay; $99 read as "expensive but possible" to two of them.
+| curve | buyers | PMC | OPP | IPP | PME | acceptable range |
+|---|---:|---:|---:|---:|---:|---|
+| All answers (`pricing-curve.md`) | 20 | $4.35 | $15.07 | $11.96 | $20.13 | $4.35 to $20.13 |
+| Monthly answers only (`pricing-curve-monthly.md`) | 18 | $4.02 | $5.08 | $9.14 | $20.01 | $4.02 to $20.01 |
+| First run, monthly only | 17 | $3.08 | $3.08 | $9.04 | $19.94 | $3.08 to $19.94 |
 
-### What competitors charge (`competitors.md`)
+The monthly range barely moved: buyers still put a monthly tool like this at about $4 to $20, with indifference near $9. Studio at $9 sits on the indifference price. Agency at $29 is above every buyer's "getting expensive" answer except the two agency owners' (P018 $35; P014 $25 and $49 too expensive).
 
-Stillio: $29/mo for 5 pages to $199/mo for 100 pages (~$3-6 per monitored page per month). CaptureDeck: $49/mo and up. Visualping: $14-35/mo personal, $140/mo business. ShotDomain Studio at $9 for up to 125 monitored pages is far below every dedicated tool found.
+The one-time answers: P005 $15 / $39 / $79 / $129 and P020 $19 / $49 / $129 / $199 (too cheap / bargain / expensive / too expensive). $79 is P005's "getting expensive" and P020's bargain-to-expensive midpoint.
 
-### What the business needs (`cfo.md`)
+### What competitors charge (`competitors.md`, unchanged)
 
-At $9: contribution $7.40, break-even 6 subscribers. At $19: contribution $17.40, break-even 3. Price is the biggest lever; costs are not the constraint.
+- Stillio: $29/month for 5 pages, about $3 to $6 per monitored page.
+- Visualping: $14 to $140/month.
+- PageCrawl: from $13.33/month.
+- Studio: $9 for up to 125 monitored pages, still far below all of them.
+
+### What the business needs (`cfo.md`, `cfo-maxed.md`)
+
+- At $9, a typical subscriber leaves $7.40, so 6 subscribers break even.
+- At $12: $10.40, break-even 4.
+- At $19: $17.40, break-even 3.
+- The new finding is not about price: a fully used Agency or Lifetime account costs more to store on disk than it brings in. Fix storage before changing price.
 
 ### Decision
 
-1. **Keep Studio at $9/month** for now. It sits on the panel's indifference price and inside the monthly range. Raising it is not the fix: no simulated buyer said no because of the $9 price; they said no because of trust, habit and need.
-2. **Ladder (at most three paid choices, per the board):** Free → Studio $9 → Agency $29. Agency's $29 matches what the client-reporting buyers called "expensive but would buy", and is still at or below Stillio's entry price, but only if Agency gets **client-facing extras** (branded share pages / before-after reports), which two panelists named as the thing that would flip them.
-3. **Lifetime:** do not sell it at $99 open-ended. If used at launch, make it a **capped founding batch** (e.g. first 100 buyers) at a price to test between **$59 and $79**, with storage limits.
-4. **Opening offer:** instead of a discount, let the free tier **show the magic** (one full capture with a phone device included), which 10+ of 20 panelists named as what would flip them. No fake "was" prices.
-5. **What to test with real buyers:** (a) Studio $9 vs $12 on two landing pages; (b) founding Lifetime at $59 vs $79, capped.
+1. **Keep Studio at $9** until real buyers say otherwise. No simulated buyer passed on price; they passed on need (9), trust (6) and habit (3).
+2. **Lifetime is the only thing that sold** (2 of 2 buyers, both lifetime-deal hunters). Keep it capped at 100 and $79, but:
+   - Do not sell it until storage has a GB cap and lives in object storage (CFO).
+   - Expect it to take buyers who would never pay monthly.
+   - Track how many Lifetime buyers would otherwise have stayed free.
+3. **Agency at $29 needs proof before it needs a new price.** Both agency owners named a real branded before/after link they can open as the thing that would flip them (P014, P018). The free tier can't show it. Add a public sample link and a short Agency trial on one site before testing a different price.
+4. **A pay-per-site option** came up from three in-house and freelance buyers who need captures a few times a year (P016, P017, P019): "a few dollars per full-site capture". Test it as a one-off add-on (for example $5 for one full site on all devices), not a new plan, so the ladder stays at three paid choices.
+5. **What to test with real buyers:**
+   - Studio at $9 vs $12 on two landing pages.
+   - Lifetime $79 with a 30 GB cap vs no Lifetime, measuring monthly sign-ups.
+   - A $5 one-off full-site capture.
 
 ### Top price objections, in their words (for marketing)
 
-- "Nine dollars a month isn't much, but I'd be paying for something I already have." (P002)
-- "$99 for something I'd fire up three or four times a year is steep ... I'd wait for this one to land [at $39-69]." (P005)
-- "I'm not adding another subscription on my income for something I do a few times a year." (P003)
+- "I would never take the $9 a month plan; I'm not adding another subscription for something I only need now and then." (P006, who buys the lifetime)
+- "On $29k a year I'm not adding another monthly bill for monitoring I don't really do." (P003)
+- What would change their mind: "A pay-per-use option, like a few dollars for one full-site capture on desktop and phone." (P016)
 
 Simulated buyers pick what to test; they are not proof.
 
@@ -268,17 +299,26 @@ Simulated buyers pick what to test; they are not proof.
 
 Every number below comes from the input file. Nothing is looked up or guessed.
 
-### CFO's note (read this first)
+### CFO's note, second run (read this first)
 
-- **The margin:** each $9 Studio subscriber-month leaves **$7.40** (82%) after Paddle's fee, storage and bandwidth. Fixed costs are about **$41/month**, so **6 paying subscribers break even**. At 25 subscribers the margin is 64%.
-- **The line to watch is volume, not cost.** The costs here are tiny; the panel's 0-of-20 buy rate is the problem. The 25-subscriber plan and the ramp below are an **illustrative assumption, not a forecast**: no channel, no customer and no conversion rate exist yet. Volume -20% still profits ($144 in year 1) because the base is so small; zero subscribers loses ~$41/month.
-- **Cash:** about **$147** before it pays for itself on this ramp (server months before subscribers arrive). The real cash cost is the founder's time, which is not counted.
-- **Three ways to improve the margin (each run through the tool):**
-  1. Price $19 instead of $9: contribution $17.40, break-even 3 subscribers, year 1 $1,384 vs $304. (The monthly panel answers put "getting expensive" at $15 and the acceptable range up to ~$20.)
-  2. Server at $10 instead of $40 (Hetzner-class): fixed costs ~$11/month, break-even 2 subscribers.
-  3. Store changed-only screenshots as WebP/JPEG (the "time machine" idea): storage line falls from ~$0.45 toward ~$0.05 per subscriber; small in dollars, but it is what makes Lifetime and Agency safe for heavy users.
-- **Lifetime ($99):** after the fee it nets ~$93.55 once. At the estimated $0.65/month storage+bandwidth it covers ~144 months of a *typical* user, but a heavy user (e.g. 150 pages x 4 devices x weekly schedules, full-page PNGs at 1-5 MB) could store tens of GB a year. Cap Lifetime storage or the number sold, as the board asked.
-- **Board's money conditions:** storage cost per user is now modelled (estimate) and Lifetime's risk is quantified; "do not cut price" is supported (the tool shows price is the strongest lever). Not met: a tested channel and real conversion.
+- **Same typical subscriber as the first run.** The inputs did not change (`numbers.json`), so each $9 Studio subscriber-month still leaves **$7.40** (82%) after Paddle's fee, storage and bandwidth. Fixed costs are about **$41/month**, so **6 paying subscribers break even**. The 25-subscriber plan and the ramp are an **illustrative assumption, not a forecast**.
+- **New: a fully used account, as the board asked** (`cfo-maxed.md`). The current disk storage cannot carry heavy accounts:
+  - **Agency** with all 25 schedules running daily stores about 500,000 PNGs (~750 GB at an estimated 1.5 MB each). On disk at $0.15/GB that is **~$112/month against $27.05 net revenue**. With history filled by 500-page one-off captures it is ~1.95 TB, **~$292/month**.
+  - **Studio** with its history filled by 150-page captures: ~98 GB, **~$14.62/month against $8.05 net**. Used normally (schedules only) it costs ~$3.38, which is fine.
+  - **Lifetime ($79)** nets $74.55 once. That pays for only **5 months** of a fully used Studio account on disk, or about 51 months on object storage.
+  - On object storage at Cloudflare R2's listed $0.015/GB-month, the same accounts cost about a tenth as much: Agency daily ~$11.25, Agency at its absolute limit ~$29.25 (still slightly above its net revenue), Studio at its limit ~$1.46.
+- **Two things in the code make this worse:**
+  1. Every scheduled run is stored **twice**, once in the schedule's run folder and again as a copy in capture history (`lib/scheduler.ts` step 7, `fs.cp` in `lib/userData.ts`).
+  2. The history limit counts **captures, not pages**, so one capture can be 15 pages or 2,000 screenshots.
+- **What makes heavy accounts safe, in order:**
+  1. Store screenshots in object storage, not on the server's disk.
+  2. Keep scheduled runs once (history points at the run instead of copying it).
+  3. Cap storage per plan in GB or pages, for example Agency 250 GB and Studio 30 GB.
+  4. Keep only pages that changed, or store them as WebP.
+  Until 1 and 3 are done, the CFO would not sell Agency or Lifetime to a heavy user.
+- **Compute.** A fully used Agency account makes 10,000 screenshots a day; Studio makes 500. At an estimated few seconds per full-page shot, one maxed Agency account could use a large part of the single always-on server's day. Measure real capture time on the outside test before selling Agency at volume.
+- **Price levers (same tool):** at $12 a subscriber-month leaves $10.40 and break-even is 4; at $19 it leaves $17.40 and break-even is 3. The panel's acceptable range is about $4 to $20 a month.
+- **Lifetime is a cash decision, not a margin one.** The cap of 100 limits it to $7,455 net, and the panel's two buyers were both lifetime-deal hunters who said they would *never* take the monthly plan. Every Lifetime sale is likely a buyer who will never pay monthly.
 - Not financial or tax advice: have an accountant check the structure and tax before money moves. Revenue is before tax; Paddle adds VAT/GST at checkout.
 
 ### One subscriber-month

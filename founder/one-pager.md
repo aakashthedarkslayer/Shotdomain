@@ -1,10 +1,14 @@
-# ShotDomain: one page
+# ShotDomain: one page (second run)
 
-**Problem.** Web designers and agencies screenshot whole client sites by hand (before/after a redesign, handovers, audits) and cannot answer "what did the site look like before?".
+**Problem.** Agencies and freelancers who look after client sites can't show a client what any page looked like on a given date, or what changed since. Today they screenshot by hand, script it, or pay per page.
 
-**Customer.** Freelance web designers, small web agencies (2-15 people), in-house web/QA staff.
+**Customer.** Small web agencies (2-15 people) and freelance web designers who look after client sites; in-house web/QA staff second.
 
-**Offer and price.** Every page of a site, on desktop, tablet and phone, in one run; schedules that compare each page with the last run and email on changes; capture behind a login without sharing a password. Free / Studio $9 per month / Agency $29 per month / Lifetime $99.
+**Offer and price.**
+- What it does: every page found automatically and captured full page on desktop and phone. Re-captured daily, weekly or monthly, with change alerts that hide cookie banners and settle animations first.
+- Client links: share links and before/after links for clients, with the agency's logo on Agency.
+- Logins: pages behind a login, captured without a password.
+- Plans: Free (15 pages, desktop + iPhone) / Studio $9 per month / Agency $29 per month / Lifetime $79 once, first 100 buyers.
 
 | number | value |
 |---|---|
@@ -13,10 +17,17 @@
 | Fixed costs | ~$41/month |
 | Year 1 (illustrative ramp to 25) | +$304 |
 | Cash needed | ~$147 |
-| Simulated buyers who buy | 0 of 20 |
+| Simulated buyers who buy | 2 of 20 (both Lifetime) |
+| Storage of a fully used Agency account, current disk | ~$112-292/month vs $27 net |
 
-**Evidence.** Board: 2 fund-if, 1 pass (avg 4.3/10). Competitor gap: dedicated screenshot-archive tools charge ~$3-6 per monitored page per month (Stillio $29 for 5 pages); none found does whole-site discovery + multi-device + history at a freelancer price. Panel: 0/20 buy; top reasons trust (9), habit (6), need (3). No real-customer test yet.
+**Evidence.**
+- **Board:** 2 fund-if, 1 pass, average 4.7/10 (was 4.3).
+- **Competitor gap:** dedicated screenshot-archive tools charge about $3-6 per monitored page per month (Stillio $29 for 5 pages). None found does whole-site discovery + multi-device + history at this price.
+- **Panel:** 2 of 20 buy, both lifetime-deal hunters. Passes: need (9), trust (6), habit (3).
+- **Real-customer test:** none yet.
 
-**What the money is for.** A server and a domain (~$41/month); the real cost is the founder's time.
+**What the money is for.** A server and a domain (~$41/month), then object storage before heavy accounts. The real cost is the founder's time.
 
-**The ask.** Not funding: 5-10 real web designers to run it on a client site this month.
+**The ask.** Not funding: 5-10 agencies or freelancers to put one real client site on a schedule for two runs, so clean-capture and false-alert rates can be measured and published.
+
+_Simulated buyers and projected numbers; confirm with real customers. Not financial, legal or tax advice._

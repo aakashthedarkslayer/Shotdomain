@@ -1,37 +1,42 @@
-# Summary: ShotDomain
+# Summary: ShotDomain (second run)
 
-**Verdict: Not yet** (computed by `compile.py`). The economics pass; demand does not. **0 of 20 simulated buyers bought** (bar: 25%).
+**Verdict: Not yet.** 2 of 20 simulated buyers buy (10%), against a bar of 25%. The money checks pass:
 
-**What has to change first:** let a stranger see the product work on *their own* site before paying. Then re-run the panel (`/founder-offer`, then `/founder-consumer`).
+- Each $9 Studio subscriber-month leaves $7.40 (82%).
+- 6 subscribers break even.
+- Year 1 shows +$304 on an illustrative ramp to 25 subscribers, which is not a forecast.
 
-## The business
+First run: 0 of 20.
 
-ShotDomain screenshots every page of a website on desktop, tablet and phone in one run, and can re-capture and compare pages on a schedule. It is for freelance web designers, small agencies and in-house web/QA staff. Studio $9/month, Agency $29/month, Lifetime $99.
+**What it is.** A web service that keeps a dated record of every page of a client's site on desktop and phone. It finds the pages, re-captures them on a schedule, flags what changed and gives the client a link. It is for small agencies and freelancers who look after client sites. Free covers 15 pages on two devices; Studio is $9, Agency $29, and Lifetime $79 once (first 100 buyers).
 
-## The three numbers
+**What has to change, and which skill changes it:**
 
-- **Contribution: $7.40 per $9 subscriber-month (82%).**
-- **Break-even: 6 paying subscribers** (fixed costs ~$41/month).
-- **Year 1: +$304** on an *illustrative* ramp to 25 subscribers. That ramp is an assumption, not a forecast; no channel or conversion exists yet.
+1. **Proof on real sites**, the top blocker for both the board and the panel.
+   - Trust: 6 buyers passed on it, the same theme as run 1's 9.
+   - Habit: 3 can script it themselves.
+   - Every "what would flip me" answer asks to see clean captures and quiet alerts on their own hardest site first.
+   - Fix: `/founder-launch`. Run 5-10 outside agencies over two scheduled runs and publish the clean-capture and false-alert rates.
+2. **Need: 9 buyers only capture a few times a year**, up from 3 in run 1.
+   - The agency-first pitch made the monitoring explicit, and occasional users now say outright that it's not for them.
+   - Fix: `/founder-offer`. Either a one-off full-site capture they can pay for, or accept them as Free users and stop counting them as the market.
+3. **Agency buyers can't see what they'd pay for.**
+   - Both agency owners would pay for branded before/after links but can't see one before paying.
+   - Fix: `/founder-offer`. Add a public sample link and a short Agency trial.
+4. **Storage before Lifetime and Agency.**
+   - A fully used Agency account on the current disk storage costs ~$112-292 a month against $27 net.
+   - Lifetime $79 covers a maxed Studio account for 5 months.
+   - Scheduled runs are stored twice.
+   - Fix: `/founder-cfo` and code. Object storage, GB caps, store runs once.
 
-## Where the board and the panel agree
+**Board and panel agree** that nothing desk work can change remains: proof, and a first channel, need strangers. The board rose from 4.3 to 4.7 and every desk condition is met. **They disagree** on price: Offers calls $9 "cheap by accident", the panel's monthly range is $4 to $20, and no buyer passed on price.
 
-- **The core job is episodic.** Every panelist said some version of "I only need this a few times a year" (board: "two products in one, the main one is episodic").
-- **No proof, no trust.** 9 of 20 passed on trust: new, no reviews, "will it work on my clients' sites?" (board: no outside users yet).
-- **Price is not the blocker.** Only 1 of 20 passed on price; $9 sits on the panel's indifference price ($9.04).
+**Biggest risk.** The only sales came from lifetime-deal hunters who said they would never take the monthly plan. A Lifetime launch could sell out the cap to people who never become recurring revenue, on the account type that costs most to store.
 
-Where they disagree: the board's Offers lens says *raise* value and price for agencies; the panel's freelancers say even $9 is a subscription they will cancel. Both point to the same answer: sell the ongoing record to agencies, use one-off capture as the free trial.
+**What the founder needs to start.** About $147 of cash on the illustrative ramp, plus a public domain and the legal pages completed. The first test is an outside one: real agencies on their own client sites.
 
-## Biggest risk
+**This week:**
+- Recruit 5 agencies or freelancers to put one real client site on a schedule.
+- Fix the double storage of scheduled runs and add a storage cap before selling Lifetime.
 
-The free tier hides the magic (desktop only, 15 pages). Over half the panel said the one thing that would flip them is **one free run on a real client site with phone screenshots included**. Fix: free tier includes one mobile device, or a one-time free "full run" per account.
-
-## What the founder needs to start
-
-~$147 cash on the CFO's ramp, plus a public deployment. The first real test (from the board): put it in front of 5-10 freelancers/agencies on their own client sites and record the clean-capture rate.
-
-## The one thing to do this week
-
-Deploy it on a real domain and get 5 real web designers to run it on one client site each, with mobile included, and watch.
-
-*The panel is simulated buyers and the numbers are projections; real customers and real quotes confirm them. Not financial, legal or tax advice.*
+These are simulated buyers and projected numbers; real customers confirm them. Not financial, legal or tax advice.

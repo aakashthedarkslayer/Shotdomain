@@ -1,0 +1,13 @@
+{
+  "id": "P011",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "I only need full-site screenshots now and then, when a project calls for it, and my extension gets it done for free. I'd poke at the free tier, but it's desktop only, and mobile is the view I actually care about, so it wouldn't prove anything to me.",
+  "objection": "It's brand new with no reviews, and the login-capture feature wants my clients' browser sessions. I'm not handing that to a tool I've never heard of. Without that, it's just a nicer version of what I already do by hand for nothing.",
+  "would_change_my_mind": "A big redesign or audit project landing on my desk where I need every page on iPhone and Android at once. Letting the free tier capture one mobile device would also help, so I could see the quality before paying.",
+  "price_too_cheap": 2,
+  "price_cheap": 5,
+  "price_expensive": 15,
+  "price_too_expensive": 30
+}
