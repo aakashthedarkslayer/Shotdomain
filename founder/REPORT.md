@@ -193,6 +193,20 @@ Every segment (freelancers, agencies, in-house staff) and every buying style cam
 
 ---
 
+## 8b. Changes made to the app (after this report)
+
+| Recommendation | What changed |
+|---|---|
+| 1. One buyer, one sentence | Homepage now leads with agencies: *"Every client site. Every page, on record."* Features, use cases and FAQ reworded around keeping a record of client sites. |
+| 2. Free plan shows the magic | Free now includes **iPhone** screenshots alongside desktop (still 15 pages). Tablet and Android stay in Studio. |
+| 3. Lead paid plans with monitoring | Plan cards lead with "5 / 25 client sites monitored", runs kept and change alerts; page counts moved down. |
+| 4. Client-facing Agency extras | **Branded share links** (brand name + logo in Profile, Agency only) and a **before/after compare** on page-timeline share links (pick any two dates). |
+| 5. Cap and reprice Lifetime | **$79 founding batch, capped at 100**, with the real number left shown on the pricing cards; sold out disables checkout. **Change the Lifetime price in Paddle to $79.** |
+| 7. Explain session security | "What happens to your session" box on the homepage and a new FAQ answer, matching what the code actually does. |
+| — | Bug fixed on the way: after a failed profile save, the form lost what you had typed. |
+
+Not code (still to do): 6. proof from real users, 8. re-running the panel with the new pitch.
+
 ## 9. Limits of this analysis
 
 - **Simulated buyers are not customers.** They lean agreeable, so read any buy rate as an upper bound. The customer profile behind them is my reading, not real data.

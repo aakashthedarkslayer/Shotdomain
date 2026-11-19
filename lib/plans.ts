@@ -24,6 +24,8 @@ export interface PlanLimits {
   runsKept: number;
   /** Captures kept in history. */
   historyKept: number;
+  /** Your own name and logo on share links, instead of ShotDomain's. */
+  branding: boolean;
 }
 
 export interface Plan {
@@ -38,6 +40,9 @@ export interface Plan {
   badge?: string;
 }
 
+/** Lifetime is a capped founding batch: once this many are sold it's gone. */
+export const LIFETIME_CAP = 100;
+
 const ALL_DEVICES: DeviceName[] = ['Desktop', 'Tablet', 'Mobile (iOS)', 'Mobile (Android)'];
 
 const STUDIO_LIMITS: PlanLimits = {
@@ -49,47 +54,49 @@ const STUDIO_LIMITS: PlanLimits = {
   frequencies: ['daily', 'weekly', 'monthly'],
   runsKept: 10,
   historyKept: 100,
+  branding: false,
 };
 
 export const PLANS: Record<PlanId, Plan> = {
   free: {
     id: 'free',
     name: 'Free',
-    tagline: 'Try the full workflow on smaller sites.',
+    tagline: 'See a whole small site on desktop and iPhone, free.',
     price: { month: 0, year: 0 },
     limits: {
       pagesPerRun: 15,
-      devices: ['Desktop'],
+      // Desktop + one phone, so the free plan shows what ShotDomain is for.
+      devices: ['Desktop', 'Mobile (iOS)'],
       loginPages: false,
       schedules: 0,
       pagesPerSchedule: 0,
       frequencies: [],
       runsKept: 0,
       historyKept: 10,
+      branding: false,
     },
-    highlights: ['Up to 15 pages per capture', 'Desktop screenshots', 'Sitemap + crawl discovery', 'ZIP download and share links', 'Last 10 captures kept', 'Clean screenshots, no watermark'],
+    highlights: ['Up to 15 pages per capture', 'Desktop and iPhone screenshots', 'Finds every page automatically', 'ZIP download and share links', 'Last 10 captures kept', 'Clean screenshots, no watermark'],
   },
   studio: {
     id: 'studio',
     name: 'Studio',
-    tagline: 'For freelancers, designers and QA who track sites every week.',
+    tagline: 'A dated record of up to 5 client sites, kept for you.',
     price: { month: 9, year: 90 },
     limits: STUDIO_LIMITS,
     badge: 'Most popular',
     highlights: [
-      'Up to 150 pages per capture',
+      '5 client sites monitored · 25 key pages each',
+      'Daily, weekly or monthly runs, every one kept',
+      'Change alerts that ignore banners and animations',
       'All 4 devices, high-DPI',
       'Capture pages behind a login',
-      '5 schedules · 25 key pages each',
-      'Daily, weekly or monthly runs',
-      'Change alerts by email',
-      'Last 100 captures kept',
+      'Up to 150 pages per one-off capture',
     ],
   },
   agency: {
     id: 'agency',
     name: 'Agency',
-    tagline: 'For teams monitoring many client sites.',
+    tagline: 'For agencies: client-ready history of every site you look after.',
     price: { month: 29, year: 290 },
     limits: {
       pagesPerRun: 500,
@@ -100,23 +107,24 @@ export const PLANS: Record<PlanId, Plan> = {
       frequencies: ['daily', 'weekly', 'monthly'],
       runsKept: 30,
       historyKept: 500,
+      branding: true,
     },
     highlights: [
-      'Up to 500 pages per capture',
+      '25 client sites monitored · 100 pages each',
+      'Share links with your logo and name',
+      'Before/after compare your clients can open',
+      'Last 30 runs per site, 500 captures kept',
+      'Up to 500 pages per one-off capture',
       'Everything in Studio',
-      '25 schedules · 100 pages each',
-      'Whole-site archives',
-      'Last 30 runs per schedule',
-      'Last 500 captures kept',
     ],
   },
   lifetime: {
     id: 'lifetime',
     name: 'Lifetime',
-    tagline: 'Studio, paid once. Early-supporter offer.',
-    price: { once: 99 },
+    tagline: `Studio, paid once. Founding batch: the first ${LIFETIME_CAP} buyers only.`,
+    price: { once: 79 },
     limits: STUDIO_LIMITS,
-    highlights: ['Everything in Studio, forever', 'One payment, no renewals', 'All future updates to Studio features'],
+    highlights: ['Everything in Studio, forever', 'One payment, no renewals', 'All future updates to Studio features', `Capped at ${LIFETIME_CAP} — then it’s gone`],
   },
 };
 
@@ -135,6 +143,7 @@ export const UNLIMITED: PlanLimits = {
   frequencies: ['daily', 'weekly', 'monthly'],
   runsKept: 30,
   historyKept: 500,
+  branding: true,
 };
 
 export function isPlanId(v: unknown): v is PlanId {

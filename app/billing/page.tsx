@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { currentUser, currentUserKey } from '@/auth';
 import { AppHeader } from '@/components/AppHeader';
 import { BillingPanel } from '@/components/billing/BillingPanel';
-import { billingEnabled, checkoutConfig, getBillingRecord, planInfoFor } from '@/lib/billing';
+import { billingEnabled, checkoutConfig, getBillingRecord, lifetimeRemaining, planInfoFor } from '@/lib/billing';
 
 export const metadata = { title: 'Plan & billing — ShotDomain' };
 export const dynamic = 'force-dynamic';
@@ -30,6 +30,7 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
             sub ? { plan: sub.plan, interval: sub.interval, status: sub.status, currentPeriodEnd: sub.currentPeriodEnd, cancelAt: sub.cancelAt } : null
           }
           lifetime={Boolean(record?.lifetime)}
+          lifetimeLeft={await lifetimeRemaining()}
           hasCustomer={Boolean(record?.customerId)}
           email={user?.email ?? ''}
           userKey={key}

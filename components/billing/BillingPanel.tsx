@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
 import { PricingCards } from './PricingCards';
+import { LifetimeStock } from './LifetimeStock';
 import { PLANS, isPlanId } from '@/lib/plans';
 import { LEGAL } from '@/lib/legal';
 import type { Interval, Plan, PlanId } from '@/lib/plans';
@@ -80,6 +81,8 @@ interface Props {
   plan: PlanId;
   subscription: SubscriptionSummary | null;
   lifetime: boolean;
+  /** Founding Lifetime licences still for sale. */
+  lifetimeLeft: number;
   hasCustomer: boolean;
   email: string;
   userKey: string;
@@ -103,7 +106,7 @@ function limitsSummary(id: PlanId): string[] {
   ];
 }
 
-export function BillingPanel({ enabled, plan, subscription, lifetime, hasCustomer, email, userKey, config, wantPlan, wantInterval, autoCheckout }: Props) {
+export function BillingPanel({ enabled, plan, subscription, lifetime, lifetimeLeft, hasCustomer, email, userKey, config, wantPlan, wantInterval, autoCheckout }: Props) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -210,11 +213,11 @@ export function BillingPanel({ enabled, plan, subscription, lifetime, hasCustome
     router.replace('/billing', { scroll: false });
     const interval = wantPlan === 'lifetime' ? 'once' : wantInterval === 'year' ? 'year' : 'month';
     const alreadyHas = wantPlan === 'lifetime' ? lifetime : activeSub?.plan === wantPlan;
-    if (alreadyHas || activeSub) return;
+    if (alreadyHas || activeSub || (wantPlan === 'lifetime' && lifetimeLeft <= 0)) return;
     // Deferred (opening the checkout updates state). Not cancelled on re-run: the URL
     // change above re-runs this effect, and autoStarted keeps it to one checkout.
     setTimeout(() => void openCheckout(wantPlan, interval), 0);
-  }, [autoCheckout, enabled, wantPlan, wantInterval, lifetime, activeSub, openCheckout, router]);
+  }, [autoCheckout, enabled, wantPlan, wantInterval, lifetime, lifetimeLeft, activeSub, openCheckout, router]);
 
   function action(p: Plan, interval: Interval) {
     const key = `${p.id}-${p.id === 'lifetime' ? 'once' : interval}`;
@@ -241,9 +244,16 @@ export function BillingPanel({ enabled, plan, subscription, lifetime, hasCustome
     if (p.id === 'lifetime') {
       if (lifetime) return disabled('Purchased');
       return (
-        <Button variant={plan === 'free' ? 'primary' : 'secondary'} className="w-full" isLoading={loading} onClick={() => openCheckout('lifetime', 'once')}>
-          Buy once
-        </Button>
+        <>
+          <LifetimeStock left={lifetimeLeft} />
+          {lifetimeLeft <= 0 ? (
+            disabled('Sold out')
+          ) : (
+            <Button variant={plan === 'free' ? 'primary' : 'secondary'} className="w-full" isLoading={loading} onClick={() => openCheckout('lifetime', 'once')}>
+              Buy once
+            </Button>
+          )}
+        </>
       );
     }
 

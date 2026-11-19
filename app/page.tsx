@@ -10,9 +10,10 @@ import {
   PricingSection,
   UseCasesSection,
 } from '@/components/marketing/Sections';
-import { billingEnabled } from '@/lib/billing';
+import { billingEnabled, lifetimeRemaining } from '@/lib/billing';
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const lifetimeLeft = await lifetimeRemaining();
   return (
     <div className="min-h-screen">
       <SiteHeader />
@@ -22,7 +23,7 @@ export default function LandingPage() {
         <FeaturesSection />
         <LoginPagesSection />
         <UseCasesSection />
-        <PricingSection billingEnabled={billingEnabled()} />
+        <PricingSection billingEnabled={billingEnabled()} lifetimeLeft={lifetimeLeft} />
         <FaqSection />
         <FinalCta />
       </main>

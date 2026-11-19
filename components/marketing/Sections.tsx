@@ -67,7 +67,7 @@ const FEATURES: { icon: IconName; title: string; body: string; wide?: boolean }[
   { icon: 'layers', title: 'Real device emulation', body: 'Proper viewport, pixel density and touch for tablet and phones.' },
   { icon: 'sliders', title: 'Clean captures', body: 'Cookie banners accepted or hidden, elements removed, clicks and CSS before capture.' },
   { icon: 'clock', title: 'Scheduled captures', body: 'Re-run any capture daily, weekly or monthly — every run lands in your history.' },
-  { icon: 'refresh', title: 'Change alerts', body: 'Scheduled runs are compared page by page — get an email only when something changed.' },
+  { icon: 'refresh', title: 'Change alerts without the noise', body: 'Each run is compared page by page with cookie banners hidden and animations settled first, so you hear about real changes.' },
   {
     icon: 'link',
     title: 'Share links',
@@ -82,8 +82,8 @@ export function FeaturesSection() {
       <div className="mx-auto max-w-6xl">
         <SectionHeading
           eyebrow="Features"
-          title="Built for capturing whole sites"
-          description="Not one screenshot at a time — every page, every breakpoint, in a single run."
+          title="Built for agencies who look after client sites"
+          description="Capture a whole site once to see it work, then keep a dated record of the pages that matter."
         />
         <div className="grid gap-4 md:grid-cols-3">
           {FEATURES.map((f) => (
@@ -106,6 +106,15 @@ const LOGIN_POINTS: { icon: IconName; title: string; body: string }[] = [
   { icon: 'refresh', title: 'Test before you capture', body: 'Test login opens the site with your session and shows you the page you’ll get.' },
   { icon: 'sitemap', title: 'Finds app pages too', body: 'Discovery runs logged in and reads JavaScript-built menus — or add pages by hand.' },
   { icon: 'link', title: 'You stay in control', body: 'Sessions are stored encrypted. Log out of the site and access ends instantly.' },
+];
+
+/** Plain-language account of what happens to a pasted session (true to the code: see lib/secretBox.ts, lib/jobStore.ts). */
+const SESSION_FACTS = [
+  'We keep only the login cookies and headers from what you paste. Everything else, including your browser’s User-Agent, is dropped.',
+  'One-off captures: the session lives in server memory for that capture only and is cleared within about an hour. It is never written to disk.',
+  'Schedules: the session is encrypted (AES-256-GCM) before it is saved and only decrypted for that schedule’s runs. Delete the schedule and it is deleted.',
+  'Sessions are never logged, never shown back to anyone, never shared, and never stored with your screenshots or share links.',
+  'You can end it at any time: log out of the site in your browser and the session stops working everywhere.',
 ];
 
 /** Premium feature: capture pages behind a login, with the animated cookie guide. */
@@ -150,7 +159,7 @@ export function LoginPagesSection() {
           </ul>
 
           <div className="glass-strong rounded-3xl p-4 sm:p-5">
-            <div className="mb-3 flex items-center gap-2 px-1 text-sm font-medium text-fg">
+            <div id="session-security" className="mb-3 flex items-center gap-2 px-1 text-sm font-medium text-fg">
               <span className="bg-brand flex h-6 w-6 items-center justify-center rounded-md text-white">
                 <Icon name="play" size={12} />
               </span>
@@ -158,6 +167,21 @@ export function LoginPagesSection() {
             </div>
             <CookieGuide />
           </div>
+        </div>
+
+        <div className="glass mx-auto mt-10 max-w-4xl rounded-2xl p-6 sm:p-7">
+          <h3 className="flex items-center gap-2 text-[15px] font-semibold text-fg">
+            <Icon name="lock" size={16} className="text-accent" />
+            What happens to your session
+          </h3>
+          <ul className="mt-3 grid gap-x-8 gap-y-2.5 text-sm leading-relaxed text-muted sm:grid-cols-2">
+            {SESSION_FACTS.map((f) => (
+              <li key={f} className="flex gap-2">
+                <Icon name="check" size={15} className="mt-0.5 shrink-0 text-success" />
+                {f}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
@@ -167,7 +191,7 @@ export function LoginPagesSection() {
 /* ------------------------------------------------------------------------ */
 
 const USE_CASES = [
-  { who: 'Agencies', title: 'Proof of work, without the busywork', body: 'Hand clients a complete visual record of a launch in minutes instead of an afternoon.' },
+  { who: 'Agencies', title: 'A record of every client site', body: 'Know what each client site looked like on any date, see what changed, and send the client a branded before/after link.' },
   { who: 'Product teams', title: 'Snapshot your logged-in app', body: 'Capture every dashboard screen for release notes, docs and QA — no shared passwords.' },
   { who: 'Migrations', title: 'Archive the old site before cut-over', body: 'Keep a full visual snapshot of the legacy site before DNS moves to the new build.' },
   { who: 'Monitoring', title: 'Know when pages change', body: 'Schedule weekly captures of competitors or your own site and get alerted on changes.' },
@@ -194,7 +218,7 @@ export function UseCasesSection() {
 
 /* ------------------------------------------------------------------------ */
 
-export function PricingSection({ billingEnabled = false }: { billingEnabled?: boolean }) {
+export function PricingSection({ billingEnabled = false, lifetimeLeft = 0 }: { billingEnabled?: boolean; lifetimeLeft?: number }) {
   return (
     <section id="pricing" className="scroll-mt-20 px-4 py-24 sm:px-6">
       <div className="mx-auto max-w-6xl">
@@ -203,7 +227,7 @@ export function PricingSection({ billingEnabled = false }: { billingEnabled?: bo
           title="Simple, predictable pricing"
           description="No per-screenshot credits. Prices in USD; taxes are calculated at checkout. Cancel anytime."
         />
-        <MarketingPricing billingEnabled={billingEnabled} />
+        <MarketingPricing billingEnabled={billingEnabled} lifetimeLeft={lifetimeLeft} />
       </div>
     </section>
   );
@@ -215,6 +239,14 @@ const FAQS = [
   {
     q: 'Can it capture pages behind a login without my password?',
     a: 'Yes. Log in to the site in your own browser, then copy the page request as cURL from DevTools and paste it — ShotDomain keeps only your session cookies and login headers. ShotDomain never sees your password, works with 2FA and single sign-on, and the session stops working the moment you log out. Saved sessions are stored encrypted.',
+  },
+  {
+    q: 'What happens to the session I paste?',
+    a: 'Only the login cookies and headers are kept. For a one-off capture they stay in server memory for that capture and are cleared within about an hour. For a schedule they are encrypted (AES-256-GCM) before saving, used only for that schedule’s runs, and deleted with the schedule. Sessions are never logged or shared, and logging out of the site in your browser ends them immediately.',
+  },
+  {
+    q: 'What can I try for free?',
+    a: 'A whole site of up to 15 pages, on desktop and iPhone, as often as you like. Download the screenshots or share a link. Schedules, change alerts, tablet and Android, and pages behind a login come with Studio.',
   },
   {
     q: 'How are pages discovered? What if a site has no sitemap?',

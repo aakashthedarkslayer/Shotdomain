@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { PLANS, UNLIMITED, isPlanId } from './plans';
+import { LIFETIME_CAP, PLANS, UNLIMITED, isPlanId } from './plans';
 import type { Interval, PlanId, PlanInfo } from './plans';
 
 /**
@@ -111,6 +111,12 @@ async function mutate<T>(fn: (all: Record<string, BillingRecord>) => T): Promise
   });
   writing = run.catch(() => undefined);
   return run;
+}
+
+/** How many founding Lifetime licences are still for sale (LIFETIME_CAP minus those sold). */
+export async function lifetimeRemaining(): Promise<number> {
+  const sold = Object.values(await readAll()).filter((r) => r.lifetime).length;
+  return Math.max(0, LIFETIME_CAP - sold);
 }
 
 export async function getBillingRecord(userKey: string): Promise<BillingRecord | undefined> {

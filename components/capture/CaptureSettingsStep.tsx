@@ -174,7 +174,7 @@ export default function CaptureSettingsStep({
           </div>
           {limits.devices.length < DEVICES.length && (
             <p className="mt-2 text-[13px] text-muted">
-              Tablet and phone screenshots are included in Studio.{' '}
+              Tablet and Android screenshots are included in Studio.{' '}
               <Link href="/billing?plan=studio" className="font-medium text-accent hover:underline">
                 See plans
               </Link>

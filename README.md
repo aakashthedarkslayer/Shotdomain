@@ -62,12 +62,12 @@ on every browser request (so redirects can't reach them either); see
 Plans, prices and limits live in one file: `lib/plans.ts`. The homepage, the
 **Plan & billing** page (`/billing`) and every limit check read it.
 
-| Plan | Price | Pages / capture | Devices | Login pages | Schedules | History |
-|---|---|---|---|---|---|---|
-| Free | $0 | 15 | Desktop | — | — | 10 captures |
-| Studio | $9/mo or $90/yr | 150 | All 4 | ✓ | 5 × 25 pages | 100 captures, 10 runs/schedule |
-| Agency | $29/mo or $290/yr | 500 | All 4 | ✓ | 25 × 100 pages | 500 captures, 30 runs/schedule |
-| Lifetime | $99 once | Studio limits, forever | | | | |
+| Plan | Price | Pages / capture | Devices | Login pages | Schedules | History | Branded share links |
+|---|---|---|---|---|---|---|---|
+| Free | $0 | 15 | Desktop + iPhone | — | — | 10 captures | — |
+| Studio | $9/mo or $90/yr | 150 | All 4 | ✓ | 5 sites × 25 pages | 100 captures, 10 runs/site | — |
+| Agency | $29/mo or $290/yr | 500 | All 4 | ✓ | 25 sites × 100 pages | 500 captures, 30 runs/site | ✓ (+ before/after links) |
+| Lifetime | $79 once, founding batch capped at 100 (`LIFETIME_CAP`) | Studio limits, forever | | | | | |
 
 Paddle is the *merchant of record*: it sells to your customers on your behalf
 and handles VAT/GST, invoices, refunds and chargebacks worldwide, so you
@@ -79,7 +79,7 @@ available (local / self-hosted use).
 
 1. Create a sandbox account at <https://sandbox-vendors.paddle.com/signup>.
 2. **Catalog → Products**: create *Studio* (prices: $9 monthly, $90 yearly),
-   *Agency* ($29 monthly, $290 yearly) and *Lifetime* ($99 one-time). Copy each
+   *Agency* ($29 monthly, $290 yearly) and *Lifetime* ($79 one-time). Copy each
    price ID (`pri_…`) into `PADDLE_PRICE_*`.
 3. **Developer tools → Authentication**: create an API key → `PADDLE_API_KEY`,
    and a client-side token → `PADDLE_CLIENT_TOKEN`.

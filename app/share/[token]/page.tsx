@@ -9,6 +9,9 @@ import type { PageTimeline, ScheduleIndex } from '@/lib/shareStore';
 import { Badge } from '@/components/ui/Badge';
 import { baseName, formatDateTime } from '@/lib/format';
 import { urlPath } from '@/lib/url';
+import { planInfoFor } from '@/lib/billing';
+import { getProfile } from '@/lib/userData';
+import { BrandLogo } from '@/components/share/BrandLogo';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Shared screenshots — ShotDomain', robots: { index: false, follow: false } };
@@ -17,25 +20,119 @@ function utc(ts: number) {
   return new Date(ts).toLocaleString('en-GB', { timeZone: 'UTC', dateStyle: 'medium', timeStyle: 'short' }) + ' UTC';
 }
 
-function ShareHeader() {
+/** The share owner's own name and logo (Agency branding), when their plan includes it. */
+interface Brand {
+  name?: string;
+  logoUrl?: string;
+}
+
+async function brandFor(ownerKey: string): Promise<Brand | null> {
+  if (!(await planInfoFor(ownerKey)).limits.branding) return null;
+  const profile = await getProfile(ownerKey);
+  if (!profile.brandName && !profile.brandLogoUrl) return null;
+  return { name: profile.brandName, logoUrl: profile.brandLogoUrl };
+}
+
+function ShareHeader({ brand }: { brand: Brand | null }) {
   return (
     <header className="glass-strong border-x-0 border-t-0 !shadow-none">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
-        <Logo href="/" />
+        {brand ? (
+          <span className="flex min-w-0 items-center gap-2.5">
+            {brand.logoUrl && <BrandLogo src={brand.logoUrl} />}
+            {brand.name && <span className="truncate text-[15px] font-semibold tracking-tight text-fg">{brand.name}</span>}
+          </span>
+        ) : (
+          <Logo href="/" />
+        )}
         <span className="text-xs text-muted">Shared read-only link</span>
       </div>
     </header>
   );
 }
 
+function ShareFooter({ brand }: { brand: Brand | null }) {
+  return <p className="pt-4 text-center text-xs text-faint">{brand?.name ? `Shared by ${brand.name}` : 'Captured with ShotDomain'}</p>;
+}
+
+/** Two dated screenshots of the same page side by side; ?before=<run>&after=<run> picks them. */
+function BeforeAfter({
+  token,
+  timeline,
+  beforeId,
+  afterId,
+}: {
+  token: string;
+  timeline: PageTimeline;
+  beforeId?: string;
+  afterId?: string;
+}) {
+  const shots = timeline.shots; // newest first
+  const after = shots.find((s) => s.runId === afterId) ?? shots[0];
+  const before = shots.find((s) => s.runId === beforeId && s.runId !== after.runId) ?? shots[shots.length - 1];
+  const img = (runId: string) => `/share/${token}/image?run=${runId}`;
+  const pick = (name: string, value: string) => (
+    <select name={name} defaultValue={value} className="h-9 rounded-xl border border-line bg-field px-2 text-sm text-fg">
+      {shots.map((s) => (
+        <option key={s.runId} value={s.runId}>
+          {utc(s.timestamp)}
+        </option>
+      ))}
+    </select>
+  );
+  return (
+    <Card>
+      <CardHeader title="Before / after" description="Pick any two dates to compare this page side by side." />
+      <form method="get" className="flex flex-wrap items-center gap-2 px-5 pt-4 text-sm text-muted sm:px-6">
+        <span>Before</span>
+        {pick('before', before.runId)}
+        <span>After</span>
+        {pick('after', after.runId)}
+        <button type="submit" className={buttonClass('secondary', 'sm')}>
+          Compare
+        </button>
+      </form>
+      <div className="grid gap-4 p-5 sm:p-6 md:grid-cols-2">
+        {[
+          { label: 'Before', shot: before },
+          { label: 'After', shot: after },
+        ].map(({ label, shot }) => (
+          <figure key={label} className="space-y-2">
+            <figcaption className="flex items-center gap-2 text-sm text-fg">
+              <Badge tone={label === 'After' ? 'accent' : 'neutral'}>{label}</Badge>
+              {utc(shot.timestamp)}
+            </figcaption>
+            <a href={img(shot.runId)} target="_blank" rel="noreferrer" className="block max-h-[70vh] overflow-y-auto rounded-xl border border-line bg-subtle">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={img(shot.runId)} alt={`${label}: ${timeline.pageUrl} on ${utc(shot.timestamp)}`} className="block w-full" />
+            </a>
+          </figure>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
 /** "All screenshots" of one page across scheduled runs, newest first. */
-function PageTimelineView({ token, timeline }: { token: string; timeline: PageTimeline }) {
+function PageTimelineView({
+  token,
+  timeline,
+  brand,
+  beforeId,
+  afterId,
+}: {
+  token: string;
+  timeline: PageTimeline;
+  brand: Brand | null;
+  beforeId?: string;
+  afterId?: string;
+}) {
   const [latest, ...older] = timeline.shots;
   const img = (runId: string) => `/share/${token}/image?run=${runId}`;
   const thumb = (runId: string) => `${img(runId)}&thumb=1`;
   return (
     <div className="min-h-screen pb-24">
-      <ShareHeader />
+      <ShareHeader brand={brand} />
       <main className="mx-auto max-w-5xl space-y-4 px-4 pt-8 sm:px-6">
         <Card>
           <CardHeader
@@ -73,6 +170,8 @@ function PageTimelineView({ token, timeline }: { token: string; timeline: PageTi
           )}
         </Card>
 
+        {timeline.shots.length >= 2 && <BeforeAfter token={token} timeline={timeline} beforeId={beforeId} afterId={afterId} />}
+
         {older.length > 0 && (
           <Card>
             <CardHeader title="Earlier screenshots" description="Newest first. Times are in UTC." />
@@ -94,19 +193,19 @@ function PageTimelineView({ token, timeline }: { token: string; timeline: PageTi
             </ul>
           </Card>
         )}
-        <p className="pt-4 text-center text-xs text-faint">Captured with ShotDomain</p>
+        <ShareFooter brand={brand} />
       </main>
     </div>
   );
 }
 
 /** Stillio-style "All Screenshots" index of a schedule: every kept run, newest first. */
-function ScheduleIndexView({ token, index, latestOnly }: { token: string; index: ScheduleIndex; latestOnly: boolean }) {
+function ScheduleIndexView({ token, index, latestOnly, brand }: { token: string; index: ScheduleIndex; latestOnly: boolean; brand: Brand | null }) {
   const runs = latestOnly ? index.runs.slice(0, 1) : index.runs;
   const host = new URL(index.targetUrl).hostname;
   return (
     <div className="min-h-screen pb-24">
-      <ShareHeader />
+      <ShareHeader brand={brand} />
       <main className="mx-auto max-w-5xl space-y-4 px-4 pt-8 sm:px-6">
         <Card>
           <CardHeader
@@ -209,7 +308,7 @@ function ScheduleIndexView({ token, index, latestOnly }: { token: string; index:
             </details>
           </Card>
         )}
-        <p className="pt-4 text-center text-xs text-faint">Captured with ShotDomain</p>
+        <ShareFooter brand={brand} />
       </main>
     </div>
   );
@@ -221,20 +320,21 @@ export default async function SharePage({
   searchParams,
 }: {
   params: Promise<{ token: string }>;
-  searchParams: Promise<{ view?: string }>;
+  searchParams: Promise<{ view?: string; before?: string; after?: string }>;
 }) {
   const { token } = await params;
-  const { view } = await searchParams;
+  const { view, before, after } = await searchParams;
   const share = await getShare(token);
+  const brand = share ? await brandFor(share.ownerKey) : null;
   if (share?.kind === 'schedule') {
     const index = await resolveScheduleShare(share);
     if (!index) notFound();
-    return <ScheduleIndexView token={token} index={index} latestOnly={view === 'latest'} />;
+    return <ScheduleIndexView token={token} index={index} latestOnly={view === 'latest'} brand={brand} />;
   }
   if (share?.kind === 'page') {
     const timeline = await resolvePageShare(share);
     if (!timeline) notFound();
-    return <PageTimelineView token={token} timeline={timeline} />;
+    return <PageTimelineView token={token} timeline={timeline} brand={brand} beforeId={before} afterId={after} />;
   }
   const content = share ? await resolveShare(share) : null;
   if (!share || !content) notFound();
@@ -244,7 +344,7 @@ export default async function SharePage({
 
   return (
     <div className="min-h-screen pb-24">
-      <ShareHeader />
+      <ShareHeader brand={brand} />
       <main className="mx-auto max-w-5xl space-y-4 px-4 pt-8 sm:px-6">
         <Card>
           <CardHeader
@@ -288,7 +388,7 @@ export default async function SharePage({
           )}
         </Card>
 
-        <p className="pt-4 text-center text-xs text-faint">Captured with ShotDomain</p>
+        <ShareFooter brand={brand} />
       </main>
     </div>
   );

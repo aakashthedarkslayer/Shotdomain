@@ -8,7 +8,7 @@ import { Alert } from '@/components/ui/Alert';
 import { buttonClass } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { ProfileForm } from '@/components/profile/ProfileForm';
-import { listCaptures } from '@/lib/userData';
+import { getProfile, listCaptures } from '@/lib/userData';
 import { planInfoFor } from '@/lib/billing';
 import { formatDateTime, hostOf } from '@/lib/format';
 import { listShares } from '@/lib/shareStore';
@@ -28,7 +28,9 @@ export default async function ProfilePage() {
   const user = await currentUser();
   const captures = await listCaptures(key);
   const shares = await listShares(key);
-  const historyKept = (await planInfoFor(key)).limits.historyKept;
+  const planInfo = await planInfoFor(key);
+  const historyKept = planInfo.limits.historyKept;
+  const profile = await getProfile(key);
 
   return (
     <div className="min-h-screen pb-24">
@@ -54,7 +56,15 @@ export default async function ProfilePage() {
           </div>
           <div className="px-5 py-5 sm:px-6">
             {user ? (
-              <ProfileForm displayName={user.name !== user.googleName ? (user.name ?? '') : ''} googleName={user.googleName ?? ''} company={user.company ?? ''} email={user.email ?? ''} />
+              <ProfileForm
+                displayName={user.name !== user.googleName ? (user.name ?? '') : ''}
+                googleName={user.googleName ?? ''}
+                company={user.company ?? ''}
+                email={user.email ?? ''}
+                brandName={profile.brandName ?? ''}
+                brandLogoUrl={profile.brandLogoUrl ?? ''}
+                brandingAllowed={planInfo.limits.branding}
+              />
             ) : (
               <Alert tone="info">
                 {authEnabled ? 'Sign in to edit your profile.' : 'ShotDomain is running in local mode, so there’s no account to edit. Your capture history is still saved below.'}
