@@ -31,7 +31,7 @@ function yearlySaving(): string {
 export function IntervalToggle({ value, onChange }: { value: Interval; onChange: (v: Interval) => void }) {
   const saving = yearlySaving();
   return (
-    <div role="radiogroup" aria-label="Billing period" className="glass inline-flex rounded-full p-1 text-sm">
+    <div role="radiogroup" aria-label="Billing period" className="inline-flex rounded-full border border-line bg-surface p-1 text-sm">
       {(['month', 'year'] as const).map((i) => (
         <button
           key={i}
@@ -39,13 +39,13 @@ export function IntervalToggle({ value, onChange }: { value: Interval; onChange:
           role="radio"
           aria-checked={value === i}
           onClick={() => onChange(i)}
-          className={`flex cursor-pointer items-center gap-1.5 rounded-full px-4 py-1.5 font-medium transition ${
-            value === i ? 'bg-brand text-white shadow-sm' : 'text-muted hover:text-fg'
+          className={`flex cursor-pointer items-center gap-2 rounded-full px-4 py-1.5 tracking-[-0.01em] transition-colors ${
+            value === i ? 'bg-primary font-medium text-primary-fg' : 'text-muted hover:text-fg'
           }`}
         >
           {i === 'month' ? 'Monthly' : 'Yearly'}
           {i === 'year' && saving && (
-            <span className={`rounded-full px-1.5 py-px text-[11px] ${value === i ? 'bg-white/20' : 'bg-success-soft text-success'}`}>{saving}</span>
+            <span className={`font-mono text-[11px] ${value === i ? 'opacity-70' : 'text-accent'}`}>{saving.toUpperCase()}</span>
           )}
         </button>
       ))}
@@ -54,7 +54,9 @@ export function IntervalToggle({ value, onChange }: { value: Interval; onChange:
 }
 
 /**
- * The plan cards. `action` renders each card's button (a link on the
+ * The plan cards (DESIGN.md pricing-card). The featured tier is
+ * polarity-flipped to ink (band-dark), so its primary button turns into the
+ * white pill on black. `action` renders each card's button (a link on the
  * homepage, checkout / switch buttons on the billing page).
  */
 export function PricingCards({
@@ -72,7 +74,7 @@ export function PricingCards({
 }) {
   const [interval, setPeriod] = useState<Interval>(initialInterval);
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <div className="flex justify-center">
         <IntervalToggle value={interval} onChange={setPeriod} />
       </div>
@@ -81,38 +83,39 @@ export function PricingCards({
           const plan = PLANS[id];
           const featured = highlight ? highlight === id : Boolean(plan.badge);
           const price = priceLabel(plan, interval);
+          const label = current === id ? 'Your plan' : plan.badge;
           return (
             <div
               key={id}
-              className={`relative flex flex-col rounded-2xl p-6 ${
-                featured ? 'glass-strong shadow-[0_24px_60px_-20px_color-mix(in_srgb,var(--accent)_45%,transparent)] ring-2 ring-accent/60' : 'glass'
-              }`}
+              className={`relative flex flex-col rounded-xl p-8 ${featured ? 'band-flip border border-line shadow-[0_8px_24px_-8px_#00000040]' : 'card-float'}`}
             >
-              {(current === id || plan.badge) && (
-                <span
-                  className={`absolute -top-3 left-6 rounded-full px-2.5 py-0.5 text-xs font-semibold shadow-sm ${
-                    current === id ? 'bg-success text-white' : 'bg-brand text-white'
-                  }`}
-                >
-                  {current === id ? 'Your plan' : plan.badge}
-                </span>
-              )}
-              <h3 className="text-[15px] font-semibold text-fg">{plan.name}</h3>
-              <p className="mt-1 min-h-[2.5rem] text-sm text-muted">{plan.tagline}</p>
-              <p className="mt-5 flex items-baseline gap-1.5">
-                <span className={`text-4xl font-semibold tracking-tight ${featured ? 'text-brand' : 'text-fg'}`}>{price.amount}</span>
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-2xl font-semibold tracking-[-0.04em] text-fg">{plan.name}</h3>
+                {label && (
+                  <span
+                    className={`rounded-full border px-2 py-0.5 font-mono text-[11px] ${
+                      current === id ? 'border-accent/40 bg-accent-soft text-accent' : 'border-line text-muted'
+                    }`}
+                  >
+                    {label.toUpperCase()}
+                  </span>
+                )}
+              </div>
+              <p className="mt-2 min-h-[2.5rem] text-sm leading-5 tracking-[-0.01em] text-muted">{plan.tagline}</p>
+              <p className="mt-6 flex items-baseline gap-1.5">
+                <span className="text-5xl font-semibold tracking-[-0.05em] text-fg">{price.amount}</span>
                 <span className="text-sm text-muted">{price.cadence}</span>
               </p>
-              <p className="mt-1 h-4 text-xs text-muted">{price.note}</p>
-              <ul className="mt-6 flex-1 space-y-2.5">
+              <p className="mt-1 h-4 font-mono text-xs text-faint">{price.note}</p>
+              <ul className="mt-8 flex-1 space-y-3 border-t border-line pt-6">
                 {plan.highlights.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm text-fg">
-                    <Icon name="check" size={16} className="mt-0.5 shrink-0 text-accent" />
+                  <li key={f} className="flex items-start gap-2.5 text-sm leading-5 tracking-[-0.01em] text-fg">
+                    <Icon name="check" size={16} className="mt-0.5 shrink-0 text-muted" />
                     {f}
                   </li>
                 ))}
               </ul>
-              <div className="mt-7">{action(plan, interval)}</div>
+              <div className="mt-8">{action(plan, interval)}</div>
             </div>
           );
         })}

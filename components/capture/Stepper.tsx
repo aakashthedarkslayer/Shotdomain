@@ -17,23 +17,23 @@ export function Stepper({ current }: { current: number }) {
                 <span
                   className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium transition ${
                     done
-                      ? 'bg-brand text-white'
+                      ? 'bg-primary text-primary-fg'
                       : active
-                        ? 'bg-brand text-white ring-4 ring-accent-soft'
-                        : 'glass text-faint'
+                        ? 'bg-primary text-primary-fg ring-4 ring-line'
+                        : 'border border-line bg-surface text-faint'
                   }`}
                 >
                   {done ? <Icon name="check" size={13} strokeWidth={2.5} /> : num}
                 </span>
                 <span
-                  className={`hidden text-sm whitespace-nowrap sm:inline ${
+                  className={`hidden text-sm tracking-[-0.01em] whitespace-nowrap sm:inline ${
                     active ? 'font-medium text-fg' : done ? 'text-fg' : 'text-faint'
                   }`}
                 >
                   {label}
                 </span>
               </div>
-              {num < STEPS.length && <span className={`h-px flex-1 ${done ? 'bg-brand' : 'bg-line-strong'}`} />}
+              {num < STEPS.length && <span className={`h-px flex-1 ${done ? 'bg-primary' : 'bg-line-strong'}`} />}
             </li>
           );
         })}

@@ -26,11 +26,11 @@ export function Switch({
       disabled={disabled}
       onClick={() => onChange(!checked)}
       className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
-        checked ? 'bg-brand' : 'bg-line-strong'
+        checked ? 'bg-primary' : 'bg-line-strong'
       }`}
     >
       <span
-        className={`inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${
+        className={`inline-block h-4 w-4 rounded-full bg-surface shadow-[0_1px_2px_#00000033] transition-transform ${
           checked ? 'translate-x-[18px]' : 'translate-x-0.5'
         }`}
       />
@@ -56,7 +56,7 @@ export function Checkbox({
       checked={checked}
       aria-label={label}
       onChange={(e) => onChange?.(e.target.checked)}
-      className={`h-4 w-4 shrink-0 cursor-pointer rounded accent-[var(--accent)] ${className}`}
+      className={`h-4 w-4 shrink-0 cursor-pointer rounded accent-[var(--primary)] ${className}`}
     />
   );
 }
@@ -76,7 +76,7 @@ export function Segmented<T extends string>({
   label?: string;
 }) {
   return (
-    <div role="radiogroup" aria-label={label} className="inline-flex rounded-xl bg-subtle p-0.5">
+    <div role="radiogroup" aria-label={label} className="inline-flex rounded-md border border-line bg-subtle p-0.5">
       {options.map((opt) => {
         const active = opt.value === value;
         return (
@@ -86,9 +86,9 @@ export function Segmented<T extends string>({
             role="radio"
             aria-checked={active}
             onClick={() => onChange(opt.value)}
-            className={`cursor-pointer rounded-[10px] font-medium transition ${
+            className={`cursor-pointer rounded-[4px] font-medium transition-colors ${
               size === 'sm' ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-[13px]'
-            } ${active ? 'bg-surface-strong text-fg shadow-sm' : 'text-muted hover:text-fg'}`}
+            } ${active ? 'bg-surface text-fg shadow-[var(--shadow-card)]' : 'text-muted hover:text-fg'}`}
           >
             {opt.label}
           </button>
@@ -100,9 +100,9 @@ export function Segmented<T extends string>({
 
 export function ProgressBar({ value, tone = 'accent' }: { value: number; tone?: 'accent' | 'success' }) {
   return (
-    <div className="h-1.5 w-full overflow-hidden rounded-full bg-subtle" role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100}>
+    <div className="h-1 w-full overflow-hidden rounded-full bg-subtle" role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100}>
       <div
-        className={`h-full rounded-full transition-[width] duration-300 ease-out ${tone === 'success' ? 'bg-success' : 'bg-brand'}`}
+        className={`h-full rounded-full transition-[width] duration-300 ease-out ${tone === 'success' ? 'bg-success' : 'bg-primary'}`}
         style={{ width: `${Math.max(0, Math.min(100, value))}%` }}
       />
     </div>

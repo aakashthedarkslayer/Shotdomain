@@ -10,7 +10,7 @@ const PAGES = [
   { href: '/refunds', label: 'Refund Policy' },
 ];
 
-/** Shared layout for /terms, /privacy and /refunds: readable long-form text on a glass panel. */
+/** Shared layout for /terms, /privacy and /refunds: readable long-form text on a card panel. */
 export function LegalPage({ title, intro, current, children }: { title: string; intro: ReactNode; current: string; children: ReactNode }) {
   return (
     <div className="min-h-screen">
@@ -29,14 +29,14 @@ export function LegalPage({ title, intro, current, children }: { title: string; 
                 key={p.href}
                 href={p.href}
                 aria-current={p.href === current ? 'page' : undefined}
-                className={`rounded-full px-3 py-1 transition ${p.href === current ? 'bg-brand text-white' : 'glass text-muted hover:text-fg'}`}
+                className={`rounded-full px-3 py-1 transition ${p.href === current ? 'bg-primary text-primary-fg' : 'card text-muted hover:text-fg'}`}
               >
                 {p.label}
               </Link>
             ))}
           </nav>
           <article
-            className="glass rounded-2xl px-6 py-8 text-[15px] leading-relaxed text-muted sm:px-10 sm:py-10
+            className="card rounded-xl px-6 py-8 text-[15px] leading-relaxed text-muted sm:px-10 sm:py-10
               [&_a]:font-medium [&_a]:text-accent [&_a:hover]:underline [&_b]:font-semibold [&_b]:text-fg
               [&_h2]:mt-10 [&_h2]:mb-3 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:tracking-tight [&_h2]:text-fg
               [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:font-semibold [&_h3]:text-fg [&_li]:mt-1.5 [&_p]:mt-3
@@ -44,7 +44,7 @@ export function LegalPage({ title, intro, current, children }: { title: string; 
               [&_table]:mt-4 [&_table]:w-full [&_table]:text-sm [&_td]:border-t [&_td]:border-line [&_td]:py-2 [&_td]:pr-4 [&_td]:align-top
               [&_th]:pb-2 [&_th]:pr-4 [&_th]:text-left [&_th]:font-medium [&_th]:text-fg"
           >
-            <h1 className="text-3xl font-semibold tracking-tight text-fg">{title}</h1>
+            <h1 className="text-[32px] leading-10 font-semibold tracking-[-0.04em] text-fg">{title}</h1>
             <p className="!mt-2 text-sm text-faint">Last updated {LEGAL.updated}</p>
             <div className="mt-6 text-fg/90">{intro}</div>
             {children}

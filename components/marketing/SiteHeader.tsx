@@ -16,12 +16,12 @@ const LINKS = [
 export async function SiteHeader() {
   const user = authEnabled ? await currentUser() : null;
   return (
-    <header className="sticky top-0 z-30 glass-strong border-x-0 border-t-0 !shadow-none">
-      <div className="mx-auto flex h-14 max-w-6xl items-center gap-8 px-4 sm:px-6">
+    <header className="sticky top-0 z-30 border-b border-line bg-surface/85 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4 sm:px-6">
         <Logo />
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav className="hidden items-center gap-1 md:flex">
           {LINKS.map((l) => (
-            <a key={l.href} href={l.href} className="text-sm text-muted transition hover:text-fg">
+            <a key={l.href} href={l.href} className="rounded-full px-3 py-1.5 text-sm tracking-[-0.01em] text-muted transition-colors hover:bg-subtle hover:text-fg">
               {l.label}
             </a>
           ))}
@@ -32,18 +32,18 @@ export async function SiteHeader() {
             <>
               <span
                 title="Sign-in isn’t configured (no Google keys in .env.local), so anyone can use the app."
-                className="hidden rounded-full border border-warning/30 bg-warning-soft px-2.5 py-0.5 text-xs font-medium text-warning sm:inline"
+                className="hidden rounded-full border border-warning/30 bg-warning-soft px-2.5 py-0.5 font-mono text-xs text-warning sm:inline"
               >
                 Local mode · no sign-in
               </span>
-              <Link href="/app" className={buttonClass('primary', 'sm')}>
+              <Link href="/app" className={buttonClass('primary', 'sm', 'h-8 px-3')}>
                 Open app
               </Link>
             </>
           ) : user ? (
             // Signed in: the avatar shows whose session this is (and offers sign-out).
             <>
-              <Link href="/app" className={buttonClass('primary', 'sm')}>
+              <Link href="/app" className={buttonClass('primary', 'sm', 'h-8 px-3')}>
                 Open app
               </Link>
               <UserProvider user={user}>
@@ -52,10 +52,10 @@ export async function SiteHeader() {
             </>
           ) : (
             <>
-              <Link href="/login" className={buttonClass('ghost', 'sm')}>
+              <Link href="/login" className={buttonClass('secondary', 'sm', 'h-8 px-3')}>
                 Log in
               </Link>
-              <Link href="/signup" className={buttonClass('primary', 'sm')}>
+              <Link href="/signup" className={buttonClass('primary', 'sm', 'h-8 px-3')}>
                 Sign up free
               </Link>
             </>

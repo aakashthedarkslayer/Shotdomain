@@ -1,79 +1,120 @@
 @import "tailwindcss";
 
 /*
- * Design tokens — "glass" theme. Components use semantic names
- * (bg-surface, text-muted, border-line, glass, ...) so light/dark and the
- * look itself are defined here and nowhere else.
+ * Design tokens — the Vercel-inspired system in DESIGN.md (see CLAUDE.md for
+ * ShotDomain's adaptations). Components use the semantic names (bg-bg,
+ * bg-surface, text-muted, border-line, card, bg-primary, ...) so the look is
+ * defined here and nowhere else.
  */
 :root {
-  --bg: #f4f5fb;
-  --surface: rgba(255, 255, 255, 0.58);
-  --surface-strong: rgba(255, 255, 255, 0.86);
-  --field: rgba(255, 255, 255, 0.72);
-  --subtle: rgba(15, 23, 42, 0.045);
-  --line: rgba(15, 23, 42, 0.08);
-  --line-strong: rgba(15, 23, 42, 0.16);
-  --glass-border: rgba(255, 255, 255, 0.75);
-  --glass-highlight: rgba(255, 255, 255, 0.9);
-  --glass-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 40px -12px rgba(30, 27, 75, 0.14);
-  --fg: #0f172a;
-  --muted: #566078;
-  --faint: #929bb2;
-  --primary: #0f172a;
+  --bg: #fafafa; /* canvas-soft: the page */
+  --surface: #ffffff; /* canvas: cards, dialogs, inputs */
+  --surface-strong: #ffffff;
+  --field: #ffffff;
+  --subtle: #f5f5f5; /* canvas-soft-2: hover, inset regions, chips */
+  --line: #ebebeb; /* hairline */
+  --line-strong: #a1a1a1; /* hairline-strong */
+  --fg: #171717; /* ink */
+  --muted: #4d4d4d; /* body */
+  --faint: #888888; /* mute */
+  --primary: #171717;
   --primary-fg: #ffffff;
-  --accent: #5b5bf0;
-  --accent-2: #a855f7;
-  --accent-3: #06b6d4;
-  /* Button/brand fills stay saturated in both modes so white text keeps contrast. */
-  --brand-1: #5b5bf0;
-  --brand-2: #9d4df3;
-  --accent-soft: rgba(91, 91, 240, 0.1);
-  --success: #059669;
-  --success-soft: rgba(5, 150, 105, 0.1);
-  --warning: #c2410c;
-  --warning-soft: rgba(234, 88, 12, 0.1);
-  --danger: #dc2626;
-  --danger-soft: rgba(220, 38, 38, 0.08);
-  --blob-1: rgba(129, 140, 248, 0.45);
-  --blob-2: rgba(192, 132, 252, 0.35);
-  --blob-3: rgba(34, 211, 238, 0.3);
+  --primary-hover: #383838;
+  --accent: #0070f3; /* link */
+  --accent-soft: #ebf5ff;
+  --success: #0070f3; /* the spec's success is the link blue */
+  --success-soft: #ebf5ff;
+  --warning: #ab570a; /* warning-deep: readable as text */
+  --warning-soft: #ffefcf;
+  --danger: #c50000; /* error-deep: readable as text */
+  --danger-soft: #fde8e9;
+  /* Stacked elevation: small offsets + an inset hairline, never one heavy drop. */
+  --shadow-card: 0 1px 1px #00000005, 0 2px 2px #0000000a;
+  --shadow-float: 0 2px 2px #0000000a, 0 8px 16px -4px #0000000a;
+  --shadow-modal: 0 1px 1px #00000005, 0 8px 16px -4px #0000000a, 0 24px 32px -8px #0000000f;
+}
+
+/* Dark: same structure, dark palette. Also used by .band-dark sections inside light pages. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --surface: #0a0a0a;
+    --surface-strong: #111111;
+    --field: #0a0a0a;
+    --subtle: #1a1a1a;
+    --line: #2e2e2e;
+    --line-strong: #5c5c5c;
+    --fg: #ededed;
+    --muted: #a1a1a1;
+    --faint: #878787;
+    --primary: #ededed;
+    --primary-fg: #0a0a0a;
+    --primary-hover: #cccccc;
+    --accent: #52a8ff;
+    --accent-soft: #0b2341;
+    --success: #52a8ff;
+    --success-soft: #0b2341;
+    --warning: #f5a623;
+    --warning-soft: #2e1d02;
+    --danger: #ff6166;
+    --danger-soft: #3b1215;
+    --shadow-card: none;
+    --shadow-float: none;
+    --shadow-modal: 0 24px 48px -12px #000000cc;
+  }
+}
+
+/* A polarity-flipped section (dark band in a light page). .band-flip is the
+   featured-card flip: dark on light pages, light on dark pages. */
+.band-dark,
+.band-flip {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface-strong: #171717;
+  --field: #111111;
+  --subtle: #1f1f1f;
+  --line: #2e2e2e;
+  --line-strong: #5c5c5c;
+  --fg: #ededed;
+  --muted: #a1a1a1;
+  --faint: #878787;
+  --primary: #ffffff;
+  --primary-fg: #0a0a0a;
+  --primary-hover: #e5e5e5;
+  --accent: #52a8ff;
+  --accent-soft: #0b2341;
+  --success: #52a8ff;
+  --success-soft: #0b2341;
+  --shadow-card: none;
+  --shadow-float: none;
+  color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #06070d;
-    --surface: rgba(255, 255, 255, 0.045);
-    --surface-strong: rgba(18, 20, 32, 0.88);
-    --field: rgba(255, 255, 255, 0.05);
-    --subtle: rgba(255, 255, 255, 0.05);
-    --line: rgba(255, 255, 255, 0.08);
-    --line-strong: rgba(255, 255, 255, 0.16);
-    --glass-border: rgba(255, 255, 255, 0.09);
-    --glass-highlight: rgba(255, 255, 255, 0.12);
-    --glass-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 48px -16px rgba(0, 0, 0, 0.6);
-    --fg: #eef0f7;
-    --muted: #9aa2b8;
-    --faint: #626a80;
-    --primary: #eef0f7;
-    --primary-fg: #06070d;
-    --accent: #8b8dff;
-    --accent-2: #c084fc;
-    --accent-3: #22d3ee;
-    --accent-soft: rgba(139, 141, 255, 0.14);
-    --success: #34d399;
-    --success-soft: rgba(52, 211, 153, 0.12);
-    --warning: #fb923c;
-    --warning-soft: rgba(251, 146, 60, 0.12);
-    --danger: #f87171;
-    --danger-soft: rgba(248, 113, 113, 0.12);
-    --blob-1: rgba(99, 102, 241, 0.32);
-    --blob-2: rgba(168, 85, 247, 0.22);
-    --blob-3: rgba(6, 182, 212, 0.16);
+  .band-flip {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-strong: #ffffff;
+    --field: #ffffff;
+    --subtle: #f5f5f5;
+    --line: #ebebeb;
+    --line-strong: #a1a1a1;
+    --fg: #171717;
+    --muted: #4d4d4d;
+    --faint: #888888;
+    --primary: #171717;
+    --primary-fg: #ffffff;
+    --primary-hover: #383838;
+    --accent: #0070f3;
+    --accent-soft: #ebf5ff;
+    --success: #0070f3;
+    --success-soft: #ebf5ff;
+    color-scheme: light;
   }
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), Inter, ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --color-bg: var(--bg);
@@ -88,9 +129,8 @@
   --color-faint: var(--faint);
   --color-primary: var(--primary);
   --color-primary-fg: var(--primary-fg);
+  --color-primary-hover: var(--primary-hover);
   --color-accent: var(--accent);
-  --color-accent-2: var(--accent-2);
-  --color-accent-3: var(--accent-3);
   --color-accent-soft: var(--accent-soft);
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
@@ -100,34 +140,50 @@
   --color-danger-soft: var(--danger-soft);
 }
 
-/* Frosted panel: translucent fill, blur, hairline light border, soft shadow. */
-@utility glass {
+/* Default card: white surface, hairline, stacked soft shadow (Level 2). */
+@utility card {
   background: var(--surface);
-  -webkit-backdrop-filter: blur(22px) saturate(170%);
-  backdrop-filter: blur(22px) saturate(170%);
-  border: 1px solid var(--glass-border);
-  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
 }
 
-/* Nearly opaque glass for things that float over content: menus, modals, bars. */
-@utility glass-strong {
-  background: var(--surface-strong);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid var(--glass-border);
-  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+/* Things that float over content: menus, dialogs, popovers (Level 5). */
+@utility card-elevated {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-modal);
 }
 
-/* Brand gradient fill (buttons, step markers, logo). */
-@utility bg-brand {
-  background-image: linear-gradient(135deg, var(--brand-1) 0%, var(--brand-2) 100%);
+/* Larger callout cards and pricing (Level 4). */
+@utility card-float {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-float);
 }
 
-@utility text-brand {
-  background-image: linear-gradient(100deg, var(--accent) 0%, var(--accent-2) 55%, var(--accent-3) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+/* Section eyebrows and technical labels: mono caption. */
+@utility mono-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+/*
+ * The brand mesh gradient (develop blue→teal, preview violet→pink, ship
+ * coral→amber) — hero scale only, never as a swatch.
+ */
+@utility hero-mesh {
+  background:
+    radial-gradient(40% 55% at 22% 30%, #007cf0 0%, transparent 70%),
+    radial-gradient(38% 50% at 42% 18%, #00dfd8 0%, transparent 70%),
+    radial-gradient(40% 55% at 60% 28%, #7928ca 0%, transparent 70%),
+    radial-gradient(38% 50% at 74% 20%, #ff0080 0%, transparent 70%),
+    radial-gradient(40% 55% at 86% 40%, #ff4d4d 0%, transparent 70%),
+    radial-gradient(36% 50% at 62% 48%, #f9cb28 0%, transparent 72%);
+  filter: blur(48px) saturate(140%);
 }
 
 @layer base {
@@ -137,26 +193,20 @@
   }
 
   body {
-    background: transparent;
+    background: var(--bg);
+    color: var(--fg);
+    font-feature-settings: 'ss01', 'ss02';
+  }
+
+  .band-dark,
+  .band-flip {
+    background: var(--bg);
     color: var(--fg);
   }
 
-  /* Ambient gradient mesh behind everything — what the glass panels blur. */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background:
-      radial-gradient(38rem 30rem at 12% -6%, var(--blob-1), transparent 70%),
-      radial-gradient(34rem 28rem at 92% 8%, var(--blob-2), transparent 70%),
-      radial-gradient(40rem 32rem at 70% 105%, var(--blob-3), transparent 70%),
-      radial-gradient(30rem 26rem at -5% 85%, var(--blob-2), transparent 70%);
-  }
-
   ::selection {
-    background: color-mix(in srgb, var(--accent) 28%, transparent);
+    background: #171717;
+    color: #f2f2f2;
   }
 
   /* Default keyboard focus ring; utilities like outline-none can override it. */

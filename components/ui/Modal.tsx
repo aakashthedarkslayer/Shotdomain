@@ -31,16 +31,16 @@ export function Modal({ open, onClose, title, description, children, footer, siz
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
       <div
-        className={`relative flex max-h-[90vh] w-full flex-col overflow-hidden glass-strong rounded-2xl ${
+        className={`relative flex max-h-[90vh] w-full flex-col overflow-hidden card-elevated rounded-xl ${
           size === 'xl' ? 'max-w-5xl' : size === 'lg' ? 'max-w-2xl' : 'max-w-lg'
         }`}
       >
         {(title || description) && (
           <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
             <div className="min-w-0">
-              {title && <h2 className="truncate text-base font-semibold text-fg">{title}</h2>}
+              {title && <h2 className="truncate text-base font-semibold tracking-[-0.02em] text-fg">{title}</h2>}
               {description && <p className="mt-0.5 text-sm text-muted">{description}</p>}
             </div>
             <button

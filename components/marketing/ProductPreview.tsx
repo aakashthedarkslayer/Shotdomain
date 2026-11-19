@@ -161,8 +161,8 @@ interface TileProps {
 function Tile({ path, device, site, accent, className = '', badge }: TileProps) {
   const page = <div className="h-full overflow-hidden bg-white text-left">{SITES[site](accent)}</div>;
   return (
-    <div className={`glass group overflow-hidden rounded-xl transition duration-300 hover:-translate-y-1 ${className}`}>
-      <div className="relative h-36 overflow-hidden border-b border-line bg-gradient-to-br from-slate-100 to-slate-200/70 sm:h-40 dark:from-slate-800/60 dark:to-slate-900/60">
+    <div className={`card group overflow-hidden rounded-lg transition-transform duration-300 hover:-translate-y-0.5 ${className}`}>
+      <div className="relative h-36 overflow-hidden border-b border-line bg-subtle sm:h-40">
         {device === 'Desktop' && <div className="absolute inset-2.5 overflow-hidden rounded-md shadow-sm ring-1 ring-black/5">{page}</div>}
         {device === 'Tablet' && (
           <div className="absolute inset-y-2.5 left-1/2 w-[62%] -translate-x-1/2 overflow-hidden rounded-lg border-[3px] border-slate-800 shadow-md">{page}</div>
@@ -174,8 +174,8 @@ function Tile({ path, device, site, accent, className = '', badge }: TileProps) 
         )}
         {badge && (
           <span
-            className={`absolute top-2 left-2 flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-semibold text-white shadow-sm ${
-              badge.tone === 'warning' ? 'bg-orange-500' : 'bg-emerald-500'
+            className={`absolute top-2 left-2 flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[10px] ${
+              badge.tone === 'warning' ? 'border-warning/30 bg-warning-soft text-warning' : 'border-accent/30 bg-accent-soft text-accent'
             }`}
           >
             {badge.tone === 'success' && <Icon name="shield" size={10} />}
@@ -196,8 +196,8 @@ function Tile({ path, device, site, accent, className = '', badge }: TileProps) 
 
 function FloatingChip({ icon, title, body, className }: { icon: IconName; title: string; body: string; className: string }) {
   return (
-    <div className={`glass-strong absolute z-10 hidden items-center gap-2.5 rounded-xl px-3 py-2 lg:flex ${className}`}>
-      <span className="bg-brand flex h-7 w-7 items-center justify-center rounded-lg text-white">
+    <div className={`card-elevated absolute z-10 hidden items-center gap-2.5 rounded-lg px-3 py-2 lg:flex ${className}`}>
+      <span className="flex h-7 w-7 items-center justify-center rounded-full border border-line bg-bg text-fg">
         <Icon name={icon} size={14} />
       </span>
       <div className="text-left">
@@ -215,24 +215,24 @@ export function ProductPreview() {
       <FloatingChip icon="refresh" title="Change alert" body="3 pages changed since Monday" className="-right-12 top-52" />
       <FloatingChip icon="link" title="Share link copied" body="Anyone with the link can view" className="-bottom-8 right-32" />
 
-      <div className="glass-strong overflow-hidden rounded-2xl">
-        <div className="flex items-center gap-3 border-b border-line px-4 py-3">
+      <div className="card-float overflow-hidden rounded-xl">
+        <div className="flex items-center gap-3 border-b border-line bg-bg px-4 py-3">
           <div className="flex gap-1.5">
-            <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
-            <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
-            <span className="h-3 w-3 rounded-full bg-[#28c840]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-line-strong/60" />
+            <span className="h-2.5 w-2.5 rounded-full bg-line-strong/60" />
+            <span className="h-2.5 w-2.5 rounded-full bg-line-strong/60" />
           </div>
-          <span className="flex items-center gap-1.5 rounded-lg bg-subtle px-2.5 py-1 font-mono text-xs text-muted">
+          <span className="flex items-center gap-1.5 rounded-md border border-line bg-surface px-2.5 py-1 font-mono text-xs text-muted">
             <Icon name="globe" size={12} /> example.com · 24 screenshots
           </span>
-          <div className="ml-auto hidden items-center gap-0.5 rounded-lg bg-subtle p-0.5 text-[11px] md:flex">
+          <div className="ml-auto hidden items-center gap-0.5 rounded-md border border-line bg-subtle p-0.5 text-[11px] md:flex">
             {['All', 'Desktop', 'Tablet', 'Mobile'].map((t, i) => (
-              <span key={t} className={`rounded-md px-2 py-0.5 ${i === 0 ? 'bg-surface-strong font-medium text-fg shadow-sm' : 'text-muted'}`}>
+              <span key={t} className={`rounded-[4px] px-2 py-0.5 ${i === 0 ? 'bg-surface font-medium text-fg shadow-[var(--shadow-card)]' : 'text-muted'}`}>
                 {t}
               </span>
             ))}
           </div>
-          <span className="bg-brand flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium text-white shadow-sm max-md:ml-auto">
+          <span className="bg-primary flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium text-primary-fg max-md:ml-auto">
             <Icon name="download" size={12} /> Download ZIP
           </span>
         </div>

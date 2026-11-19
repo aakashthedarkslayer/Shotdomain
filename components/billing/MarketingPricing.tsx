@@ -15,7 +15,7 @@ export function MarketingPricing({ billingEnabled, lifetimeLeft }: { billingEnab
           return (
             <>
               <LifetimeStock left={0} />
-              <span className={buttonClass('secondary', 'md', 'w-full pointer-events-none opacity-60')}>Sold out</span>
+              <span className={buttonClass('secondary', 'md', 'w-full pointer-events-none opacity-60', 'pill')}>Sold out</span>
             </>
           );
         }
@@ -24,7 +24,7 @@ export function MarketingPricing({ billingEnabled, lifetimeLeft }: { billingEnab
         return (
           <>
             {plan.id === 'lifetime' && <LifetimeStock left={lifetimeLeft} />}
-            <Link href={href} className={buttonClass(plan.badge ? 'primary' : 'secondary', 'md', 'w-full')}>
+            <Link href={href} className={buttonClass(plan.badge ? 'primary' : 'secondary', 'md', 'w-full', 'pill')}>
               {paid ? `Get ${plan.name}` : 'Start free'}
             </Link>
           </>

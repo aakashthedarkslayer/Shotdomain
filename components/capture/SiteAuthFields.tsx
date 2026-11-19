@@ -34,9 +34,9 @@ function CookieHelp() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="glass group flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-surface-strong"
+        className="card group flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-surface-strong"
       >
-        <span className="bg-brand flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white">
+        <span className="bg-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-primary-fg">
           <Icon name="play" size={15} />
         </span>
         <span className="min-w-0 flex-1">

@@ -48,7 +48,7 @@ export default async function ProfilePage() {
               )}
             </span>
             <div className="min-w-0">
-              <h1 className="truncate text-xl font-semibold tracking-tight text-fg">{user ? user.name || user.email : 'Local user'}</h1>
+              <h1 className="truncate text-2xl font-semibold tracking-[-0.04em] text-fg">{user ? user.name || user.email : 'Local user'}</h1>
               <p className="truncate text-sm text-muted">
                 {user ? [user.email, user.company].filter(Boolean).join(' · ') : 'Sign-in isn’t configured on this server.'}
               </p>

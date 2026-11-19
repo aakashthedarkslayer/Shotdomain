@@ -35,7 +35,7 @@ async function brandFor(ownerKey: string): Promise<Brand | null> {
 
 function ShareHeader({ brand }: { brand: Brand | null }) {
   return (
-    <header className="glass-strong border-x-0 border-t-0 !shadow-none">
+    <header className="card-elevated border-x-0 border-t-0 !shadow-none">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
         {brand ? (
           <span className="flex min-w-0 items-center gap-2.5">
@@ -177,7 +177,7 @@ function PageTimelineView({
             <CardHeader title="Earlier screenshots" description="Newest first. Times are in UTC." />
             <ul className="grid grid-cols-2 gap-4 p-5 sm:grid-cols-3 sm:p-6 lg:grid-cols-4">
               {older.map((s) => (
-                <li key={s.runId} className="glass group overflow-hidden rounded-xl">
+                <li key={s.runId} className="card group overflow-hidden rounded-xl">
                   <a href={img(s.runId)} target="_blank" rel="noreferrer" className="block aspect-[4/3] overflow-hidden border-b border-line bg-subtle">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={thumb(s.runId)} alt={`Screenshot from ${utc(s.timestamp)}`} loading="lazy" className="h-full w-full object-cover object-top transition group-hover:scale-[1.02]" />

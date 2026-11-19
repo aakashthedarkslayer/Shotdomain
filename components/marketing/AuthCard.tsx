@@ -10,9 +10,9 @@ export function AuthCard({ title, description, children, footer }: { title: stri
         <Link href="/" className="mx-auto mb-6 flex w-fit" aria-label="ShotDomain home">
           <LogoMark size={36} />
         </Link>
-        <h1 className="text-center text-xl font-semibold tracking-tight text-fg">{title}</h1>
+        <h1 className="text-center text-2xl font-semibold tracking-[-0.04em] text-fg">{title}</h1>
         <p className="mt-1 text-center text-sm text-muted">{description}</p>
-        <div className="mt-8 glass rounded-2xl p-6">{children}</div>
+        <div className="mt-8 card-float rounded-xl p-8">{children}</div>
         <p className="mt-6 text-center text-sm text-muted">{footer}</p>
       </div>
     </div>

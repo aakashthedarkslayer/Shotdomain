@@ -151,7 +151,7 @@ export default function SchedulesPage() {
       <main className="mx-auto max-w-5xl px-4 pt-10 sm:px-6">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-fg">Schedules</h1>
+            <h1 className="text-[32px] leading-10 font-semibold tracking-[-0.04em] text-fg">Schedules</h1>
             <p className="mt-1 text-sm text-muted">
               Your recurring captures. Each run is also saved to your history.
               {schedules.length > 0 && ` ${activeCount} of ${schedules.length} active.`}

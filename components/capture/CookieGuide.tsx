@@ -540,7 +540,7 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
             role="radio"
             aria-checked={method === m}
             onClick={() => switchMethod(m)}
-            className={`flex-1 cursor-pointer rounded-[10px] px-3 py-1.5 text-center transition ${
+            className={`flex-1 cursor-pointer rounded-[4px] px-3 py-1.5 text-center transition ${
               method === m ? 'bg-surface-strong font-medium text-fg shadow-sm' : 'text-muted hover:text-fg'
             }`}
           >
@@ -571,7 +571,7 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
             }}
             className="absolute inset-0 z-50 flex cursor-pointer flex-col items-center justify-center gap-2 bg-black/35 text-white backdrop-blur-[1px] transition hover:bg-black/25"
           >
-            <span className="bg-brand flex h-14 w-14 items-center justify-center rounded-full shadow-lg">
+            <span className="bg-primary flex h-14 w-14 items-center justify-center rounded-full shadow-lg">
               <Icon name="play" size={22} />
             </span>
             <span className="text-sm font-semibold">Play walkthrough</span>
@@ -585,14 +585,14 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
         <div
           key={`${method}-${step}-${reduced}`}
           // duration = PHASE_MS × PHASES (kept in the class so the reduced-motion opt-in can restore it)
-          className={`bg-brand h-full rounded-full ${reduced ? 'w-full opacity-40' : 'animate-[guide-progress_4600ms_linear_forwards]'}`}
+          className={`bg-primary h-full rounded-full ${reduced ? 'w-full opacity-40' : 'animate-[guide-progress_4600ms_linear_forwards]'}`}
           style={reduced ? undefined : { animationPlayState: playing ? 'running' : 'paused' }}
         />
       </div>
 
       <div className="min-h-[3.5rem]">
         <div className="text-sm font-semibold text-fg">
-          <span className="text-brand mr-1.5">Step {step + 1}.</span>
+          <span className="mr-1.5 font-mono text-xs text-muted">STEP {step + 1}</span>
           {current.title}
         </div>
         <p className="mt-1 text-[13px] leading-relaxed text-muted">{current.body}</p>
@@ -606,7 +606,7 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
               type="button"
               aria-label={`Go to step ${i + 1}: ${s.title}`}
               onClick={() => go(i)}
-              className={`h-1.5 cursor-pointer rounded-full transition-all ${i === step ? 'bg-brand w-6' : 'w-1.5 bg-line-strong hover:bg-muted'}`}
+              className={`h-1.5 cursor-pointer rounded-full transition-all ${i === step ? 'bg-primary w-6' : 'w-1.5 bg-line-strong hover:bg-muted'}`}
             />
           ))}
         </div>

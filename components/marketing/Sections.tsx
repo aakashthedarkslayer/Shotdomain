@@ -7,20 +7,35 @@ import { Logo } from '@/components/ui/Logo';
 import { CookieGuide } from '@/components/capture/CookieGuide';
 import { MarketingPricing } from '@/components/billing/MarketingPricing';
 
-function SectionHeading({ eyebrow, title, description }: { eyebrow: string; title: string; description?: ReactNode }) {
+/*
+ * Homepage bands (DESIGN.md): alternating canvas-soft / canvas sections with
+ * hairline dividers, mono eyebrows, display-lg sentence-case headlines, cards
+ * held by hairline + stacked shadow, and one polarity-flipped dark band.
+ */
+
+function Band({ id, tone = 'soft', children }: { id?: string; tone?: 'soft' | 'white'; children: ReactNode }) {
   return (
-    <div className="mx-auto mb-14 max-w-2xl text-center">
-      <p className="text-brand text-sm font-semibold tracking-wide uppercase">{eyebrow}</p>
-      <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] text-fg sm:text-[2.6rem] sm:leading-tight">{title}</h2>
-      {description && <p className="mt-4 text-base leading-relaxed text-muted">{description}</p>}
+    <section id={id} className={`scroll-mt-20 border-b border-line px-4 py-24 sm:px-6 ${tone === 'white' ? 'bg-surface' : 'bg-bg'}`}>
+      <div className="mx-auto max-w-6xl">{children}</div>
+    </section>
+  );
+}
+
+function SectionHeading({ eyebrow, title, description, align = 'center' }: { eyebrow: string; title: string; description?: ReactNode; align?: 'center' | 'left' }) {
+  return (
+    <div className={`mb-12 max-w-2xl ${align === 'center' ? 'mx-auto text-center' : ''}`}>
+      <p className="mono-label">{eyebrow}</p>
+      <h2 className="mt-3 text-[32px] leading-10 font-semibold tracking-[-0.04em] text-fg">{title}</h2>
+      {description && <p className="mt-3 text-lg leading-7 text-muted">{description}</p>}
     </div>
   );
 }
 
+/** Icon in a circular hairline container (icon-button-circular). */
 function IconTile({ name }: { name: IconName }) {
   return (
-    <span className="bg-brand flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white shadow-[0_8px_20px_-8px_color-mix(in_srgb,var(--accent)_80%,transparent)]">
-      <Icon name={name} size={18} />
+    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line bg-surface text-fg">
+      <Icon name={name} size={16} />
     </span>
   );
 }
@@ -36,21 +51,21 @@ const STEPS: { icon: IconName; title: string; body: string }[] = [
 
 export function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="scroll-mt-20 px-4 py-24 sm:px-6">
-      <div className="mx-auto max-w-6xl">
-        <SectionHeading eyebrow="How it works" title="From domain to ZIP in four steps" />
-        <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((s, i) => (
-            <li key={s.title} className="glass relative rounded-2xl p-6">
-              <span className="absolute top-5 right-5 font-mono text-xs text-faint">0{i + 1}</span>
+    <Band id="how-it-works">
+      <SectionHeading eyebrow="How it works" title="From domain to a dated record in four steps." />
+      <ol className="grid overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-4 gap-px">
+        {STEPS.map((s, i) => (
+          <li key={s.title} className="bg-surface p-6">
+            <div className="flex items-center justify-between">
               <IconTile name={s.icon} />
-              <h3 className="mt-5 text-[15px] font-semibold text-fg">{s.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-muted">{s.body}</p>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
+              <span className="font-mono text-xs text-faint">0{i + 1}</span>
+            </div>
+            <h3 className="mt-6 text-base font-semibold tracking-[-0.02em] text-fg">{s.title}</h3>
+            <p className="mt-1.5 text-sm leading-5 tracking-[-0.01em] text-muted">{s.body}</p>
+          </li>
+        ))}
+      </ol>
+    </Band>
   );
 }
 
@@ -78,24 +93,22 @@ const FEATURES: { icon: IconName; title: string; body: string; wide?: boolean }[
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="scroll-mt-20 px-4 py-24 sm:px-6">
-      <div className="mx-auto max-w-6xl">
-        <SectionHeading
-          eyebrow="Features"
-          title="Built for agencies who look after client sites"
-          description="Capture a whole site once to see it work, then keep a dated record of the pages that matter."
-        />
-        <div className="grid gap-4 md:grid-cols-3">
-          {FEATURES.map((f) => (
-            <div key={f.title} className={`glass rounded-2xl p-6 ${f.wide ? 'md:col-span-2' : ''}`}>
-              <IconTile name={f.icon} />
-              <h3 className="mt-5 text-base font-semibold tracking-tight text-fg">{f.title}</h3>
-              <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-muted">{f.body}</p>
-            </div>
-          ))}
-        </div>
+    <Band id="features" tone="white">
+      <SectionHeading
+        eyebrow="Features"
+        title="Built for agencies who look after client sites."
+        description="Capture a whole site once to see it work, then keep a dated record of the pages that matter."
+      />
+      <div className="grid gap-px overflow-hidden rounded-lg border border-line bg-line md:grid-cols-3">
+        {FEATURES.map((f) => (
+          <div key={f.title} className={`bg-surface p-6 sm:p-8 ${f.wide ? 'md:col-span-2' : ''}`}>
+            <IconTile name={f.icon} />
+            <h3 className="mt-6 text-xl leading-7 font-semibold tracking-[-0.03em] text-fg">{f.title}</h3>
+            <p className="mt-2 max-w-xl text-sm leading-6 tracking-[-0.01em] text-muted">{f.body}</p>
+          </div>
+        ))}
       </div>
-    </section>
+    </Band>
   );
 }
 
@@ -120,71 +133,69 @@ const SESSION_FACTS = [
 /** Premium feature: capture pages behind a login, with the animated cookie guide. */
 export function LoginPagesSection() {
   return (
-    <section id="login-pages" className="scroll-mt-20 px-4 py-24 sm:px-6">
-      <div className="mx-auto max-w-6xl">
-        <div className="mx-auto mb-14 max-w-2xl text-center">
-          <p className="inline-flex items-center gap-2">
-            <span className="text-brand text-sm font-semibold tracking-wide uppercase">Access login pages</span>
-            <span className="bg-brand rounded-full px-2 py-0.5 text-[11px] font-semibold text-white">Premium</span>
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] text-fg sm:text-[2.6rem] sm:leading-tight">
-            Screenshot what’s behind the login
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-muted">
-            Dashboards, web apps, client portals, staging sites — capture them exactly as you see them when signed in. It takes about 20 seconds
-            to set up, and you never hand over a password.
-          </p>
-        </div>
+    <Band id="login-pages">
+      <div className="mx-auto mb-12 max-w-2xl text-center">
+        <p className="inline-flex items-center gap-2">
+          <span className="mono-label">Access login pages</span>
+          <span className="rounded-full border border-line bg-surface px-2 py-0.5 font-mono text-[11px] text-fg">STUDIO+</span>
+        </p>
+        <h2 className="mt-3 text-[32px] leading-10 font-semibold tracking-[-0.04em] text-fg">Screenshot what’s behind the login.</h2>
+        <p className="mt-3 text-lg leading-7 text-muted">
+          Dashboards, web apps, client portals, staging sites — captured exactly as you see them signed in. About 20 seconds to set up, and you
+          never hand over a password.
+        </p>
+      </div>
 
-        <div className="grid items-center gap-8 lg:grid-cols-[1fr_1.15fr]">
-          <ul className="space-y-4">
+      <div className="grid items-start gap-8 lg:grid-cols-[1fr_1.15fr]">
+        <div>
+          <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
             {LOGIN_POINTS.map((p) => (
-              <li key={p.title} className="glass flex gap-4 rounded-2xl p-5">
+              <li key={p.title} className="flex gap-4 p-5">
                 <IconTile name={p.icon} />
                 <div>
-                  <h3 className="text-[15px] font-semibold text-fg">{p.title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted">{p.body}</p>
+                  <h3 className="text-[15px] font-semibold tracking-[-0.02em] text-fg">{p.title}</h3>
+                  <p className="mt-1 text-sm leading-5 tracking-[-0.01em] text-muted">{p.body}</p>
                 </div>
               </li>
             ))}
-            <li className="flex flex-wrap items-center gap-3 pt-2">
-              <Link href="/app" className={buttonClass('primary', 'md')}>
-                Try it on your app
-                <Icon name="arrowRight" />
-              </Link>
-              <a href="#pricing" className="text-sm text-muted hover:text-fg">
-                Included in Studio, Agency and Lifetime →
-              </a>
-            </li>
           </ul>
-
-          <div className="glass-strong rounded-3xl p-4 sm:p-5">
-            <div id="session-security" className="mb-3 flex items-center gap-2 px-1 text-sm font-medium text-fg">
-              <span className="bg-brand flex h-6 w-6 items-center justify-center rounded-md text-white">
-                <Icon name="play" size={12} />
-              </span>
-              How it works — copy your session in 4 clicks
-            </div>
-            <CookieGuide />
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Link href="/app" className={buttonClass('primary', 'md', '', 'pill')}>
+              Try it on your app
+              <Icon name="arrowRight" />
+            </Link>
+            <a href="#pricing" className={buttonClass('ghost', 'md', '', 'pill')}>
+              Included in Studio, Agency and Lifetime
+            </a>
           </div>
         </div>
 
-        <div className="glass mx-auto mt-10 max-w-4xl rounded-2xl p-6 sm:p-7">
-          <h3 className="flex items-center gap-2 text-[15px] font-semibold text-fg">
-            <Icon name="lock" size={16} className="text-accent" />
-            What happens to your session
-          </h3>
-          <ul className="mt-3 grid gap-x-8 gap-y-2.5 text-sm leading-relaxed text-muted sm:grid-cols-2">
-            {SESSION_FACTS.map((f) => (
-              <li key={f} className="flex gap-2">
-                <Icon name="check" size={15} className="mt-0.5 shrink-0 text-success" />
-                {f}
-              </li>
-            ))}
-          </ul>
+        <div className="card-float rounded-xl p-4 sm:p-5">
+          <div id="session-security" className="mb-3 flex items-center gap-2 px-1 text-sm font-medium tracking-[-0.01em] text-fg">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full border border-line bg-bg text-fg">
+              <Icon name="play" size={11} />
+            </span>
+            How it works — copy your session in 4 clicks
+          </div>
+          <CookieGuide />
         </div>
       </div>
-    </section>
+
+      <div className="mx-auto mt-10 max-w-4xl rounded-lg border border-line bg-surface p-6 sm:p-8">
+        <h3 className="flex items-center gap-2 text-base font-semibold tracking-[-0.02em] text-fg">
+          <Icon name="lock" size={16} />
+          What happens to your session.
+        </h3>
+        <ul className="mt-4 grid gap-x-8 gap-y-3 text-sm leading-6 tracking-[-0.01em] text-muted sm:grid-cols-2">
+          {SESSION_FACTS.map((f) => (
+            <li key={f} className="flex gap-2">
+              <Icon name="check" size={15} className="mt-1 shrink-0 text-fg" />
+              {f}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Band>
   );
 }
 
@@ -199,20 +210,18 @@ const USE_CASES = [
 
 export function UseCasesSection() {
   return (
-    <section id="use-cases" className="scroll-mt-20 px-4 py-24 sm:px-6">
-      <div className="mx-auto max-w-6xl">
-        <SectionHeading eyebrow="Use cases" title="Who it’s for" />
-        <div className="grid gap-4 sm:grid-cols-2">
-          {USE_CASES.map((u) => (
-            <div key={u.who} className="glass rounded-2xl p-7">
-              <p className="text-brand text-xs font-semibold tracking-wide uppercase">{u.who}</p>
-              <h3 className="mt-2 text-lg font-semibold tracking-tight text-fg">{u.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-muted">{u.body}</p>
-            </div>
-          ))}
-        </div>
+    <Band id="use-cases" tone="white">
+      <SectionHeading eyebrow="Use cases" title="Who it’s for." />
+      <div className="grid gap-4 sm:grid-cols-2">
+        {USE_CASES.map((u) => (
+          <div key={u.who} className="card rounded-lg p-6 sm:p-8">
+            <p className="mono-label">{u.who}</p>
+            <h3 className="mt-3 text-xl leading-7 font-semibold tracking-[-0.03em] text-fg">{u.title}</h3>
+            <p className="mt-2 text-sm leading-6 tracking-[-0.01em] text-muted">{u.body}</p>
+          </div>
+        ))}
       </div>
-    </section>
+    </Band>
   );
 }
 
@@ -220,16 +229,14 @@ export function UseCasesSection() {
 
 export function PricingSection({ billingEnabled = false, lifetimeLeft = 0 }: { billingEnabled?: boolean; lifetimeLeft?: number }) {
   return (
-    <section id="pricing" className="scroll-mt-20 px-4 py-24 sm:px-6">
-      <div className="mx-auto max-w-6xl">
-        <SectionHeading
-          eyebrow="Pricing"
-          title="Simple, predictable pricing"
-          description="No per-screenshot credits. Prices in USD; taxes are calculated at checkout. Cancel anytime."
-        />
-        <MarketingPricing billingEnabled={billingEnabled} lifetimeLeft={lifetimeLeft} />
-      </div>
-    </section>
+    <Band id="pricing">
+      <SectionHeading
+        eyebrow="Pricing"
+        title="Simple, predictable pricing."
+        description="No per-screenshot credits. Prices in USD; taxes are calculated at checkout. Cancel anytime."
+      />
+      <MarketingPricing billingEnabled={billingEnabled} lifetimeLeft={lifetimeLeft} />
+    </Band>
   );
 }
 
@@ -276,83 +283,105 @@ const FAQS = [
 
 export function FaqSection() {
   return (
-    <section id="faq" className="scroll-mt-20 px-4 py-24 sm:px-6">
+    <Band id="faq" tone="white">
       <div className="mx-auto max-w-3xl">
-        <SectionHeading eyebrow="FAQ" title="Questions & answers" />
-        <div className="glass divide-y divide-line overflow-hidden rounded-2xl">
+        <SectionHeading eyebrow="FAQ" title="Questions and answers." />
+        <div className="divide-y divide-line border-y border-line">
           {FAQS.map((f, i) => (
             <details key={f.q} className="group" open={i === 0}>
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 text-[15px] font-medium text-fg transition hover:bg-subtle [&::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-base font-medium tracking-[-0.02em] text-fg [&::-webkit-details-marker]:hidden">
                 {f.q}
-                <span className="glass flex h-7 w-7 shrink-0 items-center justify-center rounded-full">
-                  <Icon name="chevronDown" size={14} className="text-muted transition-transform group-open:rotate-180" />
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-line bg-surface">
+                  <Icon name="plus" size={14} className="text-muted transition-transform group-open:rotate-45" />
                 </span>
               </summary>
-              <p className="px-6 pb-6 text-sm leading-relaxed text-muted">{f.a}</p>
+              <p className="pb-6 text-sm leading-6 tracking-[-0.01em] text-muted">{f.a}</p>
             </details>
           ))}
         </div>
       </div>
-    </section>
+    </Band>
   );
 }
 
 /* ------------------------------------------------------------------------ */
 
+/** The polarity-flipped dark band (showcase-band-dark). */
 export function FinalCta() {
   return (
-    <section className="px-4 py-24 sm:px-6">
-      <div className="glass-strong relative mx-auto max-w-4xl overflow-hidden rounded-3xl px-6 py-16 text-center">
-        <div className="bg-brand pointer-events-none absolute -top-24 left-1/2 h-48 w-[28rem] -translate-x-1/2 rounded-full opacity-30 blur-3xl" />
-        <p className="text-brand relative text-sm font-semibold tracking-wide uppercase">One Shot Every Domain</p>
-        <h2 className="relative mt-3 text-3xl font-semibold tracking-[-0.03em] text-fg sm:text-4xl">Capture your first site</h2>
-        <p className="relative mx-auto mt-3 max-w-md text-muted">Paste a URL and get every page back as a ZIP. No setup.</p>
-        <Link href="/app" className={buttonClass('primary', 'lg', 'relative mt-8')}>
-          Open ShotDomain
-          <Icon name="arrowRight" />
-        </Link>
+    <section className="band-dark border-b border-line px-4 py-24 sm:px-6">
+      <div className="mx-auto max-w-3xl text-center">
+        <p className="mono-label">One Shot Every Domain</p>
+        <h2 className="mt-3 text-[32px] leading-10 font-semibold tracking-[-0.04em] text-fg sm:text-5xl sm:leading-[1.05]">
+          Capture your first site.
+        </h2>
+        <p className="mx-auto mt-4 max-w-md text-lg leading-7 text-muted">Paste a URL and see every page on desktop and iPhone. Free, no card.</p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Link href="/app" className={buttonClass('primary', 'lg', '', 'pill')}>
+            Start capturing
+            <Icon name="arrowRight" />
+          </Link>
+          <a href="#pricing" className={buttonClass('secondary', 'lg', '', 'pill')}>
+            See pricing
+          </a>
+        </div>
       </div>
     </section>
   );
 }
 
+const FOOTER_COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
+  {
+    title: 'Product',
+    links: [
+      { href: '/app', label: 'Capture' },
+      { href: '/schedules', label: 'Schedules' },
+      { href: '/#pricing', label: 'Pricing' },
+      { href: '/#faq', label: 'FAQ' },
+    ],
+  },
+  {
+    title: 'Account',
+    links: [
+      { href: '/login', label: 'Log in' },
+      { href: '/signup', label: 'Sign up' },
+      { href: '/billing', label: 'Plan & billing' },
+      { href: '/profile', label: 'History' },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      { href: '/terms', label: 'Terms' },
+      { href: '/privacy', label: 'Privacy' },
+      { href: '/refunds', label: 'Refunds' },
+    ],
+  },
+];
+
 export function Footer() {
   return (
-    <footer className="px-4 pt-6 pb-12 sm:px-6">
-      <div className="glass mx-auto flex max-w-6xl flex-col gap-6 rounded-2xl px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-4">
+    <footer className="bg-surface px-4 py-16 sm:px-6">
+      <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
+        <div className="space-y-3">
           <Logo />
-          <span className="text-sm text-faint">© {new Date().getFullYear()} · One Shot Every Domain</span>
+          <p className="max-w-xs text-sm leading-5 tracking-[-0.01em] text-muted">A dated record of every page of every site you look after.</p>
+          <p className="font-mono text-xs text-faint">© {new Date().getFullYear()} ShotDomain</p>
         </div>
-        <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
-          <Link href="/app" className="hover:text-fg">
-            App
-          </Link>
-          <Link href="/schedules" className="hover:text-fg">
-            Schedules
-          </Link>
-          <Link href="/#pricing" className="hover:text-fg">
-            Pricing
-          </Link>
-          <Link href="/#faq" className="hover:text-fg">
-            FAQ
-          </Link>
-          <Link href="/login" className="hover:text-fg">
-            Log in
-          </Link>
-          <Link href="/signup" className="hover:text-fg">
-            Sign up
-          </Link>
-          <Link href="/terms" className="hover:text-fg">
-            Terms
-          </Link>
-          <Link href="/privacy" className="hover:text-fg">
-            Privacy
-          </Link>
-          <Link href="/refunds" className="hover:text-fg">
-            Refunds
-          </Link>
-        </nav>
+        {FOOTER_COLUMNS.map((col) => (
+          <nav key={col.title} aria-label={col.title}>
+            <p className="mono-label">{col.title}</p>
+            <ul className="mt-4 space-y-2.5">
+              {col.links.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="text-sm tracking-[-0.01em] text-muted transition-colors hover:text-fg">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))}
       </div>
     </footer>
   );

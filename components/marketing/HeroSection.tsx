@@ -3,10 +3,11 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/Button';
+import { Button, buttonClass } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { ProductPreview } from './ProductPreview';
 
+/** DESIGN.md hero-band: mono badge, display-xl headline, body-lg lead, pill CTAs, mesh gradient behind. */
 export function HeroSection() {
   const router = useRouter();
   const [url, setUrl] = useState('');
@@ -18,57 +19,68 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative px-4 pt-16 pb-24 sm:px-6 md:pt-24">
-      <div className="mx-auto max-w-3xl text-center">
+    <section className="relative overflow-hidden border-b border-line bg-surface px-4 pt-20 pb-24 sm:px-6 md:pt-28">
+      {/* The brand gradient: hero scale only, the page's single decoration. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -top-24 mx-auto h-[420px] max-w-5xl opacity-35 dark:opacity-25">
+        <div className="hero-mesh h-full w-full" />
+      </div>
+
+      <div className="relative mx-auto max-w-3xl text-center">
         <a
-          href="#features"
-          className="glass mb-7 inline-flex items-center gap-2 rounded-full py-1 pr-3 pl-1 text-xs text-muted transition hover:text-fg"
+          href="#pricing"
+          className="mb-8 inline-flex items-center gap-2 rounded-full border border-line bg-bg px-3 py-1 text-sm tracking-[-0.01em] text-muted transition-colors hover:text-fg"
         >
-          <span className="bg-brand rounded-full px-2 py-0.5 text-[11px] font-semibold text-white">Free</span>
+          <span className="font-mono text-xs text-fg">FREE</span>
+          <span className="h-3 w-px bg-line" />
           Try a whole site on desktop and iPhone
           <Icon name="arrowRight" size={12} />
         </a>
 
-        <h1 className="text-[2.6rem] leading-[1.05] font-semibold tracking-[-0.035em] text-fg sm:text-6xl md:text-7xl">
+        <p className="mono-label mb-5">One Shot Every Domain</p>
+        <h1 className="text-[40px] leading-[1.05] font-semibold tracking-[-0.05em] text-fg sm:text-[56px]">
           Every client site.
           <br />
           Every page, on record.
         </h1>
-        <p className="text-brand mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">One Shot Every Domain</p>
-        <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
-          A dated record of every page of every site you look after, on desktop and phone. ShotDomain captures it, flags what changed, and
-          gives your client a link they can open.
+        <p className="mx-auto mt-6 max-w-xl text-lg leading-7 text-muted">
+          A dated record of every page of every site you look after, on desktop and phone. ShotDomain captures it, flags what changed, and gives
+          your client a link they can open.
         </p>
 
-        <form onSubmit={handleSubmit} className="glass mx-auto mt-9 flex max-w-lg flex-col gap-2 rounded-2xl p-2 sm:flex-row">
+        <form onSubmit={handleSubmit} className="mx-auto mt-10 flex max-w-lg flex-col gap-3 sm:flex-row">
           <label htmlFor="hero-url" className="sr-only">
             Website URL
           </label>
           <div className="relative flex-1">
-            <Icon name="globe" className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-faint" />
+            <Icon name="globe" className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-faint" />
             <input
               id="hero-url"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="yourdomain.com"
-              className="h-11 w-full rounded-xl bg-transparent pr-3 pl-10 text-[15px] text-fg outline-none placeholder:text-faint"
+              className="h-12 w-full rounded-full border border-line bg-surface pr-4 pl-11 text-base text-fg shadow-[var(--shadow-card)] outline-none placeholder:text-faint hover:border-line-strong focus:border-fg focus:ring-3 focus:ring-fg/10"
             />
           </div>
-          <Button type="submit" size="lg" iconRight="arrowRight">
+          <Button type="submit" size="lg" shape="pill" iconRight="arrowRight">
             Capture site
           </Button>
         </form>
-        <ul className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] text-muted">
-          {['Free: 15 pages on desktop + iPhone', 'Change alerts that ignore banners', 'No password needed for logins'].map((t) => (
+        <div className="mt-4 flex justify-center">
+          <a href="#pricing" className={buttonClass('ghost', 'sm', '', 'pill')}>
+            See plans and pricing
+          </a>
+        </div>
+        <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-xs text-muted">
+          {['15 pages free, desktop + iPhone', 'Change alerts that ignore banners', 'No password needed for logins'].map((t) => (
             <li key={t} className="flex items-center gap-1.5">
-              <Icon name="check" size={14} className="text-success" />
+              <Icon name="check" size={13} className="text-fg" />
               {t}
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="mx-auto mt-20 max-w-5xl">
+      <div className="relative mx-auto mt-20 max-w-5xl">
         <ProductPreview />
       </div>
     </section>
