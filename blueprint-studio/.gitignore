@@ -1,0 +1,8 @@
+node_modules
+.next
+next-env.d.ts
+*.tsbuildinfo
+# uploaded client documents and the working database never go into git
+data/
+.env*
+!.env.example
