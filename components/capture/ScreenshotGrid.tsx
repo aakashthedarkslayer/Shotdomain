@@ -18,22 +18,15 @@ export interface GridItem {
   fileName: string;
   /** Note from the capture, e.g. "The page returned HTTP 404". */
   warning?: string;
-  /** Path of the file inside its capture (used for share links). */
-  file?: string;
-  /** Small label over the thumbnail, e.g. "12% changed". */
-  badge?: { text: string; tone: 'warning' | 'neutral' };
 }
 
-/** Thumbnail grid with a device filter and a full-size preview; used by Results and History. */
+/** Thumbnail grid with a device filter and a full-size preview; used by Results and share pages. */
 export function ScreenshotGrid({
   items,
   emptyText = 'No screenshots.',
-  onShare,
 }: {
   items: GridItem[];
   emptyText?: string;
-  /** Shows a share button on each screenshot when provided. */
-  onShare?: (item: GridItem) => void;
 }) {
   const [device, setDevice] = useState('all');
   const [preview, setPreview] = useState<GridItem | null>(null);
@@ -74,15 +67,6 @@ export function ScreenshotGrid({
                   loading="lazy"
                   className="h-full w-full object-cover object-top transition duration-300 group-hover:scale-[1.02]"
                 />
-                {item.badge && (
-                  <span
-                    className={`absolute top-2 left-2 rounded-md px-1.5 py-0.5 text-xs font-medium shadow-sm ${
-                      item.badge.tone === 'warning' ? 'bg-warning text-white' : 'card-elevated text-muted'
-                    }`}
-                  >
-                    {item.badge.text}
-                  </span>
-                )}
                 {item.warning && (
                   <span title={item.warning} className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-warning text-white shadow-sm">
                     <Icon name="alert" size={13} />
@@ -102,17 +86,6 @@ export function ScreenshotGrid({
                     item.device && <p className="text-xs text-muted">{item.device}</p>
                   )}
                 </div>
-                {onShare && (
-                  <button
-                    type="button"
-                    onClick={() => onShare(item)}
-                    title="Share"
-                    aria-label={`Share ${item.fileName}`}
-                    className="cursor-pointer rounded-md p-1.5 text-muted hover:bg-subtle hover:text-fg"
-                  >
-                    <Icon name="link" />
-                  </button>
-                )}
                 <a
                   href={item.fullSrc ?? item.src}
                   download={item.fileName}

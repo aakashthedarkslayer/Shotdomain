@@ -6,6 +6,7 @@ import type { IconName } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
 import { CookieGuide } from '@/components/capture/CookieGuide';
 import { MarketingPricing } from '@/components/billing/MarketingPricing';
+import { SHARE_DAYS } from '@/lib/plans';
 
 /*
  * Homepage bands (DESIGN.md): alternating canvas-soft / canvas sections with
@@ -46,13 +47,13 @@ const STEPS: { icon: IconName; title: string; body: string }[] = [
   { icon: 'globe', title: 'Enter a URL', body: 'We read the sitemap, or crawl the site — logged in, if it needs a login.' },
   { icon: 'sitemap', title: 'Pick pages', body: 'Every page is listed and selected. Filter, untick, or add app pages by hand.' },
   { icon: 'monitor', title: 'Choose devices', body: 'Desktop, tablet, iOS and Android — set once, applied to every page.' },
-  { icon: 'zip', title: 'Download & share', body: 'Preview everything, grab one ZIP sorted by device, or send a share link.' },
+  { icon: 'zip', title: 'Download & share', body: `Preview everything, grab one ZIP sorted by device, or send a ${SHARE_DAYS}-day share link.` },
 ];
 
 export function HowItWorksSection() {
   return (
     <Band id="how-it-works">
-      <SectionHeading eyebrow="How it works" title="From domain to a dated record in four steps." />
+      <SectionHeading eyebrow="How it works" title="From domain to every screenshot in four steps." />
       <ol className="grid overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-4 gap-px">
         {STEPS.map((s, i) => (
           <li key={s.title} className="bg-surface p-6">
@@ -75,18 +76,18 @@ const FEATURES: { icon: IconName; title: string; body: string; wide?: boolean }[
   {
     icon: 'shield',
     title: 'Pages behind a login — without your password',
-    body: 'Paste your session cookies or token and capture dashboards and web apps as you see them. Sessions are stored encrypted and die when you log out.',
+    body: 'Paste your session cookies or token and capture dashboards and web apps as you see them. The session is used for that capture only and never saved.',
     wide: true,
   },
   { icon: 'sitemap', title: 'Automatic page discovery', body: 'Sitemaps first, a polite crawl as fallback, plus JavaScript-built navigation.' },
   { icon: 'layers', title: 'Real device emulation', body: 'Proper viewport, pixel density and touch for tablet and phones.' },
   { icon: 'sliders', title: 'Clean captures', body: 'Cookie banners accepted or hidden, elements removed, clicks and CSS before capture.' },
-  { icon: 'clock', title: 'Scheduled captures', body: 'Re-run any capture daily, weekly or monthly — every run lands in your history.' },
-  { icon: 'refresh', title: 'Change alerts without the noise', body: 'Each run is compared page by page with cookie banners hidden and animations settled first, so you hear about real changes.' },
+  { icon: 'zip', title: 'One ZIP, sorted by device', body: 'Every screenshot in one download, a folder per device, each file named after its page.' },
+  { icon: 'refresh', title: 'Retry what failed', body: 'A page that timed out or errored can be captured again on its own, without re-running the site.' },
   {
     icon: 'link',
     title: 'Share links',
-    body: 'Send a single screenshot, a whole capture, or an always-latest view of a schedule. Revoke anytime.',
+    body: `Send a whole capture as one link: your client opens it in the browser, no account needed. Links last ${SHARE_DAYS} days, and you can stop sharing anytime.`,
     wide: true,
   },
 ];
@@ -96,8 +97,8 @@ export function FeaturesSection() {
     <Band id="features" tone="white">
       <SectionHeading
         eyebrow="Features"
-        title="Built for agencies who look after client sites."
-        description="Capture a whole site once to see it work, then keep a dated record of the pages that matter."
+        title="Every page of a site, in one go."
+        description="Enter a domain and get a screenshot of every page on desktop and phone: to hand over, archive or check before launch."
       />
       <div className="grid gap-px overflow-hidden rounded-lg border border-line bg-line md:grid-cols-3">
         {FEATURES.map((f) => (
@@ -118,14 +119,13 @@ const LOGIN_POINTS: { icon: IconName; title: string; body: string }[] = [
   { icon: 'shield', title: 'No password shared', body: 'Paste your session from your own browser. Works with 2FA, SSO and magic-link logins.' },
   { icon: 'refresh', title: 'Test before you capture', body: 'Test login opens the site with your session and shows you the page you’ll get.' },
   { icon: 'sitemap', title: 'Finds app pages too', body: 'Discovery runs logged in and reads JavaScript-built menus — or add pages by hand.' },
-  { icon: 'link', title: 'You stay in control', body: 'Sessions are stored encrypted. Log out of the site and access ends instantly.' },
+  { icon: 'link', title: 'You stay in control', body: 'The session is used for one capture and never saved. Log out of the site and it stops working.' },
 ];
 
-/** Plain-language account of what happens to a pasted session (true to the code: see lib/secretBox.ts, lib/jobStore.ts). */
+/** Plain-language account of what happens to a pasted session (true to the code: see lib/jobStore.ts, lib/shareStore.ts). */
 const SESSION_FACTS = [
   'We keep only the login cookies and headers from what you paste. Everything else, including your browser’s User-Agent, is dropped.',
-  'One-off captures: the session lives in server memory for that capture only and is cleared within about an hour. It is never written to disk.',
-  'Schedules: the session is encrypted (AES-256-GCM) before it is saved and only decrypted for that schedule’s runs. Delete the schedule and it is deleted.',
+  'The session lives in server memory for that capture only and is cleared within about an hour. It is never written to disk.',
   'Sessions are never logged, never shown back to anyone, never shared, and never stored with your screenshots or share links.',
   'You can end it at any time: log out of the site in your browser and the session stops working everywhere.',
 ];
@@ -137,7 +137,7 @@ export function LoginPagesSection() {
       <div className="mx-auto mb-12 max-w-2xl text-center">
         <p className="inline-flex items-center gap-2">
           <span className="mono-label">Access login pages</span>
-          <span className="rounded-full border border-line bg-surface px-2 py-0.5 font-mono text-[11px] text-fg">STUDIO+</span>
+          <span className="rounded-full border border-line bg-surface px-2 py-0.5 font-mono text-[11px] text-fg">PRO</span>
         </p>
         <h2 className="mt-3 text-[32px] leading-10 font-semibold tracking-[-0.04em] text-fg">Screenshot what’s behind the login.</h2>
         <p className="mt-3 text-lg leading-7 text-muted">
@@ -165,7 +165,7 @@ export function LoginPagesSection() {
               <Icon name="arrowRight" />
             </Link>
             <a href="#pricing" className={buttonClass('ghost', 'md', '', 'pill')}>
-              Included in Studio, Agency and Lifetime
+              Included in Pro and Lifetime
             </a>
           </div>
         </div>
@@ -202,10 +202,10 @@ export function LoginPagesSection() {
 /* ------------------------------------------------------------------------ */
 
 const USE_CASES = [
-  { who: 'Agencies', title: 'A record of every client site', body: 'Know what each client site looked like on any date, see what changed, and send the client a branded before/after link.' },
+  { who: 'Agencies', title: 'Hand over every page of a client site', body: 'Capture the whole site at launch or before a redesign, and send the client one link with every page on desktop and phone.' },
   { who: 'Product teams', title: 'Snapshot your logged-in app', body: 'Capture every dashboard screen for release notes, docs and QA — no shared passwords.' },
   { who: 'Migrations', title: 'Archive the old site before cut-over', body: 'Keep a full visual snapshot of the legacy site before DNS moves to the new build.' },
-  { who: 'Monitoring', title: 'Know when pages change', body: 'Schedule weekly captures of competitors or your own site and get alerted on changes.' },
+  { who: 'Launches & QA', title: 'Check every page before go-live', body: 'See every page on four devices side by side and catch the broken layout before your client does.' },
 ];
 
 export function UseCasesSection() {
@@ -245,15 +245,15 @@ export function PricingSection({ billingEnabled = false, lifetimeLeft = 0 }: { b
 const FAQS = [
   {
     q: 'Can it capture pages behind a login without my password?',
-    a: 'Yes. Log in to the site in your own browser, then copy the page request as cURL from DevTools and paste it — ShotDomain keeps only your session cookies and login headers. ShotDomain never sees your password, works with 2FA and single sign-on, and the session stops working the moment you log out. Saved sessions are stored encrypted.',
+    a: 'Yes. Log in to the site in your own browser, then copy the page request as cURL from DevTools and paste it — ShotDomain keeps only your session cookies and login headers. ShotDomain never sees your password, works with 2FA and single sign-on, and the session stops working the moment you log out. The session is used for that capture only and never saved.',
   },
   {
     q: 'What happens to the session I paste?',
-    a: 'Only the login cookies and headers are kept. For a one-off capture they stay in server memory for that capture and are cleared within about an hour. For a schedule they are encrypted (AES-256-GCM) before saving, used only for that schedule’s runs, and deleted with the schedule. Sessions are never logged or shared, and logging out of the site in your browser ends them immediately.',
+    a: 'Only the login cookies and headers are kept. They stay in server memory for that capture and are cleared within about an hour; they are never written to disk, logged or shared. Logging out of the site in your browser ends them immediately.',
   },
   {
     q: 'What can I try for free?',
-    a: 'A whole site of up to 15 pages, on desktop and iPhone, as often as you like. Download the screenshots or share a link. Schedules, change alerts, tablet and Android, and pages behind a login come with Studio.',
+    a: 'A whole site of up to 15 pages, on desktop and iPhone, as often as you like. Download the screenshots as a ZIP or send up to 3 share links. Up to 500 pages, tablet and Android, pages behind a login and your own logo on share links come with Pro.',
   },
   {
     q: 'How are pages discovered? What if a site has no sitemap?',
@@ -268,12 +268,12 @@ const FAQS = [
     a: 'Common consent banners are accepted or hidden automatically. You can also hide any element, click things before capture (menus, tabs, dialogs) and inject your own CSS.',
   },
   {
-    q: 'How do change alerts work?',
-    a: 'Each scheduled run is compared with the previous one, page by page. You see how much of each page changed, and can choose to be emailed only when something did.',
+    q: 'How long do you keep my screenshots?',
+    a: `About an hour after a capture finishes, unless you share it. A share link keeps that capture for ${SHARE_DAYS} days, then the link and its screenshots are deleted; stop sharing and they are deleted straight away. There is no archive of past captures, so download the ZIP to keep them.`,
   },
   {
     q: 'Can I cancel or change plans anytime?',
-    a: 'Yes. Switch between Studio and Agency or monthly and yearly from Plan & billing — the difference is prorated. If you cancel, your plan stays active until the end of the period you paid for, then you move to Free. Payments are handled by Paddle, our reseller, which also takes care of invoices, VAT/GST and refunds.',
+    a: 'Yes. Switch Pro between monthly and yearly from Plan & billing — the difference is prorated. If you cancel, Pro stays active until the end of the period you paid for, then you move to Free. Payments are handled by Paddle, our reseller, which also takes care of invoices, VAT/GST and refunds.',
   },
   {
     q: 'Will this get my IP blocked?',
@@ -335,7 +335,6 @@ const FOOTER_COLUMNS: { title: string; links: { href: string; label: string }[] 
     title: 'Product',
     links: [
       { href: '/app', label: 'Capture' },
-      { href: '/schedules', label: 'Schedules' },
       { href: '/#pricing', label: 'Pricing' },
       { href: '/#faq', label: 'FAQ' },
     ],
@@ -346,7 +345,7 @@ const FOOTER_COLUMNS: { title: string; links: { href: string; label: string }[] 
       { href: '/login', label: 'Log in' },
       { href: '/signup', label: 'Sign up' },
       { href: '/billing', label: 'Plan & billing' },
-      { href: '/profile', label: 'History' },
+      { href: '/profile', label: 'Share links' },
     ],
   },
   {
@@ -365,7 +364,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
         <div className="space-y-3">
           <Logo />
-          <p className="max-w-xs text-sm leading-5 tracking-[-0.01em] text-muted">A dated record of every page of every site you look after.</p>
+          <p className="max-w-xs text-sm leading-5 tracking-[-0.01em] text-muted">Screenshots of every page of a site, on every device, in one go.</p>
           <p className="font-mono text-xs text-faint">© {new Date().getFullYear()} ShotDomain</p>
         </div>
         {FOOTER_COLUMNS.map((col) => (

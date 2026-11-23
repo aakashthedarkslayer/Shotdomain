@@ -99,10 +99,10 @@ function limitsSummary(id: PlanId): string[] {
   const l = PLANS[id].limits;
   return [
     `${l.pagesPerRun} pages per capture`,
-    l.devices.length > 1 ? 'All devices' : 'Desktop only',
+    l.devices.length > 2 ? 'All devices' : 'Desktop + iPhone',
     l.loginPages ? 'Login pages' : 'No login pages',
-    l.schedules ? `${l.schedules} schedules × ${l.pagesPerSchedule} pages` : 'No schedules',
-    `${l.historyKept} captures kept`,
+    `${l.shareLinks} share links`,
+    l.branding ? 'Your logo on share links' : 'ShotDomain logo on share links',
   ];
 }
 
@@ -141,7 +141,7 @@ export function BillingPanel({ enabled, plan, subscription, lifetime, lifetimeLe
   const openCheckout = useCallback(
     async (target: PlanId, interval: Interval | 'once') => {
       if (!config) return;
-      const priceId = target === 'lifetime' ? config.prices.lifetime.once : config.prices[target as 'studio' | 'agency']?.[interval as Interval];
+      const priceId = target === 'lifetime' ? config.prices.lifetime.once : config.prices.pro[interval as Interval];
       if (!priceId) return setError('That plan isn’t available yet.');
       setError(null);
       setBusy(`${target}-${interval}`);
@@ -206,7 +206,7 @@ export function BillingPanel({ enabled, plan, subscription, lifetime, lifetimeLe
     }
   }
 
-  // Arriving from the homepage ("Get Studio"): open that checkout right away.
+  // Arriving from the homepage ("Get Pro"): open that checkout right away.
   useEffect(() => {
     if (autoStarted.current || !autoCheckout || !enabled || !isPlanId(wantPlan) || wantPlan === 'free') return;
     autoStarted.current = true;
@@ -257,17 +257,16 @@ export function BillingPanel({ enabled, plan, subscription, lifetime, lifetimeLe
       );
     }
 
-    // Studio / Agency
+    // Pro
     if (activeSub) {
-      if (activeSub.plan === p.id && activeSub.interval === interval) return disabled('Current plan');
+      if (activeSub.interval === interval) return disabled('Current plan');
       return (
         <Button variant="secondary" className="w-full" isLoading={loading} onClick={() => changePlan(p.id, interval)}>
-          Switch to {p.name}
-          {activeSub.plan === p.id ? (interval === 'year' ? ' yearly' : ' monthly') : ''}
+          Switch to {interval === 'year' ? 'yearly' : 'monthly'}
         </Button>
       );
     }
-    if (lifetime && p.id === 'studio') return disabled('Included in Lifetime');
+    if (lifetime) return disabled('Included in Lifetime');
     return (
       <Button variant={p.badge ? 'primary' : 'secondary'} className="w-full" isLoading={loading} onClick={() => openCheckout(p.id, interval)}>
         Upgrade to {p.name}

@@ -2,6 +2,10 @@ export function formatDateTime(ts: number): string {
   return new Date(ts).toLocaleString('en', { dateStyle: 'medium', timeStyle: 'short' });
 }
 
+export function formatDate(ts: number): string {
+  return new Date(ts).toLocaleDateString('en', { dateStyle: 'medium' });
+}
+
 export function hostOf(url: string): string {
   try {
     return new URL(url).hostname;

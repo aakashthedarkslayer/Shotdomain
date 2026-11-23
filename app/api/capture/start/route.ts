@@ -1,8 +1,7 @@
 import { NextRequest } from 'next/server';
-import { createJob, getJob, updateResult } from '@/lib/jobStore';
+import { createJob, updateResult } from '@/lib/jobStore';
 import { captureScreenshots } from '@/lib/screenshot';
 import { currentUserKey } from '@/auth';
-import { saveCaptureFromJob } from '@/lib/userData';
 import type { CaptureSettings } from '@/lib/jobStore';
 import { sanitizeAuth, sanitizeCleanup } from '@/lib/captureOptions';
 import { planInfoFor } from '@/lib/billing';
@@ -58,13 +57,7 @@ export async function POST(request: NextRequest) {
       (url: string, result) => {
         updateResult(job.id, url, result);
       }
-    )
-      .then(async () => {
-        // Keep a copy in the user's history (tmp/ is wiped after 1h).
-        const finished = getJob(job.id);
-        if (finished?.ownerKey) await saveCaptureFromJob(finished.ownerKey, { ...finished, results: finished.results.values() });
-      })
-      .catch((error) => {
+    ).catch((error) => {
         console.error(`Capture job ${job.id} failed:`, error);
       });
 

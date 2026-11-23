@@ -1,22 +1,24 @@
 'use client';
 
-import Link from 'next/link';
+import { useState } from 'react';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { Button, buttonClass } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { previewUrl, thumbnailUrl } from './types';
 import type { CaptureResult } from './types';
 import { FailedList, ScreenshotGrid } from './ScreenshotGrid';
+import { ShareDialog } from '@/components/share/ShareDialog';
 import { baseName } from '@/lib/format';
+import { SHARE_DAYS } from '@/lib/plans';
 
 interface ResultsStepProps {
   jobId: string;
   results: CaptureResult[];
   onStartNew: () => void;
-  onSaveSchedule?: () => void;
 }
 
-export default function ResultsStep({ jobId, results, onStartNew, onSaveSchedule }: ResultsStepProps) {
+export default function ResultsStep({ jobId, results, onStartNew }: ResultsStepProps) {
+  const [sharing, setSharing] = useState(false);
   const done = results.filter((r) => r.status === 'done' && r.fileName);
   const failed = results.filter((r) => r.status === 'failed');
   const notes = done.filter((r) => r.warning).length;
@@ -30,23 +32,19 @@ export default function ResultsStep({ jobId, results, onStartNew, onSaveSchedule
             <>
               {failed.length > 0 ? `${failed.length} failed — see below. ` : ''}
               {notes > 0 ? `${notes} ${notes === 1 ? 'page has' : 'pages have'} a note (the ⚠ badge). ` : ''}
-              Saved to your{' '}
-              <Link href="/profile" className="font-medium text-fg underline-offset-2 hover:underline">
-                capture history
-              </Link>
-              .
+              Screenshots stay on the server for about an hour. Download the ZIP, or create a share link to keep them for {SHARE_DAYS} days.
             </>
           }
           actions={
             <>
-              {onSaveSchedule && (
-                <Button variant="ghost" icon="clock" onClick={onSaveSchedule}>
-                  Save as schedule
-                </Button>
-              )}
-              <Button variant="secondary" icon="plus" onClick={onStartNew}>
+              <Button variant="ghost" icon="plus" onClick={onStartNew}>
                 New capture
               </Button>
+              {done.length > 0 && (
+                <Button variant="secondary" icon="link" onClick={() => setSharing(true)}>
+                  Share link
+                </Button>
+              )}
               <a href={`/api/capture/download?jobId=${encodeURIComponent(jobId)}`} download className={buttonClass('primary', 'md')}>
                 <Icon name="download" />
                 Download ZIP
@@ -68,6 +66,7 @@ export default function ResultsStep({ jobId, results, onStartNew, onSaveSchedule
         />
       </Card>
       <FailedList items={failed} />
+      <ShareDialog jobId={sharing ? jobId : null} onClose={() => setSharing(false)} />
     </div>
   );
 }

@@ -44,7 +44,7 @@ export function UserMenu() {
             <p className="truncate text-xs text-muted">{user.email}</p>
           </div>
           <Link href="/profile" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-fg hover:bg-subtle">
-            Profile &amp; history
+            Profile &amp; share links
           </Link>
           <Link href="/billing" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-fg hover:bg-subtle">
             Plan &amp; billing

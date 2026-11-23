@@ -1,113 +1,148 @@
 import * as crypto from 'crypto';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { getCapture } from './userData';
-import type { CaptureMeta, HistoryResult } from './userData';
-import { getSchedule, getScheduledRuns, getRunDir } from './scheduleStore';
-import { captureDirPath } from './userData';
+import { SHARE_DAYS } from './plans';
 
 /**
- * Public share links. A token grants read-only access to exactly one thing:
- *   - screenshot: one image from a saved capture
- *   - capture:    a saved capture (gallery + ZIP)
- *   - schedule:   whatever the schedule's latest run is (updates by itself)
- *   - page:       one page (+ device) of a schedule across all kept runs —
- *                 an "all screenshots" index plus an always-latest image
- * Stored in data/shares.json. Revoking deletes the token.
+ * Share links. Creating one copies a finished capture out of tmp/ (deleted
+ * about an hour after the capture) into data/shared/<captureId>/, where it
+ * stays for SHARE_DAYS. Then the link and its screenshots are deleted.
+ * Stopping a share deletes them straight away. There is no other copy:
+ * ShotDomain keeps no capture history.
+ *
+ * Tokens live in data/shares.json; each capture's file list in its meta.json.
  */
-
-export type ShareKind = 'screenshot' | 'capture' | 'schedule' | 'page';
 
 export interface Share {
   token: string;
   ownerKey: string;
-  kind: ShareKind;
-  captureId?: string;
-  file?: string;
-  scheduleId?: string;
-  /** kind=page: the page and device within the schedule. */
-  pageUrl?: string;
-  device?: string;
+  /** The capture job's id; also the folder under data/shared/. */
+  captureId: string;
   label: string;
   createdAt: number;
+  expiresAt: number;
 }
 
-const FILE = path.join(process.cwd(), 'data', 'shares.json');
-const TOKEN_RE = /^[A-Za-z0-9_-]{32,64}$/;
+export interface SharedResult {
+  url: string;
+  device?: string;
+  status: 'done' | 'failed';
+  /** Path inside the shared folder, e.g. "desktop/about.png". */
+  fileName?: string;
+  error?: string;
+}
 
-async function readAll(): Promise<Share[]> {
+export interface SharedCapture {
+  id: string;
+  rootUrl: string;
+  createdAt: number;
+  devices: string[];
+  done: number;
+  failed: number;
+  results: SharedResult[];
+}
+
+/** The part of a capture job a share needs. */
+export interface ShareableJob {
+  id: string;
+  createdAt: number;
+  urls: string[];
+  settings?: { device?: string; devices?: string[] };
+  results: Iterable<{ url: string; device?: string; status: string; fileName?: string; error?: string }>;
+}
+
+const DATA_DIR = path.join(process.cwd(), 'data');
+const FILE = path.join(DATA_DIR, 'shares.json');
+const SHARED_DIR = path.join(DATA_DIR, 'shared');
+const TMP_DIR = path.join(process.cwd(), 'tmp');
+const TOKEN_RE = /^[A-Za-z0-9_-]{32,64}$/;
+const ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+const DAY = 24 * 60 * 60 * 1000;
+
+function isShare(s: unknown): s is Share {
+  const v = s as Share;
+  return !!v && typeof v.token === 'string' && typeof v.ownerKey === 'string' && typeof v.expiresAt === 'number' && ID_RE.test(v.captureId ?? '');
+}
+
+/** Folder of a shared capture. */
+export function sharedDir(captureId: string): string {
+  if (!ID_RE.test(captureId)) throw new Error('Invalid capture id');
+  return path.join(SHARED_DIR, captureId);
+}
+
+// ---------------------------------------------------------------------------
+// shares.json (serialised read-modify-write)
+// ---------------------------------------------------------------------------
+
+let writing: Promise<unknown> = Promise.resolve();
+
+async function readRaw(): Promise<unknown[]> {
   try {
-    return JSON.parse(await fs.readFile(FILE, 'utf8')) as Share[];
+    const data = JSON.parse(await fs.readFile(FILE, 'utf8'));
+    return Array.isArray(data) ? data : [];
   } catch {
     return [];
   }
 }
 
-async function writeAll(shares: Share[]): Promise<void> {
-  await fs.mkdir(path.dirname(FILE), { recursive: true });
-  const tmp = `${FILE}.${process.pid}.tmp`;
-  await fs.writeFile(tmp, JSON.stringify(shares, null, 2), 'utf8');
-  await fs.rename(tmp, FILE);
+async function readAll(): Promise<Share[]> {
+  return (await readRaw()).filter(isShare);
 }
 
+async function mutate<T>(fn: (all: Share[]) => { next: Share[]; out: T }): Promise<T> {
+  const run = writing.then(async () => {
+    const { next, out } = fn(await readAll());
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    const tmp = `${FILE}.${process.pid}.tmp`;
+    await fs.writeFile(tmp, JSON.stringify(next, null, 2), 'utf8');
+    await fs.rename(tmp, FILE);
+    return out;
+  });
+  writing = run.catch(() => undefined);
+  return run;
+}
+
+// ---------------------------------------------------------------------------
+// Expiry
+// ---------------------------------------------------------------------------
+
+let lastSweep = 0;
+
+/**
+ * Delete expired shares and their screenshots, plus entries in an older
+ * format (from before links expired). Runs at most every 10 minutes unless
+ * forced; every read also hides expired links on its own.
+ */
+export async function sweepExpiredShares(force = false): Promise<void> {
+  if (!force && Date.now() - lastSweep < 10 * 60 * 1000) return;
+  lastSweep = Date.now();
+  const raw = await readRaw();
+  const now = Date.now();
+  const keep = raw.filter((s): s is Share => isShare(s) && s.expiresAt > now);
+  if (keep.length !== raw.length) await mutate(() => ({ next: keep, out: undefined }));
+  // Folders no live share points at (expired, revoked, or left by a crash).
+  const live = new Set(keep.map((s) => s.captureId));
+  const dirs = await fs.readdir(SHARED_DIR).catch(() => [] as string[]);
+  await Promise.all(dirs.filter((d) => ID_RE.test(d) && !live.has(d)).map((d) => fs.rm(path.join(SHARED_DIR, d), { recursive: true, force: true })));
+}
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+
+/** A live (not expired) share. */
 export async function getShare(token: string): Promise<Share | null> {
   if (!TOKEN_RE.test(token)) return null;
-  return (await readAll()).find((s) => s.token === token) ?? null;
+  void sweepExpiredShares().catch(() => undefined);
+  const share = (await readAll()).find((s) => s.token === token);
+  return share && share.expiresAt > Date.now() ? share : null;
 }
 
+/** The user's live shares, newest first. */
 export async function listShares(ownerKey: string): Promise<Share[]> {
-  return (await readAll()).filter((s) => s.ownerKey === ownerKey).sort((a, b) => b.createdAt - a.createdAt);
-}
-
-/** Create (or return the existing) share for this exact target. */
-export async function createShare(input: Omit<Share, 'token' | 'createdAt'>): Promise<Share> {
-  const all = await readAll();
-  const existing = all.find(
-    (s) =>
-      s.ownerKey === input.ownerKey &&
-      s.kind === input.kind &&
-      s.captureId === input.captureId &&
-      s.file === input.file &&
-      s.scheduleId === input.scheduleId &&
-      s.pageUrl === input.pageUrl &&
-      s.device === input.device,
-  );
-  if (existing) return existing;
-  const share: Share = { ...input, token: crypto.randomBytes(24).toString('base64url'), createdAt: Date.now() };
-  all.push(share);
-  await writeAll(all);
-  return share;
-}
-
-export async function revokeShare(ownerKey: string, token: string): Promise<boolean> {
-  const all = await readAll();
-  const next = all.filter((s) => !(s.token === token && s.ownerKey === ownerKey));
-  if (next.length === all.length) return false;
-  await writeAll(next);
-  return true;
-}
-
-/** Drop shares pointing at something that was deleted. */
-export async function revokeSharesFor(target: { captureId?: string; scheduleId?: string }): Promise<void> {
-  const all = await readAll();
-  const next = all.filter(
-    (s) => !((target.captureId && s.captureId === target.captureId) || (target.scheduleId && s.scheduleId === target.scheduleId)),
-  );
-  if (next.length !== all.length) await writeAll(next);
-}
-
-// ---------------------------------------------------------------------------
-// Resolving a share to viewable content
-// ---------------------------------------------------------------------------
-
-export interface SharedContent {
-  title: string;
-  subtitle: string;
-  createdAt: number;
-  results: HistoryResult[];
-  /** Folder the result fileNames are relative to. */
-  dir: string;
-  zipName: string;
+  void sweepExpiredShares().catch(() => undefined);
+  const now = Date.now();
+  return (await readAll()).filter((s) => s.ownerKey === ownerKey && s.expiresAt > now).sort((a, b) => b.createdAt - a.createdAt);
 }
 
 function hostOf(url: string) {
@@ -118,131 +153,112 @@ function hostOf(url: string) {
   }
 }
 
-export async function resolveShare(share: Share): Promise<SharedContent | null> {
-  if (share.kind === 'schedule') {
-    const schedule = share.scheduleId ? await getSchedule(share.scheduleId) : null;
-    if (!schedule || schedule.ownerKey !== share.ownerKey) return null;
-    const latest = (await getScheduledRuns(schedule.id))[0];
-    if (!latest) {
-      return { title: schedule.name, subtitle: 'No runs yet', createdAt: Date.now(), results: [], dir: '', zipName: 'empty.zip' };
-    }
-    return {
-      title: schedule.name,
-      subtitle: `Latest run of a scheduled capture of ${hostOf(schedule.targetUrl)}`,
-      createdAt: latest.timestamp,
-      results: latest.results.map((r) => ({ url: r.url, device: r.device, status: r.status, fileName: r.fileName, error: r.error })),
-      dir: getRunDir(schedule.id, latest.id),
-      zipName: `${hostOf(schedule.targetUrl)}-latest.zip`,
-    };
+/** Copy a job's screenshots (not its ZIP) into the shared folder and write its file list. */
+async function copyCapture(job: ShareableJob): Promise<SharedCapture | null> {
+  const results: SharedResult[] = [];
+  for (const r of job.results) {
+    if (r.status === 'done' && r.fileName) results.push({ url: r.url, device: r.device, status: 'done', fileName: r.fileName });
+    else if (r.status === 'failed') results.push({ url: r.url, device: r.device, status: 'failed', error: r.error });
   }
+  const done = results.filter((r) => r.status === 'done').length;
+  if (done === 0) return null;
 
-  const meta: CaptureMeta | null = share.captureId ? await getCapture(share.ownerKey, share.captureId) : null;
-  if (!meta) return null;
-  const results = share.kind === 'screenshot' ? meta.results.filter((r) => r.fileName === share.file) : meta.results;
-  if (share.kind === 'screenshot' && results.length === 0) return null;
-  return {
-    title: hostOf(meta.rootUrl),
-    subtitle: share.kind === 'screenshot' ? 'Shared screenshot' : `${meta.done} screenshots · ${meta.devices.join(', ')}`,
-    createdAt: meta.createdAt,
+  const dest = sharedDir(job.id);
+  await fs.rm(dest, { recursive: true, force: true });
+  await fs.mkdir(dest, { recursive: true });
+  await fs.cp(path.join(TMP_DIR, job.id), dest, { recursive: true, filter: (p) => !p.endsWith('.zip') });
+
+  let rootUrl = job.urls[0] ?? '';
+  try {
+    rootUrl = new URL(rootUrl).origin;
+  } catch {
+    // keep as-is
+  }
+  const capture: SharedCapture = {
+    id: job.id,
+    rootUrl,
+    createdAt: job.createdAt,
+    devices: job.settings?.devices?.length ? job.settings.devices : [job.settings?.device ?? 'Desktop'],
+    done,
+    failed: results.length - done,
     results,
-    dir: captureDirPath(share.ownerKey, meta.id),
-    zipName: `${hostOf(meta.rootUrl)}-${new Date(meta.createdAt).toISOString().slice(0, 10)}.zip`,
   };
+  await fs.writeFile(path.join(dest, 'meta.json'), JSON.stringify(capture, null, 2), 'utf8');
+  return capture;
 }
 
 /**
- * Absolute path of an image inside shared content. Only files listed in the
- * content's results are allowed (whitelist — no path handling from the URL).
- * `pageUrl` + `device` picks a page from the latest run (stable embed links).
+ * Share a finished capture: returns its existing live share, or copies the
+ * screenshots and creates a link that expires in SHARE_DAYS days.
  */
-export function sharedFilePath(content: SharedContent, opts: { file?: string | null; pageUrl?: string | null; device?: string | null }): string | null {
-  const done = content.results.filter((r) => r.status === 'done' && r.fileName);
-  let match: HistoryResult | undefined;
-  if (opts.file) match = done.find((r) => r.fileName === opts.file);
-  else if (opts.pageUrl) match = done.find((r) => r.url === opts.pageUrl && (!opts.device || r.device === opts.device));
-  else if (done.length === 1) match = done[0];
-  if (!match?.fileName) return null;
-  const resolved = path.resolve(content.dir, match.fileName);
-  return resolved.startsWith(content.dir + path.sep) ? resolved : null;
+export async function createShare(ownerKey: string, job: ShareableJob): Promise<Share | null> {
+  const existing = (await listShares(ownerKey)).find((s) => s.captureId === job.id);
+  if (existing) return existing;
+  const capture = await copyCapture(job);
+  if (!capture) return null;
+  const now = Date.now();
+  const share: Share = {
+    token: crypto.randomBytes(24).toString('base64url'),
+    ownerKey,
+    captureId: job.id,
+    label: `${hostOf(capture.rootUrl)} · ${capture.done} ${capture.done === 1 ? 'screenshot' : 'screenshots'}`,
+    createdAt: now,
+    expiresAt: now + SHARE_DAYS * DAY,
+  };
+  // Two clicks at once: the first link written wins, so both get the same token.
+  return mutate((all) => {
+    const live = all.find((s) => s.captureId === job.id && s.expiresAt > now);
+    return live ? { next: all, out: live } : { next: [...all.filter((s) => s.captureId !== job.id), share], out: share };
+  });
 }
 
-// ---------------------------------------------------------------------------
-// Page shares: one page of a schedule over time
-// ---------------------------------------------------------------------------
-
-export interface PageShot {
-  runId: string;
-  timestamp: number;
-  /** Absolute path of the image file. */
-  path: string;
-  fileName: string;
-}
-
-export interface PageTimeline {
-  scheduleName: string;
-  pageUrl: string;
-  device?: string;
-  /** Newest first. Only runs still kept by the schedule's retention. */
-  shots: PageShot[];
-}
-
-export async function resolvePageShare(share: Share): Promise<PageTimeline | null> {
-  if (share.kind !== 'page' || !share.scheduleId || !share.pageUrl) return null;
-  const schedule = await getSchedule(share.scheduleId);
-  if (!schedule || schedule.ownerKey !== share.ownerKey) return null;
-  const shots: PageShot[] = [];
-  for (const run of await getScheduledRuns(schedule.id)) {
-    const r = run.results.find(
-      (x) => x.status === 'done' && x.fileName && x.url === share.pageUrl && (!share.device || x.device === share.device),
-    );
-    if (!r?.fileName) continue;
-    const dir = getRunDir(schedule.id, run.id);
-    const abs = path.resolve(dir, r.fileName);
-    if (abs.startsWith(dir + path.sep)) shots.push({ runId: run.id, timestamp: run.timestamp, path: abs, fileName: r.fileName });
+/** After a retry: if the capture is shared, copy it again so the retried screenshot is included. */
+export async function refreshSharedCapture(job: ShareableJob): Promise<void> {
+  const share = (await readAll()).find((s) => s.captureId === job.id && s.expiresAt > Date.now());
+  if (!share) return;
+  const capture = await copyCapture(job);
+  if (capture) {
+    const label = `${hostOf(capture.rootUrl)} · ${capture.done} ${capture.done === 1 ? 'screenshot' : 'screenshots'}`;
+    await mutate((all) => ({ next: all.map((s) => (s.token === share.token ? { ...s, label } : s)), out: undefined }));
   }
-  return { scheduleName: schedule.name, pageUrl: share.pageUrl, device: share.device, shots };
+}
+
+/** Stop sharing: the link stops working and its screenshots are deleted. */
+export async function revokeShare(ownerKey: string, token: string): Promise<boolean> {
+  const removed = await mutate((all) => {
+    const hit = all.find((s) => s.token === token && s.ownerKey === ownerKey);
+    return { next: hit ? all.filter((s) => s !== hit) : all, out: hit };
+  });
+  if (!removed) return false;
+  await fs.rm(sharedDir(removed.captureId), { recursive: true, force: true });
+  return true;
 }
 
 // ---------------------------------------------------------------------------
-// Schedule shares: every kept run of the domain ("All Screenshots")
+// Reading a share
 // ---------------------------------------------------------------------------
 
-export interface RunShot {
-  url: string;
-  device?: string;
-  fileName: string;
-  changePct?: number | null;
+export async function getSharedCapture(share: Share): Promise<SharedCapture | null> {
+  try {
+    return JSON.parse(await fs.readFile(path.join(sharedDir(share.captureId), 'meta.json'), 'utf8')) as SharedCapture;
+  } catch {
+    return null;
+  }
 }
 
-export interface ScheduleIndex {
-  scheduleName: string;
-  targetUrl: string;
-  /** Newest first. */
-  runs: { runId: string; timestamp: number; changedPages?: number; compared: boolean; shots: RunShot[] }[];
+/**
+ * Absolute path of a screenshot in a shared capture. Only files listed in its
+ * meta.json are allowed (a whitelist: nothing from the URL becomes a path).
+ */
+export function sharedFilePath(capture: SharedCapture, file: string | null): string | null {
+  const match = capture.results.find((r) => r.status === 'done' && r.fileName && r.fileName === file);
+  if (!match?.fileName) return null;
+  const root = sharedDir(capture.id);
+  const resolved = path.resolve(root, match.fileName);
+  return resolved.startsWith(root + path.sep) ? resolved : null;
 }
 
-export async function resolveScheduleShare(share: Share): Promise<ScheduleIndex | null> {
-  if (share.kind !== 'schedule' || !share.scheduleId) return null;
-  const schedule = await getSchedule(share.scheduleId);
-  if (!schedule || schedule.ownerKey !== share.ownerKey) return null;
-  const runs = (await getScheduledRuns(schedule.id)).map((run) => ({
-    runId: run.id,
-    timestamp: run.timestamp,
-    changedPages: run.changedPages,
-    compared: !!run.comparedToRunId,
-    shots: run.results
-      .filter((r) => r.status === 'done' && r.fileName)
-      .map((r) => ({ url: r.url, device: r.device, fileName: r.fileName!, changePct: r.changePct })),
-  }));
-  return { scheduleName: schedule.name, targetUrl: schedule.targetUrl, runs };
-}
-
-/** Path of `file` within `runId` of a shared schedule — only files listed in that run. */
-export async function scheduleRunFilePath(share: Share, runId: string, file: string): Promise<string | null> {
-  const index = await resolveScheduleShare(share);
-  const run = index?.runs.find((r) => r.runId === runId);
-  if (!run?.shots.some((s) => s.fileName === file)) return null;
-  const dir = getRunDir(share.scheduleId!, runId);
-  const abs = path.resolve(dir, file);
-  return abs.startsWith(dir + path.sep) ? abs : null;
+/** File name for the shared ZIP, e.g. example.com-2026-11-23.zip. */
+export function sharedZipName(capture: SharedCapture): string {
+  return `${hostOf(capture.rootUrl)}-${new Date(capture.createdAt).toISOString().slice(0, 10)}.zip`.replace(/[^a-z0-9.-]/gi, '_');
 }

@@ -85,12 +85,6 @@ export interface SiteAuth {
   submitSelector?: string;
 }
 
-/** What a stored schedule keeps instead of the plaintext secrets. */
-export interface SealedAuth {
-  method: AuthMethod;
-  sealed: string;
-}
-
 export const NO_AUTH: SiteAuth = { method: 'none' };
 
 const str = (v: unknown, max: number) => (typeof v === 'string' ? v.slice(0, max) : undefined);

@@ -17,7 +17,7 @@ export const LEGAL = {
   governingLaw: '[Country]',
   courts: '[City, State]',
   /** Last update of these pages. */
-  updated: '11 November 2026',
+  updated: '23 November 2026',
   /** Money-back window for any payment, in days. */
   refundDays: 14,
 };

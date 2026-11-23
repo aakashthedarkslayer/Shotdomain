@@ -39,7 +39,7 @@ export function ProfileForm({ displayName, googleName, company, email, brandName
       </Field>
       <fieldset className="space-y-3 rounded-xl border border-line p-4" disabled={!brandingAllowed}>
         <legend className="flex items-center gap-2 px-1 text-sm font-medium text-fg">
-          Branding on share links {!brandingAllowed && <PlanLock plan="agency" />}
+          Branding on share links {!brandingAllowed && <PlanLock />}
         </legend>
         <p className="text-[13px] text-muted">
           Clients who open your share links see your name and logo at the top instead of ShotDomain’s.

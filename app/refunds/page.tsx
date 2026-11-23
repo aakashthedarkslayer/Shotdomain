@@ -21,16 +21,14 @@ export default function RefundsPage() {
       <h2>{days}-day money-back guarantee</h2>
       <ul>
         <li>
-          <b>
-            {PLANS.studio.name} and {PLANS.agency.name}, monthly or yearly
-          </b>
+          <b>{PLANS.pro.name}, monthly or yearly</b>
           : full refund of any payment — the first one or a renewal — if you ask within {days} days of being charged.
         </li>
         <li>
           <b>{PLANS.lifetime.name}</b>: full refund if you ask within {days} days of purchase.
         </li>
         <li>
-          <b>Plan changes</b>: if you upgrade, the prorated amount charged for the upgrade is refundable within {days} days as well.
+          <b>Billing changes</b>: if you switch from monthly to yearly, the prorated amount charged is refundable within {days} days as well.
         </li>
       </ul>
       <p>
@@ -62,8 +60,7 @@ export default function RefundsPage() {
         <li>A refunded subscription is cancelled, and your account moves to the Free plan straight away.</li>
         <li>A refunded {PLANS.lifetime.name} purchase is removed, and your account moves to Free (or to your subscription, if you have one).</li>
         <li>
-          Your captures stay in your history within the Free plan’s limits; schedules stop running. Download anything you want to keep
-          first.
+          Your share links keep working until they expire. Free plan limits apply to new captures and links.
         </li>
       </ul>
 

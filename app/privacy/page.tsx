@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { LegalPage } from '@/components/legal/LegalPage';
 import { LEGAL } from '@/lib/legal';
+import { PLANS, SHARE_DAYS } from '@/lib/plans';
 
 export const metadata = { title: 'Privacy Policy — ShotDomain' };
 
@@ -34,31 +35,27 @@ export default function PrivacyPage() {
           </tr>
           <tr>
             <td>
-              <b>Profile details</b> you add: display name, company
+              <b>Profile details</b> you add: display name, company, and on {PLANS.pro.name} a brand name and logo address
             </td>
-            <td>Shown in your account.</td>
+            <td>Shown in your account; the brand name and logo are shown on your share links.</td>
           </tr>
           <tr>
             <td>
-              <b>What you capture</b>: website addresses, settings, screenshots, schedules, change comparisons, share links
+              <b>What you capture</b>: website addresses, settings, screenshots, share links
             </td>
-            <td>To provide the Service: your history, scheduled runs, downloads and the share links you turn on.</td>
+            <td>
+              To provide the Service: your captures, downloads and the share links you create. Screenshots are deleted about an hour after a
+              capture unless you share it; a shared capture is deleted when you stop sharing or after {SHARE_DAYS} days.
+            </td>
           </tr>
           <tr>
             <td>
               <b>Website logins you provide</b>: session cookies, tokens, headers, or a username and password for a site you capture
             </td>
             <td>
-              Only to load that site as you while capturing. For one-off captures they’re kept in server memory for the job (cleared within
-              about an hour). For schedules they’re stored encrypted (AES-256-GCM) and used only for that schedule’s runs; deleting the
-              schedule deletes them. We never use them for anything else.
+              Only to load that site as you while capturing. They’re kept in server memory for that capture only and cleared within about an
+              hour; they’re never written to disk or stored with share links. We never use them for anything else.
             </td>
-          </tr>
-          <tr>
-            <td>
-              <b>Email addresses</b> you add as schedule recipients
-            </td>
-            <td>To send the run summaries and change alerts you asked for.</td>
           </tr>
           <tr>
             <td>
@@ -81,7 +78,7 @@ export default function PrivacyPage() {
       <h2>2. Legal bases (EU/UK users)</h2>
       <ul>
         <li>
-          <b>Contract</b>: running your account, captures, schedules, emails and billing.
+          <b>Contract</b>: running your account, captures, share links and billing.
         </li>
         <li>
           <b>Legitimate interests</b>: security, preventing abuse, and improving the Service, balanced against your rights.
@@ -113,10 +110,7 @@ export default function PrivacyPage() {
           data it collects.
         </li>
         <li>
-          <b>Our hosting provider</b> — servers and storage where the Service and your captures live.
-        </li>
-        <li>
-          <b>Our email provider</b> — delivering schedule emails.
+          <b>Our hosting provider</b> — servers and storage where the Service runs and shared captures are kept.
         </li>
       </ul>
       <p>
@@ -135,17 +129,17 @@ export default function PrivacyPage() {
 
       <h2>6. How long we keep data</h2>
       <ul>
-        <li>Capture history and schedule runs: up to your plan’s limits — older items are deleted automatically.</li>
+        <li>Screenshots: about an hour after a capture. Shared captures: until you stop sharing, or {SHARE_DAYS} days at most.</li>
         <li>Account and profile: until you ask us to delete your account.</li>
         <li>Billing records: as long as tax and accounting laws require (Paddle keeps its own records).</li>
         <li>Technical logs: up to 30 days.</li>
       </ul>
-      <p>When you delete a capture, schedule or share link, it’s removed from our servers; backups expire within 30 days.</p>
+      <p>When you stop sharing a link, it and its screenshots are removed from our servers straight away; backups expire within 30 days.</p>
 
       <h2>7. Security</h2>
       <p>
-        Connections use HTTPS, website logins saved with schedules are encrypted at rest, share links use long random tokens and can be
-        turned off at any time, and each account can only access its own data. No system is perfectly secure; if a breach affects your
+        Connections use HTTPS, website logins are never stored on disk, share links use long random tokens, expire after {SHARE_DAYS} days and
+        can be turned off at any time, and each account can only access its own data. No system is perfectly secure; if a breach affects your
         data we’ll notify you and the authorities as the law requires.
       </p>
 
@@ -156,8 +150,7 @@ export default function PrivacyPage() {
         your account address and we’ll respond within 30 days. You can also complain to your local data protection authority.
       </p>
       <p>
-        You can do much of this yourself: edit your profile, delete captures and schedules, and turn off share links from your{' '}
-        <Link href="/profile">profile</Link> and <Link href="/schedules">schedules</Link>.
+        You can do much of this yourself: edit your profile and stop sharing links from your <Link href="/profile">profile</Link>.
       </p>
 
       <h2>9. Children</h2>

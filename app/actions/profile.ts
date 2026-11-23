@@ -3,9 +3,9 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { currentUser, currentUserKey } from '@/auth';
-import { PROFILE_LIMITS, cleanLogoUrl, deleteCapture, getProfile, saveProfile } from '@/lib/userData';
+import { PROFILE_LIMITS, cleanLogoUrl, getProfile, saveProfile } from '@/lib/userData';
 import { planInfoFor } from '@/lib/billing';
-import { revokeShare, revokeSharesFor } from '@/lib/shareStore';
+import { revokeShare } from '@/lib/shareStore';
 
 export interface ProfileFormState {
   status: 'idle' | 'saved' | 'error';
@@ -49,20 +49,6 @@ export async function updateProfileAction(_prev: ProfileFormState, formData: For
   await saveProfile(user.key, { displayName, company, brandName, brandLogoUrl });
   revalidatePath('/', 'layout'); // header menus show the new name everywhere
   return { status: 'saved', message: 'Profile saved.', values };
-}
-
-export async function deleteCaptureAction(formData: FormData) {
-  const key = await currentUserKey();
-  const id = String(formData.get('id') ?? '');
-  if (!key) redirect('/login');
-  try {
-    await deleteCapture(key, id);
-    await revokeSharesFor({ captureId: id });
-  } catch {
-    // invalid id — nothing to delete
-  }
-  revalidatePath('/profile');
-  redirect('/profile');
 }
 
 export async function revokeShareAction(formData: FormData) {

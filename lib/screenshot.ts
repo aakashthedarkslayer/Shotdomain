@@ -10,7 +10,6 @@ import { urlToFilename } from './dedupe';
 import { applyCleanup, injectCss } from './pageCleanup';
 import { SiteLoginError, applyAuthToContext, resolveSiteAuth } from './siteAuth';
 import type { ResolvedAuth } from './siteAuth';
-import type { SiteAuth } from './captureOptions';
 import { createRequestGuard } from './ssrf';
 import type { RequestGuard } from './ssrf';
 import { thumbnailFor } from './thumbnails';
@@ -535,8 +534,7 @@ export async function captureScreenshots(
   let resolvedAuth: ResolvedAuth | undefined;
   if (settings.auth && settings.auth.method !== 'none') {
     try {
-      if ('sealed' in settings.auth) throw new SiteLoginError('Saved login details could not be decrypted.');
-      resolvedAuth = await resolveSiteAuth(browser, settings.auth as SiteAuth, urls[0]);
+      resolvedAuth = await resolveSiteAuth(browser, settings.auth, urls[0]);
     } catch (err) {
       failAll(err instanceof SiteLoginError ? err.message : `Login failed: ${err instanceof Error ? err.message : String(err)}`);
       return;

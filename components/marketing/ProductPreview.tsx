@@ -212,8 +212,8 @@ export function ProductPreview() {
   return (
     <div className="relative">
       <FloatingChip icon="shield" title="Logged-in capture" body="Session cookies, no password" className="-left-14 top-36" />
-      <FloatingChip icon="refresh" title="Change alert" body="3 pages changed since Monday" className="-right-12 top-52" />
-      <FloatingChip icon="link" title="Share link copied" body="Anyone with the link can view" className="-bottom-8 right-32" />
+      <FloatingChip icon="zip" title="ZIP ready" body="48 screenshots, a folder per device" className="-right-12 top-52" />
+      <FloatingChip icon="link" title="Share link copied" body="Anyone with it can view for 30 days" className="-bottom-8 right-32" />
 
       <div className="card-float overflow-hidden rounded-xl">
         <div className="flex items-center gap-3 border-b border-line bg-bg px-4 py-3">
@@ -237,7 +237,7 @@ export function ProductPreview() {
           </span>
         </div>
         <div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-4">
-          <Tile path="/" device="Desktop" site="landing" accent="bg-indigo-500" className="col-span-2" badge={{ text: '2.4% changed', tone: 'warning' }} />
+          <Tile path="/" device="Desktop" site="landing" accent="bg-indigo-500" className="col-span-2" />
           <Tile path="/pricing" device="Mobile" site="pricing" accent="bg-violet-500" />
           <Tile path="/about" device="Desktop" site="about" accent="bg-sky-500" />
           <Tile path="/blog" device="Tablet" site="blog" accent="bg-rose-500" />

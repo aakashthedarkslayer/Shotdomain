@@ -28,10 +28,8 @@ const API_BASE = paddleEnv === 'production' ? 'https://api.paddle.com' : 'https:
 /** Paddle price ID -> plan + interval. */
 function priceTable(): Record<string, { plan: PlanId; interval: Interval | 'once' }> {
   const rows: [string, PlanId, Interval | 'once'][] = [
-    [env('PADDLE_PRICE_STUDIO_MONTH'), 'studio', 'month'],
-    [env('PADDLE_PRICE_STUDIO_YEAR'), 'studio', 'year'],
-    [env('PADDLE_PRICE_AGENCY_MONTH'), 'agency', 'month'],
-    [env('PADDLE_PRICE_AGENCY_YEAR'), 'agency', 'year'],
+    [env('PADDLE_PRICE_PRO_MONTH'), 'pro', 'month'],
+    [env('PADDLE_PRICE_PRO_YEAR'), 'pro', 'year'],
     [env('PADDLE_PRICE_LIFETIME'), 'lifetime', 'once'],
   ];
   return Object.fromEntries(rows.filter(([id]) => id).map(([id, plan, interval]) => [id, { plan, interval }]));
@@ -43,7 +41,7 @@ export function priceIdFor(plan: PlanId, interval: Interval | 'once'): string | 
 
 export function billingEnabled(): boolean {
   const authOn = Boolean(env('AUTH_GOOGLE_ID') && env('AUTH_GOOGLE_SECRET'));
-  return authOn && Boolean(env('PADDLE_API_KEY') && env('PADDLE_CLIENT_TOKEN') && env('PADDLE_WEBHOOK_SECRET') && env('PADDLE_PRICE_STUDIO_MONTH'));
+  return authOn && Boolean(env('PADDLE_API_KEY') && env('PADDLE_CLIENT_TOKEN') && env('PADDLE_WEBHOOK_SECRET') && env('PADDLE_PRICE_PRO_MONTH'));
 }
 
 /** What the browser needs to open a checkout (all public). */
@@ -52,8 +50,7 @@ export function checkoutConfig() {
     environment: paddleEnv,
     clientToken: env('PADDLE_CLIENT_TOKEN'),
     prices: {
-      studio: { month: priceIdFor('studio', 'month'), year: priceIdFor('studio', 'year') },
-      agency: { month: priceIdFor('agency', 'month'), year: priceIdFor('agency', 'year') },
+      pro: { month: priceIdFor('pro', 'month'), year: priceIdFor('pro', 'year') },
       lifetime: { once: priceIdFor('lifetime', 'once') },
     },
   };
@@ -126,14 +123,15 @@ export async function getBillingRecord(userKey: string): Promise<BillingRecord |
 /** Statuses that keep the plan: past_due is Paddle's retry window, so access continues meanwhile. */
 const PAID_STATUSES: SubscriptionStatus[] = ['active', 'trialing', 'past_due'];
 
-const RANK: Record<PlanId, number> = { free: 0, studio: 1, lifetime: 1, agency: 2 };
+/** Plans from before the Free / Pro / Lifetime line-up (Studio, Agency) count as Pro. */
+export function currentPlanId(plan: string): PlanId {
+  return isPlanId(plan) ? plan : 'pro';
+}
 
 export function effectivePlan(record: BillingRecord | undefined): PlanId {
-  let plan: PlanId = 'free';
-  if (record?.lifetime) plan = 'lifetime';
   const sub = record?.subscription;
-  if (sub && PAID_STATUSES.includes(sub.status) && RANK[sub.plan] > RANK[plan]) plan = sub.plan;
-  return plan;
+  if (sub && PAID_STATUSES.includes(sub.status)) return currentPlanId(sub.plan);
+  return record?.lifetime ? 'lifetime' : 'free';
 }
 
 /** The user's plan and limits. Without billing configured, everything is allowed. */

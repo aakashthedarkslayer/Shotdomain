@@ -38,7 +38,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 });
 
 export interface CurrentUser {
-  /** Storage key for this user's profile and history (hash of the email). */
+  /** Storage key for this user's profile and share links (hash of the email). */
   key: string;
   /** Display name: the profile override if set, otherwise the Google name. */
   name: string | null;

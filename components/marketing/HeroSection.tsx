@@ -38,13 +38,13 @@ export function HeroSection() {
 
         <p className="mono-label mb-5">One Shot Every Domain</p>
         <h1 className="text-[40px] leading-[1.05] font-semibold tracking-[-0.05em] text-fg sm:text-[56px]">
-          Every client site.
+          Every page of a site.
           <br />
-          Every page, on record.
+          In one shot.
         </h1>
         <p className="mx-auto mt-6 max-w-xl text-lg leading-7 text-muted">
-          A dated record of every page of every site you look after, on desktop and phone. ShotDomain captures it, flags what changed, and gives
-          your client a link they can open.
+          Enter a domain. ShotDomain finds every page and screenshots it on desktop, tablet and phone. Download one ZIP, or send your client a
+          link they can open.
         </p>
 
         <form onSubmit={handleSubmit} className="mx-auto mt-10 flex max-w-lg flex-col gap-3 sm:flex-row">
@@ -71,7 +71,7 @@ export function HeroSection() {
           </a>
         </div>
         <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-xs text-muted">
-          {['15 pages free, desktop + iPhone', 'Change alerts that ignore banners', 'No password needed for logins'].map((t) => (
+          {['15 pages free, desktop + iPhone', 'Cookie banners hidden automatically', 'No password needed for logins'].map((t) => (
             <li key={t} className="flex items-center gap-1.5">
               <Icon name="check" size={13} className="text-fg" />
               {t}

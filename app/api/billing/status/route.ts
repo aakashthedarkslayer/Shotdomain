@@ -1,5 +1,5 @@
 import { currentUserKey } from '@/auth';
-import { getBillingRecord, planInfoFor } from '@/lib/billing';
+import { currentPlanId, getBillingRecord, planInfoFor } from '@/lib/billing';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,7 +11,7 @@ export async function GET() {
   const sub = record?.subscription;
   return Response.json({
     ...info,
-    subscription: sub ? { plan: sub.plan, interval: sub.interval, status: sub.status, currentPeriodEnd: sub.currentPeriodEnd, cancelAt: sub.cancelAt } : null,
+    subscription: sub ? { plan: currentPlanId(sub.plan), interval: sub.interval, status: sub.status, currentPeriodEnd: sub.currentPeriodEnd, cancelAt: sub.cancelAt } : null,
     lifetime: Boolean(record?.lifetime),
   });
 }

@@ -8,11 +8,10 @@ import PageSelectionStep from '@/components/capture/PageSelectionStep';
 import CaptureSettingsStep from '@/components/capture/CaptureSettingsStep';
 import CaptureProgressStep from '@/components/capture/CaptureProgressStep';
 import ResultsStep from '@/components/capture/ResultsStep';
-import SaveScheduleModal from '@/components/capture/SaveScheduleModal';
 import { Alert } from '@/components/ui/Alert';
 import { usePlan } from '@/components/billing/PlanContext';
 import { DEFAULT_SETTINGS } from '@/components/capture/types';
-import type { CaptureResult, DeviceName, SettingsState } from '@/components/capture/types';
+import type { CaptureResult, SettingsState } from '@/components/capture/types';
 import { isValidUrl, normalizeUrl, urlHost } from '@/lib/url';
 import { NO_AUTH, sanitizeAuth } from '@/lib/captureOptions';
 import type { SiteAuth } from '@/lib/captureOptions';
@@ -51,7 +50,6 @@ export default function AppPage() {
   const [isCaptureComplete, setIsCaptureComplete] = useState(false);
   const [actionError, setActionError] = useState<string | undefined>(undefined);
 
-  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const stopPolling = useCallback(() => {
@@ -264,8 +262,6 @@ export default function AppPage() {
     setSettings((prev) => ({ ...prev, ...partial }));
   }, []);
 
-  const scheduleTarget = rootUrl || (selectedUrls[0] ? new URL(selectedUrls[0]).origin : 'https://example.com');
-
   return (
     <div className="min-h-screen pb-24">
       <AppHeader>
@@ -334,7 +330,6 @@ export default function AppPage() {
             onStartCapture={handleStartCapture}
             onBack={() => setCurrentStep(2)}
             selectedCount={selectedUrls.length}
-            onSaveSchedule={() => setIsScheduleModalOpen(true)}
             isStarting={isStarting}
             error={startError}
             authMethod={auth.method}
@@ -360,30 +355,9 @@ export default function AppPage() {
             jobId={captureJobId}
             results={captureResults}
             onStartNew={handleStartNew}
-            onSaveSchedule={() => setIsScheduleModalOpen(true)}
           />
         )}
       </main>
-
-      <SaveScheduleModal
-        isOpen={isScheduleModalOpen}
-        onClose={() => setIsScheduleModalOpen(false)}
-        targetUrl={scheduleTarget}
-        urls={selectedUrls.length > 0 ? selectedUrls : [rootUrl].filter(Boolean)}
-        settings={{
-          device: (settings.device as DeviceName) || 'Desktop',
-          devices: settings.devices as DeviceName[],
-          width: settings.width,
-          height: settings.height,
-          fullPage: settings.fullPage,
-          format: settings.format,
-          blockAds: settings.blockAds,
-          useCache: settings.useCache,
-          backgroundColor: settings.showBackgroundColor ? settings.backgroundColor : undefined,
-          cleanup: settings.cleanup,
-          auth: sanitizeAuth(auth),
-        }}
-      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { getJob, updateResult } from '@/lib/jobStore';
 import { getOwnedJob } from '@/lib/jobAccess';
-import { saveCaptureFromJob } from '@/lib/userData';
+import { refreshSharedCapture } from '@/lib/shareStore';
 import { captureScreenshots } from '@/lib/screenshot';
 import type { CaptureResult, CaptureSettings } from '@/lib/jobStore';
 import * as path from 'path';
@@ -89,9 +89,9 @@ export async function POST(request: NextRequest) {
       { deviceFolders: multiDevice, reservedNames },
     )
       .then(async () => {
-        // Refresh the saved history copy so the retried screenshot is included.
+        // If this capture is shared, update the shared copy so it includes the retried screenshot.
         const latest = getJob(jobId);
-        if (latest?.ownerKey) await saveCaptureFromJob(latest.ownerKey, { ...latest, results: latest.results.values() });
+        if (latest) await refreshSharedCapture({ ...latest, results: latest.results.values() });
       })
       .catch((error) => {
         console.error(`Retry capture for ${url} in job ${jobId} failed:`, error);

@@ -1,7 +1,8 @@
 # ShotDomain
 
 Enter one URL; ShotDomain discovers every page on the domain, screenshots each one
-on desktop, tablet and mobile, and returns a ZIP.
+on desktop, tablet and mobile, and returns a ZIP, or a share link to send to
+someone.
 
 ## Run locally
 
@@ -16,7 +17,7 @@ Open http://localhost:3000. With no `.env.local`, the app runs in **local mode**
 ## Google sign-in (optional locally, required before hosting)
 
 Sign-in is enforced only when Google credentials are set. Once they are, `/app`,
-`/schedules` and all API routes require a signed-in Google account.
+`/profile`, `/billing` and all API routes require a signed-in Google account.
 
 1. Google Cloud Console → **APIs & Services → OAuth consent screen**: set it up (External).
 2. **Credentials → Create credentials → OAuth client ID** → type *Web application*.
@@ -41,7 +42,7 @@ For every page the engine:
    for the network to go quiet — sites with chat widgets or analytics never go
    fully idle, so that wait is capped rather than failing;
 2. lets the page settle: web fonts, and CSS animations/transitions jumped to
-   their end state, so screenshots are stable and comparable between runs;
+   their end state, so screenshots are stable;
 3. hides consent banners and applies your cleanup selectors/CSS (injected in
    a way a site's Content-Security-Policy can't block);
 4. for full-page shots, makes lazy content load, lets app shells that scroll
@@ -57,17 +58,33 @@ enabled, private-network addresses are refused before a job starts and again
 on every browser request (so redirects can't reach them either); see
 `ALLOW_PRIVATE_TARGETS` in `.env.example`.
 
+## What is kept, and for how long
+
+ShotDomain keeps no capture history and runs nothing on a schedule.
+
+- A capture's screenshots live in `tmp/<jobId>/` and are deleted about an hour
+  after the capture finishes (`lib/jobStore.ts`). Folders left behind by a
+  server restart are removed after three hours.
+- **Share link** on the results screen copies that one capture to
+  `data/shared/<jobId>/` and makes a link (`data/shares.json`) that works for
+  30 days (`SHARE_DAYS` in `lib/plans.ts`). Then the link and its screenshots
+  are deleted (`lib/shareStore.ts`); stopping a share deletes them at once.
+  The number of live links is capped per plan.
+- Website logins pasted for a capture stay in server memory for that job only
+  and are never written to disk or copied into a share.
+
 ## Payments (Paddle)
 
 Plans, prices and limits live in one file: `lib/plans.ts`. The homepage, the
 **Plan & billing** page (`/billing`) and every limit check read it.
 
-| Plan | Price | Pages / capture | Devices | Login pages | Schedules | History | Branded share links |
-|---|---|---|---|---|---|---|---|
-| Free | $0 | 15 | Desktop + iPhone | — | — | 10 captures | — |
-| Studio | $9/mo or $90/yr | 150 | All 4 | ✓ | 5 sites × 25 pages | 100 captures, 10 runs/site | — |
-| Agency | $29/mo or $290/yr | 500 | All 4 | ✓ | 25 sites × 100 pages | 500 captures, 30 runs/site | ✓ (+ before/after links) |
-| Lifetime | $79 once, founding batch capped at 100 (`LIFETIME_CAP`) | Studio limits, forever | | | | | |
+| Plan | Price | Pages / capture | Devices | Login pages | Live share links (30 days each) | Your logo on share links |
+|---|---|---|---|---|---|---|
+| Free | $0 | 15 | Desktop + iPhone | — | 3 | — |
+| Pro | $5/mo or $48/yr | 500 | All 4 | ✓ | 25 | ✓ |
+| Lifetime | $39 once, founding batch capped at 100 (`LIFETIME_CAP`) | Pro limits, for good | | | | |
+
+Subscriptions from the earlier Studio and Agency plans are treated as Pro.
 
 Paddle is the *merchant of record*: it sells to your customers on your behalf
 and handles VAT/GST, invoices, refunds and chargebacks worldwide, so you
@@ -78,9 +95,9 @@ available (local / self-hosted use).
 ### Set up (sandbox first)
 
 1. Create a sandbox account at <https://sandbox-vendors.paddle.com/signup>.
-2. **Catalog → Products**: create *Studio* (prices: $9 monthly, $90 yearly),
-   *Agency* ($29 monthly, $290 yearly) and *Lifetime* ($79 one-time). Copy each
-   price ID (`pri_…`) into `PADDLE_PRICE_*`.
+2. **Catalog → Products**: create *Pro* (prices: $5 monthly, $48 yearly) and
+   *Lifetime* ($39 one-time). Copy each price ID (`pri_…`) into
+   `PADDLE_PRICE_PRO_MONTH`, `PADDLE_PRICE_PRO_YEAR` and `PADDLE_PRICE_LIFETIME`.
 3. **Developer tools → Authentication**: create an API key → `PADDLE_API_KEY`,
    and a client-side token → `PADDLE_CLIENT_TOKEN`.
 4. **Developer tools → Notifications → New destination**:
@@ -108,11 +125,9 @@ privacy policy and refund policy published on your domain.
 - Paddle calls `/api/billing/webhook` (signature-checked with
   `PADDLE_WEBHOOK_SECRET`); that's the only thing that changes a plan. Records
   are kept in `data/billing.json`.
-- Plan changes (Studio ↔ Agency, monthly ↔ yearly) are prorated through
-  Paddle's API. Cancelling, invoices and card updates happen in Paddle's
+- Switching Pro between monthly and yearly is prorated through Paddle's API. Cancelling, invoices and card updates happen in Paddle's
   customer portal ("Invoices & payment method" on `/billing`).
 - A cancelled subscription keeps its plan until the paid period ends. A failed
   renewal (`past_due`) keeps access while Paddle retries the card.
-- Limits are checked by the API routes (`lib/entitlements.ts`), and scheduled
-  runs re-check the owner's plan every time, so a downgrade takes effect on
-  the next run.
+- Limits are checked by the API routes (`lib/entitlements.ts`) when a capture
+  starts and when a share link is created.

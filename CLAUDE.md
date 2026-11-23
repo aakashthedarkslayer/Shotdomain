@@ -15,7 +15,7 @@ ShotDomain's adaptations of the spec:
 - **Own identity.** ShotDomain keeps its own name and its own logo mark (the
   aperture corners), drawn in ink. Never use another company's logo, name or
   wordmark.
-- **Two button scales.** App screens (`/app`, `/schedules`, `/profile`,
+- **Two button scales.** App screens (`/app`, `/profile`,
   `/billing`, share pages, sign-in) use the 6 px in-app button; marketing pages
   (`/` and the legal pages) use the 100 px pill (`shape="pill"`). The nav bar's
   small 28–32 px CTAs keep the 6 px radius on every page, as in the spec.

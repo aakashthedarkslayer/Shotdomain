@@ -503,7 +503,7 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
               {!usingPassword && !!result.cookieCount && (
                 <span className="mt-1 block">
                   {result.cookiesExpireAt
-                    ? `Your cookies expire on ${new Date(result.cookiesExpireAt).toLocaleDateString(undefined, { dateStyle: 'medium' })} — schedules will need fresh cookies after that.`
+                    ? `Your cookies expire on ${new Date(result.cookiesExpireAt).toLocaleDateString(undefined, { dateStyle: 'medium' })} — paste fresh ones to capture after that.`
                     : 'These are browser-session cookies — they may stop working when the site ends your session.'}
                 </span>
               )}

@@ -1,10 +1,10 @@
 import { currentUserKey } from '@/auth';
 import { planInfoFor } from './billing';
 import { PLANS, cheapestPlanWith } from './plans';
-import type { DeviceName, Frequency, PlanInfo, PlanLimits } from './plans';
+import type { DeviceName, PlanInfo, PlanLimits } from './plans';
 
 /**
- * Plan limit checks used by the API routes and the scheduler. Each returns
+ * Plan limit checks used by the API routes. Each returns
  * null when allowed, or a message saying what the plan allows and which plan
  * unlocks more. Without billing configured, everything is allowed.
  */
@@ -63,32 +63,9 @@ export function checkCapture(info: PlanInfo, pageCount: number, settings: Captur
   return checkDevices(info, settings) ?? (settings?.auth ? checkLoginPages(info) : null);
 }
 
-/** Creating a schedule (existing = the user's current schedule count). */
-export function checkNewSchedule(
-  info: PlanInfo,
-  existing: number,
-  pageCount: number,
-  frequency: Frequency,
-  settings: CaptureLike | undefined,
-): LimitDenial | null {
-  const l = info.limits;
-  if (l.schedules === 0) return deny(info, 'Schedules aren’t included', (p) => p.schedules > 0);
-  if (existing >= l.schedules) return deny(info, `You can have up to ${l.schedules} schedules`, (p) => p.schedules > existing, true);
-  if (pageCount > l.pagesPerSchedule) {
-    return deny(info, `A schedule can monitor up to ${l.pagesPerSchedule} pages`, (p) => p.pagesPerSchedule >= pageCount, true);
-  }
-  if (!l.frequencies.includes(frequency)) return deny(info, `${frequency[0].toUpperCase()}${frequency.slice(1)} runs aren’t included`, (p) => p.frequencies.includes(frequency));
-  return checkDevices(info, settings) ?? (settings?.auth ? checkLoginPages(info) : null);
-}
-
-/**
- * A scheduled run, re-checked every time (the owner may have downgraded).
- * `position` = this schedule's index among the owner's schedules, oldest first:
- * after a downgrade, the oldest ones keep running.
- */
-export function checkScheduledRun(info: PlanInfo, position: number, settings: CaptureLike | undefined): LimitDenial | null {
-  const l = info.limits;
-  if (l.schedules === 0) return deny(info, 'Schedules aren’t included', (p) => p.schedules > 0);
-  if (position >= l.schedules) return deny(info, `Only your first ${l.schedules} schedules run`, (p) => p.schedules > position, true);
-  return checkDevices(info, settings) ?? (settings?.auth ? checkLoginPages(info) : null);
+/** Turning on another share link (active = links the user has now). */
+export function checkShareLinks(info: PlanInfo, active: number): LimitDenial | null {
+  if (active < info.limits.shareLinks) return null;
+  const d = deny(info, `You can have up to ${info.limits.shareLinks} share links at a time`, (l) => l.shareLinks > active, true);
+  return { ...d, error: `${d.error} Or stop sharing an older link on your profile page.` };
 }

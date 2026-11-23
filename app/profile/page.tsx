@@ -3,39 +3,80 @@ import { redirect } from 'next/navigation';
 import { authEnabled, currentUser, currentUserKey } from '@/auth';
 import { AppHeader } from '@/components/AppHeader';
 import { Card, CardHeader } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
 import { Alert } from '@/components/ui/Alert';
 import { buttonClass } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { ProfileForm } from '@/components/profile/ProfileForm';
-import { getProfile, listCaptures } from '@/lib/userData';
+import { getProfile } from '@/lib/userData';
 import { planInfoFor } from '@/lib/billing';
-import { formatDateTime, hostOf } from '@/lib/format';
+import { formatDate, formatDateTime } from '@/lib/format';
+import { SHARE_DAYS } from '@/lib/plans';
 import { listShares } from '@/lib/shareStore';
 import { revokeShareAction } from '@/app/actions/profile';
 
 export const metadata = { title: 'Profile — ShotDomain' };
-// History is read from disk on every request; never prerender it.
+// Share links are read from disk on every request; never prerender them.
 export const dynamic = 'force-dynamic';
-
-function historyImageUrl(id: string, file: string) {
-  return `/api/history/${id}/file?name=${encodeURIComponent(file)}&thumb=1`;
-}
 
 export default async function ProfilePage() {
   const key = await currentUserKey();
   if (!key) redirect('/login?callbackUrl=/profile');
   const user = await currentUser();
-  const captures = await listCaptures(key);
   const shares = await listShares(key);
   const planInfo = await planInfoFor(key);
-  const historyKept = planInfo.limits.historyKept;
+  const shareLimit = planInfo.limits.shareLinks;
   const profile = await getProfile(key);
 
   return (
     <div className="min-h-screen pb-24">
       <AppHeader />
       <main className="mx-auto max-w-5xl space-y-6 px-4 pt-10 sm:px-6">
+        {/* Share links */}
+        <Card id="share-links">
+          <CardHeader
+            title="Share links"
+            description={`Anyone with one of these links can view and download its screenshots without signing in. Each link and its screenshots are deleted after ${SHARE_DAYS} days.`}
+            actions={
+              <span className="font-mono text-xs whitespace-nowrap text-muted">
+                {shares.length} of {shareLimit} in use
+              </span>
+            }
+          />
+          {shares.length === 0 ? (
+            <div className="px-6 py-14 text-center">
+              <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-subtle text-muted">
+                <Icon name="link" size={20} />
+              </span>
+              <p className="mt-3 text-sm font-medium text-fg">No share links</p>
+              <p className="mt-1 text-sm text-muted">After a capture, press Share link on the results to send the screenshots to someone.</p>
+              <Link href="/app" className={buttonClass('secondary', 'sm', 'mt-4')}>
+                <Icon name="plus" size={14} />
+                New capture
+              </Link>
+            </div>
+          ) : (
+            <ul className="divide-y divide-line">
+              {shares.map((sh) => (
+                <li key={sh.token} className="flex items-center gap-3 px-5 py-3 sm:px-6">
+                  <div className="min-w-0 flex-1">
+                    <a href={`/share/${sh.token}`} target="_blank" rel="noreferrer" className="block truncate text-sm font-medium text-fg hover:underline">
+                      {sh.label}
+                    </a>
+                    <p className="text-xs text-muted">
+                      Shared {formatDateTime(sh.createdAt)} · deleted on {formatDate(sh.expiresAt)}
+                    </p>
+                  </div>
+                  <form action={revokeShareAction}>
+                    <input type="hidden" name="token" value={sh.token} />
+                    <button type="submit" className={buttonClass('danger', 'sm')}>
+                      Stop sharing
+                    </button>
+                  </form>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
         {/* Profile */}
         <Card>
           <div className="flex items-center gap-4 border-b border-line px-5 py-5 sm:px-6">
@@ -67,90 +108,12 @@ export default async function ProfilePage() {
               />
             ) : (
               <Alert tone="info">
-                {authEnabled ? 'Sign in to edit your profile.' : 'ShotDomain is running in local mode, so there’s no account to edit. Your capture history is still saved below.'}
+                {authEnabled ? 'Sign in to edit your profile.' : 'ShotDomain is running in local mode, so there’s no account to edit. Your share links are below.'}
               </Alert>
             )}
           </div>
         </Card>
 
-        {/* History */}
-        <Card id="history">
-          <CardHeader
-            title="Capture history"
-            description={`Your last ${historyKept} captures are kept. Older ones are removed automatically.`}
-            actions={
-              <Link href="/app" className={buttonClass('secondary', 'sm')}>
-                <Icon name="plus" size={14} />
-                New capture
-              </Link>
-            }
-          />
-          {captures.length === 0 ? (
-            <div className="px-6 py-14 text-center">
-              <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-subtle text-muted">
-                <Icon name="image" size={20} />
-              </span>
-              <p className="mt-3 text-sm font-medium text-fg">No captures yet</p>
-              <p className="mt-1 text-sm text-muted">Screenshots you take will show up here.</p>
-            </div>
-          ) : (
-            <ul className="divide-y divide-line">
-              {captures.map((c) => {
-                const cover = c.results.find((r) => r.status === 'done' && r.fileName);
-                return (
-                  <li key={c.id}>
-                    <Link href={`/profile/captures/${c.id}`} className="flex items-center gap-4 px-5 py-3.5 transition hover:bg-subtle sm:px-6">
-                      <span className="h-14 w-20 shrink-0 overflow-hidden rounded-md border border-line bg-subtle">
-                        {cover?.fileName && (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={historyImageUrl(c.id, cover.fileName)} alt="" loading="lazy" className="h-full w-full object-cover object-top" />
-                        )}
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="truncate text-sm font-medium text-fg">{hostOf(c.rootUrl)}</span>
-                          {c.scheduleName && <Badge tone="accent">Scheduled</Badge>}
-                          {c.failed > 0 && <Badge tone="warning">{c.failed} failed</Badge>}
-                        </div>
-                        <p className="mt-0.5 truncate text-[13px] text-muted">
-                          {c.scheduleName ? `${c.scheduleName} · ` : ''}
-                          {formatDateTime(c.createdAt)} · {c.done} {c.done === 1 ? 'screenshot' : 'screenshots'} · {c.devices.join(', ')}
-                          {c.fullPage ? ' · Full page' : ''}
-                        </p>
-                      </div>
-                      <Icon name="arrowRight" className="text-faint" />
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </Card>
-        {/* Shared links */}
-        {shares.length > 0 && (
-          <Card>
-            <CardHeader title="Shared links" description="Anyone with one of these links can view it without signing in." />
-            <ul className="divide-y divide-line">
-              {shares.map((sh) => (
-                <li key={sh.token} className="flex items-center gap-3 px-5 py-3 sm:px-6">
-                  <Badge>{sh.kind === 'schedule' ? 'Schedule' : sh.kind === 'capture' ? 'Capture' : sh.kind === 'page' ? 'Page' : 'Screenshot'}</Badge>
-                  <div className="min-w-0 flex-1">
-                    <a href={`/share/${sh.token}`} target="_blank" rel="noreferrer" className="block truncate text-sm font-medium text-fg hover:underline">
-                      {sh.label}
-                    </a>
-                    <p className="text-xs text-muted">Shared {formatDateTime(sh.createdAt)}</p>
-                  </div>
-                  <form action={revokeShareAction}>
-                    <input type="hidden" name="token" value={sh.token} />
-                    <button type="submit" className={buttonClass('danger', 'sm')}>
-                      Stop sharing
-                    </button>
-                  </form>
-                </li>
-              ))}
-            </ul>
-          </Card>
-        )}
       </main>
     </div>
   );

@@ -5,8 +5,8 @@ import { buttonClass } from '@/components/ui/Button';
 import type { PlanId } from '@/lib/plans';
 import { PLANS } from '@/lib/plans';
 
-/** Small "🔒 Studio" chip linking to the billing page (plain chip inside other controls). */
-export function PlanLock({ plan = 'studio', className = '', link = true }: { plan?: PlanId; className?: string; link?: boolean }) {
+/** Small "🔒 Pro" chip linking to the billing page (plain chip inside other controls). */
+export function PlanLock({ plan = 'pro', className = '', link = true }: { plan?: PlanId; className?: string; link?: boolean }) {
   if (!link) {
     return (
       <span className={`inline-flex items-center gap-1 rounded-md bg-accent-soft px-1.5 py-0.5 text-xs font-medium whitespace-nowrap text-accent ${className}`}>

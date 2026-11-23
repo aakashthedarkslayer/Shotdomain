@@ -1,7 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
-import type { CleanupOptions, SealedAuth, SiteAuth } from './captureOptions';
+import type { CleanupOptions, SiteAuth } from './captureOptions';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { sweepExpiredShares } from './shareStore';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -22,8 +23,8 @@ export interface CaptureSettings {
   backgroundColor?: string;
   /** Hide banners/elements, click, inject CSS before capture. */
   cleanup?: CleanupOptions;
-  /** Login for sites that need one. Sealed (encrypted) when stored in a schedule. */
-  auth?: SiteAuth | SealedAuth;
+  /** Login for sites that need one. Lives in memory only, for this job. */
+  auth?: SiteAuth;
 }
 
 export interface CaptureResult {
@@ -47,7 +48,7 @@ export interface Job {
   completed: number;
   failed: number;
   cancelled: boolean;
-  /** userKey of whoever started the job; scheduler jobs have none. */
+  /** userKey of whoever started the job. */
   ownerKey?: string;
 }
 
@@ -181,8 +182,10 @@ export async function deleteJob(jobId: string): Promise<void> {
 }
 
 /**
- * Deletes finished jobs older than an hour (their files live on in the
- * owner's history) and abandoned ones older than three.
+ * Deletes finished jobs older than an hour and abandoned ones older than
+ * three, with their screenshots. A shared capture has its own copy (see
+ * lib/shareStore.ts), so nothing else is kept. Also removes tmp/ folders no
+ * job owns any more (left behind by a server restart).
  */
 export async function cleanupOldJobs(): Promise<void> {
   const oneHourAgo = Date.now() - 60 * 60 * 1000;
@@ -197,6 +200,19 @@ export async function cleanupOldJobs(): Promise<void> {
     }
   }
 
+  // Folders from before a restart: the in-memory job is gone, so nothing can read them.
+  const tmpRoot = path.join(process.cwd(), 'tmp');
+  const names = await fs.readdir(tmpRoot).catch(() => [] as string[]);
+  for (const name of names) {
+    if (jobs.has(name) || !/^[0-9a-f-]{36}$/.test(name)) continue;
+    deletions.push(
+      fs
+        .stat(path.join(tmpRoot, name))
+        .then((st) => (st.mtimeMs < threeHoursAgo ? fs.rm(path.join(tmpRoot, name), { recursive: true, force: true }) : undefined))
+        .catch(() => undefined),
+    );
+  }
+
   await Promise.all(deletions);
 }
 
@@ -205,5 +221,9 @@ export async function cleanupOldJobs(): Promise<void> {
 // ---------------------------------------------------------------------------
 
 if (process.env.NODE_ENV !== 'test') {
-  setInterval(cleanupOldJobs, 5 * 60 * 1000);
+  setInterval(() => {
+    void cleanupOldJobs();
+    // Expired share links are deleted here too, even if nobody opens a page.
+    void sweepExpiredShares().catch(() => undefined);
+  }, 5 * 60 * 1000);
 }

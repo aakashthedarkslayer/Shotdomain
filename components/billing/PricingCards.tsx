@@ -23,7 +23,7 @@ function priceLabel(plan: Plan, interval: Interval): { amount: string; cadence: 
 
 /** Months free when paying yearly, e.g. "2 months free". */
 function yearlySaving(): string {
-  const s = PLANS.studio.price;
+  const s = PLANS.pro.price;
   const months = s.month && s.year ? Math.round(12 - s.year / s.month) : 0;
   return months > 0 ? `${months} months free` : '';
 }
@@ -78,7 +78,7 @@ export function PricingCards({
       <div className="flex justify-center">
         <IntervalToggle value={interval} onChange={setPeriod} />
       </div>
-      <div className="grid items-stretch gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="mx-auto grid max-w-5xl items-stretch gap-4 md:grid-cols-3">
         {PRICING_ORDER.map((id) => {
           const plan = PLANS[id];
           const featured = highlight ? highlight === id : Boolean(plan.badge);

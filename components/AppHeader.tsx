@@ -8,11 +8,10 @@ import { UserMenu } from '@/components/auth/UserMenu';
 
 const NAV = [
   { href: '/app', label: 'Capture' },
-  { href: '/schedules', label: 'Schedules' },
-  { href: '/profile', label: 'History' },
+  { href: '/profile', label: 'Share links' },
 ];
 
-/** Top bar shared by the tool pages (/app, /schedules). */
+/** Top bar shared by the tool pages (/app, /profile, /billing). */
 export function AppHeader({ children }: { children?: ReactNode }) {
   const pathname = usePathname();
   return (

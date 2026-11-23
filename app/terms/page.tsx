@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { LegalPage } from '@/components/legal/LegalPage';
 import { LEGAL } from '@/lib/legal';
-import { PLANS } from '@/lib/plans';
+import { PLANS, SHARE_DAYS } from '@/lib/plans';
 
 export const metadata = { title: 'Terms of Service — ShotDomain' };
 
@@ -21,8 +21,8 @@ export default function TermsPage() {
     >
       <h2>1. What {product} does</h2>
       <p>
-        {product} finds the pages of a website and takes screenshots of them on the devices you choose, once or on a schedule. You can
-        download, share and compare those screenshots. Features and limits depend on your plan; see <Link href="/#pricing">Pricing</Link>.
+        {product} finds the pages of a website and takes screenshots of them on the devices you choose. You can download those
+        screenshots and share them with a link. Features and limits depend on your plan; see <Link href="/#pricing">Pricing</Link>.
       </p>
 
       <h2>2. Your account</h2>
@@ -51,14 +51,15 @@ export default function TermsPage() {
         <li>Not capture or share content that is illegal, or use screenshots to deceive, harass, infringe or violate anyone’s privacy.</li>
         <li>Not resell or sublicense the Service, or scrape or reverse-engineer it, without our written permission.</li>
       </ul>
-      <p>We may suspend captures, schedules or accounts that break these rules or put the Service or other people at risk.</p>
+      <p>We may suspend captures, share links or accounts that break these rules or put the Service or other people at risk.</p>
 
       <h2>4. Your content</h2>
       <p>
         The screenshots, URLs and settings you create are yours (subject to the rights of the websites shown in them). You give us
-        permission to store and process them only to run the Service for you — for example to keep your history, run your schedules,
-        send your emails and serve the share links you create. Anyone with a share link you turn on can view what it shares, until you turn
-        it off.
+        permission to store and process them only to run the Service for you: to make your captures and downloads, and to serve the share
+        links you create. We don’t keep an archive of your captures: screenshots are deleted about an hour after a capture, unless you share
+        it. Anyone with a share link can view and download what it shares until you stop sharing or the link expires after {SHARE_DAYS}{' '}
+        days, when its screenshots are deleted. Download anything you want to keep.
       </p>
 
       <h2>5. Plans, payments and renewals</h2>
@@ -72,7 +73,7 @@ export default function TermsPage() {
           .
         </li>
         <li>
-          <b>Subscriptions</b> ({PLANS.studio.name} and {PLANS.agency.name}) renew automatically each month or year until you cancel. Prices
+          <b>Subscriptions</b> ({PLANS.pro.name}, monthly or yearly) renew automatically each month or year until you cancel. Prices
           are shown in USD; applicable taxes are added at checkout.
         </li>
         <li>
@@ -80,11 +81,11 @@ export default function TermsPage() {
           for, then your account moves to Free.
         </li>
         <li>
-          <b>Changing plans.</b> Upgrades and downgrades take effect immediately and are prorated.
+          <b>Changing billing period.</b> Switching between monthly and yearly takes effect immediately and is prorated.
         </li>
         <li>
-          <b>{PLANS.lifetime.name}</b> is a one-time payment for {PLANS.studio.name}-level access for as long as we operate {product}. It
-          includes the limits shown at purchase and future updates to those features; it does not include features of higher plans.
+          <b>{PLANS.lifetime.name}</b> is a one-time payment for {PLANS.pro.name}-level access for as long as we operate {product}. It
+          includes the limits shown at purchase and future updates to those features.
         </li>
         <li>
           <b>Refunds</b> are covered by our <Link href="/refunds">Refund Policy</Link>.
@@ -107,8 +108,8 @@ export default function TermsPage() {
       <h2>7. Availability and data</h2>
       <p>
         We work to keep the Service available and your data safe, but we don’t guarantee uninterrupted service, that every page can be
-        captured, or that screenshots are retained beyond your plan’s limits (older captures and runs are removed automatically). Keep
-        your own copies of anything important — you can download every capture as a ZIP.
+        captured, or that screenshots are kept beyond the times above (about an hour after a capture, or {SHARE_DAYS} days for a shared
+        one). Keep your own copies of anything important — you can download every capture as a ZIP.
       </p>
 
       <h2>8. Disclaimer</h2>

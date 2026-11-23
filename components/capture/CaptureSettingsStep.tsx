@@ -24,7 +24,6 @@ interface CaptureSettingsStepProps {
   onStartCapture: () => void;
   onBack: () => void;
   selectedCount: number;
-  onSaveSchedule?: () => void;
   isStarting?: boolean;
   error?: string;
   authMethod?: AuthMethod;
@@ -75,7 +74,6 @@ export default function CaptureSettingsStep({
   onStartCapture,
   onBack,
   selectedCount,
-  onSaveSchedule,
   isStarting,
   error,
   authMethod = 'none',
@@ -174,8 +172,8 @@ export default function CaptureSettingsStep({
           </div>
           {limits.devices.length < DEVICES.length && (
             <p className="mt-2 text-[13px] text-muted">
-              Tablet and Android screenshots are included in Studio.{' '}
-              <Link href="/billing?plan=studio" className="font-medium text-accent hover:underline">
+              Tablet and Android screenshots are included in Pro.{' '}
+              <Link href="/billing?plan=pro" className="font-medium text-accent hover:underline">
                 See plans
               </Link>
             </p>
@@ -348,11 +346,6 @@ export default function CaptureSettingsStep({
           Back
         </Button>
         <div className="flex items-center gap-2">
-          {onSaveSchedule && (
-            <Button variant="secondary" icon="clock" onClick={onSaveSchedule}>
-              Save as schedule
-            </Button>
-          )}
           <Button icon="camera" onClick={onStartCapture} isLoading={isStarting}>
             Capture {total} {total === 1 ? 'screenshot' : 'screenshots'}
           </Button>
