@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { buttonClass } from '@/components/ui/Button';
 import { PricingCards } from './PricingCards';
 import { LifetimeStock } from './LifetimeStock';
+import { openCapture } from '@/components/marketing/captureEvents';
 
 /** Homepage pricing: paid plans go to checkout on the billing page (sign-in first if needed). */
 export function MarketingPricing({ billingEnabled, lifetimeLeft }: { billingEnabled: boolean; lifetimeLeft: number }) {
@@ -19,13 +20,23 @@ export function MarketingPricing({ billingEnabled, lifetimeLeft }: { billingEnab
             </>
           );
         }
-        const href =
-          paid && billingEnabled ? `/billing?plan=${plan.id}&interval=${plan.id === 'lifetime' ? 'once' : interval}&checkout=1` : '/app';
+        // Free (or no billing): the tool is at the top of this page.
+        if (!paid || !billingEnabled) {
+          return (
+            <>
+              {plan.id === 'lifetime' && <LifetimeStock left={lifetimeLeft} />}
+              <button type="button" onClick={() => openCapture()} className={buttonClass(plan.badge ? 'primary' : 'secondary', 'md', 'w-full cursor-pointer', 'pill')}>
+                {paid ? `Get ${plan.name}` : 'Start free'}
+              </button>
+            </>
+          );
+        }
+        const href = `/billing?plan=${plan.id}&interval=${plan.id === 'lifetime' ? 'once' : interval}&checkout=1`;
         return (
           <>
             {plan.id === 'lifetime' && <LifetimeStock left={lifetimeLeft} />}
             <Link href={href} className={buttonClass(plan.badge ? 'primary' : 'secondary', 'md', 'w-full', 'pill')}>
-              {paid ? `Get ${plan.name}` : 'Start free'}
+              Get {plan.name}
             </Link>
           </>
         );

@@ -15,9 +15,12 @@ ShotDomain's adaptations of the spec:
 - **Own identity.** ShotDomain keeps its own name and its own logo mark (the
   aperture corners), drawn in ink. Never use another company's logo, name or
   wordmark.
-- **Two button scales.** App screens (`/app`, `/profile`,
-  `/billing`, share pages, sign-in) use the 6 px in-app button; marketing pages
-  (`/` and the legal pages) use the 100 px pill (`shape="pill"`). The nav bar's
+- **Two button scales.** App screens (`/profile`, `/billing`, share pages,
+  sign-in, and the capture tool) use the 6 px in-app button; marketing pages
+  (`/` and the legal pages) use the 100 px pill (`shape="pill"`). The capture
+  tool lives in the homepage hero: before a capture starts the hero is
+  marketing (pill input and CTA); once it starts, the hero is replaced by the
+  tool, which keeps the 6 px scale inside its own area. The nav bar's
   small 28–32 px CTAs keep the 6 px radius on every page, as in the spec.
   Otherwise don't mix the two scales on one screen.
 - **Dark mode** follows the visitor's system setting with the same structure in

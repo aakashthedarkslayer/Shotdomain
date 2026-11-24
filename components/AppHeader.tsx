@@ -7,7 +7,7 @@ import { Logo } from '@/components/ui/Logo';
 import { UserMenu } from '@/components/auth/UserMenu';
 
 const NAV = [
-  { href: '/app', label: 'Capture' },
+  { href: '/', label: 'Capture' },
   { href: '/profile', label: 'Share links' },
 ];
 

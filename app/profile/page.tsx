@@ -49,7 +49,7 @@ export default async function ProfilePage() {
               </span>
               <p className="mt-3 text-sm font-medium text-fg">No share links</p>
               <p className="mt-1 text-sm text-muted">After a capture, press Share link on the results to send the screenshots to someone.</p>
-              <Link href="/app" className={buttonClass('secondary', 'sm', 'mt-4')}>
+              <Link href="/" className={buttonClass('secondary', 'sm', 'mt-4')}>
                 <Icon name="plus" size={14} />
                 New capture
               </Link>

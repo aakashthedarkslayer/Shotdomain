@@ -194,7 +194,7 @@ export default function PageSelectionStep({
           <div className="flex-1">
             <Input icon="search" placeholder="Filter by URL…" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Filter pages" />
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex flex-wrap items-center gap-1">
             {onAddUrls && (
               <Button variant="ghost" size="sm" icon="plus" onClick={() => setAddOpen((o) => !o)}>
                 Add pages

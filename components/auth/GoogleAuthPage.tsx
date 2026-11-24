@@ -30,7 +30,7 @@ interface GoogleAuthPageProps {
 /** Shared /login and /signup page: Google handles both creating and using an account. */
 export async function GoogleAuthPage({ mode, searchParams }: GoogleAuthPageProps) {
   const { callbackUrl, error } = await searchParams;
-  if (await currentUser()) redirect(callbackUrl?.startsWith('/') && !callbackUrl.startsWith('//') ? callbackUrl : '/app');
+  if (await currentUser()) redirect(callbackUrl?.startsWith('/') && !callbackUrl.startsWith('//') ? callbackUrl : '/');
 
   const signup = mode === 'signup';
   return (
@@ -63,7 +63,7 @@ export async function GoogleAuthPage({ mode, searchParams }: GoogleAuthPageProps
 
       {authEnabled ? (
         <form action={signInWithGoogle}>
-          <input type="hidden" name="callbackUrl" value={callbackUrl ?? '/app'} />
+          <input type="hidden" name="callbackUrl" value={callbackUrl ?? '/'} />
           <button type="submit" className={buttonClass('secondary', 'lg', 'w-full')}>
             <GoogleLogo />
             {signup ? 'Sign up with Google' : 'Continue with Google'}
@@ -74,8 +74,8 @@ export async function GoogleAuthPage({ mode, searchParams }: GoogleAuthPageProps
           <Alert tone="info">
             Google sign-in isn’t configured, so ShotDomain is running in local mode and no account is needed.
           </Alert>
-          <Link href="/app" className={buttonClass('primary', 'md', 'w-full')}>
-            Open the app
+          <Link href="/" className={buttonClass('primary', 'md', 'w-full')}>
+            Start capturing
           </Link>
         </div>
       )}

@@ -36,20 +36,15 @@ export async function SiteHeader() {
               >
                 Local mode · no sign-in
               </span>
-              <Link href="/app" className={buttonClass('primary', 'sm', 'h-8 px-3')}>
-                Open app
+              <Link href="/profile" className="rounded-full px-3 py-1.5 text-sm tracking-[-0.01em] text-muted transition-colors hover:bg-subtle hover:text-fg">
+                Share links
               </Link>
             </>
           ) : user ? (
-            // Signed in: the avatar shows whose session this is (and offers sign-out).
-            <>
-              <Link href="/app" className={buttonClass('primary', 'sm', 'h-8 px-3')}>
-                Open app
-              </Link>
-              <UserProvider user={user}>
-                <UserMenu />
-              </UserProvider>
-            </>
+            // Signed in: the avatar menu has share links, billing and sign-out.
+            <UserProvider user={user}>
+              <UserMenu />
+            </UserProvider>
           ) : (
             <>
               <Link href="/login" className={buttonClass('secondary', 'sm', 'h-8 px-3')}>

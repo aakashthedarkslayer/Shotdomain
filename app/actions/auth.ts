@@ -4,7 +4,7 @@ import { signIn, signOut } from '@/auth';
 
 /** Only same-site relative paths are allowed as post-login destinations. */
 function safeRedirect(path: string | undefined): string {
-  return path && path.startsWith('/') && !path.startsWith('//') ? path : '/app';
+  return path && path.startsWith('/') && !path.startsWith('//') ? path : '/';
 }
 
 export async function signInWithGoogle(formData: FormData) {

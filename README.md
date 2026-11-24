@@ -16,8 +16,13 @@ Open http://localhost:3000. With no `.env.local`, the app runs in **local mode**
 
 ## Google sign-in (optional locally, required before hosting)
 
-Sign-in is enforced only when Google credentials are set. Once they are, `/app`,
-`/profile`, `/billing` and all API routes require a signed-in Google account.
+The tool runs on the homepage: enter a domain in the hero and the capture flow
+opens in place (`components/capture/CaptureFlow.tsx`). `/app` redirects there.
+
+Sign-in is enforced only when Google credentials are set. Once they are,
+`/profile`, `/billing` and all API routes require a signed-in Google account;
+a signed-out visitor who presses *Capture site* signs in with Google and comes
+back to the same capture (`/?url=…`).
 
 1. Google Cloud Console → **APIs & Services → OAuth consent screen**: set it up (External).
 2. **Credentials → Create credentials → OAuth client ID** → type *Web application*.

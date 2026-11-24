@@ -6,6 +6,7 @@ import type { IconName } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
 import { CookieGuide } from '@/components/capture/CookieGuide';
 import { MarketingPricing } from '@/components/billing/MarketingPricing';
+import { CaptureButton } from './CaptureButton';
 import { SHARE_DAYS } from '@/lib/plans';
 
 /*
@@ -160,10 +161,10 @@ export function LoginPagesSection() {
             ))}
           </ul>
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <Link href="/app" className={buttonClass('primary', 'md', '', 'pill')}>
+            <CaptureButton login className={buttonClass('primary', 'md', '', 'pill')}>
               Try it on your app
               <Icon name="arrowRight" />
-            </Link>
+            </CaptureButton>
             <a href="#pricing" className={buttonClass('ghost', 'md', '', 'pill')}>
               Included in Pro and Lifetime
             </a>
@@ -317,10 +318,10 @@ export function FinalCta() {
         </h2>
         <p className="mx-auto mt-4 max-w-md text-lg leading-7 text-muted">Paste a URL and see every page on desktop and iPhone. Free, no card.</p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link href="/app" className={buttonClass('primary', 'lg', '', 'pill')}>
+          <CaptureButton className={buttonClass('primary', 'lg', '', 'pill')}>
             Start capturing
             <Icon name="arrowRight" />
-          </Link>
+          </CaptureButton>
           <a href="#pricing" className={buttonClass('secondary', 'lg', '', 'pill')}>
             See pricing
           </a>
@@ -334,7 +335,7 @@ const FOOTER_COLUMNS: { title: string; links: { href: string; label: string }[] 
   {
     title: 'Product',
     links: [
-      { href: '/app', label: 'Capture' },
+      { href: '/#capture', label: 'Capture' },
       { href: '/#pricing', label: 'Pricing' },
       { href: '/#faq', label: 'FAQ' },
     ],
