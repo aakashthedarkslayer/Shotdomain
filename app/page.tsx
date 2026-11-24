@@ -1,15 +1,6 @@
 import { SiteHeader } from '@/components/marketing/SiteHeader';
 import { HeroSection } from '@/components/marketing/HeroSection';
-import {
-  FaqSection,
-  FeaturesSection,
-  FinalCta,
-  Footer,
-  HowItWorksSection,
-  LoginPagesSection,
-  PricingSection,
-  UseCasesSection,
-} from '@/components/marketing/Sections';
+import { FaqSection, Footer, HowItWorksSection, LoginPagesSection, PricingSection } from '@/components/marketing/Sections';
 import { billingEnabled, lifetimeRemaining, planInfoFor } from '@/lib/billing';
 import { authEnabled, currentUser, currentUserKey } from '@/auth';
 import { UserProvider } from '@/components/auth/UserContext';
@@ -30,12 +21,9 @@ export default async function LandingPage() {
           <main>
             <HeroSection needsSignIn={authEnabled && !user} />
             <HowItWorksSection />
-            <FeaturesSection />
             <LoginPagesSection />
-            <UseCasesSection />
             <PricingSection billingEnabled={billingEnabled()} lifetimeLeft={lifetimeLeft} />
             <FaqSection />
-            <FinalCta />
           </main>
           <Footer />
         </div>

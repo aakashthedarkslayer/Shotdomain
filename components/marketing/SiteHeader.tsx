@@ -7,7 +7,6 @@ import { UserMenu } from '@/components/auth/UserMenu';
 
 const LINKS = [
   { href: '/#how-it-works', label: 'How it works' },
-  { href: '/#features', label: 'Features' },
   { href: '/#login-pages', label: 'Login pages' },
   { href: '/#pricing', label: 'Pricing' },
   { href: '/#faq', label: 'FAQ' },

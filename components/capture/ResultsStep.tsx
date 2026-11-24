@@ -30,7 +30,7 @@ export default function ResultsStep({ jobId, results, onStartNew }: ResultsStepP
           title={`${done.length} ${done.length === 1 ? 'screenshot' : 'screenshots'} ready`}
           description={
             <>
-              {failed.length > 0 ? `${failed.length} failed — see below. ` : ''}
+              {failed.length > 0 ? `${failed.length} failed (see below). ` : ''}
               {notes > 0 ? `${notes} ${notes === 1 ? 'page has' : 'pages have'} a note (the ⚠ badge). ` : ''}
               Screenshots stay on the server for about an hour. Download the ZIP, or create a share link to keep them for {SHARE_DAYS} days.
             </>

@@ -30,4 +30,10 @@ ShotDomain's adaptations of the spec:
 - **Status colours:** blue (`#0070f3`) means done/success and links, as in the
   spec; text uses the deep variants (`#ab570a` warning, `#c50000` error) so it
   stays readable.
-- **The mesh gradient** appears only behind the homepage hero.
+- **The mesh gradient** appears only behind the homepage hero, kept faint.
+- **Real over decorative.** Show what the product really produces (the ZIP
+  layout, real file names, real device sizes) instead of placeholder mockups
+  or floating "toast" chips. No invented social proof ("Most popular" with no
+  customers), no icon-in-a-circle feature grids, and give each homepage band
+  its own layout rather than repeating eyebrow + centred heading + grid.
+  Copy is plain: concrete facts, no em dashes.

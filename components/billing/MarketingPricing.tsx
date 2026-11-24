@@ -25,7 +25,7 @@ export function MarketingPricing({ billingEnabled, lifetimeLeft }: { billingEnab
           return (
             <>
               {plan.id === 'lifetime' && <LifetimeStock left={lifetimeLeft} />}
-              <button type="button" onClick={() => openCapture()} className={buttonClass(plan.badge ? 'primary' : 'secondary', 'md', 'w-full cursor-pointer', 'pill')}>
+              <button type="button" onClick={() => openCapture()} className={buttonClass(plan.id === 'pro' ? 'primary' : 'secondary', 'md', 'w-full cursor-pointer', 'pill')}>
                 {paid ? `Get ${plan.name}` : 'Start free'}
               </button>
             </>
@@ -35,7 +35,7 @@ export function MarketingPricing({ billingEnabled, lifetimeLeft }: { billingEnab
         return (
           <>
             {plan.id === 'lifetime' && <LifetimeStock left={lifetimeLeft} />}
-            <Link href={href} className={buttonClass(plan.badge ? 'primary' : 'secondary', 'md', 'w-full', 'pill')}>
+            <Link href={href} className={buttonClass(plan.id === 'pro' ? 'primary' : 'secondary', 'md', 'w-full', 'pill')}>
               Get {plan.name}
             </Link>
           </>

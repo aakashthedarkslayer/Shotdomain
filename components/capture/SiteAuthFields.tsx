@@ -41,7 +41,7 @@ function CookieHelp() {
         </span>
         <span className="min-w-0 flex-1">
           <span className="block text-sm font-medium text-fg">Show me how to copy my login</span>
-          <span className="block text-xs text-muted">A 20-second animated guide — no technical knowledge needed</span>
+          <span className="block text-xs text-muted">A 20-second animated guide, no technical knowledge needed</span>
         </span>
         <Icon name="arrowRight" size={14} className="text-muted transition group-hover:translate-x-0.5" />
       </button>
@@ -65,7 +65,7 @@ function CookieTextHelp() {
       </summary>
       <div className="space-y-3 border-t border-line px-3 py-3 text-muted">
         <div>
-          <p className="font-medium text-fg">Option A — Copy as cURL (easiest, copies everything)</p>
+          <p className="font-medium text-fg">Option A: Copy as cURL (easiest, copies everything)</p>
           <ol className="mt-1 list-decimal space-y-0.5 pl-5">
             <li>Log in to the site in Chrome or Edge as you normally would.</li>
             <li>
@@ -79,14 +79,14 @@ function CookieTextHelp() {
           </ol>
         </div>
         <div>
-          <p className="font-medium text-fg">Option B — copy one cookie from the Application tab</p>
+          <p className="font-medium text-fg">Option B: copy one cookie from the Application tab</p>
           <p className="mt-1">
             DevTools → <b>Application</b> (under <b>»</b> if hidden) → <b>Storage → Cookies</b> → the site’s address. Double-click the{' '}
             <b>Value</b> of the login cookie, copy it, and enter its name and value.
           </p>
         </div>
         <div>
-          <p className="font-medium text-fg">Option C — with a cookie extension</p>
+          <p className="font-medium text-fg">Option C: with a cookie extension</p>
           <p className="mt-1">
             Use an extension such as Cookie-Editor (Export → JSON) or “Get cookies.txt”, and paste the export below. Both formats work.
           </p>
@@ -115,7 +115,7 @@ function PastedCookieSummary({ text }: { text: string }) {
   return (
     <div className="space-y-2 rounded-xl border border-line bg-subtle/60 px-3 py-2.5 text-[13px]">
       <div className="text-fg">
-        Found <b>{names.length}</b> {names.length === 1 ? 'cookie' : 'cookies'} — all of them are sent, like your browser does.
+        Found <b>{names.length}</b> {names.length === 1 ? 'cookie' : 'cookies'}. All of them are sent, like your browser does.
       </div>
       {login.length > 0 ? (
         <div className="flex flex-wrap items-center gap-1.5">
@@ -123,7 +123,7 @@ function PastedCookieSummary({ text }: { text: string }) {
           {login.map((c) => chip(c, 'bg-success-soft text-success'))}
         </div>
       ) : (
-        <div className="text-warning">No obvious login cookie — if Test login fails, make sure you copied them while logged in.</div>
+        <div className="text-warning">No obvious login cookie. If Test login fails, make sure you copied them while logged in.</div>
       )}
       {other.length > 0 && <div className="flex flex-wrap items-center gap-1.5"><span className="text-muted">Other:</span>{other.map((c) => chip(c, 'bg-subtle text-muted'))}</div>}
       {analytics.length > 0 && (
@@ -163,7 +163,7 @@ function CopiedRequestNote({ req, siteUrl }: { req: CopiedRequest; siteUrl: stri
       <Alert tone="warning">
         That copied {label} has no cookies in it.{' '}
         {req.format === 'fetch'
-          ? 'Chrome leaves cookies out of “Copy as fetch” — use Copy → Copy as cURL instead.'
+          ? 'Chrome leaves cookies out of “Copy as fetch”. Use Copy → Copy as cURL instead.'
           : 'Copy it while you’re logged in, from the page request (Network → Doc filter).'}
       </Alert>
     );
@@ -192,7 +192,7 @@ function CopiedRequestNote({ req, siteUrl }: { req: CopiedRequest; siteUrl: stri
           {req.ignored > 0 && (
             <span className="text-muted">
               {' '}
-              Left out {req.ignored} browser {req.ignored === 1 ? 'header' : 'headers'} such as User-Agent — they aren’t needed to log in.
+              Left out {req.ignored} browser {req.ignored === 1 ? 'header' : 'headers'} such as User-Agent: they aren’t needed to log in.
             </span>
           )}
         </span>
@@ -437,7 +437,7 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
           </div>
           <Alert tone="warning">
             Your password is stored encrypted and only used to log in, but a session login avoids sharing it at all. Logins with a CAPTCHA, 2FA
-            code or SSO pop-up can’t be automated — use a session for those.
+            code or SSO pop-up can’t be automated. Use a session for those.
           </Alert>
 
           {method === 'form' && (
@@ -499,12 +499,12 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
           ) : (
             <Alert tone={result.ok && !result.warning ? 'success' : 'warning'}>
               {result.warning ?? 'Looks logged in.'} Landed on <span className="font-mono">{result.finalUrl}</span>
-              {result.title ? ` — “${result.title}”` : ''}
+              {result.title ? ` (“${result.title}”)` : ''}
               {!usingPassword && !!result.cookieCount && (
                 <span className="mt-1 block">
                   {result.cookiesExpireAt
-                    ? `Your cookies expire on ${new Date(result.cookiesExpireAt).toLocaleDateString(undefined, { dateStyle: 'medium' })} — paste fresh ones to capture after that.`
-                    : 'These are browser-session cookies — they may stop working when the site ends your session.'}
+                    ? `Your cookies expire on ${new Date(result.cookiesExpireAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}. Paste fresh ones to capture after that.`
+                    : 'These are browser-session cookies: they may stop working when the site ends your session.'}
                 </span>
               )}
             </Alert>

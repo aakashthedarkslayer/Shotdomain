@@ -175,7 +175,7 @@ export default function PageSelectionStep({
       />
 
       <div className="space-y-3 px-5 pt-4 sm:px-6">
-        {truncated && <Alert tone="warning">Discovery stopped at 500 pages — this site may have more.</Alert>}
+        {truncated && <Alert tone="warning">Discovery stopped at 500 pages. This site may have more.</Alert>}
         {!loggedIn && urls.length <= 3 && onAddLogin && (
           <div className="flex flex-col gap-3 rounded-xl bg-accent-soft px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-2.5 text-[13px] text-accent">
@@ -271,7 +271,7 @@ export default function PageSelectionStep({
       {overLimit && (
         <div className="px-5 pb-4 sm:px-6">
           <LimitAwareError
-            message={`${selectedUrls.length} pages selected — the ${PLANS[plan].name} plan captures up to ${pageLimit} at a time. Deselect some pages${nextPlan ? `, or Upgrade to ${nextPlan.name} for up to ${nextPlan.limits.pagesPerRun}` : ''}.`}
+            message={`${selectedUrls.length} pages selected. The ${PLANS[plan].name} plan captures up to ${pageLimit} at a time. Deselect some pages${nextPlan ? `, or Upgrade to ${nextPlan.name} for up to ${nextPlan.limits.pagesPerRun}` : ''}.`}
           />
           <button
             type="button"
@@ -286,7 +286,7 @@ export default function PageSelectionStep({
       {selectedUrls.length > LARGE_SELECTION && (
         <div className="px-5 pb-4 sm:px-6">
           <Alert tone="warning">
-            {selectedUrls.length} pages selected — large captures can take a while.
+            {selectedUrls.length} pages selected. Large captures can take a while.
           </Alert>
         </div>
       )}

@@ -77,7 +77,6 @@ export const PLANS: Record<PlanId, Plan> = {
     tagline: 'Every page of any site, on every device.',
     price: { month: 5, year: 48 },
     limits: PRO_LIMITS,
-    badge: 'Most popular',
     highlights: [
       'Up to 500 pages per capture',
       'Desktop, tablet, iPhone and Android',

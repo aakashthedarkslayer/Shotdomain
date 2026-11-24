@@ -62,7 +62,7 @@ export default function UrlInputStep({ onDiscover, onQuickCapture, isLoading, in
         <p className="mono-label mb-3">One Shot Every Domain</p>
         <h1 className="text-[32px] leading-10 font-semibold tracking-[-0.04em] text-fg sm:text-5xl sm:leading-[1.05]">Screenshot an entire website.</h1>
         <p className="mt-2 text-[15px] text-muted">
-          Enter a domain — or a deeper URL like a repo or docs section to capture just that part.
+          Enter a domain, or a deeper URL like a docs section to capture just that part.
         </p>
       </div>
 
@@ -116,7 +116,7 @@ export default function UrlInputStep({ onDiscover, onQuickCapture, isLoading, in
             <div className="flex items-center gap-2 text-sm font-medium text-fg">
               This site needs a login {loginLocked && <PlanLock />}
             </div>
-            <div className="mt-0.5 text-[13px] text-muted">Capture pages behind a login — dashboards, web apps, staging sites.</div>
+            <div className="mt-0.5 text-[13px] text-muted">Capture pages behind a login: dashboards, web apps, staging sites.</div>
           </div>
           <Switch
             label="This site needs a login"

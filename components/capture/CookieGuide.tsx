@@ -31,7 +31,7 @@ const Kbd = ({ children }: { children: ReactNode }) => (
 const CURL_STEPS: Step[] = [
   {
     title: 'Log in to the site as usual',
-    body: 'Open the site in Chrome or Edge and sign in — with 2FA or SSO if it uses them.',
+    body: 'Open the site in Chrome or Edge and sign in, with two-factor or single sign-on if it uses them.',
     cursor: [null, 'login-btn', 'login-btn', null],
     clicks: [2],
   },
@@ -59,7 +59,7 @@ const CURL_STEPS: Step[] = [
     title: 'Right-click → Copy → Copy as cURL',
     body: (
       <>
-        Right-click the page request, choose <b>Copy</b>, then <b>Copy as cURL</b>. On Windows you’ll see “cmd” and “bash” — either works.
+        Right-click the page request, choose <b>Copy</b>, then <b>Copy as cURL</b>. On Windows you’ll see “cmd” and “bash”: either works.
       </>
     ),
     cursor: ['request-row', 'copy-menu', 'copy-curl', 'copy-curl'],
@@ -67,7 +67,7 @@ const CURL_STEPS: Step[] = [
   },
   {
     title: 'Paste it into ShotDomain',
-    body: 'Paste the whole thing and click Test login. ShotDomain keeps just your cookies and login headers — no need to know which cookie logs you in.',
+    body: 'Paste the whole thing and click Test login. ShotDomain keeps just your cookies and login headers, so you don’t need to know which cookie logs you in.',
     cursor: ['paste-box', 'test-btn', 'test-btn', null],
     clicks: [0, 1],
   },
@@ -575,7 +575,7 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
               <Icon name="play" size={22} />
             </span>
             <span className="text-sm font-semibold">Play walkthrough</span>
-            <span className="text-[11px] opacity-80">Animations are reduced on this device — click to play anyway</span>
+            <span className="text-[11px] opacity-80">Animations are reduced on this device. Click to play anyway</span>
           </button>
         )}
       </div>

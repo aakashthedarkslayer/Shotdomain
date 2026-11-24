@@ -84,7 +84,7 @@ export function CaptureFlow({ start }: { start: CaptureStart }) {
     setDiscoveryError(undefined);
     setCurrentStep(2);
 
-    const crawlTimer = setTimeout(() => setDiscoveryStatus('No sitemap yet — crawling links…'), 2500);
+    const crawlTimer = setTimeout(() => setDiscoveryStatus('No sitemap yet. Crawling links…'), 2500);
 
     try {
       const response = await fetch('/api/discover', {

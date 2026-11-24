@@ -66,7 +66,7 @@ export function PricingCards({
   initialInterval = 'month',
 }: {
   action: (plan: Plan, interval: Interval) => ReactNode;
-  /** Card to emphasise (default: the one with a badge). */
+  /** Card to emphasise (default: Pro). */
   highlight?: PlanId;
   /** The user's current plan, marked on its card. */
   current?: PlanId;
@@ -81,7 +81,7 @@ export function PricingCards({
       <div className="mx-auto grid max-w-5xl items-stretch gap-4 md:grid-cols-3">
         {PRICING_ORDER.map((id) => {
           const plan = PLANS[id];
-          const featured = highlight ? highlight === id : Boolean(plan.badge);
+          const featured = (highlight ?? 'pro') === id;
           const price = priceLabel(plan, interval);
           const label = current === id ? 'Your plan' : plan.badge;
           return (

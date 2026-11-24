@@ -133,7 +133,7 @@ export function BillingPanel({ enabled, plan, subscription, lifetime, lifetimeLe
         }
       }
       setWaiting(false);
-      setNotice('Payment received. Your plan will update within a few minutes — refresh this page to see it.');
+      setNotice('Payment received. Your plan will update within a few minutes; refresh this page to see it.');
     },
     [router],
   );
@@ -152,7 +152,7 @@ export function BillingPanel({ enabled, plan, subscription, lifetime, lifetimeLe
           paddleListeners.delete(onEvent);
           void waitForUpdate(
             (s) => (target === 'lifetime' ? s.lifetime : s.plan === target),
-            'Payment received — activating your plan…',
+            'Payment received. Activating your plan…',
           );
         };
         paddleListeners.add(onEvent);
@@ -268,7 +268,7 @@ export function BillingPanel({ enabled, plan, subscription, lifetime, lifetimeLe
     }
     if (lifetime) return disabled('Included in Lifetime');
     return (
-      <Button variant={p.badge ? 'primary' : 'secondary'} className="w-full" isLoading={loading} onClick={() => openCheckout(p.id, interval)}>
+      <Button variant={p.id === 'pro' ? 'primary' : 'secondary'} className="w-full" isLoading={loading} onClick={() => openCheckout(p.id, interval)}>
         Upgrade to {p.name}
       </Button>
     );
@@ -276,10 +276,10 @@ export function BillingPanel({ enabled, plan, subscription, lifetime, lifetimeLe
 
   let status: ReactNode;
   if (!enabled) status = 'Billing isn’t set up on this server, so every feature is available.';
-  else if (activeSub?.status === 'past_due') status = <span className="text-warning">The last payment failed — update your card in the billing portal to keep {PLANS[activeSub.plan].name}.</span>;
+  else if (activeSub?.status === 'past_due') status = <span className="text-warning">The last payment failed. Update your card in the billing portal to keep {PLANS[activeSub.plan].name}.</span>;
   else if (activeSub?.cancelAt) status = `${PLANS[activeSub.plan].name} ends on ${fmtDate(activeSub.cancelAt)}; you’ll move to ${lifetime ? 'Lifetime' : 'Free'} after that.`;
-  else if (activeSub) status = `${activeSub.interval === 'year' ? 'Yearly' : 'Monthly'} — renews on ${fmtDate(activeSub.currentPeriodEnd)}.`;
-  else if (lifetime) status = 'Paid once — yours for good.';
+  else if (activeSub) status = `${activeSub.interval === 'year' ? 'Yearly' : 'Monthly'}, renews on ${fmtDate(activeSub.currentPeriodEnd)}.`;
+  else if (lifetime) status = 'Paid once, yours for good.';
   else status = 'Upgrade any time; you can cancel whenever you like.';
 
   return (
@@ -325,8 +325,8 @@ export function BillingPanel({ enabled, plan, subscription, lifetime, lifetimeLe
       />
 
       <p className="text-center text-xs text-muted">
-        Payments are processed by Paddle, our reseller and merchant of record — they handle taxes, invoices and refunds. Prices in USD; local
-        taxes are added at checkout. {LEGAL.refundDays}-day money-back guarantee —{' '}
+        Payments are processed by Paddle, our reseller and merchant of record, which handles taxes, invoices and refunds. Prices in USD; local
+        taxes are added at checkout. {LEGAL.refundDays}-day money-back guarantee:{' '}
         <a href="/refunds" className="underline underline-offset-2 hover:text-fg">
           Refund Policy
         </a>{' '}

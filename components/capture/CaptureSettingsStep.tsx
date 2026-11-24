@@ -223,7 +223,7 @@ export default function CaptureSettingsStep({
 
         <Row
           title="Full page"
-          description={settings.fullPage ? 'The whole page, top to bottom — lazy-loaded sections included.' : 'Only the first screen (above the fold).'}
+          description={settings.fullPage ? 'The whole page, top to bottom, lazy-loaded sections included.' : 'Only the first screen (above the fold).'}
         >
           <Switch checked={settings.fullPage} onChange={(fullPage) => onSettingsChange({ fullPage })} label="Capture entire page" />
         </Row>
@@ -270,7 +270,7 @@ export default function CaptureSettingsStep({
             <div className="divide-y divide-line border-t border-line bg-subtle/40">
               <Row
                 title="Click before capture"
-                description="CSS selectors to click first, one per line — e.g. open a menu, switch a tab, dismiss a dialog."
+                description="CSS selectors to click first, one per line: open a menu, switch a tab, dismiss a dialog."
                 stacked
               >
                 <Textarea
@@ -283,7 +283,7 @@ export default function CaptureSettingsStep({
                   }}
                 />
               </Row>
-              <Row title="Hide elements" description="CSS selectors to hide, one per line — chat widgets, promo bars, sticky headers." stacked>
+              <Row title="Hide elements" description="CSS selectors to hide, one per line: chat widgets, promo bars, sticky headers." stacked>
                 <Textarea
                   aria-label="Selectors to hide"
                   placeholder={'#intercom-container\n.promo-bar'}
