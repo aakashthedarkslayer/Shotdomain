@@ -144,7 +144,7 @@ function BrowserChrome({ loggedIn, children }: { loggedIn: boolean; children: Re
         <div className="flex items-center justify-between bg-indigo-600 px-3 py-[2.2%] text-[10px] font-semibold text-white">
           <span>YourSite</span>
           {loggedIn ? (
-            <span className="flex items-center gap-1 rounded-full bg-white/20 py-0.5 pr-2 pl-0.5 text-[9px]">
+            <span className="flex items-center gap-1 rounded-full bg-black/25 py-0.5 pr-2 pl-0.5 text-[9px]">
               <span className="h-3.5 w-3.5 rounded-full bg-amber-300" /> Signed in
             </span>
           ) : (
@@ -196,14 +196,14 @@ function DevTools({ step, phase }: { step: number; phase: number }) {
           <span
             key={c}
             data-guide={c === 'Doc' ? 'doc-chip' : undefined}
-            className={`rounded px-1.5 py-px ${c === 'Doc' && docOn ? 'bg-sky-500 text-white' : c === 'All' && !docOn ? 'bg-slate-600 text-white' : 'bg-slate-700/60'}`}
+            className={`rounded px-1.5 py-px ${c === 'Doc' && docOn ? 'bg-sky-700 text-white' : c === 'All' && !docOn ? 'bg-slate-600 text-white' : 'bg-slate-700/60'}`}
           >
             {c}
           </span>
         ))}
       </div>
       <div className="relative min-h-0 flex-1">
-        <div className="grid grid-cols-[38%_14%_14%_1fr] border-b border-slate-700 px-2 py-0.5 text-slate-500">
+        <div className="grid grid-cols-[38%_14%_14%_1fr] border-b border-slate-700 px-2 py-0.5 text-slate-400">
           <span>Name</span>
           <span>Status</span>
           <span>Type</span>
@@ -221,7 +221,7 @@ function DevTools({ step, phase }: { step: number; phase: number }) {
             <span>14.2 kB</span>
           </div>
         ) : (
-          <div className="pt-4 text-center text-slate-500">Reload to record requests</div>
+          <div className="pt-4 text-center text-slate-400">Reload to record requests</div>
         )}
         {menuOpen && (
           <div className="absolute top-[24%] left-[14%] z-20 flex items-start animate-[guide-fade-in_.2s_ease-out]">
@@ -229,7 +229,7 @@ function DevTools({ step, phase }: { step: number; phase: number }) {
               <div className="px-2 py-0.5 text-slate-400">Open in new tab</div>
               <div className="px-2 py-0.5 text-slate-400">Clear browser cache</div>
               <div className="my-0.5 border-t border-slate-600" />
-              <div data-guide="copy-menu" className={`flex justify-between px-2 py-0.5 ${copyHot ? 'bg-sky-600 text-white' : 'text-slate-300'}`}>
+              <div data-guide="copy-menu" className={`flex justify-between px-2 py-0.5 ${copyHot ? 'bg-sky-700 text-white' : 'text-slate-300'}`}>
                 Copy <span>▸</span>
               </div>
               <div className="px-2 py-0.5 text-slate-400">Block request URL</div>
@@ -237,7 +237,7 @@ function DevTools({ step, phase }: { step: number; phase: number }) {
             {copyHot && (
               <div className="-ml-1 mt-[22px] w-32 rounded-md border border-slate-600 bg-[#2a2b2e] py-1 shadow-xl animate-[guide-fade-in_.2s_ease-out]">
                 <div className="px-2 py-0.5 text-slate-400">Copy URL</div>
-                <div data-guide="copy-curl" className={`px-2 py-0.5 ${curlHot ? 'bg-sky-600 text-white' : 'text-slate-200'}`}>
+                <div data-guide="copy-curl" className={`px-2 py-0.5 ${curlHot ? 'bg-sky-700 text-white' : 'text-slate-200'}`}>
                   Copy as cURL
                 </div>
                 <div className="px-2 py-0.5 text-slate-400">Copy as fetch</div>
@@ -284,9 +284,9 @@ function AppDevTools({ step, phase }: { step: number; phase: number }) {
       {appOn ? (
         <div className="flex min-h-0 flex-1">
           <div className="w-[32%] space-y-0.5 border-r border-slate-700 px-1.5 py-1">
-            <div className="text-slate-500">Application</div>
+            <div className="text-slate-400">Application</div>
             <div className="pl-2">Manifest</div>
-            <div className="pt-0.5 text-slate-500">Storage</div>
+            <div className="pt-0.5 text-slate-400">Storage</div>
             <div className="pl-2">▸ Local storage</div>
             <div data-guide="cookies-node" className={`pl-2 ${cookiesOpen ? 'text-white' : ''}`}>
               {cookiesOpen ? '▾' : '▸'} Cookies
@@ -320,7 +320,7 @@ function AppDevTools({ step, phase }: { step: number; phase: number }) {
                     </span>
                     <span
                       data-guide={r.login ? 'session-value' : undefined}
-                      className={`truncate ${r.login && valueSelected ? 'rounded-sm bg-sky-600 px-0.5 text-white ring-1 ring-sky-300' : ''}`}
+                      className={`truncate ${r.login && valueSelected ? 'rounded-sm bg-sky-700 px-0.5 text-white ring-1 ring-sky-300' : ''}`}
                     >
                       {r.value}
                     </span>
@@ -333,12 +333,12 @@ function AppDevTools({ step, phase }: { step: number; phase: number }) {
                 )}
               </>
             ) : (
-              <div className="pt-6 text-center text-slate-500">Select a site under Cookies</div>
+              <div className="pt-6 text-center text-slate-400">Select a site under Cookies</div>
             )}
           </div>
         </div>
       ) : (
-        <div className="flex-1 pt-6 text-center text-slate-500">Elements</div>
+        <div className="flex-1 pt-6 text-center text-slate-400">Elements</div>
       )}
     </div>
   );
@@ -373,7 +373,7 @@ function ShotDomainScene({ phase }: { phase: number }) {
       <div className="text-slate-400">Your copied request or cookies</div>
       <div data-guide="paste-box" className="min-h-[22%] rounded-lg border border-indigo-400/60 bg-white/5 p-2 font-mono text-[9px] leading-relaxed">
         {!pasted ? (
-          <span className="text-slate-500">Paste here…</span>
+          <span className="text-slate-400">Paste here…</span>
         ) : read ? (
           <span key="read" className="animate-[guide-fade-in_.4s_ease-out]">session_id=a8f3e1…; _ga=GA1.1.811…; theme=dark</span>
         ) : (
@@ -389,7 +389,7 @@ function ShotDomainScene({ phase }: { phase: number }) {
           <div className="flex flex-wrap items-center gap-1 text-slate-300">
             Likely login:
             <span className="rounded bg-emerald-500/20 px-1 font-mono text-emerald-300">session_id</span>
-            <span className="ml-1 text-slate-500 line-through">_ga</span>
+            <span className="ml-1 text-slate-400 line-through">_ga</span>
           </div>
         </div>
       )}
@@ -422,11 +422,11 @@ function ShotDomainFieldsScene({ phase }: { phase: number }) {
       </div>
       <div className="flex items-center gap-1.5">
         <span data-guide="name-box" className={`w-[34%] rounded-md border bg-white/5 px-2 py-1.5 font-mono text-[9px] ${phase === 0 ? 'border-indigo-400' : 'border-white/15'}`}>
-          {named ? <span className="animate-[guide-fade-in_.4s_ease-out]">session_id</span> : <span className="text-slate-500">cookie name</span>}
+          {named ? <span className="animate-[guide-fade-in_.4s_ease-out]">session_id</span> : <span className="text-slate-400">cookie name</span>}
         </span>
-        <span className="text-slate-500">=</span>
+        <span className="text-slate-400">=</span>
         <span data-guide="value-box" className={`flex-1 truncate rounded-md border bg-white/5 px-2 py-1.5 font-mono text-[9px] ${phase === 1 ? 'border-indigo-400' : 'border-white/15'}`}>
-          {pasted ? <span className="animate-[guide-fade-in_.4s_ease-out]">a8f3e1c94b7d…</span> : <span className="text-slate-500">paste the value only</span>}
+          {pasted ? <span className="animate-[guide-fade-in_.4s_ease-out]">a8f3e1c94b7d…</span> : <span className="text-slate-400">paste the value only</span>}
         </span>
       </div>
       <div className="flex items-center gap-2 pt-1">
@@ -554,7 +554,8 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
         role="img"
         aria-label={`Step ${step + 1} of ${steps.length}: ${current.title}`}
       >
-        <div key={`${method}-${step}`} className="absolute inset-0 animate-[guide-fade-in_.35s_ease-out]">
+        {/* A picture of a browser: its tiny labels are illustration, and the caption below says each step in words. */}
+        <div key={`${method}-${step}`} aria-hidden="true" className="absolute inset-0 animate-[guide-fade-in_.35s_ease-out]">
           {scene}
         </div>
         <Cursor x={cursor.x} y={cursor.y} visible={cursor.visible} clicking={clicking} />
@@ -571,11 +572,14 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
             }}
             className="absolute inset-0 z-50 flex cursor-pointer flex-col items-center justify-center gap-2 bg-black/35 text-white backdrop-blur-[1px] transition hover:bg-black/25"
           >
-            <span className="bg-primary flex h-14 w-14 items-center justify-center rounded-full shadow-lg">
+            <span className="bg-primary flex h-14 w-14 items-center justify-center rounded-full text-primary-fg shadow-lg">
               <Icon name="play" size={22} />
             </span>
-            <span className="text-sm font-semibold">Play walkthrough</span>
-            <span className="text-[11px] opacity-80">Animations are reduced on this device. Click to play anyway</span>
+            {/* Solid backing: the text must stay readable over any frame of the picture. */}
+            <span className="flex flex-col items-center gap-0.5 rounded-lg bg-black/80 px-3 py-1.5 text-center">
+              <span className="text-sm font-semibold">Play walkthrough</span>
+              <span className="text-[11px] text-white/85">Animations are reduced on this device. Click to play anyway</span>
+            </span>
           </button>
         )}
       </div>
@@ -599,15 +603,19 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
       </div>
 
       <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-1.5">
+        <div className="-ml-[9px] flex items-center">
           {steps.map((s, i) => (
             <button
               key={s.title}
               type="button"
               aria-label={`Go to step ${i + 1}: ${s.title}`}
+              aria-current={i === step ? 'step' : undefined}
               onClick={() => go(i)}
-              className={`h-1.5 cursor-pointer rounded-full transition-all ${i === step ? 'bg-primary w-6' : 'w-1.5 bg-line-strong hover:bg-muted'}`}
-            />
+              className="group flex h-6 min-w-6 cursor-pointer items-center justify-center px-[9px]"
+            >
+              {/* 24 px tap target around a small dot */}
+              <span className={`h-1.5 rounded-full transition-all ${i === step ? 'bg-primary w-6' : 'w-1.5 bg-line-strong group-hover:bg-muted'}`} />
+            </button>
           ))}
         </div>
         <div className="flex items-center gap-1">

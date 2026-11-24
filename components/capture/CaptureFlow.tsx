@@ -29,6 +29,8 @@ export interface CaptureStart {
  * on the homepage; the hero hands it a URL to start with, or opens it on
  * step 1 for the login and single-page options.
  */
+const STEP_NAMES = ['Website', 'Pages', 'Settings', 'Capture', 'Results'];
+
 export function CaptureFlow({ start }: { start: CaptureStart }) {
   const { limits } = usePlan();
   const [currentStep, setCurrentStep] = useState(1);
@@ -285,6 +287,12 @@ export function CaptureFlow({ start }: { start: CaptureStart }) {
 
   return (
     <div ref={topRef} className="mx-auto max-w-3xl scroll-mt-24 text-left">
+      {/* Step 1 has its own visible h1; later steps name the page for screen readers. */}
+      {currentStep > 1 && (
+        <h1 className="sr-only">
+          Capture {rootUrl ? urlHost(rootUrl) : 'a website'}: step {currentStep} of 5, {STEP_NAMES[currentStep - 1]}
+        </h1>
+      )}
       <div className="mb-8 space-y-4">
         <Stepper current={currentStep} />
         {rootUrl && currentStep > 1 && (

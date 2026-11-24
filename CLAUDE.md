@@ -29,7 +29,13 @@ ShotDomain's adaptations of the spec:
   dark on light pages and light on dark pages.
 - **Status colours:** blue (`#0070f3`) means done/success and links, as in the
   spec; text uses the deep variants (`#ab570a` warning, `#c50000` error) so it
-  stays readable.
+  stays readable. Blue text on the pale-blue fill uses `text-accent-ink`
+  (the spec's link-deep `#0761d1`, 5.2:1).
+- **Faint text** (`--faint`) is `#6f6f6f` in light mode, darker than the
+  spec's `#888`, which is 3.4:1 on the canvas and fails WCAG AA for small text.
+- **Accessibility floor:** every text pair 4.5:1 or more, tap targets at least
+  24 px (the phone menu's rows are 48 px), dialogs named by their title, one
+  h1 per view. Re-run the axe check after visual changes.
 - **The mesh gradient** appears only behind the homepage hero, kept faint.
 - **Real over decorative.** Show what the product really produces (the ZIP
   layout, real file names, real device sizes) instead of placeholder mockups

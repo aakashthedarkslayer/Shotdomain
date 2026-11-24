@@ -178,7 +178,7 @@ export default function PageSelectionStep({
         {truncated && <Alert tone="warning">Discovery stopped at 500 pages. This site may have more.</Alert>}
         {!loggedIn && urls.length <= 3 && onAddLogin && (
           <div className="flex flex-col gap-3 rounded-xl bg-accent-soft px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-2.5 text-[13px] text-accent">
+            <div className="flex items-start gap-2.5 text-[13px] text-accent-ink">
               <Icon name="shield" size={16} className="mt-px shrink-0" />
               <span>
                 <b>Only {urls.length} {urls.length === 1 ? 'page' : 'pages'} found.</b> If this site needs a login (a web app or dashboard),
@@ -203,7 +203,7 @@ export default function PageSelectionStep({
             <Button
               variant="ghost"
               size="sm"
-              icon="sparkle"
+              icon="sitemap"
               onClick={selectKeyPages}
               title={`Home page and top-level sections (up to ${keyPageCap})`}
             >
@@ -239,14 +239,14 @@ export default function PageSelectionStep({
       </div>
 
       <div className="mx-5 mt-3 mb-4 overflow-hidden rounded-lg border border-line sm:mx-6">
-        <div className="flex items-center gap-3 border-b border-line bg-subtle px-3 py-2 text-xs font-medium text-muted">
+        <label className="flex cursor-pointer items-center gap-3 border-b border-line bg-subtle px-3 py-2 text-xs font-medium text-muted">
           <Checkbox
             checked={allFilteredSelected}
             onChange={() => (allFilteredSelected ? selectNone() : selectAll())}
             label="Toggle all visible pages"
           />
           <span>{query ? `${filtered.length} matching` : 'Page'}</span>
-        </div>
+        </label>
         <ul className="max-h-[420px] divide-y divide-line overflow-y-auto">
           {filtered.length === 0 ? (
             <li className="px-3 py-10 text-center text-sm text-muted">{query ? 'No pages match this filter.' : 'No pages discovered.'}</li>

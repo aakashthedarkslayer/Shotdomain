@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useId } from 'react';
 import type { ReactNode } from 'react';
 import { Icon } from './Icon';
 
@@ -15,6 +15,8 @@ interface ModalProps {
 }
 
 export function Modal({ open, onClose, title, description, children, footer, size = 'md' }: ModalProps) {
+  const titleId = useId();
+  const descId = useId();
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -30,7 +32,13 @@ export function Modal({ open, onClose, title, description, children, footer, siz
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={title ? titleId : undefined}
+      aria-describedby={description ? descId : undefined}
+    >
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
       <div
         className={`relative flex max-h-[90vh] w-full flex-col overflow-hidden card-elevated rounded-xl ${
@@ -40,8 +48,16 @@ export function Modal({ open, onClose, title, description, children, footer, siz
         {(title || description) && (
           <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
             <div className="min-w-0">
-              {title && <h2 className="truncate text-base font-semibold tracking-[-0.02em] text-fg">{title}</h2>}
-              {description && <p className="mt-0.5 text-sm text-muted">{description}</p>}
+              {title && (
+                <h2 id={titleId} className="truncate text-base font-semibold tracking-[-0.02em] text-fg">
+                  {title}
+                </h2>
+              )}
+              {description && (
+                <p id={descId} className="mt-0.5 text-sm text-muted">
+                  {description}
+                </p>
+              )}
             </div>
             <button
               type="button"

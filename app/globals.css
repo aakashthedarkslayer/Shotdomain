@@ -16,12 +16,13 @@
   --line-strong: #a1a1a1; /* hairline-strong */
   --fg: #171717; /* ink */
   --muted: #4d4d4d; /* body */
-  --faint: #888888; /* mute */
+  --faint: #6f6f6f; /* mute, darkened from the spec's #888 to pass 4.5:1 on canvas */
   --primary: #171717;
   --primary-fg: #ffffff;
   --primary-hover: #383838;
   --accent: #0070f3; /* link */
   --accent-soft: #ebf5ff;
+  --accent-ink: #0761d1; /* link-deep: blue text on accent-soft (5.2:1) */
   --success: #0070f3; /* the spec's success is the link blue */
   --success-soft: #ebf5ff;
   --warning: #ab570a; /* warning-deep: readable as text */
@@ -52,6 +53,7 @@
     --primary-hover: #cccccc;
     --accent: #52a8ff;
     --accent-soft: #0b2341;
+    --accent-ink: #52a8ff;
     --success: #52a8ff;
     --success-soft: #0b2341;
     --warning: #f5a623;
@@ -83,6 +85,7 @@
   --primary-hover: #e5e5e5;
   --accent: #52a8ff;
   --accent-soft: #0b2341;
+  --accent-ink: #52a8ff;
   --success: #52a8ff;
   --success-soft: #0b2341;
   --shadow-card: none;
@@ -101,12 +104,13 @@
     --line-strong: #a1a1a1;
     --fg: #171717;
     --muted: #4d4d4d;
-    --faint: #888888;
+    --faint: #6f6f6f;
     --primary: #171717;
     --primary-fg: #ffffff;
     --primary-hover: #383838;
     --accent: #0070f3;
     --accent-soft: #ebf5ff;
+    --accent-ink: #0761d1;
     --success: #0070f3;
     --success-soft: #ebf5ff;
     color-scheme: light;
@@ -132,6 +136,7 @@
   --color-primary-hover: var(--primary-hover);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
   --color-warning: var(--warning);

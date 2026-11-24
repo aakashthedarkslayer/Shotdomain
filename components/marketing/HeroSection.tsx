@@ -134,7 +134,7 @@ export function HeroSection({ needsSignIn = false }: { needsSignIn?: boolean }) 
             <p className="mt-4 text-[13px] text-muted">
               {needsSignIn ? 'You’ll sign in with Google first. ' : ''}
               Behind a login, or only one page?{' '}
-              <button type="button" onClick={() => begin({ prefill: url.trim() })} className="cursor-pointer font-medium text-fg underline-offset-2 hover:underline">
+              <button type="button" onClick={() => begin({ prefill: url.trim() })} className="-mx-1 -my-3 inline-block cursor-pointer px-1 py-3 font-medium text-fg underline-offset-2 hover:underline">
                 More options
               </button>
             </p>

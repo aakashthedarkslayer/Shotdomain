@@ -54,6 +54,7 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
       </header>
 
       <main className="mx-auto max-w-5xl space-y-4 px-4 pt-8 sm:px-6">
+        <h1 className="sr-only">Screenshots of {hostOf(capture.rootUrl)}</h1>
         <Card>
           <CardHeader
             title={hostOf(capture.rootUrl)}

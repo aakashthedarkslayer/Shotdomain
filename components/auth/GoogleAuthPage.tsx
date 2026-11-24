@@ -35,10 +35,16 @@ export async function GoogleAuthPage({ mode, searchParams }: GoogleAuthPageProps
   const signup = mode === 'signup';
   return (
     <AuthCard
-      title={signup ? 'Create your account' : 'Log in to ShotDomain'}
-      description={signup ? 'Sign up with your Google account — no password needed.' : 'Use the Google account you signed up with.'}
+      title={!authEnabled ? 'No sign-in needed' : signup ? 'Create your account' : 'Log in to ShotDomain'}
+      description={
+        !authEnabled
+          ? 'Accounts aren’t set up on this server.'
+          : signup
+            ? 'Sign up with your Google account. No password needed.'
+            : 'Use the Google account you signed up with.'
+      }
       footer={
-        signup ? (
+        !authEnabled ? null : signup ? (
           <>
             Already have an account?{' '}
             <Link href="/login" className="font-medium text-fg hover:underline">

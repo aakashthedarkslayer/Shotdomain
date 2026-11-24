@@ -8,6 +8,7 @@ import { Spinner } from '@/components/ui/Icon';
 import { LimitAwareError } from '@/components/billing/Upgrade';
 import { SHARE_DAYS } from '@/lib/plans';
 import { formatDate } from '@/lib/format';
+import { STOP_SHARING_CONFIRM } from './StopSharingButton';
 
 interface Share {
   token: string;
@@ -79,7 +80,7 @@ export function ShareDialog({ jobId, onClose }: { jobId: string | null; onClose:
   }
 
   async function stop() {
-    if (!share) return;
+    if (!share || !window.confirm(STOP_SHARING_CONFIRM)) return;
     setBusy(true);
     setError(null);
     try {
@@ -105,7 +106,7 @@ export function ShareDialog({ jobId, onClose }: { jobId: string | null; onClose:
       footer={
         <>
           {share && (
-            <Button variant="ghost" onClick={stop} isLoading={busy} className="mr-auto">
+            <Button variant="danger" onClick={stop} isLoading={busy} className="mr-auto">
               Stop sharing
             </Button>
           )}

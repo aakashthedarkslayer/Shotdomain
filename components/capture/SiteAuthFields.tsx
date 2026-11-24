@@ -376,7 +376,7 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
     <div className="space-y-4">
       {!usingPassword ? (
         <>
-          <div className="flex items-start gap-2.5 rounded-lg bg-accent-soft px-3 py-2.5 text-[13px] text-accent">
+          <div className="flex items-start gap-2.5 rounded-lg bg-accent-soft px-3 py-2.5 text-[13px] text-accent-ink">
             <Icon name="shield" size={16} className="mt-px" />
             <span>
               <b>No password needed.</b> Log in to the site in your own browser and paste your session below. Treat it like a key: it works

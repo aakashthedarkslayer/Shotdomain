@@ -204,7 +204,7 @@ export default function CaptureSettingsStep({
               aria-pressed={settings.linked}
               title={settings.linked ? 'Aspect ratio locked' : 'Aspect ratio unlocked'}
               className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg transition disabled:cursor-not-allowed disabled:opacity-40 ${
-                settings.linked ? 'bg-accent-soft text-accent' : 'text-faint hover:bg-subtle hover:text-fg'
+                settings.linked ? 'bg-accent-soft text-accent-ink' : 'text-faint hover:bg-subtle hover:text-fg'
               }`}
             >
               <Icon name={settings.linked ? 'link' : 'unlink'} size={16} />

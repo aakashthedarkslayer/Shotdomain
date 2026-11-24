@@ -4,6 +4,8 @@ import { buttonClass } from '@/components/ui/Button';
 import { authEnabled, currentUser } from '@/auth';
 import { UserProvider } from '@/components/auth/UserContext';
 import { UserMenu } from '@/components/auth/UserMenu';
+import { MobileMenu } from './MobileMenu';
+import type { MenuLink } from './MobileMenu';
 
 const LINKS = [
   { href: '/#how-it-works', label: 'How it works' },
@@ -14,6 +16,18 @@ const LINKS = [
 
 export async function SiteHeader() {
   const user = authEnabled ? await currentUser() : null;
+  // The same account links, for the phone menu.
+  const account: MenuLink[] = !authEnabled
+    ? [{ href: '/profile', label: 'Share links' }]
+    : user
+      ? [
+          { href: '/profile', label: 'Share links' },
+          { href: '/billing', label: 'Plan & billing' },
+        ]
+      : [
+          { href: '/login', label: 'Log in' },
+          { href: '/signup', label: 'Sign up free' },
+        ];
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-surface/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4 sm:px-6">
@@ -35,7 +49,7 @@ export async function SiteHeader() {
               >
                 Local mode · no sign-in
               </span>
-              <Link href="/profile" className="rounded-full px-3 py-1.5 text-sm tracking-[-0.01em] text-muted transition-colors hover:bg-subtle hover:text-fg">
+              <Link href="/profile" className="hidden rounded-full px-3 py-1.5 text-sm tracking-[-0.01em] text-muted transition-colors hover:bg-subtle hover:text-fg md:inline-flex">
                 Share links
               </Link>
             </>
@@ -46,14 +60,17 @@ export async function SiteHeader() {
             </UserProvider>
           ) : (
             <>
-              <Link href="/login" className={buttonClass('secondary', 'sm', 'h-8 px-3')}>
-                Log in
-              </Link>
+              <span className="hidden sm:inline-flex">
+                <Link href="/login" className={buttonClass('secondary', 'sm', 'h-8 px-3')}>
+                  Log in
+                </Link>
+              </span>
               <Link href="/signup" className={buttonClass('primary', 'sm', 'h-8 px-3')}>
                 Sign up free
               </Link>
             </>
           )}
+          <MobileMenu links={LINKS} account={account} />
         </div>
       </div>
     </header>

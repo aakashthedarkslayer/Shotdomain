@@ -255,10 +255,10 @@ export function Footer() {
         {FOOTER_COLUMNS.map((col) => (
           <nav key={col.title} aria-label={col.title}>
             <p className="mono-label">{col.title}</p>
-            <ul className="mt-4 space-y-2.5">
+            <ul className="mt-3 space-y-1">
               {col.links.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm tracking-[-0.01em] text-muted transition-colors hover:text-fg">
+                  <Link href={l.href} className="inline-block py-1 text-sm tracking-[-0.01em] text-muted transition-colors hover:text-fg">
                     {l.label}
                   </Link>
                 </li>

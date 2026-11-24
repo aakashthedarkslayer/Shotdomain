@@ -13,6 +13,7 @@ import { formatDate, formatDateTime } from '@/lib/format';
 import { SHARE_DAYS } from '@/lib/plans';
 import { listShares } from '@/lib/shareStore';
 import { revokeShareAction } from '@/app/actions/profile';
+import { StopSharingButton } from '@/components/share/StopSharingButton';
 
 export const metadata = { title: 'Profile — ShotDomain' };
 // Share links are read from disk on every request; never prerender them.
@@ -68,9 +69,7 @@ export default async function ProfilePage() {
                   </div>
                   <form action={revokeShareAction}>
                     <input type="hidden" name="token" value={sh.token} />
-                    <button type="submit" className={buttonClass('danger', 'sm')}>
-                      Stop sharing
-                    </button>
+                    <StopSharingButton />
                   </form>
                 </li>
               ))}
@@ -108,7 +107,7 @@ export default async function ProfilePage() {
               />
             ) : (
               <Alert tone="info">
-                {authEnabled ? 'Sign in to edit your profile.' : 'ShotDomain is running in local mode, so there’s no account to edit. Your share links are below.'}
+                {authEnabled ? 'Sign in to edit your profile.' : 'ShotDomain is running in local mode, so there’s no account to edit. Your share links are above.'}
               </Alert>
             )}
           </div>

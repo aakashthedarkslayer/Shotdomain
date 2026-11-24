@@ -94,7 +94,7 @@ export function PricingCards({
                 {label && (
                   <span
                     className={`rounded-full border px-2 py-0.5 font-mono text-[11px] ${
-                      current === id ? 'border-accent/40 bg-accent-soft text-accent' : 'border-line text-muted'
+                      current === id ? 'border-accent/40 bg-accent-soft text-accent-ink' : 'border-line text-muted'
                     }`}
                   >
                     {label.toUpperCase()}
