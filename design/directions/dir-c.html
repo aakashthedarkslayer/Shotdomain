@@ -20,7 +20,7 @@
 #dir-c .stage .screen > figcaption{color:#e3eee8;opacity:.9}
 #dir-c .c-board{overflow:hidden;background:var(--c-wall);font-family:var(--c-ui);color:var(--c-ink);font-size:14px;line-height:1.3;-webkit-font-smoothing:antialiased;text-align:left}
 #dir-c .c-board *{box-sizing:border-box}
-#dir-c .c-board button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;text-align:inherit;-webkit-appearance:none;appearance:none}
+#dir-c :where(.c-board) button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;text-align:inherit;-webkit-appearance:none;appearance:none}
 #dir-c .c-board button:focus-visible,#dir-c .c-board input:focus-visible{outline:3px solid var(--c-focus);outline-offset:2px;box-shadow:0 0 0 7px rgba(14,39,34,.9)}
 #dir-c .c-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 #dir-c .c-scene,#dir-c .c-review,#dir-c .c-fly{position:absolute;left:0;top:0;width:1280px;height:800px}
@@ -83,8 +83,8 @@
 #dir-c .c-chalk small{display:block;font-size:15px;font-weight:400;margin-top:6px}
 #dir-c .c-tag{position:absolute;right:-6px;bottom:8px;background:#fffdf7;color:var(--c-stamp);font:700 13px/1 var(--c-ui);padding:7px 10px 7px 16px;clip-path:polygon(9px 0,100% 0,100% 100%,9px 100%,0 50%);rotate:-4deg;box-shadow:0 2px 3px rgba(0,0,0,.3);z-index:2}
 #dir-c .c-ret{position:absolute;inset:0;pointer-events:none}
-#dir-c .c-rc{width:150px;height:94px;padding:4px}
-#dir-c .c-retry{pointer-events:auto;position:absolute;left:186px;top:100px;width:84px;height:46px;background:#fffdf7;color:var(--c-stamp);font:700 15px/1 var(--c-ui);padding:7px 0 0 20px;clip-path:polygon(12px 0,100% 0,100% 100%,12px 100%,0 50%);rotate:5deg;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35));z-index:3}
+#dir-c .c-rc{width:124px;height:78px;padding:4px}
+#dir-c .c-retry{pointer-events:auto;position:absolute;left:6px;top:104px;width:84px;height:46px;background:#fffdf7;color:var(--c-stamp);font:700 15px/1 var(--c-ui);padding:7px 0 0 20px;clip-path:polygon(12px 0,100% 0,100% 100%,12px 100%,0 50%);rotate:-4deg;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35));z-index:3}
 #dir-c .c-retry small{display:block;font-size:12.5px;font-weight:600;color:var(--c-ink-2);margin-top:3px}
 #dir-c .c-retry::before{content:'';position:absolute;left:7px;top:19px;width:7px;height:7px;border-radius:50%;background:#173a33}
 
@@ -103,29 +103,29 @@
 #dir-c .c-prog{font-weight:600}
 
 /* docket */
-#dir-c .c-dk{position:absolute;left:918px;top:118px;width:320px;height:456px;background:#fbfbf7;padding:24px 20px 14px;color:var(--c-office);box-shadow:0 1px 1px rgba(0,0,0,.25),0 5px 9px -3px rgba(30,20,10,.35)}
+#dir-c .c-dk{position:absolute;left:914px;top:118px;width:328px;height:456px;display:flex;flex-direction:column;background:#fbfbf7;padding:24px 20px 14px;color:var(--c-office);box-shadow:0 1px 1px rgba(0,0,0,.25),0 5px 9px -3px rgba(30,20,10,.35)}
 #dir-c .c-dk::before{content:'';position:absolute;left:0;right:0;top:0;bottom:0;background:repeating-linear-gradient(180deg,transparent 0 31px,rgba(40,63,125,.06) 31px 32px);pointer-events:none}
-#dir-c .c-dk-h{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--c-office);padding-bottom:7px}
-#dir-c .c-dk-t{font:900 27px/1 var(--c-sten);color:var(--c-office)}
+#dir-c .c-dk-h{display:flex;justify-content:space-between;align-items:baseline;white-space:nowrap;border-bottom:2px solid var(--c-office);padding-bottom:7px}
+#dir-c .c-dk-t{font:900 25px/1 var(--c-sten);color:var(--c-office)}
 #dir-c .c-dk-to{font-size:13px}
-#dir-c .c-dk-to b{font:700 18px/1 var(--c-hand);color:var(--c-graphite);margin-left:4px}
-#dir-c .c-dk-s{margin:12px 0 7px;font-size:13.5px;font-weight:700;color:var(--c-office)}
+#dir-c .c-dk-to b{font:700 16px/1 var(--c-hand);color:var(--c-graphite);margin-left:4px}
+#dir-c .c-dk-s{margin:11px 0 6px;font-size:13.5px;font-weight:700;color:var(--c-office)}
 #dir-c .c-dk-devs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-#dir-c .c-dev{position:relative;height:64px;border:1.5px dashed rgba(40,63,125,.6);border-radius:3px}
+#dir-c .c-dev{position:relative;height:56px;border:1.5px dashed rgba(40,63,125,.6);border-radius:3px}
 #dir-c .c-dev-p{position:absolute;left:10px;bottom:8px;font-size:13.5px;font-weight:500;line-height:1.2;transition:opacity .25s}
 #dir-c .c-dev-p small,#dir-c .c-dev-i small{display:block;font-size:12px;font-weight:500;opacity:.85}
-#dir-c .c-dev-i{position:absolute;inset:5px;display:flex;align-items:center;gap:9px;padding:0 9px;border:2.5px solid var(--c-office);outline:1px solid var(--c-office);outline-offset:-6px;color:var(--c-office);rotate:-2deg;opacity:0;-webkit-mask-image:var(--c-ink-mask);mask-image:var(--c-ink-mask);transition:opacity .25s}
-#dir-c .c-dev-i svg{width:26px;height:26px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2}
-#dir-c .c-dev-i b{font:800 14.5px/1.1 var(--c-ui);font-stretch:80%}
+#dir-c .c-dev-i{position:absolute;inset:4px;display:flex;align-items:center;gap:7px;padding:0 7px;border:2.5px solid var(--c-office);outline:1px solid var(--c-office);outline-offset:-6px;color:var(--c-office);rotate:-2deg;opacity:0;-webkit-mask-image:var(--c-ink-mask);mask-image:var(--c-ink-mask);transition:opacity .25s}
+#dir-c .c-dev-i svg{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2}
+#dir-c .c-dev-i b{font:800 14px/1.1 var(--c-ui);font-stretch:74%;white-space:nowrap}
 #dir-c .c-dev.on .c-dev-i{opacity:1}
 #dir-c .c-dev.on .c-dev-p{opacity:0}
 #dir-c .c-dev:hover{background:rgba(40,63,125,.05)}
-#dir-c .c-opt{display:flex;align-items:flex-start;gap:10px;width:100%;min-height:36px;padding:3px 0;font-size:14px;font-weight:500;color:var(--c-office)}
+#dir-c .c-opt{display:flex;align-items:flex-start;gap:10px;width:100%;min-height:30px;padding:3px 0;font-size:14px;font-weight:500;color:var(--c-office)}
 #dir-c .c-box{flex:none;position:relative;width:19px;height:19px;border:1.6px solid var(--c-office);margin-top:1px}
 #dir-c .c-box svg{position:absolute;left:-2px;top:-7px;width:26px;height:26px;fill:none;stroke:var(--c-graphite);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;opacity:0;transform:scale(.4) rotate(-12deg);transition:opacity .2s,transform .35s cubic-bezier(.34,1.56,.64,1)}
 #dir-c .c-opt.on .c-box svg{opacity:1;transform:none}
 #dir-c .c-opt small{display:block;font-size:12px;color:#4a5a86;font-weight:400;margin-top:1px}
-#dir-c .c-dk-m{position:absolute;left:20px;right:20px;bottom:14px;display:flex;align-items:center;gap:12px}
+#dir-c .c-dk-m{margin-top:auto;display:flex;align-items:center;gap:12px}
 #dir-c .c-frank{display:flex;align-items:center;gap:9px;padding:6px 10px;border:2px solid var(--c-office);outline:1px solid var(--c-office);outline-offset:2px;rotate:-1deg;-webkit-mask-image:var(--c-ink-mask);mask-image:var(--c-ink-mask)}
 #dir-c .c-fl{font-size:12.5px;font-weight:700}
 #dir-c .c-fn{display:flex;gap:2px}
@@ -215,7 +215,7 @@
 #dir-c .c-stp small{display:block;font-size:12px;font-weight:700;margin-bottom:1px}
 #dir-c .c-review .c-stp{left:34px;top:74px}
 #dir-c .c-stp.c-wait{opacity:0}
-#dir-c .c-stp-s{left:24px;top:30px;font-size:17px;padding:3px 8px}
+#dir-c .c-stp-s{left:14px;top:24px;font-size:15px;padding:2px 7px}
 #dir-c .c-stp-xs{left:6px;top:36px;font-size:12.5px;padding:2px 5px;border-width:2px;outline-offset:1.5px;rotate:-6deg}
 #dir-c .c-stamper{position:absolute;width:150px;height:86px;z-index:7}
 #dir-c .c-stamper .c-sb{position:absolute;inset:0;border-radius:9px;background:linear-gradient(160deg,#cda36a,#94693a);box-shadow:inset 0 2px 0 rgba(255,240,210,.55),inset 0 -3px 0 rgba(60,35,10,.4),0 0 0 3px #5a2420,0 16px 20px -6px rgba(10,20,18,.55)}
@@ -378,7 +378,7 @@
       <filter id="cs${u}" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3.5"/></filter>
       <filter id="cbl${u}" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="9"/></filter>
       <filter id="cn${u}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3"/><feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 -.18"/><feComposite in2="SourceGraphic" operator="in"/></filter>
-      <filter id="cm${u}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".012 .05" numOctaves="3" seed="9"/><feColorMatrix values="0 0 0 0 .85 0 0 0 0 .9 0 0 0 0 .92 0 0 0 .5 -.12"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+      <filter id="cm${u}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".018 .09" numOctaves="2" seed="9"/><feColorMatrix values="0 0 0 0 .85 0 0 0 0 .9 0 0 0 0 .92 0 0 0 .3 -.07"/><feComposite in2="SourceGraphic" operator="in"/></filter>
     </defs>
     <rect width="1280" height="800" fill="url(#ct${u})"/><rect width="1280" height="800" fill="url(#cv${u})"/>
     <rect x="38" y="78" width="864" height="520" fill="#0f2a24" opacity=".38" filter="url(#cbl${u})"/>
@@ -408,12 +408,12 @@
     iphone: '<svg viewBox="0 0 28 26"><rect x="9" y="1.5" width="10" height="23" rx="2.5"/><path d="M12.5 4.5h3"/></svg>',
     pixel: '<svg viewBox="0 0 28 26"><rect x="8.5" y="1.5" width="11" height="23" rx="2"/><circle cx="14" cy="5" r=".8"/></svg>'
   };
-  const OPT = [['fullPage', 'Full page', 'The whole scroll, not the first screen'], ['hideCookieBanners', 'Hide cookie banners', ''], ['login', 'Login session', 'For pages behind a login'], ['customCss', 'Custom CSS', 'Hide or restyle parts first']];
+  const OPT = [['fullPage', 'Full page', ''], ['hideCookieBanners', 'Hide cookie banners', ''], ['login', 'Login session', 'For pages behind a login'], ['customCss', 'Custom CSS', 'Hide or restyle parts first']];
 
   function topHTML(s, tot, u) {
     return `<div class="c-top" data-part="top"><div class="c-sign"><svg class="c-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8V2h6M16 2h6v6M22 16v6h-6M8 22H2v-6"/></svg><b>ShotDomain</b></div>
       <div class="c-meta"><b>example.com</b><span>412 pages in 6 holes</span><span data-tot>${s.mode === 'start' ? `Sorting, ${tot.found} found so far` : `${tot.done} of ${tot.total} captured`}</span></div>
-      <div class="c-find"><label for="c-q${u}">Look up a page</label><input id="c-q${u}" class="c-q" type="search" placeholder="/blog/launch-notes" autocomplete="off" spellcheck="false"><div class="c-res" hidden></div></div></div>`;
+      <div class="c-find"><label for="c-q${u}">Look up a page</label><input id="c-q${u}" class="c-q" type="search" placeholder="An address, like /docs/api" autocomplete="off" spellcheck="false"><div class="c-res" hidden></div></div></div>`;
   }
   function slipsHTML(s, id, r) {
     const st = s.t[id], n = Math.min(9, Math.max(0, Math.round(st.found / 22))), L = CARD_L[r.col], bot = CT[r.row] + 108;
@@ -449,7 +449,7 @@
       <div class="c-shut${st.picked ? ' up' : ''}"><div class="c-slats"></div><span class="c-plate">Not picked<small>Roll up to pick ${pages(t.count)}</small></span></div><div class="c-housing"></div></div>`;
     if (s.mode === 'live' && st.picked) h += `<button class="c-openb" data-act="open" data-id="${id}" aria-label="${esc(openLabel(s, id))}"></button>`;
     h += `<button class="c-pull${st.picked ? '' : ' full'}" data-act="pick" data-id="${id}" aria-pressed="${st.picked}" aria-label="${st.picked ? 'Picked: roll the shutter down to leave out ' : 'Not picked: roll the shutter up to pick '}${lab}"><i></i></button>`;
-    if (s.mode === 'live' && st.picked && st.failed) h += `<div class="c-ret" data-ret="${id}"><div class="c-pc c-rc" style="left:96px;top:62px;rotate:-9deg">${art(id, 201)}<span class="c-stp c-stp-s">Returned</span></div><div class="c-pc c-rc" style="left:126px;top:74px;rotate:6deg">${art(id, 202)}<span class="c-stp c-stp-s">Returned</span></div><button class="c-retry" data-act="retry" data-id="${id}" aria-label="Retry the ${st.failed} returned pages: ${esc((t.capture.failedPaths || []).join(' and '))}">Retry<small>${pages(st.failed)}</small></button></div>`;
+    if (s.mode === 'live' && st.picked && st.failed) h += `<div class="c-ret" data-ret="${id}"><div class="c-pc c-rc" style="left:96px;top:46px;rotate:-8deg">${art(id, 201)}<span class="c-stp c-stp-s">Returned</span></div><div class="c-pc c-rc" style="left:150px;top:72px;rotate:7deg">${art(id, 202)}<span class="c-stp c-stp-s">Returned</span></div><button class="c-retry" data-act="retry" data-id="${id}" aria-label="Retry the ${st.failed} returned pages: ${esc((t.capture.failedPaths || []).join(' and '))}">Retry<small>${pages(st.failed)}</small></button></div>`;
     if (s.mode === 'live' && id === 'blog' && s.stamped && st.picked) h += `<span class="c-tag">3 don't fit</span>`;
     h += `</div><div class="c-rail" style="left:${r.x}px;top:${r.y + HH}px"><div class="c-brass"><div class="c-lab"><b>${lab}</b><span class="c-cnt">${s.mode === 'start' ? st.found : t.count}<small> ${t.count === 1 ? 'page' : 'pages'}</small></span></div></div><div class="c-l2"><span class="c-pat">${esc(t.pattern)}</span><span class="c-prog">${progText(s, id)}</span></div></div></div>`;
     return h;
@@ -463,7 +463,7 @@
     const devs = SITE.devices.map((d) => `<button class="c-dev${s.dev[d.id] ? ' on' : ''}" data-act="dev" data-id="${d.id}" aria-pressed="${s.dev[d.id]}" aria-label="${esc(d.name)}, ${d.width} px"><span class="c-dev-p">${esc(d.name)}<small>${d.width} px</small></span><span class="c-dev-i">${DEVICON[d.id]}<span><b>${esc(d.name)}</b><small>${d.width} px</small></span></span></button>`).join('');
     const opts = OPT.map(([k, l, hint]) => `<button class="c-opt${s.opt[k] ? ' on' : ''}" data-act="opt" data-id="${k}" aria-pressed="${s.opt[k]}"><span class="c-box" aria-hidden="true"><svg viewBox="0 0 26 26"><path d="M5 14l6 6 11-17"/></svg></span><span>${l}${hint ? `<small>${hint}</small>` : ''}</span></button>`).join('');
     return `<div class="c-dk-h"><span class="c-dk-t">Delivery docket</span><span class="c-dk-to">For<b>example.com</b></span></div>
-      <p class="c-dk-s">Devices, stamp the ones you want</p><div class="c-dk-devs">${devs}</div>
+      <p class="c-dk-s">Devices to stamp</p><div class="c-dk-devs">${devs}</div>
       <p class="c-dk-s">Special handling</p><div>${opts}</div><div class="c-dk-m" data-part="meter">${meterHTML(s, tot)}</div>`;
   }
   function parcelSVG() {
@@ -476,12 +476,12 @@
   }
   function envSVG(s) {
     let waves = '';
-    for (let k = 0; k < 4; k++) waves += `<path d="M96 ${20 + k * 7} q7 -4 14 0 t14 0 t14 0 t14 0" fill="none" stroke="#283f7d" stroke-width="1.6"/>`;
+    for (let k = 0; k < 4; k++) waves += `<path d="M74 ${22 + k * 7} q7 -4 14 0 t14 0 t14 0 t14 0" fill="none" stroke="#283f7d" stroke-width="1.6"/>`;
     return `<svg class="c-room" viewBox="0 0 288 150" width="288" height="150" aria-hidden="true">
       <rect x="6" y="8" width="282" height="142" fill="#2a2016" opacity=".3" transform="translate(3 4)"/>
       <rect x="2" y="2" width="282" height="144" fill="#fbfaf4"/><path d="M2 2L143 84L284 2" fill="none" stroke="#e3e1d6" stroke-width="1.2"/>
       <g transform="translate(226 12)"><rect width="46" height="56" fill="#fff" stroke="#d8d4c4" stroke-dasharray="2 2"/><rect x="5" y="5" width="36" height="46" fill="#1f4b41"/><rect x="9" y="11" width="8" height="11" fill="#0e2722"/><rect x="19" y="11" width="8" height="11" fill="#0e2722"/><rect x="29" y="11" width="8" height="11" fill="#0e2722"/><rect x="9" y="27" width="8" height="11" fill="#0e2722"/><rect x="19" y="27" width="8" height="11" fill="#0e2722"/><rect x="29" y="27" width="8" height="11" fill="#cda24c"/><rect x="10" y="17" width="6" height="5" fill="#fff"/><rect x="20" y="33" width="6" height="5" fill="#fff"/><rect x="9" y="42" width="28" height="3" fill="#cda24c"/></g>
-      ${s.posted ? `<g style="-webkit-mask-image:none" opacity=".88">${waves}<circle cx="218" cy="40" r="27" fill="none" stroke="#283f7d" stroke-width="2"/><circle cx="218" cy="40" r="21" fill="none" stroke="#283f7d" stroke-width="1"/><text x="218" y="38" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="800" font-size="14" fill="#283f7d">30 days</text><text x="218" y="51" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="600" font-size="8.5" fill="#283f7d">link open</text></g>` : ''}
+      ${s.posted ? `<g style="-webkit-mask-image:none" opacity=".88">${waves}<circle cx="194" cy="42" r="27" fill="none" stroke="#283f7d" stroke-width="2"/><circle cx="194" cy="42" r="21" fill="none" stroke="#283f7d" stroke-width="1"/><text x="194" y="40" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="800" font-size="14" fill="#283f7d">30 days</text><text x="194" y="53" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="600" font-size="8.5" fill="#283f7d">link open</text></g>` : ''}
     </svg>`;
   }
   function deskHTML(s, tot) {
@@ -525,7 +525,7 @@
     if (id === 'blog') { sumA = `${fit} fit the template`; sumB = "3 don't fit: stamped and pulled into the tray below"; }
     else if (st.failed) { sumA = `${st.done} of ${st.total} captured`; sumB = `${st.failed} came back returned`; }
     else { sumA = st.done >= st.total ? `${pages(st.done)}, all fit the template` : `${st.done} of ${st.total} captured`; sumB = 'Desktop beside iPhone 14 Pro'; }
-    let h = `<svg class="c-rv-bg" viewBox="0 0 1280 800" width="1280" height="800" aria-hidden="true"><defs><filter id="rm${u}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".01 .04" numOctaves="3" seed="4"/><feColorMatrix values="0 0 0 0 .85 0 0 0 0 .9 0 0 0 0 .93 0 0 0 .45 -.1"/><feComposite in2="SourceGraphic" operator="in"/></filter><radialGradient id="rl${u}" cx="15%" cy="0%" r="110%"><stop offset="0" stop-color="#fff" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity=".2"/></radialGradient><filter id="rb${u}"><feGaussianBlur stdDeviation="8"/></filter></defs>
+    let h = `<svg class="c-rv-bg" viewBox="0 0 1280 800" width="1280" height="800" aria-hidden="true"><defs><filter id="rm${u}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".018 .09" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 .85 0 0 0 0 .9 0 0 0 0 .93 0 0 0 .26 -.06"/><feComposite in2="SourceGraphic" operator="in"/></filter><radialGradient id="rl${u}" cx="15%" cy="0%" r="110%"><stop offset="0" stop-color="#fff" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity=".2"/></radialGradient><filter id="rb${u}"><feGaussianBlur stdDeviation="8"/></filter></defs>
       <rect width="1280" height="800" fill="#4c5a61"/><rect width="1280" height="800" fill="#000" filter="url(#rm${u})"/><rect width="1280" height="800" fill="url(#rl${u})"/>
       <rect x="26" y="532" width="1240" height="264" fill="#101a1d" opacity=".5" filter="url(#rb${u})"/>
       <rect x="20" y="524" width="1240" height="264" rx="5" fill="#dcb886"/><rect x="20" y="524" width="1240" height="2" fill="#f5e0b8"/>
@@ -533,7 +533,7 @@
     h += `<div class="c-rv-head"><div class="c-brass"><div class="c-lab"><b>${esc(t.name)}</b><span class="c-pat2">${esc(t.pattern)}</span><span class="c-cnt">${t.count}<small> ${t.count === 1 ? 'page' : 'pages'}</small></span></div></div>
       <div class="c-rv-sum"><b>${sumA}</b><span>${sumB}</span></div>
       <div class="c-rv-btns">${fit > 6 && mode !== 'static' ? `<button class="c-btn c-btn-s" data-act="spread">Spread all ${fit}</button>` : ''}<button class="c-btn" data-act="close">Put back</button></div></div>`;
-    h += `<svg class="c-string" viewBox="0 0 1280 800" width="1280" height="800" aria-hidden="true"><path d="M372 92c40 14 70-12 108 2s52 22 92 6 70-18 98 4c18 14-8 26-26 16" fill="none" stroke="#c9a067" stroke-width="3.4" stroke-linecap="round"/><path d="M372 92c40 14 70-12 108 2s52 22 92 6 70-18 98 4c18 14-8 26-26 16" fill="none" stroke="#7a5428" stroke-width="3.4" stroke-dasharray="1.3 3.2"/></svg>`;
+    h += `<svg class="c-string" viewBox="0 0 1280 800" width="1280" height="800" aria-hidden="true"><path d="M378 94c40 10 70-10 108 0s52 12 92 2 52-12 70 0c12 10-6 16-20 8" fill="none" stroke="#c9a067" stroke-width="3.4" stroke-linecap="round"/><path d="M378 94c40 10 70-10 108 0s52 12 92 2 52-12 70 0c12 10-6 16-20 8" fill="none" stroke="#7a5428" stroke-width="3.4" stroke-dasharray="1.3 3.2"/></svg>`;
     h += `<div class="c-rv-grid">` + good.map((p, k) => {
       const x = RV.gx + (k % 3) * RV.cw, y = RV.gy + ((k / 3) | 0) * RV.rh, rot = [-0.8, 0.6, -0.4, 0.9, -0.6, 0.5][k];
       return `<div class="c-pair" data-k="${k}" style="left:${x}px;top:${y}px"><button class="c-pc dk" data-act="lb" data-id="${id}" data-path="${esc(p)}" aria-label="Full size: ${esc(p)}" style="rotate:${rot}deg">${art(id, k + 1)}</button><div class="c-pc ph" style="rotate:${-rot}deg">${art(id, k + 1, 'phone')}</div><span class="c-cap">${esc(p)}</span></div>`;

@@ -79,6 +79,7 @@
 #dir-d .d-pick[aria-pressed="true"] svg{opacity:1}
 #dir-d .d-pick:active{transform:scale(.9)}
 #dir-d .d-retry{margin-top:6px;height:28px;padding:0 10px!important;border:1px solid var(--d-fail)!important;border-radius:3px;color:var(--d-ink);font:700 12px var(--d-ui)!important;display:inline-flex!important;align-items:center;gap:6px}
+#dir-d .d-retry[hidden]{display:none!important}
 #dir-d .d-retry:hover{background:color-mix(in srgb,var(--d-fail) 18%,transparent)!important}
 
 /* Odd pages pulled out on threads */
@@ -118,11 +119,11 @@
 #dir-d .d-ophead .m .p{font:400 13px var(--d-mono);color:var(--d-ink)}
 #dir-d .d-ophead .m b{color:var(--d-ink)}
 #dir-d .d-ophead .hint{margin-top:12px;font-size:12px;color:var(--d-faint)}
-#dir-d .d-cards{position:absolute;left:884px;top:84px;width:372px;z-index:3;display:grid;gap:14px;pointer-events:none}
+#dir-d .d-cards{position:absolute;left:884px;top:80px;width:372px;z-index:3;display:grid;gap:12px;pointer-events:none}
 #dir-d .d-card{position:relative;padding:12px 14px 14px;background:color-mix(in srgb,var(--d-plate) 88%,transparent);border:1px solid var(--d-rule);border-left:2px solid var(--d-hue);opacity:0;transform:translateX(-10px);transition:opacity var(--d-t2) var(--d-ease),transform var(--d-t3) var(--d-ease)}
 #dir-d .d-cards.on .d-card{opacity:1;transform:none;pointer-events:auto}
 #dir-d .d-card .why{font:400 19px/1.1 var(--d-display)}
-#dir-d .d-card .path{font:400 11px/1.35 var(--d-mono);color:var(--d-muted);word-break:break-all}
+#dir-d .d-card .path{font:400 12px/1.35 var(--d-mono);color:var(--d-muted);margin-top:2px}
 #dir-d .d-card .side{display:grid;gap:8px;align-content:start;min-width:0}
 #dir-d .d-card .shots{display:flex;gap:8px;align-items:flex-start;margin-top:9px}
 #dir-d .d-card .dk{width:168px;aspect-ratio:320/200;display:block;line-height:0;outline:1px solid color-mix(in srgb,var(--d-ink) 25%,transparent)}
@@ -164,7 +165,7 @@
 #dir-d .d-sr button:focus-visible{clip:auto;width:auto;height:auto;left:var(--fx,560px);top:var(--fy,90px);padding:6px 10px!important;background:var(--d-ink)!important;color:var(--d-sky0)!important;font:700 12px var(--d-ui)!important;border-radius:3px;z-index:9}
 
 /* Start screen */
-#dir-d .d-start{position:absolute;left:36px;top:100px;width:470px;z-index:3}
+#dir-d .d-start{position:absolute;left:36px;top:150px;width:470px;z-index:3}
 #dir-d .d-start h3{margin:0;font:400 46px/1.02 var(--d-display)}
 #dir-d .d-start .lede{margin:14px 0 0;color:var(--d-muted);font-size:15px;max-width:400px}
 #dir-d .d-url{margin-top:30px;display:block}
@@ -176,7 +177,7 @@
 #dir-d .d-cta span{font-size:13px;color:var(--d-muted)}
 #dir-d .d-start .d-group{margin-top:26px}
 #dir-d .d-start .d-group+.d-group{margin-top:18px}
-#dir-d .d-crawl{position:absolute;left:560px;top:96px;z-index:3;font-size:13px;color:var(--d-muted)}
+#dir-d .d-crawl{position:absolute;left:560px;top:146px;z-index:3;font-size:13px;color:var(--d-muted)}
 #dir-d .d-crawl b{display:block;font:400 22px var(--d-display);color:var(--d-ink)}
 #dir-d .d-spl{position:absolute;z-index:2;display:grid;gap:1px;padding:3px 7px;margin:-3px -7px;background:color-mix(in srgb,var(--d-sky0) 72%,transparent)}
 #dir-d .d-spl .p{font:400 13px var(--d-mono)}
@@ -561,7 +562,7 @@
     if (mode === 'live') wire(F);
   }
 
-  function startMap(x, y) { return [650 + (x - 52) * 0.54, 170 + (y - 120) * 0.82]; }
+  function startMap(x, y) { return [650 + (x - 52) * 0.54, 222 + (y - 120) * 0.82]; }
 
   function renderProgress(F) {
     const { st } = F, T = totals(st), el = F.$('.d-prog'); if (!el) return;
@@ -608,9 +609,9 @@
     head.querySelector('.m').innerHTML = `<span class="p">${esc(P.t.pattern)}</span><span><b>${P.t.count} ${P.t.count === 1 ? 'page' : 'pages'}</b>, ${!st.picked[id] ? 'not picked' : c.done >= P.t.count ? 'all captured' : c.done ? `${c.done} captured, ${c.failed} failed` : 'queued'}</span><span>${dv.length ? esc(dv.join(' and ')) : 'No devices picked'}</span>${P.odd.length ? `<span><b>${P.odd.length} odd ${P.odd.length === 1 ? 'page' : 'pages'}</b> pulled out</span>` : ''}`;
     head.style.setProperty('--d-hue', `var(--d-${id})`);
     cards.innerHTML = P.odd.map((o, k) => `<article class="d-card" style="--d-hue:var(--d-${id});${tintCSS(id)}transition-delay:${80 + k * 70}ms">
-        <div class="why">${esc(o.why)}</div>
+        <div class="why">${esc(o.why)}</div><div class="path">${esc(o.path)}</div>
         <div class="shots"><span class="dk">${ART.render(id, o.seed, { device: 'desktop', variant: o.variant })}</span><span class="ph">${ART.render(id, o.seed, { device: 'phone', variant: o.variant })}</span>
-        <div class="side"><span class="path">${esc(o.path)}</span><span class="lab">Desktop and iPhone</span><button class="full" data-act="preview" data-pile="${id}" data-odd="${k}" aria-label="Full size: ${esc(o.path)}">Full size</button></div></div></article>`).join('');
+        <div class="side"><span class="lab">Desktop and iPhone</span><button class="full" data-act="preview" data-pile="${id}" data-odd="${k}" aria-label="Full size: ${esc(o.path)}">Full size</button></div></div></article>`).join('');
     F.cardRects = Array.from(cards.querySelectorAll('.dk')).map((el) => { let x = 0, y = 0, e = el; while (e && e !== F.board) { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; } return { x, y, w: el.offsetWidth, h: el.offsetHeight }; });
     if (P.odd.length) note.classList.remove('on');
     else {
@@ -858,7 +859,7 @@
     const b1 = bmp(P.id, p.seed, 'desktop', 'normal', dw, th, F.k), b2 = bmp(P.id, p.seed, 'phone', 'normal', pw, th, F.k);
     if (b1) ctx.drawImage(b1, x0, y0, dw, th); if (b2) ctx.drawImage(b2, x0 + dw + 6, y0, pw, th);
     ctx.font = '400 11px "dirD Mono"'; ctx.fillStyle = TK.ink; ctx.textAlign = 'center'; ctx.fillText(p.path, cx, y0 + th + 18);
-    ctx.font = '400 11px "dirD Inst"'; ctx.fillStyle = TK.muted; ctx.fillText(p.cap === 'failed' && st.cap[P.id].failed ? 'Failed. Retry from the field' : p.cap === 'queued' || p.cap === 'flight' ? 'Not captured yet' : 'Desktop and iPhone. Click for full size', cx, y0 + th + 33);
+    ctx.font = '400 11px "dirD Inst"'; ctx.fillStyle = TK.muted; ctx.fillText(p.cap === 'failed' && st.cap[P.id].failed ? 'Failed. Retry from the field' : p.cap === 'queued' || p.cap === 'flight' ? 'Not captured yet' : 'Click for full size', cx, y0 + th + 33);
     ctx.restore();
     ctx.strokeStyle = TK[P.id]; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.stroke();
     ctx.strokeStyle = rgba(TK[P.id], 0.6); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(L.x, L.y); ctx.lineTo(cx + (L.x - cx) * (R / Math.hypot(L.x - cx, L.y - cy)), cy + (L.y - cy) * (R / Math.hypot(L.x - cx, L.y - cy))); ctx.stroke();
@@ -873,7 +874,7 @@
     ctx.globalCompositeOperation = 'source-over';
     /* the crawl: each URL found is read for its pattern and patched into its pile */
     const rows = [['blog', '/blog/q3-roadmap'], ['docs', '/docs/webhooks'], ['blog', '/blog/hiring-designers'], ['product', '/product/oak-shelf'], ['docs', '/docs/limits'], ['oneoff', '/careers'], ['blog', '/blog/launch-notes'], ['pricing', '/pricing']];
-    const RX = 560, RY = 182, RH = 23;
+    const RX = 560, RY = 232, RH = 23;
     const rowOf = {}; rows.forEach(([id], i) => { if (rowOf[id] == null) rowOf[id] = i; });
     ctx.font = '400 12px "dirD Mono"';
     const ends = rows.map(([id, path], i) => [RX + 14 + ctx.measureText(path).width + 10, RY + i * RH - 4]);
