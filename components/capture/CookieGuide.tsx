@@ -387,7 +387,7 @@ function ShotDomainScene({ phase }: { phase: number }) {
       </div>
       {read && (
         <div className="space-y-1 rounded-lg bg-accent-soft px-2 py-1.5 animate-[guide-fade-in_.4s_ease-out]">
-          <div className="text-accent">✓ Read your copied cURL: kept 3 cookies, left out 12 browser headers</div>
+          <div className="font-semibold text-fg">✓ Read your copied cURL: kept 3 cookies, left out 12 browser headers</div>
           <div className="flex flex-wrap items-center gap-1 text-muted">
             Likely login:
             <span className="rounded bg-accent-soft px-1 font-mono text-accent">session_id</span>
@@ -400,7 +400,7 @@ function ShotDomainScene({ phase }: { phase: number }) {
           ↻ Test login
         </span>
         {tested && (
-          <span className="rounded-md bg-accent-soft px-2 py-1 font-semibold text-accent animate-[guide-fade-in_.3s_ease-out]">
+          <span className="rounded-md bg-subtle px-2 py-1 font-semibold text-fg animate-[guide-fade-in_.3s_ease-out]">
             ✓ Looks logged in
           </span>
         )}
@@ -436,7 +436,7 @@ function ShotDomainFieldsScene({ phase }: { phase: number }) {
           ↻ Test login
         </span>
         {tested && (
-          <span className="rounded-md bg-accent-soft px-2 py-1 font-semibold text-accent animate-[guide-fade-in_.3s_ease-out]">
+          <span className="rounded-md bg-subtle px-2 py-1 font-semibold text-fg animate-[guide-fade-in_.3s_ease-out]">
             ✓ Looks logged in
           </span>
         )}
@@ -548,7 +548,7 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
             aria-checked={method === m}
             onClick={() => switchMethod(m)}
             className={`flex-1 cursor-pointer rounded-[4px] px-3 py-1.5 text-center whitespace-nowrap transition-colors ${
-              method === m ? 'bg-surface-strong font-medium text-fg shadow-sm' : 'text-muted hover:text-fg'
+              method === m ? 'bg-surface-strong font-semibold text-fg shadow-sm' : 'text-muted hover:text-fg'
             }`}
           >
             {label} <span className="ml-1 hidden text-xs font-normal text-muted sm:inline lg:hidden xl:inline">{hint}</span>
@@ -579,7 +579,7 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
               setPlaying(true);
               setPhase(0);
             }}
-            className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md border border-line bg-surface px-3 text-[13px] font-medium text-fg transition-colors hover:bg-subtle active:translate-y-px"
+            className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md border border-line bg-surface px-3 text-[13px] font-semibold text-fg transition-colors hover:bg-subtle active:translate-y-px"
           >
             <Icon name="play" size={13} />
             Play walkthrough

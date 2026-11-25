@@ -58,9 +58,9 @@ export default function UrlInputStep({ onDiscover, onQuickCapture, isLoading, in
 
   return (
     <div className="mx-auto max-w-xl pt-6 sm:pt-12">
-      <div className="mb-8 text-center">
-        <h1 className="text-[32px] leading-10 font-semibold tracking-[-0.04em] text-fg sm:text-5xl sm:leading-[1.05]">Screenshot an entire website.</h1>
-        <p className="mt-2 text-[15px] text-muted">
+      <div className="mb-8">
+        <h1 className="display text-[36px] text-fg sm:text-[48px]">Screenshot an entire website.</h1>
+        <p className="mt-3 text-base text-muted">
           Enter a domain, or a deeper URL like a docs section to capture just that part.
         </p>
       </div>
@@ -102,7 +102,7 @@ export default function UrlInputStep({ onDiscover, onQuickCapture, isLoading, in
               const url = validate();
               if (url) onQuickCapture(url);
             }}
-            className="cursor-pointer font-medium text-accent underline-offset-2 hover:underline disabled:cursor-default disabled:opacity-60"
+            className="cursor-pointer font-semibold text-fg underline underline-offset-4 hover:decoration-2 disabled:cursor-default disabled:opacity-60"
           >
             Capture just this URL
           </button>
@@ -112,7 +112,7 @@ export default function UrlInputStep({ onDiscover, onQuickCapture, isLoading, in
       <Card className="mt-6">
         <div className="flex items-center justify-between gap-4 px-5 py-4">
           <div>
-            <div className="flex items-center gap-2 text-sm font-medium text-fg">
+            <div className="flex items-center gap-2 text-sm font-semibold text-fg">
               This site needs a login {loginLocked && <PlanLock />}
             </div>
             <div className="mt-0.5 text-[13px] text-muted">Capture pages behind a login: dashboards, web apps, staging sites.</div>

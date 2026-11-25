@@ -50,7 +50,7 @@ export function MobileMenu({ links, account }: { links: MenuLink[]; account: Men
       </button>
       {open &&
         createPortal(
-          <nav id={id} aria-label="Menu" className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto border-t border-line bg-surface px-4 pt-2 pb-10">
+          <nav id={id} aria-label="Menu" className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto border-t border-line bg-bg px-4 pt-2 pb-10">
             <ul>
               {links.map((l) => (
                 <li key={l.href}>

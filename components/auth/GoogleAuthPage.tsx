@@ -47,14 +47,14 @@ export async function GoogleAuthPage({ mode, searchParams }: GoogleAuthPageProps
         !authEnabled ? null : signup ? (
           <>
             Already have an account?{' '}
-            <Link href="/login" className="font-medium text-fg hover:underline">
+            <Link href="/login" className="font-semibold text-fg underline underline-offset-4 hover:decoration-2">
               Log in
             </Link>
           </>
         ) : (
           <>
             New here?{' '}
-            <Link href="/signup" className="font-medium text-fg hover:underline">
+            <Link href="/signup" className="font-semibold text-fg underline underline-offset-4 hover:decoration-2">
               Create an account
             </Link>
           </>

@@ -25,18 +25,18 @@ interface CaptureProgressStepProps {
 function StatusIcon({ status }: { status: CaptureResult['status'] }) {
   switch (status) {
     case 'queued':
-      return <span className="block h-4 w-4 rounded-full border-[1.5px] border-dashed border-line-strong" title="Queued" />;
+      return <span className="block h-4 w-4 rounded-xs border-[1.5px] border-dashed border-line-strong" title="Queued" />;
     case 'capturing':
       return <Spinner size={16} className="text-accent" />;
     case 'done':
       return (
-        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-success text-on-status" title="Done">
+        <span className="flex h-4 w-4 items-center justify-center rounded-xs bg-success text-on-status" title="Done">
           <Icon name="check" size={11} strokeWidth={3} />
         </span>
       );
     case 'failed':
       return (
-        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-danger text-on-status" title="Failed">
+        <span className="flex h-4 w-4 items-center justify-center rounded-xs bg-danger text-on-status" title="Failed">
           <Icon name="x" size={11} strokeWidth={3} />
         </span>
       );
@@ -86,7 +86,7 @@ export default function CaptureProgressStep({
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-base font-semibold text-fg">{isComplete ? 'Capture finished' : 'Capturing…'}</h2>
+              <h2 className="type-wide text-[17px] leading-6 font-extrabold text-fg">{isComplete ? 'Capture finished' : 'Capturing…'}</h2>
               {isComplete ? <Badge tone={failed > 0 ? 'warning' : 'success'}>Done</Badge> : <Badge tone="accent">Running</Badge>}
             </div>
             <p className="mt-0.5 flex flex-wrap gap-x-4 text-sm text-muted tabular-nums">
@@ -97,7 +97,7 @@ export default function CaptureProgressStep({
             </p>
           </div>
           <div className="text-right">
-            <span className="text-2xl font-semibold tabular-nums text-fg">{pct}%</span>
+            <span className="type-wide text-3xl font-extrabold tabular-nums text-fg">{pct}%</span>
             <p className="text-xs text-muted tabular-nums">
               {isComplete ? `Took ${duration(elapsed)}` : etaMs !== undefined ? `${duration(elapsed)}, about ${duration(etaMs)} left` : duration(elapsed)}
             </p>
@@ -116,7 +116,7 @@ export default function CaptureProgressStep({
                 <StatusIcon status={r.status} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="truncate font-mono text-[13px] text-fg" title={r.url}>
+                    <span className="type-narrow truncate text-[15px] text-fg" title={r.url}>
                       {urlPath(r.url)}
                     </span>
                     {showDevice && r.device && <Badge>{r.device}</Badge>}
@@ -139,7 +139,7 @@ export default function CaptureProgressStep({
                     src={previewUrl(jobId, r.fileName)}
                     alt=""
                     loading="lazy"
-                    className="h-8 w-12 shrink-0 rounded border border-line bg-subtle object-cover object-top"
+                    className="h-8 w-12 shrink-0 animate-[develop_.5s_ease-out_both] rounded-xs border border-line-strong bg-subtle object-cover object-top"
                   />
                 )}
                 {r.status === 'failed' && (
@@ -153,21 +153,30 @@ export default function CaptureProgressStep({
         </ul>
 
         {/* Live preview of the newest screenshot */}
-        <aside className="hidden border-l border-line bg-subtle/40 p-4 md:block">
+        {/* The newest frame, developing on a strip of film as each capture finishes. */}
+        <aside className="band-dark hidden p-4 md:block">
           {latest?.fileName ? (
             <div className="space-y-2">
-              <p className="flex items-center gap-1.5 text-xs font-medium text-muted">
+              <p className="flex items-center gap-1.5 text-xs font-semibold text-muted">
                 {!isComplete && <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />}
                 {isComplete ? 'Last captured' : 'Just captured'}
               </p>
-              <div className="overflow-hidden rounded-lg border border-line bg-shot-paper shadow-sm">
+              <div className="overflow-hidden rounded-xs bg-shot-paper">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img key={latest.fileName} src={previewUrl(jobId, latest.fileName)} alt={`Screenshot of ${latest.url}`} className="block max-h-72 w-full object-cover object-top" />
+                <img
+                  key={latest.fileName}
+                  src={previewUrl(jobId, latest.fileName)}
+                  alt={`Screenshot of ${latest.url}`}
+                  className="block max-h-72 w-full animate-[develop_.6s_ease-out_both] object-cover object-top"
+                />
               </div>
-              <p className="truncate font-mono text-xs text-fg" title={latest.url}>
-                {urlPath(latest.url)}
+              <p className="type-narrow flex items-baseline gap-2 text-[15px] leading-5">
+                <span className="font-extrabold text-edge-print tabular-nums">{completed}</span>
+                <span className="truncate text-fg" title={latest.url}>
+                  {urlPath(latest.url)}
+                </span>
               </p>
-              {latest.device && <p className="text-xs text-muted">{latest.device}</p>}
+              {latest.device && <p className="type-narrow text-[15px] text-muted">{latest.device}</p>}
             </div>
           ) : (
             <div className="flex h-full min-h-40 flex-col items-center justify-center gap-2 text-center text-xs text-muted">

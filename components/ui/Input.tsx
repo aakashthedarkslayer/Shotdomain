@@ -80,7 +80,7 @@ interface FieldProps {
 export function Field({ label, htmlFor, hint, error, children, className = '' }: FieldProps) {
   return (
     <div className={`space-y-1.5 ${className}`}>
-      <label htmlFor={htmlFor} className="block text-[13px] font-medium text-fg">
+      <label htmlFor={htmlFor} className="block text-[13px] font-semibold text-fg">
         {label}
       </label>
       {children}

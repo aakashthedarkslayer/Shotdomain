@@ -117,7 +117,7 @@ export default function PageSelectionStep({
   if (isDiscovering) {
     return (
       <Card className="mx-auto max-w-xl px-6 py-14 text-center">
-        <Spinner size={28} className="mx-auto text-accent" />
+        <Spinner size={28} className="mx-auto text-fg" />
         <h2 className="mt-5 text-base font-semibold text-fg">Finding pages{rootUrl ? ` on ${urlHost(rootUrl)}` : ''}</h2>
         <p className="mt-1 text-sm text-muted" aria-live="polite">
           {discoveryStatus}
@@ -129,7 +129,7 @@ export default function PageSelectionStep({
   if (discoveryError) {
     return (
       <Card className="mx-auto max-w-xl px-6 py-12 text-center">
-        <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-danger-soft text-danger">
+        <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-sm bg-danger-soft text-danger">
           <Icon name="alert" size={20} />
         </span>
         <h2 className="mt-4 text-base font-semibold text-fg">Couldn&apos;t discover pages</h2>
@@ -144,6 +144,8 @@ export default function PageSelectionStep({
   }
 
   const allFilteredSelected = filtered.length > 0 && filtered.every((u) => selectedSet.has(u));
+  // Each page keeps its number in the order it was found, whatever the filter.
+  const frameNo = new Map(urls.map((u, i) => [u, i + 1]));
 
   // Home page and top-level sections, shortest first; capped at 25.
   const keyPageCap = Math.min(25, Number.isFinite(pageLimit) ? pageLimit : 25);
@@ -167,9 +169,9 @@ export default function PageSelectionStep({
         description={rootUrl ? urlHost(rootUrl) : undefined}
         actions={
           <>
-            {pathPrefix && <Badge tone="accent">Only {pathPrefix}</Badge>}
-            {loggedIn && <Badge tone="success" dot>Logged in</Badge>}
-            <Badge tone={discoveryMethod === 'sitemap' ? 'success' : 'accent'}>{discoveryMethod === 'sitemap' ? 'From sitemap' : 'From crawl'}</Badge>
+            {pathPrefix && <Badge>Only {pathPrefix}</Badge>}
+            {loggedIn && <Badge tone="success">Logged in</Badge>}
+            <Badge>{discoveryMethod === 'sitemap' ? 'From sitemap' : 'From crawl'}</Badge>
           </>
         }
       />
@@ -177,8 +179,8 @@ export default function PageSelectionStep({
       <div className="space-y-3 px-5 pt-4 sm:px-6">
         {truncated && <Alert tone="warning">Discovery stopped at 500 pages. This site may have more.</Alert>}
         {!loggedIn && urls.length <= 3 && onAddLogin && (
-          <div className="flex flex-col gap-3 rounded-xl bg-accent-soft px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-2.5 text-[13px] text-accent-text">
+          <div className="flex flex-col gap-3 rounded-sm border border-line-strong bg-subtle px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-2.5 text-[13px] text-fg">
               <Icon name="shield" size={16} className="mt-px shrink-0" />
               <span>
                 <b>Only {urls.length} {urls.length === 1 ? 'page' : 'pages'} found.</b> If this site needs a login (a web app or dashboard),
@@ -218,7 +220,7 @@ export default function PageSelectionStep({
           </div>
         </div>
         {addOpen && (
-          <div className="space-y-2 rounded-lg border border-line bg-subtle/50 p-3">
+          <div className="space-y-2 rounded-sm border border-line bg-subtle p-3">
             <Textarea
               aria-label="Pages to add"
               rows={3}
@@ -238,8 +240,8 @@ export default function PageSelectionStep({
         )}
       </div>
 
-      <div className="mx-5 mt-3 mb-4 overflow-hidden rounded-lg border border-line sm:mx-6">
-        <label className="flex cursor-pointer items-center gap-3 border-b border-line bg-subtle px-3 py-2 text-xs font-medium text-muted">
+      <div className="mx-5 mt-3 mb-4 overflow-hidden rounded-sm border border-line-strong sm:mx-6">
+        <label className="flex cursor-pointer items-center gap-3 border-b border-line bg-subtle px-3 py-2 text-xs font-semibold text-muted">
           <Checkbox
             checked={allFilteredSelected}
             onChange={() => (allFilteredSelected ? selectNone() : selectAll())}
@@ -253,11 +255,15 @@ export default function PageSelectionStep({
           ) : (
             filtered.map((url) => {
               const checked = selectedSet.has(url);
+              // A picked page is marked in red, like a frame circled on a proof sheet.
               return (
                 <li key={url}>
-                  <label className="flex cursor-pointer items-center gap-3 px-3 py-2 hover:bg-subtle">
+                  <label
+                    className={`flex cursor-pointer items-center gap-3 border-l-2 py-2 pr-3 pl-2.5 hover:bg-subtle ${checked ? 'border-accent' : 'border-transparent'}`}
+                  >
                     <Checkbox checked={checked} onChange={() => toggle(url)} />
-                    <span className={`truncate font-mono text-[13px] ${checked ? 'text-fg' : 'text-muted'}`} title={url}>
+                    <span className="type-narrow w-7 shrink-0 text-right text-[13px] text-faint tabular-nums">{frameNo.get(url)}</span>
+                    <span className={`type-narrow truncate text-[15px] ${checked ? 'text-fg' : 'text-muted'}`} title={url}>
                       {urlPath(url)}
                     </span>
                   </label>
@@ -276,7 +282,7 @@ export default function PageSelectionStep({
           <button
             type="button"
             onClick={() => onSelectionChange(selectedUrls.slice(0, pageLimit))}
-            className="mt-2 cursor-pointer text-[13px] font-medium text-accent hover:underline"
+            className="mt-2 cursor-pointer text-[13px] font-semibold text-fg underline underline-offset-4 hover:decoration-2"
           >
             Keep the first {pageLimit} pages
           </button>
@@ -297,7 +303,7 @@ export default function PageSelectionStep({
         </Button>
         <div className="flex items-center gap-3">
           <span className="text-sm text-muted">
-            <span className="font-medium text-fg">{selectedUrls.length}</span> of {urls.length} selected
+            <span className="font-extrabold text-fg tabular-nums">{selectedUrls.length}</span> of {urls.length} selected
           </span>
           <Button disabled={selectedUrls.length === 0 || overLimit} onClick={onContinue}>
             Continue

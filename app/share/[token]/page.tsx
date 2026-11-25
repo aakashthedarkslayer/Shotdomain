@@ -39,12 +39,12 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
 
   return (
     <div className="min-h-screen pb-24">
-      <header className="card-elevated border-x-0 border-t-0 !shadow-none">
+      <header className="border-b border-line bg-bg">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
           {brand ? (
             <span className="flex min-w-0 items-center gap-2.5">
               {brand.logoUrl && <BrandLogo src={brand.logoUrl} />}
-              {brand.name && <span className="truncate text-[15px] font-semibold tracking-tight text-fg">{brand.name}</span>}
+              {brand.name && <span className="type-wide truncate text-[15px] font-extrabold text-fg">{brand.name}</span>}
             </span>
           ) : (
             <Logo href="/" />

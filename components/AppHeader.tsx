@@ -15,7 +15,7 @@ const NAV = [
 export function AppHeader({ children }: { children?: ReactNode }) {
   const pathname = usePathname();
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-surface/85 backdrop-blur-md">
+    <header className="sticky top-0 z-30 border-b border-line bg-bg">
       <div className="mx-auto flex h-16 max-w-5xl items-center gap-3 px-4 sm:gap-6 sm:px-6">
         <Logo href="/" compact />
         <nav className="flex items-center gap-0.5 sm:gap-1">
@@ -25,8 +25,8 @@ export function AppHeader({ children }: { children?: ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`rounded-full px-3 py-1.5 text-sm tracking-[-0.01em] transition-colors ${
-                  active ? 'bg-subtle font-medium text-fg' : 'text-muted hover:bg-subtle hover:text-fg'
+                className={`px-2.5 py-2 text-sm font-semibold underline-offset-[6px] transition-colors ${
+                  active ? 'text-fg underline decoration-accent decoration-2' : 'text-muted hover:text-fg hover:underline'
                 }`}
               >
                 {item.label}

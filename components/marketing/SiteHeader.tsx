@@ -29,12 +29,12 @@ export async function SiteHeader() {
           { href: '/signup', label: 'Sign up free' },
         ];
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-surface/85 backdrop-blur-md">
+    <header className="sticky top-0 z-30 border-b border-line bg-bg">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4 sm:px-6">
         <Logo />
         <nav className="hidden items-center gap-1 lg:flex">
           {LINKS.map((l) => (
-            <a key={l.href} href={l.href} className="rounded-full px-3 py-1.5 text-sm tracking-[-0.01em] whitespace-nowrap text-muted transition-colors hover:bg-subtle hover:text-fg">
+            <a key={l.href} href={l.href} className="px-3 py-2 text-sm font-semibold whitespace-nowrap text-muted underline-offset-[6px] transition-colors hover:text-fg hover:underline">
               {l.label}
             </a>
           ))}
@@ -45,11 +45,11 @@ export async function SiteHeader() {
             <>
               <span
                 title="Sign-in isn’t configured (no Google keys in .env.local), so anyone can use the app."
-                className="hidden rounded-full border border-warning/30 bg-warning-soft px-2.5 py-0.5 text-xs whitespace-nowrap text-warning sm:inline"
+                className="hidden rounded-sm border border-warning/30 bg-warning-soft px-2 py-0.5 text-xs font-semibold whitespace-nowrap text-warning sm:inline"
               >
                 Local mode, no sign-in
               </span>
-              <Link href="/profile" className="hidden rounded-full px-3 py-1.5 text-sm tracking-[-0.01em] whitespace-nowrap text-muted transition-colors hover:bg-subtle hover:text-fg lg:inline-flex">
+              <Link href="/profile" className="hidden px-3 py-2 text-sm font-semibold whitespace-nowrap text-muted underline-offset-[6px] transition-colors hover:text-fg hover:underline lg:inline-flex">
                 Share links
               </Link>
             </>

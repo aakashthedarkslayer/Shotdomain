@@ -20,7 +20,7 @@ export function LogoMark({ size = 24 }: { size?: number }) {
 
 export function Logo({ href = '/', compact = false }: { href?: string; compact?: boolean }) {
   return (
-    <Link href={href} className="flex items-center gap-2 text-[15px] font-semibold tracking-[-0.03em] text-fg">
+    <Link href={href} className="type-wide flex items-center gap-2 text-[15px] font-extrabold tracking-[-0.02em] text-fg">
       <LogoMark />
       <span className={compact ? 'hidden sm:inline' : ''}>ShotDomain</span>
     </Link>

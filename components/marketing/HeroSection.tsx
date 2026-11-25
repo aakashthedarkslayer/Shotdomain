@@ -9,10 +9,11 @@ import { CaptureFlow } from '@/components/capture/CaptureFlow';
 import type { CaptureStart } from '@/components/capture/CaptureFlow';
 import { isValidUrl, normalizeUrl } from '@/lib/url';
 import { CAPTURE_EVENT } from './captureEvents';
+import { FilmStrip } from './FilmStrip';
 import type { OpenCaptureDetail } from './captureEvents';
 
 /**
- * DESIGN.md hero-band, and the front door to the tool: entering a domain
+ * The hero (DESIGN.md: Contact sheet), and the front door to the tool: entering a domain
  * swaps the hero for the capture flow right here. Signed-out visitors (when
  * sign-in is on) go through Google first and come back to the same capture
  * via /?url=… or /?capture=login.
@@ -75,36 +76,28 @@ export function HeroSection({ needsSignIn = false }: { needsSignIn?: boolean }) 
   }
 
   return (
-    <section
-      id="capture"
-      className={`relative scroll-mt-16 overflow-hidden border-b border-line bg-surface px-4 sm:px-6 ${start ? 'pt-12 pb-24 md:pt-14' : 'pt-16 pb-14 sm:pt-24 sm:pb-20 lg:pt-[152px] lg:pb-[124px]'}`}
-    >
-      {/* The brand gradient: hero scale only, the page's single decoration. */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -top-40 mx-auto h-[420px] max-w-4xl opacity-25 dark:opacity-20">
-        <div className="hero-mesh h-full w-full" />
-      </div>
-
+    <section id="capture" className={`relative scroll-mt-16 bg-bg ${start ? 'border-b border-line px-4 pt-12 pb-24 sm:px-6 md:pt-14' : ''}`}>
       {start ? (
         <div className="relative">
           <CaptureFlow start={start} />
         </div>
       ) : (
-        // Counter: the capture form is the hero's visual, set large under a short head.
-        <div className="relative mx-auto w-full max-w-4xl text-center">
-          <h1 className="text-[44px] leading-[1.02] font-semibold tracking-[-0.05em] text-fg sm:text-[60px] lg:text-[76px]">
-            Every page of a site.
-            <br />
-            One shot.
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-7 text-muted sm:text-xl sm:leading-8">Desktop, tablet and phone screenshots, as one ZIP or a client link.</p>
+        <>
+          {/* Counter: the capture form under a short head; the strip of real frames below is what you get. */}
+          <div className="mx-auto max-w-6xl px-4 pt-14 sm:px-6 sm:pt-20">
+            <h1 className="display text-[44px] text-fg sm:text-[60px] lg:text-[72px]">
+              Every page of a site.
+              <br />
+              One shot.
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-7 text-muted sm:text-xl sm:leading-8">Desktop, tablet and phone screenshots, as one ZIP or a client link.</p>
 
-          <div className="card-float mx-auto mt-10 max-w-[720px] rounded-[40px] p-3 sm:p-5">
-            <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-3 sm:flex-row">
+            <form onSubmit={handleSubmit} noValidate className="mt-10 flex max-w-[720px] flex-col gap-3 sm:flex-row">
               <label htmlFor="hero-url" className="sr-only">
                 Website URL
               </label>
               <div className="relative flex-1">
-                <Icon name="globe" size={22} className="pointer-events-none absolute top-1/2 left-6 -translate-y-1/2 text-faint" />
+                <Icon name="globe" size={20} className="pointer-events-none absolute top-1/2 left-5 -translate-y-1/2 text-faint" />
                 <input
                   id="hero-url"
                   ref={inputRef}
@@ -119,10 +112,10 @@ export function HeroSection({ needsSignIn = false }: { needsSignIn?: boolean }) 
                   spellCheck={false}
                   aria-invalid={!!error}
                   aria-describedby={error ? 'hero-url-error hero-terms' : 'hero-terms'}
-                  className="h-16 w-full rounded-full border border-field-edge bg-surface pr-6 pl-14 text-lg text-fg transition-colors placeholder:text-faint hover:border-fg aria-invalid:border-danger sm:h-[72px] sm:text-xl"
+                  className="h-14 w-full rounded-md border border-field-edge bg-surface pr-5 pl-13 text-lg text-fg transition-colors placeholder:text-faint hover:border-fg aria-invalid:border-danger sm:h-16"
                 />
               </div>
-              <Button type="submit" size="lg" shape="pill" className="h-16 px-9 text-lg sm:h-[72px]">
+              <Button type="submit" size="lg" shape="pill" className="h-14 px-8 text-lg sm:h-16">
                 Capture site
               </Button>
             </form>
@@ -131,19 +124,22 @@ export function HeroSection({ needsSignIn = false }: { needsSignIn?: boolean }) 
                 {error}
               </p>
             )}
-            <div className="mt-4 border-t border-line px-3 pt-4 pb-1 text-sm text-muted sm:flex sm:items-center sm:justify-between sm:gap-4 sm:text-left">
+            <div className="mt-4 flex max-w-[720px] flex-col gap-1 text-sm text-muted sm:flex-row sm:items-center sm:justify-between sm:gap-4">
               <p id="hero-terms">
                 Free for sites up to 15 pages.{needsSignIn ? ' You’ll sign in with Google first.' : ''}
               </p>
-              <p className="mt-1 sm:mt-0">
+              <p>
                 Behind a login, or only one page?{' '}
-                <button type="button" onClick={() => begin({ prefill: url.trim() })} className="-mx-1 -my-3 inline-block cursor-pointer px-1 py-3 font-medium text-fg underline-offset-2 hover:underline">
+                <button type="button" onClick={() => begin({ prefill: url.trim() })} className="-mx-1 -my-3 inline-block cursor-pointer px-1 py-3 font-semibold text-fg underline underline-offset-4 hover:decoration-2">
                   More options
                 </button>
               </p>
             </div>
           </div>
-        </div>
+          <div className="mt-12 sm:mt-14">
+            <FilmStrip />
+          </div>
+        </>
       )}
     </section>
   );

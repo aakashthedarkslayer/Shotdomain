@@ -28,7 +28,7 @@ export function UserMenu() {
         onClick={() => setOpen((o) => !o)}
         aria-label="Account menu"
         aria-expanded={open}
-        className="flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-line bg-subtle text-xs font-medium text-fg"
+        className="flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-line-strong bg-subtle text-xs font-semibold text-fg"
       >
         {user.image ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -38,9 +38,9 @@ export function UserMenu() {
         )}
       </button>
       {open && (
-        <div className="absolute right-0 z-40 mt-2 w-60 overflow-hidden card-elevated rounded-xl">
+        <div className="absolute right-0 z-40 mt-2 w-60 overflow-hidden card-elevated rounded-md">
           <div className="border-b border-line px-3 py-2.5">
-            {user.name && <p className="truncate text-sm font-medium text-fg">{user.name}</p>}
+            {user.name && <p className="truncate text-sm font-semibold text-fg">{user.name}</p>}
             <p className="truncate text-xs text-muted">{user.email}</p>
           </div>
           <Link href="/profile" onClick={() => setOpen(false)} className="block px-3 py-2 text-sm text-fg hover:bg-subtle">

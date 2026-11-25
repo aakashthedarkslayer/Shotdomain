@@ -42,7 +42,7 @@ function Row({ title, description, children, stacked }: { title: string; descrip
   return (
     <div className={`flex gap-4 px-5 py-4 sm:px-6 ${stacked ? 'flex-col' : 'flex-col sm:flex-row sm:items-center sm:justify-between'}`}>
       <div className="min-w-0">
-        <div className="text-sm font-medium text-fg">{title}</div>
+        <div className="text-sm font-semibold text-fg">{title}</div>
         {description && <div className="mt-0.5 text-[13px] text-muted">{description}</div>}
       </div>
       <div className={stacked ? '' : 'shrink-0'}>{children}</div>
@@ -144,8 +144,8 @@ export default function CaptureSettingsStep({
                   aria-pressed={active}
                   disabled={locked && !active}
                   onClick={() => toggleDevice(d.name)}
-                  className={`relative flex cursor-pointer flex-col items-start gap-2 rounded-lg border p-3 text-left transition disabled:cursor-not-allowed disabled:opacity-60 ${
-                    active ? 'border-accent bg-accent-soft/60 ring-1 ring-accent' : 'border-line hover:border-line-strong hover:bg-subtle'
+                  className={`relative flex cursor-pointer flex-col items-start gap-3 rounded-sm border p-3 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
+                    active ? 'border-accent bg-accent-soft ring-1 ring-accent' : 'border-line-strong bg-surface hover:border-fg'
                   }`}
                 >
                   {locked && !active && (
@@ -153,14 +153,23 @@ export default function CaptureSettingsStep({
                       <PlanLock link={false} />
                     </span>
                   )}
-                  <Icon name={d.icon} size={18} className={active ? 'text-accent' : 'text-muted'} />
+                  {/* The device's real screen shape, drawn to scale (28 px tall). */}
+                  {preset ? (
+                    <span
+                      aria-hidden="true"
+                      className={`block h-7 rounded-[2px] border-2 ${active ? 'border-accent' : 'border-fg'}`}
+                      style={{ width: Math.round((28 * preset.width) / preset.height) }}
+                    />
+                  ) : (
+                    <Icon name={d.icon} size={18} className={active ? 'text-accent' : 'text-muted'} />
+                  )}
                   <div>
-                    <div className="text-sm font-medium text-fg">{d.name}</div>
+                    <div className="text-sm font-semibold text-fg">{d.name}</div>
                     {d.name !== 'Desktop' && <div className="text-xs text-muted">{d.model}</div>}
-                    <div className="text-xs text-muted tabular-nums">{preset ? `${preset.width}×${preset.height}` : ''}</div>
+                    <div className="type-narrow text-[13px] text-muted tabular-nums">{preset ? `${preset.width} × ${preset.height}` : ''}</div>
                   </div>
                   {active && (
-                    <span className="absolute top-2.5 right-2.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-accent-ink">
+                    <span className="absolute top-2.5 right-2.5 flex h-4 w-4 items-center justify-center rounded-xs bg-accent text-accent-ink">
                       <Icon name="check" size={11} strokeWidth={3} />
                     </span>
                   )}
@@ -171,7 +180,7 @@ export default function CaptureSettingsStep({
           {limits.devices.length < DEVICES.length && (
             <p className="mt-2 text-[13px] text-muted">
               Tablet and Android screenshots are included in Pro.{' '}
-              <Link href="/billing?plan=pro" className="font-medium text-accent hover:underline">
+              <Link href="/billing?plan=pro" className="font-semibold text-fg underline underline-offset-4 hover:decoration-2">
                 See plans
               </Link>
             </p>
@@ -201,7 +210,7 @@ export default function CaptureSettingsStep({
               disabled={settings.aspectRatio === 'Custom'}
               aria-pressed={settings.linked}
               title={settings.linked ? 'Aspect ratio locked' : 'Aspect ratio unlocked'}
-              className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg transition disabled:cursor-not-allowed disabled:opacity-40 ${
+              className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-md transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                 settings.linked ? 'bg-accent-soft text-accent-text' : 'text-faint hover:bg-subtle hover:text-fg'
               }`}
             >
@@ -228,7 +237,7 @@ export default function CaptureSettingsStep({
 
         {authMethod !== 'none' && (
           <Row title="Login" description="Set on the first step. Every page is captured logged in.">
-            <span className="inline-flex items-center gap-1.5 rounded-md bg-success-soft px-2 py-1 text-xs font-medium text-success">
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-success-soft px-2 py-1 text-xs font-semibold text-success">
               <Icon name="check" size={12} /> {describeAuth({ method: authMethod })}
             </span>
           </Row>
@@ -259,7 +268,7 @@ export default function CaptureSettingsStep({
             type="button"
             onClick={() => setAdvancedOpen((o) => !o)}
             aria-expanded={advancedOpen}
-            className="flex w-full cursor-pointer items-center justify-between px-5 py-3.5 text-sm font-medium text-muted hover:text-fg sm:px-6"
+            className="flex w-full cursor-pointer items-center justify-between px-5 py-3.5 text-sm font-semibold text-muted hover:text-fg sm:px-6"
           >
             Advanced
             <Icon name="chevronDown" size={16} className={`transition-transform ${advancedOpen ? 'rotate-180' : ''}`} />

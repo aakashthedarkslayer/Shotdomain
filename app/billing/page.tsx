@@ -20,7 +20,7 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
       <AppHeader />
       <main className="mx-auto max-w-6xl px-4 pt-10 sm:px-6">
         <div className="mb-8">
-          <h1 className="text-[32px] leading-10 font-semibold tracking-[-0.04em] text-fg">Plan &amp; billing</h1>
+          <h1 className="display text-[36px] text-fg sm:text-[44px]">Plan &amp; billing</h1>
           <p className="mt-1 text-sm text-muted">Change plans, switch to yearly billing, or download invoices.</p>
         </div>
         <BillingPanel

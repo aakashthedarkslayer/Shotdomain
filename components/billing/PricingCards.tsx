@@ -31,7 +31,7 @@ function yearlySaving(): string {
 export function IntervalToggle({ value, onChange }: { value: Interval; onChange: (v: Interval) => void }) {
   const saving = yearlySaving();
   return (
-    <div role="radiogroup" aria-label="Billing period" className="inline-flex rounded-full border border-line bg-surface p-1 text-sm">
+    <div role="radiogroup" aria-label="Billing period" className="inline-flex rounded-md border border-line-strong bg-surface p-1 text-sm">
       {(['month', 'year'] as const).map((i) => (
         <button
           key={i}
@@ -39,13 +39,13 @@ export function IntervalToggle({ value, onChange }: { value: Interval; onChange:
           role="radio"
           aria-checked={value === i}
           onClick={() => onChange(i)}
-          className={`flex cursor-pointer items-center gap-2 rounded-full px-4 py-1.5 tracking-[-0.01em] transition-colors ${
-            value === i ? 'bg-primary font-medium text-primary-fg' : 'text-muted hover:text-fg'
+          className={`flex cursor-pointer items-center gap-2 rounded-[4px] px-4 py-1.5 font-semibold transition-colors ${
+            value === i ? 'bg-primary text-primary-fg' : 'text-muted hover:text-fg'
           }`}
         >
           {i === 'month' ? 'Monthly' : 'Yearly'}
           {i === 'year' && saving && (
-            <span className={`text-xs ${value === i ? 'opacity-80' : 'text-accent-text'}`}>{saving}</span>
+            <span className={`text-xs font-semibold ${value === i ? 'opacity-80' : 'text-fg'}`}>{saving}</span>
           )}
         </button>
       ))}
@@ -54,9 +54,9 @@ export function IntervalToggle({ value, onChange }: { value: Interval; onChange:
 }
 
 /**
- * The plan cards (DESIGN.md pricing-card). The featured tier is
- * polarity-flipped to ink (band-dark), so its primary button turns into the
- * white pill on black. `action` renders each card's button (a link on the
+ * The plan cards: flat prints on the sheet (DESIGN.md). The featured tier is
+ * a piece of film (band-flip), so its primary button turns into the paper
+ * button on black. `action` renders each card's button (a link on the
  * homepage, checkout / switch buttons on the billing page).
  */
 export function PricingCards({
@@ -87,29 +87,29 @@ export function PricingCards({
           return (
             <div
               key={id}
-              className={`relative flex flex-col rounded-xl p-8 ${featured ? 'band-flip border border-line shadow-featured' : 'card-float'}`}
+              className={`relative flex flex-col rounded-sm p-8 ${featured ? 'band-flip' : 'card-float'}`}
             >
               <div className="flex items-center justify-between gap-2">
-                <h3 className="text-2xl font-semibold tracking-[-0.04em] text-fg">{plan.name}</h3>
+                <h3 className="type-wide text-2xl font-extrabold tracking-[-0.02em] text-fg">{plan.name}</h3>
                 {label && (
                   <span
-                    className={`rounded-full border px-2 py-0.5 text-xs ${
-                      current === id ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line text-muted'
+                    className={`rounded-sm border px-1.5 py-0.5 text-xs font-semibold ${
+                      current === id ? 'border-accent bg-accent-soft text-accent-text' : 'border-line-strong text-muted'
                     }`}
                   >
                     {label}
                   </span>
                 )}
               </div>
-              <p className="mt-2 min-h-[2.5rem] text-sm leading-5 tracking-[-0.01em] text-muted">{plan.tagline}</p>
+              <p className="mt-2 min-h-[2.5rem] text-sm leading-5 text-muted">{plan.tagline}</p>
               <p className="mt-6 flex items-baseline gap-1.5">
-                <span className="text-5xl font-semibold tracking-[-0.05em] text-fg">{price.amount}</span>
+                <span className="type-wide text-5xl font-extrabold tracking-[-0.03em] text-fg tabular-nums">{price.amount}</span>
                 <span className="text-sm text-muted">{price.cadence}</span>
               </p>
               <p className="mt-1 h-4 text-xs text-faint">{price.note}</p>
               <ul className="mt-8 flex-1 space-y-3 border-t border-line pt-6">
                 {plan.highlights.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm leading-5 tracking-[-0.01em] text-fg">
+                  <li key={f} className="flex items-start gap-2.5 text-sm leading-5 text-fg">
                     <Icon name="check" size={16} className="mt-0.5 shrink-0 text-muted" />
                     {f}
                   </li>

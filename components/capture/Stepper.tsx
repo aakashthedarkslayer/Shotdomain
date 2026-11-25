@@ -2,7 +2,10 @@ import { Icon } from '@/components/ui/Icon';
 
 const STEPS = ['Website', 'Pages', 'Settings', 'Capture', 'Results'];
 
-/** Compact horizontal progress for the 5-step flow. */
+/**
+ * The five steps as a row of frames: done frames are black with a tick, the
+ * current one is circled in marker red, the rest wait in outline.
+ */
 export function Stepper({ current }: { current: number }) {
   return (
     <nav aria-label="Progress">
@@ -15,19 +18,19 @@ export function Stepper({ current }: { current: number }) {
             <li key={label} className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3 last:flex-none">
               <div className="flex items-center gap-2" aria-current={active ? 'step' : undefined}>
                 <span
-                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium transition ${
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xs text-xs font-extrabold tabular-nums transition-colors ${
                     done
                       ? 'bg-primary text-primary-fg'
                       : active
-                        ? 'bg-primary text-primary-fg ring-4 ring-line'
-                        : 'border border-line bg-surface text-faint'
+                        ? 'border-2 border-accent bg-surface text-fg'
+                        : 'border border-line-strong text-faint'
                   }`}
                 >
-                  {done ? <Icon name="check" size={13} strokeWidth={2.5} /> : num}
+                  {done ? <Icon name="check" size={14} strokeWidth={2.5} /> : num}
                 </span>
                 <span
-                  className={`hidden text-sm tracking-[-0.01em] whitespace-nowrap sm:inline ${
-                    active ? 'font-medium text-fg' : done ? 'text-fg' : 'text-faint'
+                  className={`type-narrow hidden text-[15px] whitespace-nowrap sm:inline ${
+                    active ? 'font-extrabold text-fg' : done ? 'font-semibold text-fg' : 'text-faint'
                   }`}
                 >
                   {label}

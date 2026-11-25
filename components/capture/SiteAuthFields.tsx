@@ -34,13 +34,13 @@ function CookieHelp() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="card group flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-surface-strong"
+        className="card group flex w-full cursor-pointer items-center gap-3 rounded-sm px-3 py-2.5 text-left transition-colors hover:border-fg"
       >
-        <span className="bg-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-primary-fg">
+        <span className="bg-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-xs text-primary-fg">
           <Icon name="play" size={15} />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-medium text-fg">Show me how to copy my login</span>
+          <span className="block text-sm font-semibold text-fg">Show me how to copy my login</span>
           <span className="block text-xs text-muted">A 20-second animated guide, no technical knowledge needed</span>
         </span>
         <Icon name="arrowRight" size={14} className="text-muted transition group-hover:translate-x-0.5" />
@@ -57,15 +57,15 @@ function CookieHelp() {
 
 function CookieTextHelp() {
   return (
-    <details className="group rounded-lg border border-line bg-subtle/50 text-[13px]">
-      <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2 font-medium text-fg [&::-webkit-details-marker]:hidden">
-        <Icon name="info" size={14} className="text-accent" />
+    <details className="group rounded-sm border border-line bg-subtle text-[13px]">
+      <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2 font-semibold text-fg [&::-webkit-details-marker]:hidden">
+        <Icon name="info" size={14} className="text-fg" />
         Prefer text? Step-by-step instructions
         <Icon name="chevronDown" size={14} className="ml-auto text-muted transition-transform group-open:rotate-180" />
       </summary>
       <div className="space-y-3 border-t border-line px-3 py-3 text-muted">
         <div>
-          <p className="font-medium text-fg">Option A: Copy as cURL (easiest, copies everything)</p>
+          <p className="font-semibold text-fg">Option A: Copy as cURL (easiest, copies everything)</p>
           <ol className="mt-1 list-decimal space-y-0.5 pl-5">
             <li>Log in to the site in Chrome or Edge as you normally would.</li>
             <li>
@@ -79,14 +79,14 @@ function CookieTextHelp() {
           </ol>
         </div>
         <div>
-          <p className="font-medium text-fg">Option B: copy one cookie from the Application tab</p>
+          <p className="font-semibold text-fg">Option B: copy one cookie from the Application tab</p>
           <p className="mt-1">
             DevTools → <b>Application</b> (under <b>»</b> if hidden) → <b>Storage → Cookies</b> → the site’s address. Double-click the{' '}
             <b>Value</b> of the login cookie, copy it, and enter its name and value.
           </p>
         </div>
         <div>
-          <p className="font-medium text-fg">Option C: with a cookie extension</p>
+          <p className="font-semibold text-fg">Option C: with a cookie extension</p>
           <p className="mt-1">
             Use an extension such as Cookie-Editor (Export → JSON) or “Get cookies.txt”, and paste the export below. Both formats work.
           </p>
@@ -113,7 +113,7 @@ function PastedCookieSummary({ text }: { text: string }) {
     </span>
   );
   return (
-    <div className="space-y-2 rounded-xl border border-line bg-subtle/60 px-3 py-2.5 text-[13px]">
+    <div className="space-y-2 rounded-sm border border-line bg-subtle px-3 py-2.5 text-[13px]">
       <div className="text-fg">
         Found <b>{names.length}</b> {names.length === 1 ? 'cookie' : 'cookies'}. All of them are sent, like your browser does.
       </div>
@@ -170,7 +170,7 @@ function CopiedRequestNote({ req, siteUrl }: { req: CopiedRequest; siteUrl: stri
   }
   return (
     <div className="space-y-2">
-      <div className="flex items-start gap-2 rounded-xl bg-success-soft px-3 py-2.5 text-[13px] text-success">
+      <div className="flex items-start gap-2 rounded-sm bg-success-soft px-3 py-2.5 text-[13px] text-success">
         <Icon name="check" size={15} className="mt-px shrink-0" />
         <span>
           Read your copied {label}
@@ -284,7 +284,7 @@ function CookieInput({
         </Field>
         {copied && <CopiedRequestNote req={copied} siteUrl={siteUrl} />}
         <PastedCookieSummary text={auth.cookies ?? ''} />
-        <button type="button" onClick={() => set({ cookieInput: 'fields', cookies: rowsToCookieHeader(rows, preset) })} className="cursor-pointer text-[13px] font-medium text-accent hover:underline">
+        <button type="button" onClick={() => set({ cookieInput: 'fields', cookies: rowsToCookieHeader(rows, preset) })} className="cursor-pointer text-[13px] font-semibold text-fg underline underline-offset-4 hover:decoration-2">
           {preset ? 'Enter cookie values one by one instead' : 'Copied one cookie from the Application tab? Enter its name and value'}
         </button>
       </div>
@@ -294,8 +294,8 @@ function CookieInput({
   return (
     <div className="space-y-2.5">
       <div className="flex items-baseline justify-between gap-3">
-        <span className="text-[13px] font-medium text-fg">{preset ? `${preset.site} session cookie` : 'Session cookies'}</span>
-        <button type="button" onClick={() => set({ cookieInput: 'paste' })} className="cursor-pointer text-[13px] font-medium text-accent hover:underline">
+        <span className="text-[13px] font-semibold text-fg">{preset ? `${preset.site} session cookie` : 'Session cookies'}</span>
+        <button type="button" onClick={() => set({ cookieInput: 'paste' })} className="cursor-pointer text-[13px] font-semibold text-fg underline underline-offset-4 hover:decoration-2">
           Paste a cURL or all cookies at once
         </button>
       </div>
@@ -306,7 +306,7 @@ function CookieInput({
           <div key={i} className="space-y-1">
             <div className="flex items-center gap-2">
               {fixed ? (
-                <span className="flex h-9 min-w-[9rem] shrink-0 items-center rounded-xl bg-subtle px-3 font-mono text-[13px] text-fg">{row.name}</span>
+                <span className="flex h-9 min-w-[9rem] shrink-0 items-center rounded-md bg-subtle px-3 font-mono text-[13px] text-fg">{row.name}</span>
               ) : (
                 <Input aria-label="Cookie name" placeholder="cookie name" value={row.name} onChange={(e) => setRow(i, { name: e.target.value })} className="font-mono text-[13px]" />
               )}
@@ -332,7 +332,7 @@ function CookieInput({
         );
       })}
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <button type="button" onClick={() => updateRows([...rows, { name: '', value: '' }])} className="flex cursor-pointer items-center gap-1 text-[13px] font-medium text-muted hover:text-fg">
+        <button type="button" onClick={() => updateRows([...rows, { name: '', value: '' }])} className="flex cursor-pointer items-center gap-1 text-[13px] font-semibold text-muted hover:text-fg">
           <Icon name="plus" size={14} /> Add another cookie
         </button>
         {preset?.note && <span className="text-xs text-muted">{preset.note}</span>}
@@ -376,7 +376,7 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
     <div className="space-y-4">
       {!usingPassword ? (
         <>
-          <div className="flex items-start gap-2.5 rounded-lg bg-accent-soft px-3 py-2.5 text-[13px] text-accent-text">
+          <div className="flex items-start gap-2.5 rounded-sm border border-line-strong bg-subtle px-3 py-2.5 text-[13px] text-fg">
             <Icon name="shield" size={16} className="mt-px" />
             <span>
               <b>No password needed.</b> Log in to the site in your own browser and paste your session below. Treat it like a key: it works
@@ -388,7 +388,7 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
 
           <CookieInput siteUrl={siteUrl} auth={auth} set={set} onHeadersAdded={() => setShowExtra(true)} />
 
-          <button type="button" onClick={() => setShowExtra((v) => !v)} className="flex cursor-pointer items-center gap-1 text-[13px] font-medium text-muted hover:text-fg">
+          <button type="button" onClick={() => setShowExtra((v) => !v)} className="flex cursor-pointer items-center gap-1 text-[13px] font-semibold text-muted hover:text-fg">
             <Icon name="chevronDown" size={14} className={`transition-transform ${showExtra ? 'rotate-180' : ''}`} />
             Token in browser storage or custom headers
           </button>
@@ -431,7 +431,7 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
                 { value: 'basic', label: 'Basic auth' },
               ]}
             />
-            <button type="button" onClick={() => set({ method: 'cookies' })} className="flex cursor-pointer items-center gap-1 text-[13px] font-medium text-accent hover:underline">
+            <button type="button" onClick={() => set({ method: 'cookies' })} className="flex cursor-pointer items-center gap-1 text-[13px] font-semibold text-fg underline underline-offset-4 hover:decoration-2">
               <Icon name="arrowLeft" size={14} /> Back to session login (no password)
             </button>
           </div>
@@ -453,7 +453,7 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
                   <Input id="auth-password" type="password" autoComplete="new-password" value={auth.password ?? ''} onChange={(e) => set({ password: e.target.value })} />
                 </Field>
               </div>
-              <button type="button" onClick={() => setShowSelectors((v) => !v)} className="cursor-pointer text-[13px] font-medium text-muted hover:text-fg">
+              <button type="button" onClick={() => setShowSelectors((v) => !v)} className="cursor-pointer text-[13px] font-semibold text-muted hover:text-fg">
                 {showSelectors ? 'Hide' : 'Set'} field selectors (if auto-detect fails)
               </button>
               {showSelectors && (
@@ -511,7 +511,7 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
           )}
           {result.image && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={result.image} alt="Page after logging in" className="w-full rounded-lg border border-line" />
+            <img src={result.image} alt="Page after logging in" className="w-full rounded-xs border border-line" />
           )}
         </div>
       )}

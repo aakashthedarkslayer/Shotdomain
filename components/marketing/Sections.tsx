@@ -7,13 +7,12 @@ import { CookieGuide } from '@/components/capture/CookieGuide';
 import { MarketingPricing } from '@/components/billing/MarketingPricing';
 import { CaptureButton } from './CaptureButton';
 import { OutputPanel } from './OutputPanel';
-import { DEVICE_PRESETS } from '@/lib/devices';
 import { SHARE_DAYS } from '@/lib/plans';
 import { LEGAL } from '@/lib/legal';
 
 /*
- * Homepage sections (DESIGN.md surfaces, Hallmark Workbench shape): plain
- * sentence-case headings with no eyebrows, each section in its own
+ * Homepage sections (DESIGN.md: Contact sheet). One sheet of proof paper
+ * parted by hairlines; wide headings with no eyebrows; each section in its own
  * composition. The worked example shows real ShotDomain output.
  */
 
@@ -44,7 +43,7 @@ function Band({
 
 function Heading({ id, children, className = '' }: { id?: string; children: ReactNode; className?: string }) {
   return (
-    <h2 id={id} className={`text-[32px] leading-10 font-semibold tracking-[-0.04em] text-fg ${className}`}>
+    <h2 id={id} className={`type-wide text-[30px] leading-9 font-extrabold tracking-[-0.025em] text-fg sm:text-[36px] sm:leading-10 ${className}`}>
       {children}
     </h2>
   );
@@ -53,59 +52,40 @@ function Heading({ id, children, className = '' }: { id?: string; children: Reac
 /* ------------------------------------------------------------------------ */
 
 /**
- * Real output: ShotDomain run on its own site, then the share page that run
- * made, captured (see public/screens/README.md for how they were taken).
+ * The two things a capture gives you, side by side: the share page a client
+ * opens (a real capture of one, public/screens/README.md) and the ZIP.
  */
 export function WorkedExampleSection() {
-  const phone = DEVICE_PRESETS['Mobile (iOS)'];
   return (
-    <Band id="example" labelledBy="example-heading" flushTop>
-      <figure>
-        <div className="overflow-hidden rounded-xl border border-line bg-surface shadow-[var(--shadow-float)]">
-          <picture>
-            {/* On a phone, the same share page as a phone shows it, so it stays readable. */}
-            <source media="(max-width: 639px)" srcSet="/screens/share-phone.webp" width={780} height={1200} />
-            <img
-              src="/screens/share-desktop.webp"
-              width={2304}
-              height={1440}
-              alt="A ShotDomain share page: the site's name, a Download ZIP button, device tabs and a grid of page screenshots."
-              decoding="async"
-              className="block h-auto w-full"
-            />
-          </picture>
-        </div>
-        <figcaption className="mt-4 max-w-2xl text-sm leading-6 text-muted">
-          <span className="font-medium text-fg">The link your client opens.</span> Every page, by device, with one button for the ZIP. No account needed, and it
-          is kept for {SHARE_DAYS} days.
-        </figcaption>
-      </figure>
+    <Band id="example" labelledBy="example-heading">
+      <div className="max-w-2xl">
+        <Heading id="example-heading">One ZIP, or a link for your client.</Heading>
+        <p className="mt-4 text-lg leading-7 text-muted">ShotDomain run on its own site: a full-page screenshot of every page, on every device you pick.</p>
+      </div>
 
-      <div className="mt-20 grid items-start gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
-        <div>
-          <Heading id="example-heading">One ZIP, or a link for your client.</Heading>
-          <p className="mt-4 max-w-xl text-lg leading-7 text-muted">ShotDomain run on its own site: a full-page screenshot of every page, on every device you pick.</p>
-          <div className="mt-10">
-            <OutputPanel />
+      <div className="mt-12 grid items-start gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
+        <figure>
+          <div className="overflow-hidden rounded-sm border border-line-strong bg-surface">
+            <picture>
+              {/* On a phone, the same share page as a phone shows it, so it stays readable. */}
+              <source media="(max-width: 639px)" srcSet="/screens/share-phone.webp" width={780} height={1200} />
+              <img
+                src="/screens/share-desktop.webp"
+                width={2304}
+                height={1440}
+                alt="A ShotDomain share page: the site's name, a Download ZIP button, device tabs and a grid of page screenshots."
+                loading="lazy"
+                decoding="async"
+                className="block h-auto w-full"
+              />
+            </picture>
           </div>
-        </div>
-        <figure className="w-full max-w-[300px] lg:justify-self-end">
-          <div className="aspect-[393/640] overflow-hidden rounded-[28px] border border-line bg-surface shadow-[var(--shadow-float)]">
-            {/* eslint-disable-next-line @next/next/no-img-element -- a static WebP sized at build, below the fold */}
-            <img
-              src="/screens/home-mobile-ios.webp"
-              width={900}
-              height={1466}
-              alt="ShotDomain's homepage as captured on iPhone 14 Pro: the headline and the capture form."
-              loading="lazy"
-              decoding="async"
-              className="block h-full w-full object-cover object-top"
-            />
-          </div>
-          <figcaption className="mt-4 text-sm leading-6 text-muted">
-            <span className="font-medium text-fg">mobile-ios/home.png</span>, the top of it, as ShotDomain took it: {phone.width} px wide at {phone.deviceScaleFactor}x.
+          <figcaption className="mt-4 max-w-xl text-sm leading-6 text-muted">
+            <span className="font-semibold text-fg">The link your client opens.</span> Every page, by device, with one button for the ZIP. No account needed, and it is
+            kept for {SHARE_DAYS} days.
           </figcaption>
         </figure>
+        <OutputPanel />
       </div>
     </Band>
   );
@@ -149,12 +129,15 @@ export function HowItWorksSection() {
           </p>
         </div>
         <ol className="divide-y divide-line border-y border-line">
-          {STEPS.map((s) => (
-            <li key={s.title} className="grid gap-2 py-7 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] sm:gap-8">
-              <h3 className="text-xl leading-7 font-semibold tracking-[-0.03em] text-fg">{s.title}</h3>
+          {STEPS.map((s, i) => (
+            <li key={s.title} className="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-4 gap-y-2 py-7 sm:grid-cols-[3rem_minmax(0,2fr)_minmax(0,3fr)] sm:gap-x-6">
+              <span aria-hidden="true" className="type-wide row-span-2 text-[28px] leading-7 font-extrabold text-fg tabular-nums sm:row-span-1">
+                {i + 1}
+              </span>
+              <h3 className="type-wide text-lg leading-7 font-extrabold tracking-[-0.01em] text-fg">{s.title}</h3>
               <div>
                 <p className="text-base leading-6 text-muted">{s.body}</p>
-                <p className="mt-2 text-sm leading-5 font-medium text-fg">{s.detail}</p>
+                <p className="mt-2 text-sm leading-5 font-semibold text-fg">{s.detail}</p>
               </div>
             </li>
           ))}
@@ -185,8 +168,8 @@ export function LoginPagesSection() {
             Dashboards, client portals, staging sites. Copy your session from your own browser and paste it in. You never hand over a password,
             and it works with two-factor and single sign-on.
           </p>
-          <h3 className="mt-8 text-sm font-semibold tracking-[-0.01em] text-fg">What happens to your session</h3>
-          <ul className="mt-3 space-y-2.5 text-sm leading-6 tracking-[-0.01em] text-muted">
+          <h3 className="mt-8 text-sm font-extrabold text-fg">What happens to your session</h3>
+          <ul className="mt-3 space-y-2.5 text-sm leading-6 text-muted">
             {SESSION_FACTS.map((f) => (
               <li key={f} className="flex gap-2.5">
                 <Icon name="check" size={15} className="mt-1 shrink-0 text-fg" />
@@ -202,8 +185,8 @@ export function LoginPagesSection() {
           </div>
         </div>
 
-        <div className="card-float rounded-xl p-4 sm:p-5">
-          <p id="session-security" className="mb-3 px-1 text-sm font-medium tracking-[-0.01em] text-fg">
+        <div className="card rounded-sm p-4 sm:p-5">
+          <p id="session-security" className="mb-3 px-1 text-sm font-semibold text-fg">
             Copy your session in four clicks
           </p>
           <CookieGuide />
@@ -219,7 +202,11 @@ export function PricingSection({ billingEnabled = false, lifetimeLeft = 0 }: { b
   return (
     <Band id="pricing" tone="white" labelledBy="pricing-heading">
       <div className="mb-12 grid gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-16">
-        <Heading id="pricing-heading">Free for small sites. $5 a month for the rest.</Heading>
+        <Heading id="pricing-heading">
+          Free for small sites.
+          <br />
+          $5 a month for the rest.
+        </Heading>
         <p className="text-base leading-6 text-muted">
           Prices in USD, taxes added at checkout. Cancel any time, and get your money back within {LEGAL.refundDays} days if it isn’t for you.
         </p>
@@ -270,11 +257,11 @@ export function FaqSection() {
         <div className="divide-y divide-line border-y border-line">
           {FAQS.map((f) => (
             <details key={f.q} className="group">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-base font-medium tracking-[-0.02em] text-fg [&::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-[17px] font-semibold text-fg [&::-webkit-details-marker]:hidden">
                 {f.q}
                 <Icon name="plus" size={16} className="shrink-0 text-muted transition-transform group-open:rotate-45" />
               </summary>
-              <p className="max-w-2xl pb-6 text-sm leading-6 tracking-[-0.01em] text-muted">{f.a}</p>
+              <p className="max-w-2xl pb-6 text-base leading-7 text-muted">{f.a}</p>
             </details>
           ))}
         </div>
@@ -319,7 +306,7 @@ export function Footer() {
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-end">
           <div>
-            <Link href="/" className="inline-flex items-center gap-3 text-[40px] leading-none font-semibold tracking-[-0.05em] text-fg sm:text-[56px]">
+            <Link href="/" className="type-wide inline-flex items-center gap-3 text-[36px] leading-none font-extrabold tracking-[-0.03em] text-fg sm:text-[52px]">
               <LogoMark size={44} />
               ShotDomain
             </Link>
@@ -328,7 +315,7 @@ export function Footer() {
           <div className="grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3">
             {FOOTER_COLUMNS.map((col) => (
               <nav key={col.title} aria-labelledby={`footer-${col.title.toLowerCase()}`}>
-                <p id={`footer-${col.title.toLowerCase()}`} className="text-sm font-medium text-fg">
+                <p id={`footer-${col.title.toLowerCase()}`} className="text-sm font-semibold text-fg">
                   {col.title}
                 </p>
                 <ul className="mt-2 space-y-1">

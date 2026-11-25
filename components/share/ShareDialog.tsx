@@ -20,7 +20,7 @@ function CopyField({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
   return (
     <div className="flex gap-2">
-      <Input readOnly aria-label="Share link" value={value} onFocus={(e) => e.currentTarget.select()} className="font-mono text-[13px]" />
+      <Input readOnly aria-label="Share link" value={value} onFocus={(e) => e.currentTarget.select()} className="type-narrow text-[15px]" />
       <Button
         variant="secondary"
         onClick={async () => {

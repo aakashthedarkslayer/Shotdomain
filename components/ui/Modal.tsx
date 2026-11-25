@@ -41,7 +41,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
     >
       <div className="absolute inset-0 bg-scrim" onClick={onClose} />
       <div
-        className={`relative flex max-h-[90vh] w-full flex-col overflow-hidden card-elevated rounded-xl ${
+        className={`relative flex max-h-[90vh] w-full flex-col overflow-hidden card-elevated rounded-md ${
           size === 'xl' ? 'max-w-5xl' : size === 'lg' ? 'max-w-2xl' : 'max-w-lg'
         }`}
       >
@@ -49,7 +49,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
           <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
             <div className="min-w-0">
               {title && (
-                <h2 id={titleId} className="truncate text-base font-semibold tracking-[-0.02em] text-fg">
+                <h2 id={titleId} className="type-wide truncate text-[17px] leading-6 font-extrabold tracking-[-0.01em] text-fg">
                   {title}
                 </h2>
               )}
