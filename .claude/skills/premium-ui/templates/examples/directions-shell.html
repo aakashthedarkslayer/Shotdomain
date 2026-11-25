@@ -1,0 +1,113 @@
+<title>Notes Direction Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a gallery wall. Four direction tabs on top, then one full-bleed "Dribbble shot" stage per direction (3 phones), with a spec panel beside it. Shell chrome is quiet so the art leads. */
+:root{
+  --bg:#F3F1EC; --panel:#FFFFFF; --line:#E2DED5; --fg:#16151A; --muted:#6B6873; --accent:#2F5BEA;
+  --shadow:0 1px 2px rgba(20,18,30,.06),0 12px 40px -12px rgba(20,18,30,.18);
+  --display:'Instrument Serif',Georgia,serif; --ui:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --phone-w:300px; --phone-h:640px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#111015;--panel:#1A1920;--line:#2C2A33;--fg:#F1EEE8;--muted:#A19DAA;--accent:#8EA8FF;--shadow:0 1px 2px rgba(0,0,0,.4),0 12px 40px -12px rgba(0,0,0,.6);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111015;--panel:#1A1920;--line:#2C2A33;--fg:#F1EEE8;--muted:#A19DAA;--accent:#8EA8FF;--shadow:0 1px 2px rgba(0,0,0,.4),0 12px 40px -12px rgba(0,0,0,.6);color-scheme:dark}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--ui);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1440px;margin:0 auto;padding-block:28px 56px}
+header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 32px}
+header h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,4.6vw,56px);letter-spacing:-.02em;line-height:1;margin:0;text-wrap:balance}
+header h1 em{font-style:italic;color:var(--accent)}
+header p{color:var(--muted);margin:0;max-width:52ch;font-size:14.5px;line-height:1.55}
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:24px 0 18px}
+.tabs button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 12px;align-items:center;padding:12px 14px;border-radius:16px;background:var(--panel);border:1px solid var(--line);transition:transform .25s cubic-bezier(.2,0,0,1),border-color .2s}
+.tabs button:hover{transform:translateY(-2px)}
+.tabs button[aria-selected="true"]{border-color:var(--fg);box-shadow:var(--shadow)}
+.tabs .l{grid-row:span 2;font-family:var(--display);font-size:34px;line-height:1;width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:var(--bg)}
+.tabs .n{font-weight:700;font-size:14px;display:flex;gap:8px;align-items:center;min-width:0}
+.tabs .d{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tabs .rec{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--bg);background:var(--accent);padding:2px 7px;border-radius:99px}
+.tabs button:focus-visible,.direction :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media (max-width:820px){.tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.tabs .n{flex-wrap:wrap;row-gap:2px}.tabs .d{white-space:normal;line-height:1.3}}
+
+/* ---- Contract styles every direction uses ---- */
+.direction{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
+@media (max-width:1180px){.direction{grid-template-columns:minmax(0,1fr)}}
+.direction > .stage{min-width:0;border-radius:28px;overflow:hidden;position:relative}
+.direction > .stage > .phones{display:flex;gap:28px;justify-content:safe center;align-items:center;padding:44px 28px;overflow-x:auto;scroll-snap-type:x mandatory}
+.phone{box-sizing:border-box;flex:none;scroll-snap-align:center;width:var(--phone-w);height:var(--phone-h);border-radius:46px;padding:9px;background:#0C0C0F;box-shadow:0 0 0 1.5px #3A3A40 inset,0 2px 4px rgba(0,0,0,.18),0 30px 60px -20px rgba(0,0,0,.45);position:relative}
+.phone::before{content:"";position:absolute;top:18px;left:50%;width:84px;height:24px;margin-left:-42px;border-radius:14px;background:#0C0C0F;z-index:50;pointer-events:none}
+.phone > .screen{width:100%;height:100%;border-radius:38px;overflow:hidden;position:relative;isolation:isolate}
+.phone-label{text-align:center;font:600 11px var(--ui);letter-spacing:.14em;text-transform:uppercase;margin-top:12px;opacity:.65}
+.phone-col{flex:none;scroll-snap-align:center}
+.phone-col.live .phone-label::after{content:"LIVE";margin-left:8px;padding:2px 7px;border-radius:99px;background:#2F5BEA;color:#fff;letter-spacing:.1em}
+.direction > .panel{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:22px;min-width:0}
+.panel .eyebrow{margin:0;font:700 11px var(--ui);letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.panel h2{font-family:var(--display);font-weight:400;font-size:40px;line-height:1;letter-spacing:-.02em;margin:6px 0 8px}
+.panel .lede{margin:0;font-size:14px;line-height:1.55}
+.panel h3{margin:20px 0 8px;font:700 10.5px var(--ui);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.panel ul{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.panel li{font-size:13px;line-height:1.45;padding-left:16px;position:relative}
+.panel li::before{content:"";position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.panel li b{font-weight:700}
+.panel .swatches{display:flex;gap:6px;flex-wrap:wrap}
+.panel .swatches i{width:30px;height:30px;border-radius:9px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.panel p.small{font-size:13px;line-height:1.5;margin:0;color:var(--muted)}
+.panel p.small b{color:var(--fg)}
+@media (prefers-reduced-motion: reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Four ways to fall for your <em>notes</em></h1>
+    <p>Same app, same notes, four very different directions, from familiar polish to something nobody has seen. The left phone in each one is live: tap, swipe, write, delete.</p>
+  </header>
+  <nav class="tabs" role="tablist" aria-label="Directions">
+    <button role="tab" id="tab-a" aria-controls="dir-a" data-k="a"><span class="l">A</span><span class="n">Meadow</span><span class="d">Art-led, illustrated, polished</span></button>
+    <button role="tab" id="tab-b" aria-controls="dir-b" data-k="b"><span class="l">B</span><span class="n">Softbound <span class="rec">Our pick</span></span><span class="d">Soft 3D art that moves</span></button>
+    <button role="tab" id="tab-c" aria-controls="dir-c" data-k="c"><span class="l">C</span><span class="n">Atelier</span><span class="d">A world: paper on a desk</span></button>
+    <button role="tab" id="tab-d" aria-controls="dir-d" data-k="d"><span class="l">D</span><span class="n">Inkwell</span><span class="d">Wild card: living ink</span></button>
+  </nav>
+  <main id="directions">
+<!--DIRECTIONS-->
+  </main>
+</div>
+
+<script>
+window.SAMPLE_NOTES = [
+  {id:1, title:"Kyoto in April", body:"Philosopher's Path at 6am before the crowds. Fushimi Inari, top gate at sunset. Ask Kenji about the tofu place in Arashiyama.", tag:"Travel", date:"Apr 2", mood:"calm"},
+  {id:2, title:"Grandma's dal makhani", body:"Soak urad overnight. Butter at the end, never the start. Smoke with a hot coal in a steel bowl for 2 minutes.", tag:"Recipes", date:"Mar 28", mood:"warm"},
+  {id:3, title:"Things to tell Mira", body:"The bakery reopened. That song from the wedding is called 'Saibo'. She was right about the blue sofa.", tag:"Personal", date:"Mar 25", mood:"tender"},
+  {id:4, title:"Q3 launch ideas", body:"Waitlist with a referral ladder. Founder video, no slides. Ship the dark mode first, it's what people screenshot.", tag:"Work", date:"Mar 21", mood:"bright"},
+  {id:5, title:"Books for the monsoon", body:"Pachinko. The Overstory. A Suitable Boy (finally). Re-read Invisible Cities.", tag:"Reading", date:"Mar 17", mood:"calm"}
+];
+window.Directions = window.Directions || {};
+</script>
+<!--SCRIPTS-->
+<script>
+(function(){
+  const tabs=[...document.querySelectorAll('.tabs button')];
+  const mounted={}; let current=null;
+  function show(k){
+    if(!document.getElementById('dir-'+k)) k='b';
+    if(current===k) return;
+    if(current){ const s=document.getElementById('dir-'+current); if(s) s.hidden=true; try{Directions[current]&&Directions[current].hide&&Directions[current].hide();}catch(e){console.error(e)} }
+    tabs.forEach(t=>{t.setAttribute('aria-selected',String(t.dataset.k===k)); t.tabIndex=t.dataset.k===k?0:-1;});
+    const sec=document.getElementById('dir-'+k); if(sec) sec.hidden=false;
+    const D=Directions[k];
+    try{ if(D && !mounted[k]){ D.mount(sec); mounted[k]=true; } D&&D.show&&D.show(); }catch(e){console.error(e)}
+    current=k;
+  }
+  document.querySelectorAll('.direction').forEach(s=>s.hidden=true);
+  tabs.forEach(t=>t.addEventListener('click',()=>{ show(t.dataset.k); try{history.replaceState(null,'','#'+t.dataset.k)}catch(e){} }));
+  document.querySelector('.tabs').addEventListener('keydown',e=>{
+    const i=tabs.findIndex(t=>t.dataset.k===current); let j=null;
+    if(e.key==='ArrowRight') j=(i+1)%tabs.length; if(e.key==='ArrowLeft') j=(i+3)%tabs.length;
+    if(j!==null){ tabs[j].click(); tabs[j].focus(); e.preventDefault(); }
+  });
+  addEventListener('hashchange',()=>show(location.hash.slice(1)));
+  show((location.hash||'#b').slice(1));
+})();
+</script>
+

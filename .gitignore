@@ -44,3 +44,6 @@ next-env.d.ts
 /tmp/
 /data/
 !.env.example
+
+# python bytecode (the premium-ui gate hook)
+__pycache__/

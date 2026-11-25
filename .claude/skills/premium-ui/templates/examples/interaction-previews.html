@@ -1,0 +1,270 @@
+<title>Opening a Note</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..400&family=Manrope:wght@500;600;700&display=swap">
+<style>
+/* Layout: notes on the left, one live phone (walnut desk) on the right; phone first on narrow screens. Deliberately single dark look. */
+:root{
+  --bg:#0B0907; --panel:#16120E; --line:#2A231C; --fg:#EFE8DC; --muted:#A79C8E; --accent:#E9B97A;
+  --paper:#F1E8D8; --ink:#24316F; --body-ink:#2A2620; --rule:rgba(70,110,175,.24); --margin:rgba(200,70,70,.42);
+  --display:'Fraunces',Georgia,serif; --ui:'Manrope',system-ui,-apple-system,sans-serif; --hand:'Caveat','Bradley Hand',cursive;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--ui);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1040px;margin:0 auto;padding-block:28px 48px}
+h1{font-family:var(--display);font-weight:350;font-size:clamp(30px,4.4vw,44px);letter-spacing:-.025em;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:.5em 0 0;max-width:60ch;font-size:15px;line-height:1.55}
+.tabs{display:flex;gap:4px;margin:22px 0 26px;padding:4px;background:var(--panel);border:1px solid var(--line);border-radius:999px;width:fit-content;max-width:100%;overflow-x:auto}
+.tabs button{font:600 13px var(--ui);color:var(--muted);background:none;border:0;padding:9px 16px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected="true"]{background:var(--fg);color:var(--bg)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:56px;align-items:start}
+.info{min-width:0;padding-top:6px}
+.eyebrow{font:700 11px var(--ui);letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0}
+.info h2{font-family:var(--hand);font-weight:700;font-size:clamp(40px,5vw,56px);line-height:1;margin:.2em 0 .3em;color:var(--fg)}
+.info p{font-size:15.5px;line-height:1.65;max-width:52ch;margin:0 0 14px}
+.info h3{font:700 11px var(--ui);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:26px 0 8px}
+.beats{list-style:none;margin:0;padding:0;counter-reset:b}
+.beats li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;padding:9px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.5;color:var(--muted)}
+.beats li:last-child{border-bottom:1px solid var(--line)}
+.beats li::before{counter-increment:b;content:counter(b);font:600 12px var(--ui);color:var(--accent);padding-top:2px}
+.foot{font-size:13px;line-height:1.6;color:var(--muted);max-width:54ch;margin-top:18px}
+.replay{margin-top:18px;font:600 13px var(--ui);color:var(--bg);background:var(--accent);border:0;border-radius:999px;padding:10px 18px;cursor:pointer}
+
+.device{padding:10px;border-radius:56px;background:linear-gradient(150deg,#2B2620,#0C0A08 60%);box-shadow:inset 0 0 0 1px #3A332B,0 50px 90px -35px rgba(0,0,0,.85),0 0 140px -40px rgba(233,185,122,.28)}
+#phone{position:relative;overflow:hidden;border-radius:46px;width:min(380px,calc(100vw - 54px));aspect-ratio:390/800;background:#1D130C;isolation:isolate}
+@media (max-width:860px){.stage{grid-template-columns:minmax(0,1fr);gap:30px}.device{order:-1;justify-self:center}}
+#wood{position:absolute;inset:0;
+  background:
+   radial-gradient(130% 90% at 50% 50%, transparent 55%, rgba(0,0,0,.55)),
+   radial-gradient(110% 70% at 22% 6%, rgba(255,205,140,.26), transparent 62%),
+   repeating-linear-gradient(176deg, rgba(0,0,0,.09) 0 1.5px, transparent 1.5px 8px, rgba(255,215,170,.04) 8px 10px, transparent 10px 21px),
+   repeating-linear-gradient(174deg, transparent 0 37px, rgba(0,0,0,.08) 37px 39px, transparent 39px 61px),
+   linear-gradient(162deg,#4A3420,#1C120B);}
+.wordmark{position:absolute;top:22px;left:24px;font:600 10.5px var(--ui);letter-spacing:.24em;color:rgba(244,236,222,.55);z-index:3;pointer-events:none}
+#sheets{position:absolute;inset:0;perspective:1100px;z-index:2}
+.sh{position:absolute;left:0;top:0;background:rgba(18,9,3,.9);border-radius:2px;transform-origin:50% 50%;will-change:transform,filter,opacity}
+.sheet,.letter{position:absolute;left:0;top:0;transform-origin:50% 50%;cursor:pointer;will-change:transform;transform-style:preserve-3d}
+.paper{position:absolute;inset:0;background-color:var(--paper);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .32 0 0 0 0 .26 0 0 0 0 .2 0 0 0 .09 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  overflow:hidden}
+.rules{position:absolute;left:0;right:0;top:calc(var(--u)*64px);bottom:0;background:repeating-linear-gradient(to bottom,transparent 0 calc(var(--u)*17.3px),var(--rule) calc(var(--u)*17.3px) calc(var(--u)*18px))}
+.margin{position:absolute;top:0;bottom:0;left:calc(var(--u)*22px);width:1px;background:var(--margin)}
+.meta{position:absolute;top:calc(var(--u)*9px);right:calc(var(--u)*11px);font:600 calc(var(--u)*8.5px) var(--ui);letter-spacing:.08em;color:rgba(70,55,40,.55);text-transform:uppercase}
+.title{position:absolute;left:calc(var(--u)*30px);right:calc(var(--u)*14px);top:calc(var(--u)*20px);font:700 calc(var(--u)*21px)/1.05 var(--hand);color:var(--ink)}
+.body{position:absolute;left:calc(var(--u)*30px);right:calc(var(--u)*14px);top:calc(var(--u)*66px);font:400 calc(var(--u)*11.5px)/calc(var(--u)*18px) var(--display);color:var(--body-ink)}
+.sheen{position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(112deg,transparent 30%,rgba(255,248,232,.55) 50%,transparent 70%);background-size:260% 100%;background-position:120% 0;mix-blend-mode:soft-light}
+/* folded letter */
+.panel{position:absolute;left:0;width:100%;transform-style:preserve-3d}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.face.back{transform:rotateX(180deg)}
+.slice{position:absolute;left:0;width:100%}
+.shade{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(40,25,10,.35),rgba(40,25,10,0) 60%);opacity:.0;pointer-events:none}
+.outside{display:flex;flex-direction:column;justify-content:center;padding:0 calc(var(--u)*18px)}
+.outside .t{font:700 calc(var(--u)*22px)/1 var(--hand);color:var(--ink)}
+.outside .m{font:600 calc(var(--u)*8px) var(--ui);letter-spacing:.12em;text-transform:uppercase;color:rgba(70,55,40,.55);margin-top:calc(var(--u)*5px)}
+#done{position:absolute;top:56px;right:26px;z-index:6;font:700 26px var(--hand);color:var(--ink);background:none;border:0;cursor:pointer;padding:6px 8px;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+#hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:6;font:600 12px var(--ui);color:#F4ECDE;background:rgba(12,8,4,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);padding:9px 14px;border-radius:999px;white-space:nowrap;pointer-events:none;transition:opacity .4s}
+</style>
+
+<div class="wrap">
+  <h1>Opening a Note</h1>
+  <p class="sub">Two ways a sheet could open and close in Atelier. Tap a sheet on the phone to open it, then tap “done” to put it back.</p>
+  <nav class="tabs" role="tablist" aria-label="Animation options">
+    <button role="tab" data-v="lift" aria-selected="true">A · Pick it up</button>
+    <button role="tab" data-v="letter" aria-selected="false">B · Unfold the letter</button>
+  </nav>
+  <main class="stage">
+    <section class="info" id="info" aria-live="polite"></section>
+    <div class="device"><div id="phone">
+      <div id="wood"></div>
+      <div class="wordmark">ATELIER</div>
+      <div id="sheets"></div>
+      <button id="done" type="button" hidden>done</button>
+      <div id="hint">Tap a sheet</div>
+    </div></div>
+  </main>
+</div>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const phone=$('#phone'),wood=$('#wood'),layer=$('#sheets'),doneBtn=$('#done'),hint=$('#hint');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const EMPH='cubic-bezier(.2,0,0,1)';
+const NOTES=[
+ {t:'Lisbon trip',m:'35 min ago',b:'Take tram 28 early, before the crowds. Pastéis de Belém before 9. Ask Rui which miradouro has the best sunset.',x:.32,y:.27,r:-4},
+ {t:'Sourdough log',m:'5 h ago',b:'Day 4: starter doubled in 6 hours. Try 78% hydration on Saturday and a longer cold proof.',x:.66,y:.5,r:5},
+ {t:'Q3 pitch ideas',m:'1 d ago',b:'Lead with the retention curve. Cut slide 7. Demo offline mode live, not as a video.',x:.36,y:.74,r:-2.5},
+];
+const INFO={
+ lift:{tag:'Option A',name:'Pick it up',p:['The sheet lifts toward you and tilts, as if you picked it up by its bottom edge. The desk drops out of focus, a glint from the lamp runs across the paper, and the shadow spreads and softens as it rises.','Closing sets it back down. It hovers over its spot, drops the last few millimetres, lands with a tap, and the puff of air nudges the sheets around it.'],
+  beats:['Lift and tilt toward you (3D perspective)','Desk blurs and dims, like a camera changing focus','Lamp glint sweeps across the paper','Shadow grows, drifts and softens with height','Close: hover, drop, land, neighbours nudged by the air'],
+  foot:'Keeps the desk exactly as it is now. In Flutter: a perspective Matrix4 on the cached sheet image, a blur on a snapshot of the desk, and one shadow image. All cheap once the sheets are cached as images.'},
+ letter:{tag:'Option B',name:'Unfold the letter',p:['Notes sit on the desk as folded letters with the title on the outside. Tap one and it lifts, then unfolds panel by panel. The creases catch the light and each flap overshoots a touch, the way stiff paper does.','Closing folds it back into thirds and sets it down on the desk. This changes the desk itself: you see folded letters, not open pages.'],
+  beats:['Folded letter lifts and centres','Top flap unfolds, with a shadow running off the crease','Bottom flap unfolds a beat later','Flaps overshoot slightly, like stiff paper','Close: folds back up, drops onto the desk'],
+  foot:'The most delightful of the two, but a bigger change: the desk shows letters, not pages. In Flutter: three image slices of the sheet, each rotated with Transform. Very cheap to render.'}
+};
+
+let variant='lift',W,H,sw,sh,items=[],open=null,busy=false;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const T=(x,y,z,rx,r,s)=>`translate3d(${x-sw/2}px,${y-sh/2}px,${z}px) rotateX(${rx}deg) rotate(${r}deg) scale(${s})`;
+const ST=(x,y,r,sx,sy=sx)=>`translate(${x-sw/2}px,${y-sh/2}px) rotate(${r}deg) scale(${sx},${sy})`;
+
+function measure(){const r=phone.getBoundingClientRect();W=r.width;H=r.height;sw=Math.min(W*.44,176);sh=sw*1.3;phone.style.setProperty('--u',sw/170)}
+function target(){return{x:W/2,y:H/2+14,s:(W-24)/sw}}
+
+function sheetInner(n){return `<div class="paper"><div class="rules"></div><div class="margin"></div><div class="meta">${n.m}</div><div class="title">${n.t}</div><div class="body">${n.b}</div></div>`}
+
+function build(){
+  layer.innerHTML='';items=[];open=null;busy=false;doneBtn.hidden=true;
+  wood.getAnimations().forEach(a=>a.cancel());wood.style.filter='';
+  NOTES.forEach((n,i)=>{
+    const it={n,x:n.x*W,y:n.y*H,r:n.r};
+    it.sh=document.createElement('div');it.sh.className='sh';
+    if(variant==='lift'){
+      it.el=document.createElement('div');it.el.className='sheet';
+      it.el.innerHTML=sheetInner(n)+'<div class="sheen"></div>';
+      it.sheen=it.el.querySelector('.sheen');
+    }else{
+      const h3=sh/3;
+      it.el=document.createElement('div');it.el.className='letter';
+      const slice=k=>`<div class="face front"><div class="slice" style="top:${-k*h3}px;height:${sh}px">${sheetInner(n)}</div><div class="shade"></div></div>`;
+      it.el.innerHTML=
+        `<div class="panel p3" style="top:${2*h3}px;height:${h3}px;transform-origin:50% 0">${slice(2)}<div class="face back paper"></div></div>`+
+        `<div class="panel p2" style="top:${h3}px;height:${h3}px">${slice(1)}</div>`+
+        `<div class="panel p1" style="top:0;height:${h3}px;transform-origin:50% 100%">${slice(0)}<div class="face back paper outside"><div class="t">${n.t}</div><div class="m">${n.m}</div></div></div>`;
+      it.p1=it.el.querySelector('.p1');it.p3=it.el.querySelector('.p3');
+      it.p1.style.transform='rotateX(-177.5deg)';it.p3.style.transform='rotateX(179.2deg)';
+    }
+    Object.assign(it.el.style,{width:sw+'px',height:sh+'px',transform:T(it.x,it.y,0,0,it.r,1)});
+    const shH=variant==='lift'?sh:sh/3;
+    Object.assign(it.sh.style,{width:sw+'px',height:shH+'px',top:(variant==='lift'?0:sh/3)+'px'});
+    setShadow(it,'rest');
+    it.el.setAttribute('role','button');it.el.tabIndex=0;it.el.setAttribute('aria-label','Open note: '+n.t);
+    it.el.addEventListener('click',()=>tap(it));
+    it.el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tap(it)}});
+    layer.append(it.sh,it.el);items.push(it);
+  });
+}
+function shadowFrame(it,kind,x=it.x,y=it.y,extra={}){
+  if(kind==='rest')return{transform:ST(x+1.5,y+4,it.r,1),filter:'blur(3px)',opacity:.5};
+  return extra;
+}
+function setShadow(it,kind){const f=shadowFrame(it,kind);Object.assign(it.sh.style,f)}
+function toTop(it){layer.append(it.sh,it.el)}
+function others(it){return items.filter(o=>o!==it)}
+
+function focusPull(on,it,d){
+  const kf=on?[{filter:'blur(0px) brightness(1)'},{filter:'blur(5px) brightness(.55)'}]:[{filter:'blur(5px) brightness(.55)'},{filter:'blur(0px) brightness(1)'}];
+  const o={duration:d,easing:EMPH,fill:'forwards'};
+  wood.animate(kf,o);
+  others(it).forEach(x=>{x.el.animate(kf,o);x.sh.animate([{opacity:on?.5:0},{opacity:on?0:.5}],o)});
+}
+function airPush(it,delay){
+  others(it).forEach(o=>{
+    const dx=o.x-it.x,dy=o.y-it.y,dist=Math.hypot(dx,dy)||1,k=Math.max(0,1-dist/300);if(!k)return;
+    const px=dx/dist*12*k,py=dy/dist*12*k,rr=(dx>0?1:-1)*2*k;
+    const kf=[{transform:T(o.x,o.y,0,0,o.r,1)},{transform:T(o.x+px,o.y+py,0,0,o.r+rr,1),offset:.3},{transform:T(o.x,o.y,0,0,o.r,1)}];
+    o.el.animate(kf,{duration:700,delay,easing:'cubic-bezier(.2,.7,.3,1)'});
+    o.sh.animate([{transform:ST(o.x+1.5,o.y+4,o.r,1)},{transform:ST(o.x+1.5+px,o.y+4+py,o.r+rr,1),offset:.3},{transform:ST(o.x+1.5,o.y+4,o.r,1)}],{duration:700,delay,easing:'cubic-bezier(.2,.7,.3,1)'});
+  });
+  wood.animate([{transform:'translateY(0)'},{transform:'translateY(1px)'},{transform:'translateY(0)'}],{duration:110,delay});
+}
+function showDone(){doneBtn.hidden=false;doneBtn.animate([{opacity:0,transform:'translateY(-6px)'},{opacity:1,transform:'none'}],{duration:240,easing:EMPH});busy=false}
+function finish(it){
+  [it.el,it.sh,wood,...others(it).flatMap(o=>[o.el,o.sh])].forEach(e=>e.getAnimations().forEach(a=>{if(a.playState!=='running')a.cancel()}));
+  it.el.style.transform=T(it.x,it.y,0,0,it.r,1);setShadow(it,'rest');
+  if(it.p1){it.p1.getAnimations().forEach(a=>a.cancel());it.p3.getAnimations().forEach(a=>a.cancel())}
+  wood.style.filter='';open=null;busy=false;
+}
+
+function tap(it){if(busy||open)return;hint.style.opacity=0;(variant==='lift'?openLift:openLetter)(it)}
+doneBtn.addEventListener('click',()=>{if(busy||!open)return;doneBtn.hidden=true;(variant==='lift'?closeLift:closeLetter)(open)});
+
+/* ---------- A · Pick it up ---------- */
+function openLift(it){
+  busy=true;open=it;toTop(it);
+  const t=target(),d=RM?200:760,mx=lerp(it.x,t.x,.42),my=lerp(it.y,t.y,.42);
+  const o={duration:d,easing:EMPH,fill:'forwards'};
+  it.el.animate([
+    {transform:T(it.x,it.y,0,0,it.r,1)},
+    {transform:T(mx,my,RM?0:95,RM?0:-19,it.r*.3,1+(t.s-1)*.36),offset:.4},
+    {transform:T(t.x,t.y,0,0,0,t.s)}],o);
+  it.sheen.animate([{opacity:0,backgroundPosition:'120% 0'},{opacity:1,offset:.45},{opacity:0,backgroundPosition:'-30% 0'}],{duration:d,fill:'forwards'});
+  it.sh.animate([
+    shadowFrame(it,'rest'),
+    {transform:ST(mx+24,my+48,it.r*.3,1.28),filter:'blur(16px)',opacity:.32,offset:.4},
+    {transform:ST(t.x+26,t.y+54,0,t.s),filter:'blur(28px)',opacity:.22}],o);
+  focusPull(true,it,d*.85);
+  setTimeout(showDone,d);
+}
+function closeLift(it){
+  busy=true;
+  const t=target(),d=RM?200:900,hx=lerp(it.x,t.x,.08),hy=it.y-14;
+  it.el.animate([
+    {transform:T(t.x,t.y,0,0,0,t.s),easing:EMPH},
+    {transform:T(hx,hy,RM?0:70,RM?0:-9,it.r*.6,1.07),offset:.62,easing:'cubic-bezier(.6,0,.95,.45)'},
+    {transform:T(it.x,it.y,0,0,it.r,.985),offset:.85,easing:'cubic-bezier(.2,.8,.3,1)'},
+    {transform:T(it.x,it.y,0,0,it.r,1)}],{duration:d,fill:'forwards'});
+  it.sheen.animate([{opacity:0,backgroundPosition:'-30% 0'},{opacity:.8,offset:.4},{opacity:0,backgroundPosition:'120% 0',offset:.7},{opacity:0}],{duration:d,fill:'forwards'});
+  it.sh.animate([
+    {transform:ST(t.x+26,t.y+54,0,t.s),filter:'blur(28px)',opacity:.1,easing:EMPH},
+    {transform:ST(hx+20,hy+40,it.r*.6,1.22),filter:'blur(14px)',opacity:.3,offset:.62},
+    {transform:ST(it.x+1,it.y+3,it.r,1),filter:'blur(2px)',opacity:.6,offset:.85},
+    shadowFrame(it,'rest')],{duration:d,fill:'forwards'});
+  focusPull(false,it,d*.6);
+  if(!RM)airPush(it,d*.85);
+  setTimeout(()=>finish(it),d+720);
+}
+
+/* ---------- B · Unfold the letter ---------- */
+function openLetter(it){
+  busy=true;open=it;toTop(it);
+  const t=target(),lift=RM?200:560,flap=RM?120:470,mx=lerp(it.x,t.x,.45),my=lerp(it.y,t.y,.45);
+  it.el.animate([
+    {transform:T(it.x,it.y,0,0,it.r,1)},
+    {transform:T(mx,my,RM?0:80,RM?0:-14,it.r*.3,1+(t.s-1)*.4),offset:.45},
+    {transform:T(t.x,t.y,0,0,0,t.s)}],{duration:lift,easing:EMPH,fill:'forwards'});
+  it.sh.animate([shadowFrame(it,'rest'),{transform:ST(t.x+24,t.y+50,0,t.s,t.s*3),filter:'blur(26px)',opacity:.2}],{duration:lift+flap,easing:EMPH,fill:'forwards'});
+  focusPull(true,it,lift);
+  const overshoot='cubic-bezier(.3,1.32,.45,1)';
+  it.p1.animate([{transform:'rotateX(-177.5deg)'},{transform:'rotateX(0deg)'}],{duration:flap,delay:lift*.72,easing:overshoot,fill:'forwards'});
+  it.p1.querySelector('.shade').animate([{opacity:.9},{opacity:0}],{duration:flap,delay:lift*.72,fill:'forwards'});
+  it.p3.animate([{transform:'rotateX(179.2deg)'},{transform:'rotateX(0deg)'}],{duration:flap,delay:lift*.72+flap*.55,easing:overshoot,fill:'forwards'});
+  it.p3.querySelector('.shade').animate([{opacity:.9},{opacity:0}],{duration:flap,delay:lift*.72+flap*.55,fill:'forwards'});
+  setTimeout(showDone,lift*.72+flap*1.55);
+}
+function closeLetter(it){
+  busy=true;
+  const t=target(),fold=RM?120:340,d=RM?200:760,hx=lerp(it.x,t.x,.08),hy=it.y-12,start=fold*1.45;
+  const foldEase='cubic-bezier(.5,0,.6,1)';
+  it.p3.animate([{transform:'rotateX(0deg)'},{transform:'rotateX(179.2deg)'}],{duration:fold,easing:foldEase,fill:'forwards'});
+  it.p3.querySelector('.shade').animate([{opacity:0},{opacity:.9}],{duration:fold,fill:'forwards'});
+  it.p1.animate([{transform:'rotateX(0deg)'},{transform:'rotateX(-177.5deg)'}],{duration:fold,delay:fold*.45,easing:foldEase,fill:'forwards'});
+  it.p1.querySelector('.shade').animate([{opacity:0},{opacity:.9}],{duration:fold,delay:fold*.45,fill:'forwards'});
+  it.el.animate([
+    {transform:T(t.x,t.y,0,0,0,t.s),easing:EMPH},
+    {transform:T(hx,hy,RM?0:60,RM?0:-8,it.r*.6,1.07),offset:.6,easing:'cubic-bezier(.6,0,.95,.45)'},
+    {transform:T(it.x,it.y,0,0,it.r,.985),offset:.85,easing:'cubic-bezier(.2,.8,.3,1)'},
+    {transform:T(it.x,it.y,0,0,it.r,1)}],{duration:d,delay:start,fill:'forwards'});
+  it.sh.animate([
+    {transform:ST(t.x+24,t.y+50,0,t.s,t.s*3),filter:'blur(26px)',opacity:.1,easing:EMPH},
+    {transform:ST(hx+18,hy+36,it.r*.6,1.2),filter:'blur(12px)',opacity:.3,offset:.6},
+    {transform:ST(it.x+1,it.y+3,it.r,1),filter:'blur(2px)',opacity:.6,offset:.85},
+    shadowFrame(it,'rest')],{duration:d,delay:start,fill:'forwards'});
+  setTimeout(()=>focusPull(false,it,d*.6),start);
+  if(!RM)airPush(it,start+d*.85);
+  setTimeout(()=>{it.p1.style.transform='rotateX(-177.5deg)';it.p3.style.transform='rotateX(179.2deg)';finish(it)},start+d+720);
+}
+
+/* ---------- page ---------- */
+function renderInfo(){const c=INFO[variant];$('#info').innerHTML=`<p class="eyebrow">${c.tag}</p><h2>${c.name}</h2>${c.p.map(x=>`<p>${x}</p>`).join('')}<h3>What happens</h3><ol class="beats">${c.beats.map(b=>`<li>${b}</li>`).join('')}</ol><p class="foot">${c.foot}</p><button class="replay" id="replay" type="button">Play it on the top sheet</button>`;
+  $('#replay').addEventListener('click',()=>{if(busy)return;if(open){doneBtn.click();return}tap(items[items.length-1])})}
+function setVariant(v){variant=v;document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v?'true':'false'));renderInfo();measure();build();hint.style.opacity=1;try{history.replaceState(null,'','#'+v)}catch(e){}}
+document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>setVariant(b.dataset.v)));
+let rt=0;new ResizeObserver(()=>{clearTimeout(rt);rt=setTimeout(()=>{const w=W;measure();if(Math.abs(w-W)>1)build()},120)}).observe(phone);
+setVariant(location.hash==='#letter'?'letter':'lift');
+})();
+</script>

@@ -80,3 +80,14 @@ node .claude/skills/hallmark/scripts/sloplint.mjs app components --genre modern-
 
 The render tier needs `puppeteer-core` and a Chrome or Chromium. Point it at
 them with `HALLMARK_PUPPETEER` and `CHROME_PATH`.
+
+## premium-ui
+
+The premium-ui kit (`.claude/skills/premium-ui`, its agents in
+`.claude/agents/`, its hooks in `.claude/settings.json`) is installed from
+github.com/rohitkhatri7543/premium-ui-kit (v3.3.0; the repo has no license
+file). Its lint hook and its gate (which blocks artifact publishing and
+feature-agent spawns until `PREMIUM_GATES.md` proves a 9/9 bar) stay off
+until a `.premium-ui` file exists at the project root; the skill's Bootstrap
+creates it when you start a premium-ui project. `DESIGN.md` stays the visual
+spec: use premium-ui's process inside it, not instead of it.
