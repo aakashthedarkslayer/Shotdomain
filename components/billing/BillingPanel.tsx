@@ -286,12 +286,12 @@ export function BillingPanel({ enabled, plan, subscription, lifetime, lifetimeLe
     <div className="space-y-10">
       <Card>
         <div className="flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:px-6">
-          <span className="bg-primary flex h-11 w-11 shrink-0 items-center justify-center rounded-xs text-primary-fg">
+          <span className="bg-primary flex h-11 w-11 shrink-0 items-center justify-center rounded-none text-primary-fg">
             <Icon name="card" size={20} />
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <h2 className="type-wide text-xl font-extrabold tracking-[-0.01em] text-fg">{enabled ? `${PLANS[plan].name} plan` : 'All features'}</h2>
+              <h2 className="type-head text-xl font-black tracking-[-0.01em] text-fg">{enabled ? `${PLANS[plan].name} plan` : 'All features'}</h2>
               {enabled && activeSub && <Badge tone={activeSub.status === 'past_due' ? 'warning' : 'success'}>{activeSub.status === 'past_due' ? 'Payment due' : 'Active'}</Badge>}
               {enabled && lifetime && <Badge tone="accent">Lifetime</Badge>}
             </div>

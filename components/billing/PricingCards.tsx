@@ -55,7 +55,7 @@ export function IntervalToggle({ value, onChange }: { value: Interval; onChange:
 
 /**
  * The plan cards: flat prints on the sheet (DESIGN.md). The featured tier is
- * a piece of film (band-flip), so its primary button turns into the paper
+ * a piece of film (ink-flip), so its primary button turns into the paper
  * button on black. `action` renders each card's button (a link on the
  * homepage, checkout / switch buttons on the billing page).
  */
@@ -87,13 +87,13 @@ export function PricingCards({
           return (
             <div
               key={id}
-              className={`relative flex flex-col rounded-sm p-8 ${featured ? 'band-flip' : 'card-float'}`}
+              className={`relative flex flex-col rounded-none p-8 ${featured ? 'ink-flip' : 'card-strong'}`}
             >
               <div className="flex items-center justify-between gap-2">
-                <h3 className="type-wide text-2xl font-extrabold tracking-[-0.02em] text-fg">{plan.name}</h3>
+                <h3 className="type-head text-2xl font-black tracking-[-0.02em] text-fg">{plan.name}</h3>
                 {label && (
                   <span
-                    className={`rounded-sm border px-1.5 py-0.5 text-xs font-semibold ${
+                    className={`rounded-none border px-1.5 py-0.5 text-xs font-semibold ${
                       current === id ? 'border-accent bg-accent-soft text-accent-text' : 'border-line-strong text-muted'
                     }`}
                   >
@@ -103,7 +103,7 @@ export function PricingCards({
               </div>
               <p className="mt-2 min-h-[2.5rem] text-sm leading-5 text-muted">{plan.tagline}</p>
               <p className="mt-6 flex items-baseline gap-1.5">
-                <span className="type-wide text-5xl font-extrabold tracking-[-0.03em] text-fg tabular-nums">{price.amount}</span>
+                <span className="type-head text-5xl font-black tracking-[-0.03em] text-fg tabular-nums">{price.amount}</span>
                 <span className="text-sm text-muted">{price.cadence}</span>
               </p>
               <p className="mt-1 h-4 text-xs text-faint">{price.note}</p>

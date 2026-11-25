@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 export function LogoMark({ size = 24 }: { size?: number }) {
-  // ShotDomain's own mark (viewfinder corners + aperture), drawn in ink: it inverts with the theme.
+  // ShotDomain's own mark (viewfinder corners + aperture), printed in riso blue: it follows the theme.
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true" className="shrink-0">
       <rect width="32" height="32" rx="7" style={{ fill: 'var(--primary)' }} />
@@ -20,7 +20,7 @@ export function LogoMark({ size = 24 }: { size?: number }) {
 
 export function Logo({ href = '/', compact = false }: { href?: string; compact?: boolean }) {
   return (
-    <Link href={href} className="type-wide flex items-center gap-2 text-[15px] font-extrabold tracking-[-0.02em] text-fg">
+    <Link href={href} className="type-head flex items-center gap-2 text-[19px] leading-none font-black text-fg">
       <LogoMark />
       <span className={compact ? 'hidden sm:inline' : ''}>ShotDomain</span>
     </Link>

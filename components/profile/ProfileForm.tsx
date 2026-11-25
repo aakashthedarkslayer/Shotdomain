@@ -37,7 +37,7 @@ export function ProfileForm({ displayName, googleName, company, email, brandName
       <Field label="Email" htmlFor="email" hint="Managed by your Google account.">
         <Input id="email" value={email} disabled readOnly />
       </Field>
-      <fieldset className="space-y-3 rounded-sm border border-line-strong p-4" disabled={!brandingAllowed}>
+      <fieldset className="space-y-3 rounded-none border border-line-strong p-4" disabled={!brandingAllowed}>
         <legend className="flex items-center gap-2 px-1 text-sm font-semibold text-fg">
           Branding on share links {!brandingAllowed && <PlanLock />}
         </legend>

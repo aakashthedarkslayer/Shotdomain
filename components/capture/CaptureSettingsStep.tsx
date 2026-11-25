@@ -144,7 +144,7 @@ export default function CaptureSettingsStep({
                   aria-pressed={active}
                   disabled={locked && !active}
                   onClick={() => toggleDevice(d.name)}
-                  className={`relative flex cursor-pointer flex-col items-start gap-3 rounded-sm border p-3 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
+                  className={`relative flex cursor-pointer flex-col items-start gap-3 rounded-md border p-3 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
                     active ? 'border-accent bg-accent-soft ring-1 ring-accent' : 'border-line-strong bg-surface hover:border-fg'
                   }`}
                 >
@@ -166,10 +166,10 @@ export default function CaptureSettingsStep({
                   <div>
                     <div className="text-sm font-semibold text-fg">{d.name}</div>
                     {d.name !== 'Desktop' && <div className="text-xs text-muted">{d.model}</div>}
-                    <div className="type-narrow text-[13px] text-muted tabular-nums">{preset ? `${preset.width} × ${preset.height}` : ''}</div>
+                    <div className="type-cond text-[13px] text-muted tabular-nums">{preset ? `${preset.width} × ${preset.height}` : ''}</div>
                   </div>
                   {active && (
-                    <span className="absolute top-2.5 right-2.5 flex h-4 w-4 items-center justify-center rounded-xs bg-accent text-accent-ink">
+                    <span className="absolute top-2.5 right-2.5 flex h-4 w-4 items-center justify-center rounded-none bg-accent text-accent-ink">
                       <Icon name="check" size={11} strokeWidth={3} />
                     </span>
                   )}

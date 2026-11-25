@@ -44,7 +44,7 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
           {brand ? (
             <span className="flex min-w-0 items-center gap-2.5">
               {brand.logoUrl && <BrandLogo src={brand.logoUrl} />}
-              {brand.name && <span className="type-wide truncate text-[15px] font-extrabold text-fg">{brand.name}</span>}
+              {brand.name && <span className="type-head truncate text-[15px] font-black text-fg">{brand.name}</span>}
             </span>
           ) : (
             <Logo href="/" />

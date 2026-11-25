@@ -33,7 +33,7 @@ export default async function ProfilePage() {
       <AppHeader />
       <main className="mx-auto max-w-5xl space-y-6 px-4 pt-10 sm:px-6">
         <div className="flex items-center gap-4 pb-2">
-          <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-line-strong bg-subtle text-lg font-extrabold text-fg">
+          <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-line-strong bg-subtle text-lg font-black text-fg">
             {user?.image ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={user.image} alt="" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
@@ -42,7 +42,7 @@ export default async function ProfilePage() {
             )}
           </span>
           <div className="min-w-0">
-            <h1 className="type-wide truncate text-[28px] leading-9 font-extrabold tracking-[-0.02em] text-fg">{user ? user.name || user.email : 'Local user'}</h1>
+            <h1 className="type-head truncate text-[28px] leading-9 font-black tracking-[-0.02em] text-fg">{user ? user.name || user.email : 'Local user'}</h1>
             {user ? (
               <>
                 {user.email && <p className="truncate text-sm text-muted">{user.email}</p>}
@@ -67,7 +67,7 @@ export default async function ProfilePage() {
           />
           {shares.length === 0 ? (
             <div className="px-6 py-14 text-center">
-              <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-sm bg-subtle text-muted">
+              <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-none bg-subtle text-muted">
                 <Icon name="link" size={20} />
               </span>
               <p className="mt-3 text-sm font-semibold text-fg">No share links</p>

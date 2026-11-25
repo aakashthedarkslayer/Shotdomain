@@ -13,7 +13,7 @@ const TONES: Record<AlertTone, { box: string; icon: 'info' | 'alert' | 'check' }
 export function Alert({ tone = 'info', children, className = '' }: { tone?: AlertTone; children: ReactNode; className?: string }) {
   const t = TONES[tone];
   return (
-    <div role={tone === 'danger' ? 'alert' : 'status'} className={`flex items-start gap-2.5 rounded-sm border px-3 py-2.5 text-[13px] ${t.box} ${className}`}>
+    <div role={tone === 'danger' ? 'alert' : 'status'} className={`flex items-start gap-2.5 rounded-none border px-3 py-2.5 text-[13px] ${t.box} ${className}`}>
       <Icon name={t.icon} size={16} className="mt-px" />
       <div className="min-w-0">{children}</div>
     </div>

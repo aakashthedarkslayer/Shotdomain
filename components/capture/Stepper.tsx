@@ -18,7 +18,7 @@ export function Stepper({ current }: { current: number }) {
             <li key={label} className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3 last:flex-none">
               <div className="flex items-center gap-2" aria-current={active ? 'step' : undefined}>
                 <span
-                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xs text-xs font-extrabold tabular-nums transition-colors ${
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-none text-xs font-black tabular-nums transition-colors ${
                     done
                       ? 'bg-primary text-primary-fg'
                       : active
@@ -29,8 +29,8 @@ export function Stepper({ current }: { current: number }) {
                   {done ? <Icon name="check" size={14} strokeWidth={2.5} /> : num}
                 </span>
                 <span
-                  className={`type-narrow hidden text-[15px] whitespace-nowrap sm:inline ${
-                    active ? 'font-extrabold text-fg' : done ? 'font-semibold text-fg' : 'text-faint'
+                  className={`type-cond hidden text-[15px] whitespace-nowrap sm:inline ${
+                    active ? 'font-black text-fg' : done ? 'font-semibold text-fg' : 'text-faint'
                   }`}
                 >
                   {label}

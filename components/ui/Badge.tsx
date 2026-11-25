@@ -22,7 +22,7 @@ export function Badge({
   children: ReactNode;
 }) {
   return (
-    <span className={`inline-flex h-5 items-center gap-1.5 rounded-sm px-1.5 text-xs font-semibold whitespace-nowrap ${TONES[tone]} ${className}`}>
+    <span className={`inline-flex h-5 items-center gap-1.5 rounded-none px-1.5 text-xs font-semibold whitespace-nowrap ${TONES[tone]} ${className}`}>
       {dot && <span className="h-1.5 w-1.5 rounded-full bg-current" />}
       {children}
     </span>

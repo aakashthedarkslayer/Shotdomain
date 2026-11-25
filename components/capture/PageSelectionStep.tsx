@@ -129,7 +129,7 @@ export default function PageSelectionStep({
   if (discoveryError) {
     return (
       <Card className="mx-auto max-w-xl px-6 py-12 text-center">
-        <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-sm bg-danger-soft text-danger">
+        <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-none bg-danger-soft text-danger">
           <Icon name="alert" size={20} />
         </span>
         <h2 className="mt-4 text-base font-semibold text-fg">Couldn&apos;t discover pages</h2>
@@ -179,7 +179,7 @@ export default function PageSelectionStep({
       <div className="space-y-3 px-5 pt-4 sm:px-6">
         {truncated && <Alert tone="warning">Discovery stopped at 500 pages. This site may have more.</Alert>}
         {!loggedIn && urls.length <= 3 && onAddLogin && (
-          <div className="flex flex-col gap-3 rounded-sm border border-line-strong bg-subtle px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 rounded-none border border-line-strong bg-subtle px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-2.5 text-[13px] text-fg">
               <Icon name="shield" size={16} className="mt-px shrink-0" />
               <span>
@@ -220,7 +220,7 @@ export default function PageSelectionStep({
           </div>
         </div>
         {addOpen && (
-          <div className="space-y-2 rounded-sm border border-line bg-subtle p-3">
+          <div className="space-y-2 rounded-none border border-line bg-subtle p-3">
             <Textarea
               aria-label="Pages to add"
               rows={3}
@@ -240,7 +240,7 @@ export default function PageSelectionStep({
         )}
       </div>
 
-      <div className="mx-5 mt-3 mb-4 overflow-hidden rounded-sm border border-line-strong sm:mx-6">
+      <div className="mx-5 mt-3 mb-4 overflow-hidden rounded-none border border-line-strong sm:mx-6">
         <label className="flex cursor-pointer items-center gap-3 border-b border-line bg-subtle px-3 py-2 text-xs font-semibold text-muted">
           <Checkbox
             checked={allFilteredSelected}
@@ -262,8 +262,8 @@ export default function PageSelectionStep({
                     className={`flex cursor-pointer items-center gap-3 border-l-2 py-2 pr-3 pl-2.5 hover:bg-subtle ${checked ? 'border-accent' : 'border-transparent'}`}
                   >
                     <Checkbox checked={checked} onChange={() => toggle(url)} />
-                    <span className="type-narrow w-7 shrink-0 text-right text-[13px] text-faint tabular-nums">{frameNo.get(url)}</span>
-                    <span className={`type-narrow truncate text-[15px] ${checked ? 'text-fg' : 'text-muted'}`} title={url}>
+                    <span className="type-cond w-7 shrink-0 text-right text-[13px] text-faint tabular-nums">{frameNo.get(url)}</span>
+                    <span className={`type-cond truncate text-[15px] ${checked ? 'text-fg' : 'text-muted'}`} title={url}>
                       {urlPath(url)}
                     </span>
                   </label>
@@ -303,7 +303,7 @@ export default function PageSelectionStep({
         </Button>
         <div className="flex items-center gap-3">
           <span className="text-sm text-muted">
-            <span className="font-extrabold text-fg tabular-nums">{selectedUrls.length}</span> of {urls.length} selected
+            <span className="font-black text-fg tabular-nums">{selectedUrls.length}</span> of {urls.length} selected
           </span>
           <Button disabled={selectedUrls.length === 0 || overLimit} onClick={onContinue}>
             Continue

@@ -368,7 +368,7 @@ function ShotDomainScene({ phase }: { phase: number }) {
   const read = phase >= 1;
   const tested = phase >= 2;
   return (
-    <div className="band-dark absolute inset-0 flex flex-col gap-2 p-[4%] text-[10px] text-fg">
+    <div className="ink-panel absolute inset-0 flex flex-col gap-2 p-[4%] text-[10px] text-fg">
       <div className="flex items-center gap-1.5 text-[11px] font-semibold text-fg">
         <span className="h-3.5 w-3.5 rounded bg-fg" /> This site needs a login
       </div>
@@ -414,7 +414,7 @@ function ShotDomainFieldsScene({ phase }: { phase: number }) {
   const pasted = phase >= 1;
   const tested = phase >= 2;
   return (
-    <div className="band-dark absolute inset-0 flex flex-col gap-2 p-[4%] text-[10px] text-fg">
+    <div className="ink-panel absolute inset-0 flex flex-col gap-2 p-[4%] text-[10px] text-fg">
       <div className="flex items-center gap-1.5 text-[11px] font-semibold text-fg">
         <span className="h-3.5 w-3.5 rounded bg-fg" /> This site needs a login
       </div>

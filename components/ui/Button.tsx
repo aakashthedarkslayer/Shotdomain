@@ -5,18 +5,17 @@ import type { IconName } from './Icon';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
-/**
- * DESIGN.md (Contact sheet): one 6 px control radius everywhere. "pill" is
- * kept as the marketing call: the same shape, set a step heavier.
- */
-export type ButtonShape = 'rect' | 'pill';
 
+/*
+ * DESIGN.md (Riso proof): buttons are pressed, so they are the rounded things
+ * (6 px); printed things (cards, frames) are square-cut. Primary is solid
+ * riso blue; it deepens on hover and takes the pink ink when pressed.
+ */
 const VARIANTS: Record<ButtonVariant, string> = {
-  // Ink is the conversion colour: one black (white in dark mode) primary per view.
-  primary: 'bg-primary text-primary-fg hover:bg-primary-hover',
-  secondary: 'border border-line-strong bg-surface text-fg hover:border-fg',
+  primary: 'bg-primary text-primary-fg hover:bg-primary-hover active:bg-accent active:text-accent-ink',
+  secondary: 'border-[1.5px] border-primary bg-surface text-fg hover:bg-subtle',
   ghost: 'text-muted hover:bg-subtle hover:text-fg',
-  danger: 'border border-line-strong bg-surface text-danger hover:border-danger hover:bg-danger-soft',
+  danger: 'border-[1.5px] border-danger bg-surface text-danger hover:bg-danger-soft',
 };
 
 const SIZES: Record<ButtonSize, string> = {
@@ -25,20 +24,14 @@ const SIZES: Record<ButtonSize, string> = {
   lg: 'h-12 gap-2 px-6 text-base',
 };
 
-const SHAPES: Record<ButtonShape, string> = {
-  rect: 'rounded-md',
-  pill: 'rounded-md font-semibold',
-};
-
 /** Class string for anything that should look like a button (e.g. <a> or <Link>). */
-export function buttonClass(variant: ButtonVariant = 'primary', size: ButtonSize = 'md', extra = '', shape: ButtonShape = 'rect') {
-  return `inline-flex shrink-0 cursor-pointer select-none items-center justify-center font-semibold whitespace-nowrap transition-colors active:translate-y-px disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 ${VARIANTS[variant]} ${SIZES[size]} ${SHAPES[shape]} ${extra}`;
+export function buttonClass(variant: ButtonVariant = 'primary', size: ButtonSize = 'md', extra = '') {
+  return `inline-flex shrink-0 cursor-pointer select-none items-center justify-center rounded-md font-semibold whitespace-nowrap transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 ${VARIANTS[variant]} ${SIZES[size]} ${extra}`;
 }
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
-  shape?: ButtonShape;
   isLoading?: boolean;
   icon?: IconName;
   iconRight?: IconName;
@@ -46,7 +39,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = 'primary', size = 'md', shape = 'rect', isLoading, icon, iconRight, className = '', disabled, children, type = 'button', ...props },
+  { variant = 'primary', size = 'md', isLoading, icon, iconRight, className = '', disabled, children, type = 'button', ...props },
   ref,
 ) {
   const iconSize = size === 'sm' ? 14 : 16;
@@ -55,7 +48,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       ref={ref}
       type={type}
       disabled={disabled || isLoading}
-      className={buttonClass(variant, size, className, shape)}
+      className={buttonClass(variant, size, className)}
       {...props}
     >
       {isLoading ? <Spinner size={iconSize} /> : icon && <Icon name={icon} size={iconSize} />}

@@ -45,7 +45,7 @@ export async function SiteHeader() {
             <>
               <span
                 title="Sign-in isn’t configured (no Google keys in .env.local), so anyone can use the app."
-                className="hidden rounded-sm border border-warning/30 bg-warning-soft px-2 py-0.5 text-xs font-semibold whitespace-nowrap text-warning sm:inline"
+                className="hidden rounded-none border border-warning/30 bg-warning-soft px-2 py-0.5 text-xs font-semibold whitespace-nowrap text-warning sm:inline"
               >
                 Local mode, no sign-in
               </span>

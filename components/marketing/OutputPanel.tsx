@@ -15,7 +15,7 @@ function Folder({ name, size, collapse = false }: { name: string; size: string; 
   return (
     <div>
       <p className="flex items-baseline justify-between gap-4 text-fg">
-        <span className="font-extrabold">{name}/</span>
+        <span className="font-black">{name}/</span>
         <span className="text-muted tabular-nums">{size}</span>
       </p>
       {collapse && <p className="mt-2 border-l border-line pl-4 text-muted sm:hidden">the same {PAGES.length + MORE} file names</p>}
@@ -37,9 +37,9 @@ export function OutputPanel() {
   const total = (PAGES.length + MORE) * 2;
   return (
     <figure className="text-left">
-      <div className="band-dark type-narrow overflow-hidden rounded-sm text-[15px] leading-6">
+      <div className="ink-panel type-cond overflow-hidden rounded-none text-[15px] leading-6">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-line px-5 py-3.5">
-          <span className="font-extrabold text-fg">example.com-2026-11-24.zip</span>
+          <span className="font-black text-fg">example.com-2026-11-24.zip</span>
           <span className="text-muted tabular-nums">
             {PAGES.length + MORE} pages, 2 devices, {total} screenshots
           </span>

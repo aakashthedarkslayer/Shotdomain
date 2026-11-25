@@ -1,161 +1,154 @@
 ## Overview
 
-ShotDomain photographs a website: every page, on every device. What it hands
-back is a contact sheet, the photographer's proof sheet where every frame of a
-roll sits side by side so you can pick the good ones. The interface borrows
-that object and nothing else from photography.
+ShotDomain prints a proof of a website for your client: every page, on every
+device. The interface is that proof, made the way small studios print theirs:
+on a risograph, in two spot inks on paper.
 
-- **The page is proof paper.** A cool, slightly grey white. Not cream, not
-  pure white.
-- **Screenshots sit in film.** Real captures are held in black film strips
-  with sprocket holes along the edges and frame numbers printed on the film
-  in edge amber. Film is the one bold object; it appears where frames really
-  are (the hero strip, the results sheet, the share page), never as
-  decoration.
-- **Red china marker means picked.** Photographers circle the frames they
-  want in red. Here red marks what you picked, the step you are on, and
-  keyboard focus. Errors use the same red family with an icon and words, so
-  colour is never the only signal.
-- **Everything else is quiet.** Black type on paper, hairline rules, flat
-  prints. No gradients, no glass, no soft card shadows.
+- **Two inks on paper.** Riso blue carries the type, the frames and the
+  buttons. Fluorescent pink is the second drum: it marks what you pick, where
+  you are and keyboard focus, and it is the off-register plate in the prints.
+  There is no black anywhere; the darkest thing on the page is deep blue ink.
+- **One printed proof.** The hero shows a white proof sheet of real
+  ShotDomain frames, printed in the two inks a few pixels off-register, with
+  registration marks at its corners. It is the one loud thing on the site.
+- **Real colour where it matters.** Everywhere a person judges their own
+  output (results, share pages, the worked example), screenshots stay in full
+  colour, framed with a blue keyline.
+- **Shape says what a thing is.** Printed things (sheets, cards, frames,
+  dialogs) are square-cut. Things you press (buttons, inputs, chips, device
+  toggles) have a 6 px radius.
 
 ## Colours
 
-Light ("proof paper") is the default. Dark mode is the darkroom: the same
-structure on black, with the marker turned up to a safelight red.
+Light is blue and pink on cool paper. Dark mode prints the same inks on navy
+stock.
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| `--bg` | Proof paper `#f2f3ef` | `#000000` | The page. |
-| `--surface` | Print `#fbfbf9` | `#141513` | Cards, dialogs, inputs: prints lying on the sheet. |
-| `--subtle` | Tray `#e7e9e3` | `#1e1f1c` | Hover, inset regions, chips. |
-| `--line` | Rule `#d6d8d1` | `#2a2b28` | Hairlines. |
-| `--line-strong` | `#a3a79f` | `#4a4c47` | Print edges, secondary button borders. |
-| `--field-edge` | `#858981` | `#6f726b` | Input borders, 3:1 against paper and print. |
-| `--fg` | Film `#000000` | `#ecede8` | Type, the primary action. |
-| `--muted` | Fixer `#5c605b` | `#a2a59e` | Secondary text, 5.7:1 on paper. |
-| `--faint` | `#6a6e68` | `#8c8f88` | Tertiary text and placeholders, 4.7:1 on paper. |
-| `--accent` | Marker `#d4241b` | Safelight `#ff5b4f` | Picked, current step, focus ring. |
-| `--accent-text` | `#b11d15` | `#ff7a70` | Marker red as text (6.2:1 on paper). |
-| `--accent-soft` | `#fbe3e1` | `#3a1412` | A picked row's tint. |
-| `--edge-print` | Amber `#f0a830` | Amber `#f0a830` | Frame numbers. Only ever on film. |
-| `--warning` | `#8a5300` | `#f0a830` | Caution text. |
-| `--danger` | `#b11d15` | `#ff7a70` | Error text, always with an icon. |
+| `--bg` | Paper `#eef0f3` | Navy `#0e1630` | The page. |
+| `--surface` | Sheet `#f8f9fb` | `#141e3e` | Cards, dialogs, inputs. |
+| `--subtle` | Tray `#e2e6ee` | `#1f2b57` | Hover, inset regions. |
+| `--line` | Rule `#cdd3e0` | `#2a3766` | Hairlines. |
+| `--line-strong` | `#93a0bd` | `#44538a` | Stronger rules. |
+| `--field-edge` | `#7a88a8` | `#6676ae` | Input borders, 3:1 against paper and sheet. |
+| `--fg` | Deep blue `#1c2f63` | `#eef0f7` | Headings and type, 11:1 on paper. |
+| `--muted` | `#50648f` | `#a9b4d3` | Secondary type, 5.1:1 on paper. |
+| `--faint` | `#566a93` | `#8d99be` | Tertiary type and placeholders, 4.7:1 on paper. |
+| `--primary` | Riso blue `#3255a4` | `#8fa9f0` | Buttons, links, keylines. |
+| `--accent` | Pink mark `#d61c82` | `#ff5cb8` | Picked, current step, focus ring (4.2:1 on paper). |
+| `--accent-text` | `#c4126f` | `#ff8ac9` | Pink as text, 5:1 on paper. |
+| `--accent-soft` | `#ffe1f1` | `#3a1840` | A picked row's tint. |
+| `--print-pink` | Fluorescent `#ff48b0` | `#ff5cb8` | The second ink as printed: prints, registration marks. Never text. |
+| `--frame-no` | `#c4126f` | `#ff8ac9` | Frame numbers. |
+| `--warning` | `#7a5b00` on yellow tint | `#ffe24d` | Caution, with riso yellow `#ffe800` as its fill. |
+| `--danger` | `#b3203a` | `#ff8a9a` | Errors, always with an icon and words. |
 
-- **Done is black.** A finished capture is developed, not green. The success
-  token is ink.
-- **Film in any mode.** `.band-dark` is a piece of film: black with paper type
-  in light and dark mode. `.band-flip` (the featured price) is film on paper
-  and turns to paper in the darkroom.
-- **Never a sixth colour.** Paper, print, film, fixer grey, edge amber and
-  marker red carry the whole site. The drawn DevTools in the login guide keep
-  Chrome's own greys because they depict Chrome.
+- **Done is blue.** A finished capture is printed, so success uses riso blue,
+  not green.
+- **`.ink-panel`** is a solid block of deep blue ink in any mode (the ZIP
+  listing, the login guide's ShotDomain panels). **`.ink-flip`** is the
+  featured price: ink on paper, and a paper sheet on navy stock.
+  **`.paper-sheet`** keeps light-mode inks in any mode (the hero proof).
+- **No sixth colour.** Paper, the two blues and the pinks carry the site;
+  yellow and red appear only for warnings and errors. The login guide's drawn
+  DevTools keep Chrome's own greys because they depict Chrome.
 
 ## Typography
 
-One family, **Archivo** (variable, width 62 to 125, weight 100 to 900). Its
-width axis carries the voice:
+**Anybody** (variable, width 50 to 150, weight 100 to 900) for everything
+people read; **IBM Plex Mono** only for pasted code.
 
-| Role | Width | Weight | Size / leading | Tracking | Use |
-|---|---|---|---|---|---|
-| Display | 125% (`display`) | 800 | 76 px / 0.98 at desktop, 44 px on phones | -0.03em | The hero head. |
-| Section | 125% (`type-wide`) | 800 | 36 px / 40 | -0.025em | Section heads. |
-| Title | 125% (`type-wide`) | 800 | 17 to 20 px | -0.01em | Card and dialog titles, step titles. |
-| Body | 100% | 400 | 16 to 18 px / 1.5 | 0 | Paragraphs, at most about 70 characters a line. |
-| Caption | 75% (`type-narrow`) | 400, or 800 for frame numbers | 13 to 15 px, tabular figures | 0 | Frame captions, file names, URLs, counts. |
-| Code | Geist Mono | 400 | 12 to 13 px | 0 | Pasted cURL, cookie values, custom CSS. Nothing else. |
+| Role | Width | Weight | Size / leading | Use |
+|---|---|---|---|---|
+| Poster (`display`) | 62% | 900 | 112 px / 0.88 desktop, 64 px phones | The hero head. |
+| Section (`display`) | 62% | 900 | 52 px / 0.88 (40 px phones) | Section heads. |
+| Title (`type-head`) | 75% | 900 | 17 to 24 px | Card, dialog and step titles, plan names, prices. |
+| Body | 100% | 400 | 16 to 20 px / 1.5 | Paragraphs, at most about 70 characters a line. |
+| Caption (`type-cond`) | 75% | 400, 900 for numbers | 12 to 15 px, tabular figures | Frame captions, file names, URLs, counts. |
+| Code | IBM Plex Mono | 400 | 12 to 13 px | Pasted cURL, cookie values, custom CSS. |
 
-- Three weights in the whole system: 400 for reading, 600 for labels,
-  buttons and emphasis, 800 for headings and frame numbers.
+- Three weights in the whole system: 400 to read, 600 for labels, buttons and
+  emphasis, 900 for heads and frame numbers.
 - Headlines are sentence case and end with a full stop. No single accented
-  word, no italics in a heading.
-- No eyebrows, no all-caps labels, no tracked capitals. A section opens on its
-  heading.
+  word, no italics in a heading, no all-caps labels, no eyebrows.
 - Numbers that line up (frame numbers, counts, prices, sizes) use tabular
   figures.
 
 ## Layout
 
-- **Left-aligned.** A contact sheet is read left to right, top to bottom. The
-  hero, the sections and the app screens align to the left edge of a 72 rem
-  (1152 px) container; only the stepper and dialogs centre.
+- **Left-aligned,** like a poster. The hero is two columns at desktop: the
+  head and the form on the left, the proof sheet on the right. Sections align
+  to the left edge of a 72 rem (1152 px) container; the stepper and dialogs
+  centre.
 - **Spacing** on a 4 px base: 8, 12, 16, 24, 32, 48, 64, 96. Sections part by
-  96 to 112 px; inside a section, heading to body 16 px, body to the object
-  below 40 to 48 px.
-- **The sheet grid.** Frames sit in a grid with 16 px gutters (24 px at
-  desktop), 3 across at desktop, 2 on tablets, 1 on phones; every frame keeps
-  its capture's aspect, cropped from the top.
+  96 to 112 px and a hairline; inside a section, head to body 16 px, body to
+  the object below 40 to 48 px.
 - **Gutters** 16 px on phones, 24 px from 640 px up.
 
-## Shapes
+## Shapes and elevation
 
-| Radius | Value | Use |
-|---|---|---|
-| `rounded-xs` | 2 px | Frames (screenshots in film), step boxes, checkboxes. |
-| `rounded-sm` | 4 px | Prints: cards, badges, alerts. |
-| `rounded-md` | 6 px | Controls: buttons, inputs, menus, dialogs. |
-| `rounded-full` | | Avatars and switches only. |
+| Radius | Use |
+|---|---|
+| none | Sheets, cards, frames, alerts, dialogs, menus: printed things. |
+| 6 px (`rounded-md`) | Buttons, inputs, chips, device toggles: things you press. |
+| full | Avatars and switches only. |
 
-There is one button shape. The `pill` prop on `Button` is the marketing call:
-the same 6 px shape, set a step heavier.
-
-## Elevation
-
-Flat. Prints lie on the sheet and are held by a hairline (`card`) or a
-stronger edge (`card-float`). Only things that float over the page (menus,
-dialogs) cast a shadow (`card-elevated`). The film strip has no shadow; its
-blackness is the depth.
+Flat. Sheets lie on the paper, held by a hairline (`card`) or a blue keyline
+(`card-strong`). Only things that float (menus, dialogs, and the hero's proof
+sheet lifting off the page) cast a soft, blue-tinted shadow (`card-raised`).
+No hard offset shadows.
 
 ## Components
 
-- **Film strip** (`film-strip`, `sprockets`): the black base, a row of
-  sprocket holes cut along the top and bottom edges (the holes show the page
-  through), frames 2 px round, and under each frame its number in edge amber
-  and its file name in narrow paper-coloured type. One strip in the hero; the
-  results sheet and the share page use the same frame treatment.
-- **Buttons:** primary is film black with paper type (paper with black type
-  in the darkroom); secondary is print with a strong edge that turns black on
-  hover; ghost is text that gains a tray on hover; danger is marker text on
-  print. 600 weight. Heights 32, 40, 48; the hero call is 64 to 72.
-- **Inputs:** print fill, `--field-edge` border, 6 px; hover darkens the edge;
-  focus is the marker-red outline.
-- **Checkboxes and picked items:** marker red. A picked page, device or frame
-  is marked red; nothing else is.
-- **Switch:** film black when on.
-- **Segmented control:** the active option is a black chip.
-- **Stepper:** five square step boxes joined by hairlines. Done is black with
-  a tick, current is outlined in marker red, the rest are outlines.
-- **Nav:** paper bar with a hairline under it. Links are plain text that
-  underlines on hover; the current app section is underlined in marker red.
-- **Badges:** 4 px, a step smaller than body, sentence case.
+- **Proof sheet** (hero): a white sheet, registration marks printed in both
+  inks at its corners, two rows of real frames printed by
+  `scripts/riso-print.mjs`, each with its frame number in pink and its file
+  name in condensed type. Caption: the pages are printed in two inks; real
+  screenshots stay in full colour.
+- **Buttons:** primary is riso blue with white type, deepening to deep blue
+  on hover and taking the pink ink while pressed. Secondary is a sheet with a
+  1.5 px blue keyline. Ghost is text that gains a tray on hover. Danger is red
+  type with a red keyline. 600 weight; heights 32, 40, 48, and 56 to 64 for
+  the hero call.
+- **Inputs:** sheet fill, `--field-edge` border, 6 px; focus is the pink
+  outline.
+- **Picked items:** pink. Checkboxes, a picked page's left rule, a picked
+  device, the current step.
+- **Stepper:** five square step boxes joined by hairlines; done is solid blue
+  with a tick, current is outlined in pink.
+- **Results and share pages:** a proof of true-colour prints, each keylined in
+  blue, numbered in pink in capture order.
+- **Nav:** a paper bar with a hairline under it; links underline on hover;
+  the current app section is underlined in pink.
 
 ## Motion
 
-- One orchestrated moment: on load, the hero strip's frames develop in order
-  (opacity only, about 1.2 s in all). With reduced motion they are simply
+- One orchestrated moment: on load, the proof's frames ink in, in order
+  (opacity only, about a second in all). With reduced motion they are simply
   there.
-- Motion that answers an action is welcome: a dialog opening, a picked frame
-  getting its mark, a frame developing when its capture finishes.
-- Transform and opacity only, never `transition: all`. Every animation has a
+- Motion that answers an action is welcome: a dialog opening, a frame inking
+  in when its capture finishes, the button taking the pink ink as it is
+  pressed.
+- Transform and opacity only, never `transition: all`; every animation has a
   reduced-motion fallback.
 
 ## Copy
 
-Plain, concrete, from the user's side: what happens, in their words. Sentence
-case, active verbs, no filler, no dashes, no arrows glued to labels. A button
-says what it does ("Capture site", "Download ZIP") and the flow keeps that
-name. Errors say what happened and how to fix it.
+Plain, concrete, from the user's side. Sentence case, active verbs, no filler,
+no dashes, no arrows glued to labels. A button says what it does ("Capture
+site", "Download ZIP") and the flow keeps that name. Errors say what happened
+and how to fix it.
 
 ## Do and don't
 
-- **Do** show real ShotDomain output. Every frame on the marketing pages is a
-  real capture from `public/screens/`.
-- **Do** keep film for frames. A black panel that holds no screenshots is a
-  code or file listing (the ZIP tree), never decoration.
-- **Do** use red only for what is picked, current or focused, and for errors
-  with their icon.
-- **Don't** add gradients, glass, glows or soft card shadows.
-- **Don't** use pills, eyebrows, mono labels, middle-dot meta lines or
-  tracked capitals.
-- **Don't** number things that are not a sequence. Frames in a capture and the
-  five capture steps are sequences; feature lists are not.
+- **Do** show real ShotDomain output. The hero's prints are real captures
+  printed in two inks; everything else is true colour.
+- **Do** keep pink for what is picked, current or focused, and for the second
+  ink in prints. Never as body text at the fluorescent value.
+- **Don't** use black, gradients, glass, glows, soft card shadows or hard
+  offset shadows.
+- **Don't** use pills, eyebrows, mono labels, middle-dot meta lines or tracked
+  capitals.
+- **Don't** number things that are not a sequence. Frames in a capture, the
+  five capture steps and the four "how it works" steps are sequences; feature
+  lists are not.

@@ -43,7 +43,7 @@ function Band({
 
 function Heading({ id, children, className = '' }: { id?: string; children: ReactNode; className?: string }) {
   return (
-    <h2 id={id} className={`type-wide text-[30px] leading-9 font-extrabold tracking-[-0.025em] text-fg sm:text-[36px] sm:leading-10 ${className}`}>
+    <h2 id={id} className={`display text-[40px] text-fg sm:text-[52px] ${className}`}>
       {children}
     </h2>
   );
@@ -65,7 +65,7 @@ export function WorkedExampleSection() {
 
       <div className="mt-12 grid items-start gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
         <figure>
-          <div className="overflow-hidden rounded-sm border border-line-strong bg-surface">
+          <div className="card-strong overflow-hidden">
             <picture>
               {/* On a phone, the same share page as a phone shows it, so it stays readable. */}
               <source media="(max-width: 639px)" srcSet="/screens/share-phone.webp" width={780} height={1200} />
@@ -131,10 +131,10 @@ export function HowItWorksSection() {
         <ol className="divide-y divide-line border-y border-line">
           {STEPS.map((s, i) => (
             <li key={s.title} className="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-4 gap-y-2 py-7 sm:grid-cols-[3rem_minmax(0,2fr)_minmax(0,3fr)] sm:gap-x-6">
-              <span aria-hidden="true" className="type-wide row-span-2 text-[28px] leading-7 font-extrabold text-fg tabular-nums sm:row-span-1">
+              <span aria-hidden="true" className="display row-span-2 text-[44px] text-primary tabular-nums sm:row-span-1">
                 {i + 1}
               </span>
-              <h3 className="type-wide text-lg leading-7 font-extrabold tracking-[-0.01em] text-fg">{s.title}</h3>
+              <h3 className="type-head text-lg leading-7 font-black tracking-[-0.01em] text-fg">{s.title}</h3>
               <div>
                 <p className="text-base leading-6 text-muted">{s.body}</p>
                 <p className="mt-2 text-sm leading-5 font-semibold text-fg">{s.detail}</p>
@@ -168,7 +168,7 @@ export function LoginPagesSection() {
             Dashboards, client portals, staging sites. Copy your session from your own browser and paste it in. You never hand over a password,
             and it works with two-factor and single sign-on.
           </p>
-          <h3 className="mt-8 text-sm font-extrabold text-fg">What happens to your session</h3>
+          <h3 className="mt-8 text-sm font-black text-fg">What happens to your session</h3>
           <ul className="mt-3 space-y-2.5 text-sm leading-6 text-muted">
             {SESSION_FACTS.map((f) => (
               <li key={f} className="flex gap-2.5">
@@ -178,14 +178,14 @@ export function LoginPagesSection() {
             ))}
           </ul>
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <CaptureButton login className={buttonClass('primary', 'md', '', 'pill')}>
+            <CaptureButton login className={buttonClass('primary', 'md', '')}>
               Try it on your app
             </CaptureButton>
             <span className="text-sm text-muted">In Pro and Lifetime.</span>
           </div>
         </div>
 
-        <div className="card rounded-sm p-4 sm:p-5">
+        <div className="card rounded-none p-4 sm:p-5">
           <p id="session-security" className="mb-3 px-1 text-sm font-semibold text-fg">
             Copy your session in four clicks
           </p>
@@ -306,7 +306,7 @@ export function Footer() {
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-end">
           <div>
-            <Link href="/" className="type-wide inline-flex items-center gap-3 text-[36px] leading-none font-extrabold tracking-[-0.03em] text-fg sm:text-[52px]">
+            <Link href="/" className="type-head inline-flex items-center gap-3 text-[36px] leading-none font-black tracking-[-0.03em] text-fg sm:text-[52px]">
               <LogoMark size={44} />
               ShotDomain
             </Link>

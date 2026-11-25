@@ -1,18 +1,21 @@
 import type { Metadata } from 'next';
-import { Archivo, Geist_Mono } from 'next/font/google';
+import { Anybody, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 
-// One family; its width axis carries the type: wide for display, narrow for captions.
-const archivo = Archivo({
+// One family for everything people read; its width axis does the work:
+// very condensed for poster heads, condensed for captions, normal for body.
+const anybody = Anybody({
   subsets: ['latin'],
   axes: ['wdth'],
-  variable: '--font-archivo',
+  variable: '--font-anybody',
   display: 'swap',
 });
 
-const geistMono = Geist_Mono({
+// Only for pasted code: cURL, cookie values, custom CSS.
+const plexMono = IBM_Plex_Mono({
   subsets: ['latin'],
-  variable: '--font-geist-mono',
+  weight: ['400', '600'],
+  variable: '--font-plex-mono',
   display: 'swap',
 });
 
@@ -25,7 +28,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`h-full ${archivo.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`h-full ${anybody.variable} ${plexMono.variable}`}>
       <body className="min-h-full font-sans text-fg antialiased">{children}</body>
     </html>
   );

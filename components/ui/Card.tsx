@@ -2,7 +2,7 @@ import type { HTMLAttributes, ReactNode } from 'react';
 
 export function Card({ className = '', children, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={`card rounded-sm ${className}`} {...props}>
+    <div className={`card ${className}`} {...props}>
       {children}
     </div>
   );
@@ -19,7 +19,7 @@ export function CardHeader({ title, description, actions, className = '' }: Card
   return (
     <div className={`flex flex-wrap items-start justify-between gap-4 border-b border-line px-5 py-4 sm:px-6 ${className}`}>
       <div className="min-w-0">
-        <h2 className="type-wide text-[17px] leading-6 font-extrabold tracking-[-0.01em] text-fg">{title}</h2>
+        <h2 className="type-head text-[17px] leading-6 font-black tracking-[-0.01em] text-fg">{title}</h2>
         {description && <p className="mt-1 text-sm text-muted">{description}</p>}
       </div>
       {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}

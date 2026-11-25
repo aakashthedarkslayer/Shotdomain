@@ -34,9 +34,9 @@ function CookieHelp() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="card group flex w-full cursor-pointer items-center gap-3 rounded-sm px-3 py-2.5 text-left transition-colors hover:border-fg"
+        className="card group flex w-full cursor-pointer items-center gap-3 rounded-md px-3 py-2.5 text-left transition-colors hover:border-fg"
       >
-        <span className="bg-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-xs text-primary-fg">
+        <span className="bg-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-none text-primary-fg">
           <Icon name="play" size={15} />
         </span>
         <span className="min-w-0 flex-1">
@@ -57,7 +57,7 @@ function CookieHelp() {
 
 function CookieTextHelp() {
   return (
-    <details className="group rounded-sm border border-line bg-subtle text-[13px]">
+    <details className="group rounded-none border border-line bg-subtle text-[13px]">
       <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2 font-semibold text-fg [&::-webkit-details-marker]:hidden">
         <Icon name="info" size={14} className="text-fg" />
         Prefer text? Step-by-step instructions
@@ -113,7 +113,7 @@ function PastedCookieSummary({ text }: { text: string }) {
     </span>
   );
   return (
-    <div className="space-y-2 rounded-sm border border-line bg-subtle px-3 py-2.5 text-[13px]">
+    <div className="space-y-2 rounded-none border border-line bg-subtle px-3 py-2.5 text-[13px]">
       <div className="text-fg">
         Found <b>{names.length}</b> {names.length === 1 ? 'cookie' : 'cookies'}. All of them are sent, like your browser does.
       </div>
@@ -170,7 +170,7 @@ function CopiedRequestNote({ req, siteUrl }: { req: CopiedRequest; siteUrl: stri
   }
   return (
     <div className="space-y-2">
-      <div className="flex items-start gap-2 rounded-sm bg-success-soft px-3 py-2.5 text-[13px] text-success">
+      <div className="flex items-start gap-2 rounded-none bg-success-soft px-3 py-2.5 text-[13px] text-success">
         <Icon name="check" size={15} className="mt-px shrink-0" />
         <span>
           Read your copied {label}
@@ -376,7 +376,7 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
     <div className="space-y-4">
       {!usingPassword ? (
         <>
-          <div className="flex items-start gap-2.5 rounded-sm border border-line-strong bg-subtle px-3 py-2.5 text-[13px] text-fg">
+          <div className="flex items-start gap-2.5 rounded-none border border-line-strong bg-subtle px-3 py-2.5 text-[13px] text-fg">
             <Icon name="shield" size={16} className="mt-px" />
             <span>
               <b>No password needed.</b> Log in to the site in your own browser and paste your session below. Treat it like a key: it works
@@ -511,7 +511,7 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
           )}
           {result.image && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={result.image} alt="Page after logging in" className="w-full rounded-xs border border-line" />
+            <img src={result.image} alt="Page after logging in" className="w-full rounded-none border border-line" />
           )}
         </div>
       )}
