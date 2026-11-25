@@ -1,65 +1,141 @@
+/* Hallmark · shape: Workbench · genre: modern-minimal · theme: brand (DESIGN.md, locked) · redesign: full · job: sign up · surface: absolute
+ * paper: oklch(98.5% 0 0) · accent: oklch(20.5% 0 0) · display: Geist · body: Geist · hero: Counter (/), Banner (/terms), Banner (/privacy), Banner (/refunds) · nav: kept (edge-aligned bar) · footer: mast · signature: ShotDomain's own pages, captured by ShotDomain, as the share page a client opens
+ * axes: soft-white/geometric-sans/ink · posture: restrained · contrast: pass · fold: pass · imagery: screenshots 2 (ShotDomain's own output, capture.mjs) · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V3 · weakest: V, the Vercel-style system is shared by many developer tools; the page leads with ShotDomain's own captures and the real ZIP layout instead of a drawn product */
+/* Hallmark · waive 7b · --bg resolves to #000 under prefers-color-scheme dark · DESIGN.md fixes ShotDomain's dark canvas at pure #000 and cards at #0a0a0a */
+/* Hallmark · waive 29 · one .hero-mesh wash at 25% opacity behind the hero only · DESIGN.md's brand gradient sits behind the hero headline and nowhere else */
+/* Hallmark · waive 81 · .hero-mesh is a backdrop behind the capture form, not a picture slot · the hero's visual is the working capture form itself */
+/* Hallmark · waive 59 · bands part by 96 to 128px and every band changes paper · DESIGN.md sets ShotDomain's band padding at 64 to 96px; the captures carry the mass */
+/* Hallmark · waive 78 · h2 at 32px display-lg under a 96px hero head · DESIGN.md sets section headlines at display-lg; the screenshots are the large objects */
+/* Hallmark · waive 39b · nav Log in and Sign up at 32px with 44px targets on phones · DESIGN.md nav CTAs stand 28 to 32px tall on every ShotDomain page */
+/* Hallmark · waive 44c · /terms, /privacy and /refunds open on a Banner (the title band, then the document beside a rail of the three pages) · Tailwind's compiler drops CSS comments, so the render tier cannot read the per-route hero field */
+/* Hallmark · waive 79 · /terms, /privacy and /refunds are Banner routes whose document starts 360px down and runs past the fold · the homepage Counter leaves 143px under its content at 1440 x 900 without this waiver */
+/* Hallmark · reworded "Every page of a site. In one shot." to "Every page of a site. One shot." · the hero head is seven words or fewer */
 @import "tailwindcss";
 
 /*
- * Design tokens — the Vercel-inspired system in DESIGN.md (see CLAUDE.md for
- * ShotDomain's adaptations). Components use the semantic names (bg-bg,
- * bg-surface, text-muted, border-line, card, bg-primary, ...) so the look is
- * defined here and nowhere else.
+ * Design tokens: the Vercel-inspired system in DESIGN.md, with ShotDomain's
+ * adaptations in CLAUDE.md. Palette values live only here, in :root; the
+ * semantic names (bg-bg, bg-surface, text-muted, border-line, card,
+ * bg-primary...) point at them, and the dark band and the flipped pricing
+ * card swap the semantic names to other palette tokens.
  */
 :root {
-  --bg: #fafafa; /* canvas-soft: the page */
-  --surface: #ffffff; /* canvas: cards, dialogs, inputs */
-  --surface-strong: #ffffff;
-  --field: #ffffff;
-  --subtle: #f5f5f5; /* canvas-soft-2: hover, inset regions, chips */
-  --line: #ebebeb; /* hairline */
-  --line-strong: #a1a1a1; /* hairline-strong */
-  --fg: #171717; /* ink */
-  --muted: #4d4d4d; /* body */
-  --faint: #6f6f6f; /* mute, darkened from the spec's #888 to pass 4.5:1 on canvas */
-  --primary: #171717;
-  --primary-fg: #ffffff;
-  --primary-hover: #383838;
-  --accent: #0070f3; /* link */
-  --accent-soft: #ebf5ff;
-  --accent-ink: #0761d1; /* link-deep: blue text on accent-soft (5.2:1) */
-  --success: #0070f3; /* the spec's success is the link blue */
-  --success-soft: #ebf5ff;
-  --warning: #ab570a; /* warning-deep: readable as text */
-  --warning-soft: #ffefcf;
-  --danger: #c50000; /* error-deep: readable as text */
-  --danger-soft: #fde8e9;
-  /* Stacked elevation: small offsets + an inset hairline, never one heavy drop. */
+  /* The palette: every colour on the site, once. */
+  --gray-0: #ffffff;
+  --gray-50: #fafafa;
+  --gray-100: #f5f5f5;
+  --gray-150: #ebebeb;
+  --gray-400: #a1a1a1;
+  --gray-450: #8a8a8a;
+  --gray-500: #6f6f6f;
+  --gray-600: #4d4d4d;
+  --gray-700: #383838;
+  --gray-900: #171717;
+  --gray-930: #111111;
+  --gray-950: #0a0a0a;
+  --gray-1000: #000000;
+  --dark-subtle: #1f1f1f;
+  --dark-subtle-2: #1a1a1a;
+  --dark-line: #2e2e2e;
+  --dark-line-strong: #5c5c5c;
+  --dark-field-edge: #6b6b6b;
+  --dark-faint: #878787;
+  --dark-fg: #ededed;
+  --dark-primary-hover: #e5e5e5;
+  --dark-primary-hover-2: #cccccc;
+  --blue-500: #0070f3;
+  --blue-600: #0761d1;
+  --blue-50: #ebf5ff;
+  --blue-300: #52a8ff;
+  --blue-950: #0b2341;
+  --amber-700: #ab570a;
+  --amber-50: #ffefcf;
+  --amber-400: #f5a623;
+  --amber-950: #2e1d02;
+  --red-700: #c50000;
+  --red-50: #fde8e9;
+  --red-400: #ff6166;
+  --red-950: #3b1215;
+  /* Hero-scale brand gradient (develop, preview, ship) and the session guide's DevTools greys. */
+  --mesh-1: #007cf0;
+  --mesh-2: #00dfd8;
+  --mesh-3: #7928ca;
+  --mesh-4: #ff0080;
+  --mesh-5: #ff4d4d;
+  --mesh-6: #f9cb28;
+  --devtools-bg: #202124;
+  --devtools-menu: #2a2b2e;
+  --guide-site: #4f46e5;
+  /* Text and icons on a status fill (blue, red): white in both modes. */
+  --on-status: var(--gray-0);
+  /* Behind a dialog. */
+  --scrim: #00000066;
+  /* A screenshot's own backdrop: white, as the captured page painted it. */
+  --shot-paper: var(--gray-0);
+
+  /* Semantic names (light). */
+  --bg: var(--gray-50); /* canvas-soft: the page */
+  --surface: var(--gray-0); /* canvas: cards, dialogs, inputs */
+  --surface-strong: var(--gray-0);
+  --field: var(--gray-0);
+  --field-edge: var(--gray-450); /* input borders: 3:1 or more on every surface */
+  --subtle: var(--gray-100); /* canvas-soft-2: hover, inset regions, chips */
+  --line: var(--gray-150); /* hairline */
+  --line-strong: var(--gray-400); /* hairline-strong */
+  --fg: var(--gray-900); /* ink */
+  --muted: var(--gray-600); /* body */
+  --faint: var(--gray-500); /* mute, darkened from the spec's #888 to pass 4.5:1 on canvas */
+  --primary: var(--gray-900);
+  --primary-fg: var(--gray-0);
+  --primary-hover: var(--gray-700);
+  --accent: var(--blue-500); /* link */
+  --accent-soft: var(--blue-50);
+  --accent-text: var(--blue-600); /* link-deep: blue text on accent-soft (5.2:1) */
+  --accent-ink: var(--on-status); /* text and icons on the accent fill */
+  --success: var(--blue-500); /* the spec's success is the link blue */
+  --success-soft: var(--blue-50);
+  --warning: var(--amber-700); /* warning-deep: readable as text */
+  --warning-soft: var(--amber-50);
+  --danger: var(--red-700); /* error-deep: readable as text */
+  --danger-soft: var(--red-50);
+  /* Stacked elevation: small offsets and an inset hairline, never one heavy drop. */
   --shadow-card: 0 1px 1px #00000005, 0 2px 2px #0000000a;
   --shadow-float: 0 2px 2px #0000000a, 0 8px 16px -4px #0000000a;
   --shadow-modal: 0 1px 1px #00000005, 0 8px 16px -4px #0000000a, 0 24px 32px -8px #0000000f;
+  --elev-featured: 0 8px 24px -8px #00000040;
+  --elev-knob: 0 1px 2px #00000033;
+  --elev-glyph: 0 2px 3px #00000080;
 }
 
-/* Dark: same structure, dark palette. Also used by .band-dark sections inside light pages. */
+/* Dark: same structure, dark palette. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #000000;
-    --surface: #0a0a0a;
-    --surface-strong: #111111;
-    --field: #0a0a0a;
-    --subtle: #1a1a1a;
-    --line: #2e2e2e;
-    --line-strong: #5c5c5c;
-    --fg: #ededed;
-    --muted: #a1a1a1;
-    --faint: #878787;
-    --primary: #ededed;
-    --primary-fg: #0a0a0a;
-    --primary-hover: #cccccc;
-    --accent: #52a8ff;
-    --accent-soft: #0b2341;
-    --accent-ink: #52a8ff;
-    --success: #52a8ff;
-    --success-soft: #0b2341;
-    --warning: #f5a623;
-    --warning-soft: #2e1d02;
-    --danger: #ff6166;
-    --danger-soft: #3b1215;
+    --bg: var(--gray-1000);
+    --surface: var(--gray-950);
+    --surface-strong: var(--gray-930);
+    --field: var(--gray-950);
+    --field-edge: var(--dark-field-edge);
+    --subtle: var(--dark-subtle-2);
+    --line: var(--dark-line);
+    --line-strong: var(--dark-line-strong);
+    --fg: var(--dark-fg);
+    --muted: var(--gray-400);
+    --faint: var(--dark-faint);
+    --primary: var(--dark-fg);
+    --primary-fg: var(--gray-950);
+    --primary-hover: var(--dark-primary-hover-2);
+    --accent: var(--blue-300);
+    --accent-soft: var(--blue-950);
+    --accent-text: var(--blue-300);
+    --on-status: var(--gray-1000); /* the dark mode fills are light: black on them */
+    --accent-ink: var(--gray-1000);
+    --success: var(--blue-300);
+    --success-soft: var(--blue-950);
+    --warning: var(--amber-400);
+    --warning-soft: var(--amber-950);
+    --danger: var(--red-400);
+    --danger-soft: var(--red-950);
     --shadow-card: none;
     --shadow-float: none;
     --shadow-modal: 0 24px 48px -12px #000000cc;
@@ -70,24 +146,27 @@
    featured-card flip: dark on light pages, light on dark pages. */
 .band-dark,
 .band-flip {
-  --bg: #0a0a0a;
-  --surface: #111111;
-  --surface-strong: #171717;
-  --field: #111111;
-  --subtle: #1f1f1f;
-  --line: #2e2e2e;
-  --line-strong: #5c5c5c;
-  --fg: #ededed;
-  --muted: #a1a1a1;
-  --faint: #878787;
-  --primary: #ffffff;
-  --primary-fg: #0a0a0a;
-  --primary-hover: #e5e5e5;
-  --accent: #52a8ff;
-  --accent-soft: #0b2341;
-  --accent-ink: #52a8ff;
-  --success: #52a8ff;
-  --success-soft: #0b2341;
+  --bg: var(--gray-950);
+  --surface: var(--gray-930);
+  --surface-strong: var(--gray-900);
+  --field: var(--gray-930);
+  --field-edge: var(--dark-field-edge);
+  --subtle: var(--dark-subtle);
+  --line: var(--dark-line);
+  --line-strong: var(--dark-line-strong);
+  --fg: var(--dark-fg);
+  --muted: var(--gray-400);
+  --faint: var(--dark-faint);
+  --primary: var(--gray-0);
+  --primary-fg: var(--gray-950);
+  --primary-hover: var(--dark-primary-hover);
+  --accent: var(--blue-300);
+  --accent-soft: var(--blue-950);
+  --accent-text: var(--blue-300);
+  --accent-ink: var(--gray-1000);
+  --on-status: var(--gray-1000);
+  --success: var(--blue-300);
+  --success-soft: var(--blue-950);
   --shadow-card: none;
   --shadow-float: none;
   color-scheme: dark;
@@ -95,24 +174,27 @@
 
 @media (prefers-color-scheme: dark) {
   .band-flip {
-    --bg: #ffffff;
-    --surface: #ffffff;
-    --surface-strong: #ffffff;
-    --field: #ffffff;
-    --subtle: #f5f5f5;
-    --line: #ebebeb;
-    --line-strong: #a1a1a1;
-    --fg: #171717;
-    --muted: #4d4d4d;
-    --faint: #6f6f6f;
-    --primary: #171717;
-    --primary-fg: #ffffff;
-    --primary-hover: #383838;
-    --accent: #0070f3;
-    --accent-soft: #ebf5ff;
-    --accent-ink: #0761d1;
-    --success: #0070f3;
-    --success-soft: #ebf5ff;
+    --bg: var(--gray-0);
+    --surface: var(--gray-0);
+    --surface-strong: var(--gray-0);
+    --field: var(--gray-0);
+    --field-edge: var(--gray-450);
+    --subtle: var(--gray-100);
+    --line: var(--gray-150);
+    --line-strong: var(--gray-400);
+    --fg: var(--gray-900);
+    --muted: var(--gray-600);
+    --faint: var(--gray-500);
+    --primary: var(--gray-900);
+    --primary-fg: var(--gray-0);
+    --primary-hover: var(--gray-700);
+    --accent: var(--blue-500);
+    --accent-soft: var(--blue-50);
+    --accent-text: var(--blue-600);
+    --accent-ink: var(--gray-0);
+    --on-status: var(--gray-0);
+    --success: var(--blue-500);
+    --success-soft: var(--blue-50);
     color-scheme: light;
   }
 }
@@ -125,6 +207,7 @@
   --color-surface: var(--surface);
   --color-surface-strong: var(--surface-strong);
   --color-field: var(--field);
+  --color-field-edge: var(--field-edge);
   --color-subtle: var(--subtle);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
@@ -136,6 +219,7 @@
   --color-primary-hover: var(--primary-hover);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
+  --color-accent-text: var(--accent-text);
   --color-accent-ink: var(--accent-ink);
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
@@ -143,6 +227,15 @@
   --color-warning-soft: var(--warning-soft);
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
+  --color-devtools: var(--devtools-bg);
+  --color-devtools-menu: var(--devtools-menu);
+  --color-guide-site: var(--guide-site);
+  --color-on-status: var(--on-status);
+  --color-scrim: var(--scrim);
+  --color-shot-paper: var(--shot-paper);
+  --shadow-featured: var(--elev-featured);
+  --shadow-knob: var(--elev-knob);
+  --drop-shadow-glyph: var(--elev-glyph);
 }
 
 /* Default card: white surface, hairline, stacked soft shadow (Level 2). */
@@ -166,41 +259,51 @@
   box-shadow: var(--shadow-float);
 }
 
-/* Section eyebrows and technical labels: mono caption. */
-@utility mono-label {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 16px;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  color: var(--muted);
-}
-
 /*
- * The brand mesh gradient (develop blue→teal, preview violet→pink, ship
- * coral→amber) — hero scale only, never as a swatch.
+ * The brand mesh gradient (develop blue to teal, preview violet to pink, ship
+ * coral to amber): hero scale only, behind the headline, never a swatch.
  */
 @utility hero-mesh {
   background:
-    radial-gradient(40% 55% at 22% 30%, #007cf0 0%, transparent 70%),
-    radial-gradient(38% 50% at 42% 18%, #00dfd8 0%, transparent 70%),
-    radial-gradient(40% 55% at 60% 28%, #7928ca 0%, transparent 70%),
-    radial-gradient(38% 50% at 74% 20%, #ff0080 0%, transparent 70%),
-    radial-gradient(40% 55% at 86% 40%, #ff4d4d 0%, transparent 70%),
-    radial-gradient(36% 50% at 62% 48%, #f9cb28 0%, transparent 72%);
+    radial-gradient(40% 55% at 22% 30%, var(--mesh-1) 0%, transparent 70%),
+    radial-gradient(38% 50% at 42% 18%, var(--mesh-2) 0%, transparent 70%),
+    radial-gradient(40% 55% at 60% 28%, var(--mesh-3) 0%, transparent 70%),
+    radial-gradient(38% 50% at 74% 20%, var(--mesh-4) 0%, transparent 70%),
+    radial-gradient(40% 55% at 86% 40%, var(--mesh-5) 0%, transparent 70%),
+    radial-gradient(36% 50% at 62% 48%, var(--mesh-6) 0%, transparent 72%);
   filter: blur(48px) saturate(140%);
 }
 
 @layer base {
+  html,
+  body {
+    overflow-x: clip;
+  }
+
   html {
     color-scheme: light dark;
     background: var(--bg);
+    scrollbar-color: var(--line-strong) var(--bg);
+    scroll-padding-top: 80px;
   }
 
   body {
     background: var(--bg);
     color: var(--fg);
+    caret-color: var(--fg);
     font-feature-settings: 'ss01', 'ss02';
+  }
+
+  h1,
+  h2,
+  h3 {
+    overflow-wrap: break-word;
+    min-width: 0;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 
   .band-dark,
@@ -210,18 +313,18 @@
   }
 
   ::selection {
-    background: #171717;
-    color: #f2f2f2;
+    background: var(--primary);
+    color: var(--primary-fg);
   }
 
-  /* Default keyboard focus ring; utilities like outline-none can override it. */
+  /* Default keyboard focus ring, instant; utilities like outline-none can override it. */
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
 }
 
-/* Cookie guide animations */
+/* Cookie guide animations: transform and opacity only. */
 @keyframes guide-fade-in {
   from {
     opacity: 0;
@@ -235,10 +338,10 @@
 
 @keyframes guide-progress {
   from {
-    width: 0%;
+    transform: scaleX(0);
   }
   to {
-    width: 100%;
+    transform: scaleX(1);
   }
 }
 
@@ -258,6 +361,7 @@
     animation-duration: 0.001s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001s !important;
+    scroll-behavior: auto !important;
   }
 }
 

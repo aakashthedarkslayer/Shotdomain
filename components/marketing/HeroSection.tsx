@@ -8,7 +8,6 @@ import { Icon } from '@/components/ui/Icon';
 import { CaptureFlow } from '@/components/capture/CaptureFlow';
 import type { CaptureStart } from '@/components/capture/CaptureFlow';
 import { isValidUrl, normalizeUrl } from '@/lib/url';
-import { OutputPanel } from './OutputPanel';
 import { CAPTURE_EVENT } from './captureEvents';
 import type { OpenCaptureDetail } from './captureEvents';
 
@@ -76,38 +75,36 @@ export function HeroSection({ needsSignIn = false }: { needsSignIn?: boolean }) 
   }
 
   return (
-    <section id="capture" className="relative scroll-mt-16 overflow-hidden border-b border-line bg-surface px-4 pt-20 pb-24 sm:px-6 md:pt-28">
+    <section
+      id="capture"
+      className={`relative scroll-mt-16 overflow-hidden border-b border-line bg-surface px-4 sm:px-6 ${start ? 'pt-12 pb-24 md:pt-14' : 'flex min-h-[calc(100dvh-64px)] flex-col justify-center py-16'}`}
+    >
       {/* The brand gradient: hero scale only, the page's single decoration. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -top-40 mx-auto h-[420px] max-w-4xl opacity-25 dark:opacity-20">
         <div className="hero-mesh h-full w-full" />
       </div>
 
       {start ? (
-        <div className="relative -mt-8 md:-mt-14">
+        <div className="relative">
           <CaptureFlow start={start} />
         </div>
       ) : (
-        <>
-          <div className="relative mx-auto max-w-3xl text-center">
-            <p className="mb-6 inline-flex rounded-full border border-line bg-surface px-3 py-1 font-mono text-xs text-muted">
-              Free for sites up to 15 pages
-            </p>
-            <h1 className="text-[40px] leading-[1.05] font-semibold tracking-[-0.05em] text-fg sm:text-[56px]">
-              Every page of a site.
-              <br />
-              In one shot.
-            </h1>
-            <p className="mx-auto mt-6 max-w-xl text-lg leading-7 text-muted">
-              Type a domain. ShotDomain finds every page and takes a full-page screenshot of each one on desktop, tablet and phone. You get one
-              ZIP, or a link to send your client.
-            </p>
+        // Counter: the capture form is the hero's visual, set large under a short head.
+        <div className="relative mx-auto w-full max-w-4xl text-center">
+          <h1 className="text-[44px] leading-[1.02] font-semibold tracking-[-0.05em] text-fg sm:text-[64px] lg:text-[84px] xl:text-[96px] 2xl:text-[112px]">
+            <span className="block">Every page</span>
+            <span className="block">of a site.</span>
+            <span className="block">One shot.</span>
+          </h1>
+          <p className="mx-auto mt-8 max-w-2xl text-lg leading-7 text-muted sm:text-xl sm:leading-8">Type a domain and get every page on desktop, tablet and phone.</p>
 
-            <form onSubmit={handleSubmit} noValidate className="mx-auto mt-10 flex max-w-lg flex-col gap-3 sm:flex-row">
+          <div className="card-float mx-auto mt-12 max-w-2xl rounded-[28px] p-3 sm:p-4">
+            <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-3 sm:flex-row">
               <label htmlFor="hero-url" className="sr-only">
                 Website URL
               </label>
               <div className="relative flex-1">
-                <Icon name="globe" className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-faint" />
+                <Icon name="globe" size={20} className="pointer-events-none absolute top-1/2 left-5 -translate-y-1/2 text-faint" />
                 <input
                   id="hero-url"
                   ref={inputRef}
@@ -117,33 +114,36 @@ export function HeroSection({ needsSignIn = false }: { needsSignIn?: boolean }) 
                     if (error) setError('');
                   }}
                   placeholder="yourdomain.com"
+                  autoComplete="url"
+                  inputMode="url"
+                  spellCheck={false}
                   aria-invalid={!!error}
-                  aria-describedby={error ? 'hero-url-error' : undefined}
-                  className="h-12 w-full rounded-full border border-line bg-surface pr-4 pl-11 text-base text-fg shadow-[var(--shadow-card)] outline-none placeholder:text-faint hover:border-line-strong focus:border-fg focus:ring-3 focus:ring-fg/10 aria-invalid:border-danger"
+                  aria-describedby={error ? 'hero-url-error hero-terms' : 'hero-terms'}
+                  className="h-16 w-full rounded-full border border-field-edge bg-surface pr-5 pl-13 text-lg text-fg transition-colors placeholder:text-faint hover:border-fg aria-invalid:border-danger"
                 />
               </div>
-              <Button type="submit" size="lg" shape="pill" iconRight="arrowRight">
+              <Button type="submit" size="lg" shape="pill" iconRight="arrowRight" className="h-16 px-8 text-lg">
                 Capture site
               </Button>
             </form>
             {error && (
-              <p id="hero-url-error" role="alert" className="mt-2 text-[13px] text-danger">
+              <p id="hero-url-error" role="alert" className="mt-3 text-sm text-danger">
                 {error}
               </p>
             )}
-            <p className="mt-4 text-[13px] text-muted">
-              {needsSignIn ? 'You’ll sign in with Google first. ' : ''}
-              Behind a login, or only one page?{' '}
-              <button type="button" onClick={() => begin({ prefill: url.trim() })} className="-mx-1 -my-3 inline-block cursor-pointer px-1 py-3 font-medium text-fg underline-offset-2 hover:underline">
-                More options
-              </button>
-            </p>
+            <div className="mt-3 border-t border-line px-2 pt-3 pb-1 text-sm text-muted sm:flex sm:items-center sm:justify-between sm:gap-4 sm:text-left">
+              <p id="hero-terms">
+                Free for sites up to 15 pages.{needsSignIn ? ' You’ll sign in with Google first.' : ''}
+              </p>
+              <p className="mt-1 sm:mt-0">
+                Behind a login, or only one page?{' '}
+                <button type="button" onClick={() => begin({ prefill: url.trim() })} className="-mx-1 -my-3 inline-block cursor-pointer px-1 py-3 font-medium text-fg underline-offset-2 hover:underline">
+                  More options
+                </button>
+              </p>
+            </div>
           </div>
-
-          <div className="relative mt-16">
-            <OutputPanel />
-          </div>
-        </>
+        </div>
       )}
     </section>
   );

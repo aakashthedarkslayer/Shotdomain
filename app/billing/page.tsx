@@ -4,7 +4,7 @@ import { AppHeader } from '@/components/AppHeader';
 import { BillingPanel } from '@/components/billing/BillingPanel';
 import { billingEnabled, checkoutConfig, currentPlanId, getBillingRecord, lifetimeRemaining, planInfoFor } from '@/lib/billing';
 
-export const metadata = { title: 'Plan & billing — ShotDomain' };
+export const metadata = { title: 'Plan & billing | ShotDomain' };
 export const dynamic = 'force-dynamic';
 
 export default async function BillingPage({ searchParams }: { searchParams: Promise<{ plan?: string; interval?: string; checkout?: string }> }) {

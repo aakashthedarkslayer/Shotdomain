@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'ShotDomain — One Shot Every Domain',
+  title: 'ShotDomain | One Shot Every Domain',
   description:
     'Enter one URL. ShotDomain finds every page, captures it on desktop, tablet and mobile, and gives you a single ZIP.',
   icons: { icon: '/favicon.svg' },

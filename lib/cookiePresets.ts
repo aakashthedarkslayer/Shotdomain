@@ -28,7 +28,7 @@ export const COOKIE_PRESETS: CookiePreset[] = [
     // GitHub checks a same-site copy of the session on some requests; it carries the same value.
     derive: (v): Record<string, string> =>
       v.user_session ? { '__Host-user_session_same_site': v.user_session, logged_in: 'yes' } : {},
-    note: 'Only user_session is needed — the same-site copy and logged_in are added for you.',
+    note: 'Only user_session is needed. The same-site copy and logged_in are added for you.',
   },
   {
     site: 'GitLab',

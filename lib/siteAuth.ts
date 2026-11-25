@@ -309,7 +309,7 @@ async function loginWithForm(browser: Browser, auth: SiteAuth): Promise<Playwrig
       throw new SiteLoginError('The site asked for a CAPTCHA or verification code after login, which ShotDomain does not bypass. Use the Cookies method instead.');
     }
     if (await page.locator('input[type="password"]').first().isVisible().catch(() => false)) {
-      throw new SiteLoginError('Login did not complete — the password field is still showing. Check the username and password.');
+      throw new SiteLoginError('Login did not complete: the password field is still showing. Check the username and password.');
     }
 
     return (await context.cookies()) as PlaywrightCookie[];

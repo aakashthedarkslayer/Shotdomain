@@ -3,7 +3,7 @@ import { LegalPage } from '@/components/legal/LegalPage';
 import { LEGAL } from '@/lib/legal';
 import { PLANS, SHARE_DAYS } from '@/lib/plans';
 
-export const metadata = { title: 'Privacy Policy — ShotDomain' };
+export const metadata = { title: 'Privacy Policy | ShotDomain' };
 
 export default function PrivacyPage() {
   const { product, company } = LEGAL;
@@ -103,14 +103,14 @@ export default function PrivacyPage() {
       <p>We share personal data only with service providers that help us run {product}, under contracts that protect it:</p>
       <ul>
         <li>
-          <b>Google</b> — sign-in.
+          <b>Google</b>: sign-in.
         </li>
         <li>
-          <b>Paddle</b> — payments, taxes, invoices and refunds, as Merchant of Record. Paddle is an independent controller of the payment
+          <b>Paddle</b>: payments, taxes, invoices and refunds, as Merchant of Record. Paddle is an independent controller of the payment
           data it collects.
         </li>
         <li>
-          <b>Our hosting provider</b> — servers and storage where the Service runs and shared captures are kept.
+          <b>Our hosting provider</b>: servers and storage where the Service runs and shared captures are kept.
         </li>
       </ul>
       <p>

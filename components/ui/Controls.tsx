@@ -30,7 +30,7 @@ export function Switch({
       }`}
     >
       <span
-        className={`inline-block h-5 w-5 rounded-full bg-surface shadow-[0_1px_2px_#00000033] transition-transform ${
+        className={`inline-block h-5 w-5 rounded-full bg-surface shadow-knob transition-transform ${
           checked ? 'translate-x-[22px]' : 'translate-x-0.5'
         }`}
       />
@@ -102,8 +102,8 @@ export function ProgressBar({ value, tone = 'accent' }: { value: number; tone?: 
   return (
     <div className="h-1 w-full overflow-hidden rounded-full bg-subtle" role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100}>
       <div
-        className={`h-full rounded-full transition-[width] duration-300 ease-out ${tone === 'success' ? 'bg-success' : 'bg-primary'}`}
-        style={{ width: `${Math.max(0, Math.min(100, value))}%` }}
+        className={`h-full w-full origin-left rounded-full transition-transform duration-300 ease-out ${tone === 'success' ? 'bg-success' : 'bg-primary'}`}
+        style={{ transform: `scaleX(${Math.max(0, Math.min(100, value)) / 100})` }}
       />
     </div>
   );

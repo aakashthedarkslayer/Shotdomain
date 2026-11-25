@@ -201,7 +201,7 @@ export async function createShare(ownerKey: string, job: ShareableJob): Promise<
     token: crypto.randomBytes(24).toString('base64url'),
     ownerKey,
     captureId: job.id,
-    label: `${hostOf(capture.rootUrl)} · ${capture.done} ${capture.done === 1 ? 'screenshot' : 'screenshots'}`,
+    label: `${hostOf(capture.rootUrl)}, ${capture.done} ${capture.done === 1 ? 'screenshot' : 'screenshots'}`,
     createdAt: now,
     expiresAt: now + SHARE_DAYS * DAY,
   };
@@ -218,7 +218,7 @@ export async function refreshSharedCapture(job: ShareableJob): Promise<void> {
   if (!share) return;
   const capture = await copyCapture(job);
   if (capture) {
-    const label = `${hostOf(capture.rootUrl)} · ${capture.done} ${capture.done === 1 ? 'screenshot' : 'screenshots'}`;
+    const label = `${hostOf(capture.rootUrl)}, ${capture.done} ${capture.done === 1 ? 'screenshot' : 'screenshots'}`;
     await mutate((all) => ({ next: all.map((s) => (s.token === share.token ? { ...s, label } : s)), out: undefined }));
   }
 }

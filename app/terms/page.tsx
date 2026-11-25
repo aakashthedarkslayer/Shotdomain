@@ -3,7 +3,7 @@ import { LegalPage } from '@/components/legal/LegalPage';
 import { LEGAL } from '@/lib/legal';
 import { PLANS, SHARE_DAYS } from '@/lib/plans';
 
-export const metadata = { title: 'Terms of Service — ShotDomain' };
+export const metadata = { title: 'Terms of Service | ShotDomain' };
 
 export default function TermsPage() {
   const { product, company } = LEGAL;
@@ -36,7 +36,7 @@ export default function TermsPage() {
       <p>You’re responsible for the websites you capture and what you do with the screenshots. You agree that you will:</p>
       <ul>
         <li>
-          Only capture websites you own, are authorised to capture, or that are publicly available — and respect their terms, copyright and
+          Only capture websites you own, are authorised to capture, or that are publicly available, and respect their terms, copyright and
           other rights.
         </li>
         <li>
@@ -109,7 +109,7 @@ export default function TermsPage() {
       <p>
         We work to keep the Service available and your data safe, but we don’t guarantee uninterrupted service, that every page can be
         captured, or that screenshots are kept beyond the times above (about an hour after a capture, or {SHARE_DAYS} days for a shared
-        one). Keep your own copies of anything important — you can download every capture as a ZIP.
+        one). Keep your own copies of anything important: you can download every capture as a ZIP.
       </p>
 
       <h2>8. Disclaimer</h2>

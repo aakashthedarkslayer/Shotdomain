@@ -1,0 +1,41 @@
+[
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "site",
+  "shape": "Workbench",
+  "theme": "brand (DESIGN.md, locked)",
+  "axes": "soft-white/geometric-sans/ink",
+  "hero": "Counter (/), Banner (/terms, /privacy, /refunds)",
+  "nav": "edge-aligned bar (kept)",
+  "footer": "mast",
+  "imagery": "screenshots: ShotDomain output and capture.mjs",
+  "photos": [],
+  "entry": "hero capture form, three-line head",
+  "fingerprint": "ink-on-soft-white, Geist 600 head at 96px, pill form panel, real share-page capture, ZIP tree, rows",
+  "sections": [
+   "hero (Counter: capture form)",
+   "worked example (Showcase: share page, ZIP tree, phone capture)",
+   "how it works (Rows)",
+   "login pages (Split: guide)",
+   "pricing (three plans)",
+   "faq (Rows)",
+   "footer (mast)"
+  ],
+  "signature": "ShotDomain own pages, captured by ShotDomain, as the share page a client opens",
+  "waived": [
+   "7b",
+   "29",
+   "81",
+   "59",
+   "78",
+   "39b",
+   "44c",
+   "79"
+  ],
+  "prompt": "a tool that screenshots every page of a website on every device, for people who hand sites to clients",
+  "genre": "modern-minimal",
+  "job": "sign up",
+  "date": "2026-11-25"
+ }
+]

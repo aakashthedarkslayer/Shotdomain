@@ -115,13 +115,15 @@ export type GuideMethod = 'curl' | 'application';
 
 function Cursor({ x, y, visible, clicking }: { x: number; y: number; visible: boolean; clicking: boolean }) {
   return (
+    // A frame-sized layer moved by transform: its percentages are the frame's, so nothing animates left or top.
     <div
-      className="pointer-events-none absolute z-30 transition-all duration-700 ease-[cubic-bezier(.5,0,.2,1)]"
-      style={{ left: `${x}%`, top: `${y}%`, opacity: visible ? 1 : 0 }}
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-30 transition-[transform,opacity] duration-700 ease-[cubic-bezier(.5,0,.2,1)]"
+      style={{ transform: `translate(${x}%, ${y}%)`, opacity: visible ? 1 : 0 }}
     >
       {clicking && <span className="absolute -top-3 -left-3 h-6 w-6 animate-ping rounded-full bg-accent/50" />}
-      <svg width="18" height="18" viewBox="0 0 24 24" className="drop-shadow-[0_2px_3px_rgba(0,0,0,0.5)]">
-        <path d="M4 2l15 9-6.5 1.5L9 19z" fill="white" stroke="black" strokeWidth="1.3" strokeLinejoin="round" />
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" className="drop-shadow-glyph">
+        <path d="M4 2l15 9-6.5 1.5L9 19z" fill="var(--gray-0)" stroke="var(--gray-900)" strokeWidth="1.3" strokeLinejoin="round" />
       </svg>
     </div>
   );
@@ -132,16 +134,8 @@ function Cursor({ x, y, visible, clicking }: { x: number; y: number; visible: bo
 function BrowserChrome({ loggedIn, children }: { loggedIn: boolean; children: ReactNode }) {
   return (
     <div className="absolute inset-0 flex flex-col bg-white text-slate-800">
-      <div className="flex h-[9%] shrink-0 items-center gap-1.5 bg-slate-200 px-2">
-        <span className="h-2 w-2 rounded-full bg-[#ff5f57]" />
-        <span className="h-2 w-2 rounded-full bg-[#febc2e]" />
-        <span className="h-2 w-2 rounded-full bg-[#28c840]" />
-        <div className="ml-2 flex h-[65%] flex-1 items-center gap-1 rounded-md bg-white px-2 text-[9px] text-slate-500">
-          <Icon name="shield" size={9} /> yoursite.com/dashboard
-        </div>
-      </div>
       <div className="relative flex-1 overflow-hidden">
-        <div className="flex items-center justify-between bg-indigo-600 px-3 py-[2.2%] text-[10px] font-semibold text-white">
+        <div className="flex items-center justify-between bg-guide-site px-3 py-[2.2%] text-[10px] font-semibold text-white">
           <span>YourSite</span>
           {loggedIn ? (
             <span className="flex items-center gap-1 rounded-full bg-black/25 py-0.5 pr-2 pl-0.5 text-[9px]">
@@ -179,7 +173,7 @@ function DevTools({ step, phase }: { step: number; phase: number }) {
   const copied = step === 3 && phase >= 3;
   const tabs = ['Elements', 'Console', 'Sources', 'Network', 'Application'];
   return (
-    <div className="absolute inset-x-0 bottom-0 z-10 flex h-[58%] flex-col border-t border-slate-600 bg-[#202124] text-[9px] text-slate-300 animate-[guide-slide-up_.45s_ease-out]">
+    <div className="absolute inset-x-0 bottom-0 z-10 flex h-[58%] flex-col border-t border-slate-600 bg-devtools text-[9px] text-slate-300 animate-[guide-slide-up_.45s_ease-out]">
       <div className="flex shrink-0 items-center gap-3 border-b border-slate-700 px-2 py-1">
         {tabs.map((t) => (
           <span
@@ -225,7 +219,7 @@ function DevTools({ step, phase }: { step: number; phase: number }) {
         )}
         {menuOpen && (
           <div className="absolute top-[24%] left-[14%] z-20 flex items-start animate-[guide-fade-in_.2s_ease-out]">
-            <div className="w-28 rounded-md border border-slate-600 bg-[#2a2b2e] py-1 shadow-xl">
+            <div className="w-28 rounded-md border border-slate-600 bg-devtools-menu py-1">
               <div className="px-2 py-0.5 text-slate-400">Open in new tab</div>
               <div className="px-2 py-0.5 text-slate-400">Clear browser cache</div>
               <div className="my-0.5 border-t border-slate-600" />
@@ -235,7 +229,7 @@ function DevTools({ step, phase }: { step: number; phase: number }) {
               <div className="px-2 py-0.5 text-slate-400">Block request URL</div>
             </div>
             {copyHot && (
-              <div className="-ml-1 mt-[22px] w-32 rounded-md border border-slate-600 bg-[#2a2b2e] py-1 shadow-xl animate-[guide-fade-in_.2s_ease-out]">
+              <div className="-ml-1 mt-[22px] w-32 rounded-md border border-slate-600 bg-devtools-menu py-1 animate-[guide-fade-in_.2s_ease-out]">
                 <div className="px-2 py-0.5 text-slate-400">Copy URL</div>
                 <div data-guide="copy-curl" className={`px-2 py-0.5 ${curlHot ? 'bg-sky-700 text-white' : 'text-slate-200'}`}>
                   Copy as cURL
@@ -246,7 +240,7 @@ function DevTools({ step, phase }: { step: number; phase: number }) {
           </div>
         )}
         {copied && (
-          <div className="absolute right-2 bottom-2 rounded-md bg-emerald-500 px-2 py-0.5 font-semibold text-white animate-[guide-fade-in_.25s_ease-out]">
+          <div className="absolute right-2 bottom-2 rounded-md bg-success px-2 py-0.5 font-semibold text-on-status animate-[guide-fade-in_.25s_ease-out]">
             ✓ Copied
           </div>
         )}
@@ -269,7 +263,7 @@ function AppDevTools({ step, phase }: { step: number; phase: number }) {
     { name: 'theme', value: 'dark' },
   ];
   return (
-    <div className="absolute inset-x-0 bottom-0 z-10 flex h-[58%] flex-col border-t border-slate-600 bg-[#202124] text-[9px] text-slate-300 animate-[guide-slide-up_.45s_ease-out]">
+    <div className="absolute inset-x-0 bottom-0 z-10 flex h-[58%] flex-col border-t border-slate-600 bg-devtools text-[9px] text-slate-300 animate-[guide-slide-up_.45s_ease-out]">
       <div className="flex shrink-0 items-center gap-3 border-b border-slate-700 px-2 py-1">
         {tabs.map((t) => (
           <span
@@ -310,24 +304,24 @@ function AppDevTools({ step, phase }: { step: number; phase: number }) {
                 {rows.map((r) => (
                   <div
                     key={r.name}
-                    className={`grid grid-cols-[38%_62%] items-center border-b border-slate-800 px-2 py-[3px] font-mono animate-[guide-fade-in_.3s_ease-out] ${
+                    className={`grid grid-cols-[38%_62%] items-center border-b border-slate-800 px-2 py-[3px] animate-[guide-fade-in_.3s_ease-out] ${
                       r.login && rowHot ? 'bg-amber-400/15' : ''
                     }`}
                   >
                     <span data-guide={r.login ? 'session-name' : undefined} className={`flex items-center gap-1 truncate ${r.login && rowHot ? 'text-amber-200' : ''}`}>
-                      {r.name}
-                      {r.login && rowHot && <span className="rounded bg-amber-400 px-1 font-sans text-[7px] font-bold text-slate-900">LOGIN</span>}
+                      <span className="truncate font-mono">{r.name}</span>
+                      {r.login && rowHot && <span className="rounded bg-amber-400 px-1 text-[7px] font-semibold text-slate-900">Login</span>}
                     </span>
                     <span
                       data-guide={r.login ? 'session-value' : undefined}
-                      className={`truncate ${r.login && valueSelected ? 'rounded-sm bg-sky-700 px-0.5 text-white ring-1 ring-sky-300' : ''}`}
+                      className={`truncate font-mono ${r.login && valueSelected ? 'rounded-sm bg-sky-700 px-0.5 text-white ring-1 ring-sky-300' : ''}`}
                     >
                       {r.value}
                     </span>
                   </div>
                 ))}
                 {copied && (
-                  <div className="absolute right-2 bottom-2 rounded-md bg-emerald-500 px-2 py-0.5 font-sans font-semibold text-white animate-[guide-fade-in_.25s_ease-out]">
+                  <div className="absolute right-2 bottom-2 rounded-md bg-success px-2 py-0.5 font-semibold text-on-status animate-[guide-fade-in_.25s_ease-out]">
                     ✓ Copied
                   </div>
                 )}
@@ -350,7 +344,7 @@ function KeysOverlay({ phase, keys }: { phase: number; keys: string[] }) {
       {keys.map((k, i) => (
         <span
           key={k}
-          className={`rounded-lg border-b-4 px-3 py-2 font-mono text-sm font-semibold shadow-lg transition-all duration-200 ${
+          className={`rounded-lg border-b-4 px-3 py-2 font-mono text-sm font-semibold shadow-lg transition-[transform,background-color,border-color,color] duration-200 ${
             phase >= i ? 'translate-y-0.5 border-indigo-800 bg-indigo-500 text-white' : 'border-slate-400 bg-white text-slate-700'
           }`}
         >
@@ -366,14 +360,14 @@ function ShotDomainScene({ phase }: { phase: number }) {
   const read = phase >= 1;
   const tested = phase >= 2;
   return (
-    <div className="absolute inset-0 flex flex-col gap-2 bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950 p-[4%] text-[10px] text-slate-200">
-      <div className="flex items-center gap-1.5 text-[11px] font-semibold text-white">
-        <span className="h-3.5 w-3.5 rounded bg-gradient-to-br from-indigo-500 to-fuchsia-500" /> ShotDomain · This site needs a login
+    <div className="band-dark absolute inset-0 flex flex-col gap-2 p-[4%] text-[10px] text-fg">
+      <div className="flex items-center gap-1.5 text-[11px] font-semibold text-fg">
+        <span className="h-3.5 w-3.5 rounded bg-fg" /> This site needs a login
       </div>
-      <div className="text-slate-400">Your copied request or cookies</div>
-      <div data-guide="paste-box" className="min-h-[22%] rounded-lg border border-indigo-400/60 bg-white/5 p-2 font-mono text-[9px] leading-relaxed">
+      <div className="text-muted">Your copied request or cookies</div>
+      <div data-guide="paste-box" className="min-h-[22%] rounded-lg border border-accent/60 bg-field p-2 font-mono text-[9px] leading-relaxed">
         {!pasted ? (
-          <span className="text-slate-400">Paste here…</span>
+          <span className="text-muted">Paste here…</span>
         ) : read ? (
           <span key="read" className="animate-[guide-fade-in_.4s_ease-out]">session_id=a8f3e1…; _ga=GA1.1.811…; theme=dark</span>
         ) : (
@@ -384,21 +378,21 @@ function ShotDomainScene({ phase }: { phase: number }) {
         )}
       </div>
       {read && (
-        <div className="space-y-1 rounded-lg bg-emerald-500/10 px-2 py-1.5 animate-[guide-fade-in_.4s_ease-out]">
-          <div className="text-emerald-300">✓ Read your copied cURL · kept 3 cookies · left out 12 browser headers</div>
-          <div className="flex flex-wrap items-center gap-1 text-slate-300">
+        <div className="space-y-1 rounded-lg bg-accent-soft px-2 py-1.5 animate-[guide-fade-in_.4s_ease-out]">
+          <div className="text-accent">✓ Read your copied cURL: kept 3 cookies, left out 12 browser headers</div>
+          <div className="flex flex-wrap items-center gap-1 text-muted">
             Likely login:
-            <span className="rounded bg-emerald-500/20 px-1 font-mono text-emerald-300">session_id</span>
-            <span className="ml-1 text-slate-400 line-through">_ga</span>
+            <span className="rounded bg-accent-soft px-1 font-mono text-accent">session_id</span>
+            <span className="ml-1 text-muted line-through">_ga</span>
           </div>
         </div>
       )}
       <div className="flex items-center gap-2">
-        <span data-guide="test-btn" className="rounded-md border border-white/15 bg-white/10 px-2 py-1">
+        <span data-guide="test-btn" className="rounded-md border border-line bg-subtle px-2 py-1">
           ↻ Test login
         </span>
         {tested && (
-          <span className="rounded-md bg-emerald-500/20 px-2 py-1 font-semibold text-emerald-300 animate-[guide-fade-in_.3s_ease-out]">
+          <span className="rounded-md bg-accent-soft px-2 py-1 font-semibold text-accent animate-[guide-fade-in_.3s_ease-out]">
             ✓ Looks logged in
           </span>
         )}
@@ -412,29 +406,29 @@ function ShotDomainFieldsScene({ phase }: { phase: number }) {
   const pasted = phase >= 1;
   const tested = phase >= 2;
   return (
-    <div className="absolute inset-0 flex flex-col gap-2 bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950 p-[4%] text-[10px] text-slate-200">
-      <div className="flex items-center gap-1.5 text-[11px] font-semibold text-white">
-        <span className="h-3.5 w-3.5 rounded bg-gradient-to-br from-indigo-500 to-fuchsia-500" /> ShotDomain · This site needs a login
+    <div className="band-dark absolute inset-0 flex flex-col gap-2 p-[4%] text-[10px] text-fg">
+      <div className="flex items-center gap-1.5 text-[11px] font-semibold text-fg">
+        <span className="h-3.5 w-3.5 rounded bg-fg" /> This site needs a login
       </div>
-      <div className="flex items-center justify-between text-slate-400">
+      <div className="flex items-center justify-between text-muted">
         <span>Session cookies</span>
-        <span className="text-indigo-300">Enter its name and value</span>
+        <span className="text-accent">Enter its name and value</span>
       </div>
       <div className="flex items-center gap-1.5">
-        <span data-guide="name-box" className={`w-[34%] rounded-md border bg-white/5 px-2 py-1.5 font-mono text-[9px] ${phase === 0 ? 'border-indigo-400' : 'border-white/15'}`}>
-          {named ? <span className="animate-[guide-fade-in_.4s_ease-out]">session_id</span> : <span className="text-slate-400">cookie name</span>}
+        <span data-guide="name-box" className={`w-[34%] rounded-md border bg-field px-2 py-1.5 text-[9px] ${phase === 0 ? 'border-accent' : 'border-line'}`}>
+          {named ? <span className="font-mono animate-[guide-fade-in_.4s_ease-out]">session_id</span> : <span className="text-muted">cookie name</span>}
         </span>
-        <span className="text-slate-400">=</span>
-        <span data-guide="value-box" className={`flex-1 truncate rounded-md border bg-white/5 px-2 py-1.5 font-mono text-[9px] ${phase === 1 ? 'border-indigo-400' : 'border-white/15'}`}>
-          {pasted ? <span className="animate-[guide-fade-in_.4s_ease-out]">a8f3e1c94b7d…</span> : <span className="text-slate-400">paste the value only</span>}
+        <span className="text-muted">=</span>
+        <span data-guide="value-box" className={`flex-1 truncate rounded-md border bg-field px-2 py-1.5 text-[9px] ${phase === 1 ? 'border-accent' : 'border-line'}`}>
+          {pasted ? <span className="font-mono animate-[guide-fade-in_.4s_ease-out]">a8f3e1c94b7d…</span> : <span className="text-muted">paste the value only</span>}
         </span>
       </div>
       <div className="flex items-center gap-2 pt-1">
-        <span data-guide="test-btn" className="rounded-md border border-white/15 bg-white/10 px-2 py-1">
+        <span data-guide="test-btn" className="rounded-md border border-line bg-subtle px-2 py-1">
           ↻ Test login
         </span>
         {tested && (
-          <span className="rounded-md bg-emerald-500/20 px-2 py-1 font-semibold text-emerald-300 animate-[guide-fade-in_.3s_ease-out]">
+          <span className="rounded-md bg-accent-soft px-2 py-1 font-semibold text-accent animate-[guide-fade-in_.3s_ease-out]">
             ✓ Looks logged in
           </span>
         )}
@@ -530,7 +524,7 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
       <div role="radiogroup" aria-label="Method" className="flex rounded-xl bg-subtle p-0.5 text-[13px]">
         {(
           [
-            ['curl', 'Copy as cURL', 'easiest · copies everything'],
+            ['curl', 'Copy as cURL', 'easiest, copies everything'],
             ['application', 'Application tab', 'copy one cookie'],
           ] as const
         ).map(([m, label, hint]) => (
@@ -540,11 +534,11 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
             role="radio"
             aria-checked={method === m}
             onClick={() => switchMethod(m)}
-            className={`flex-1 cursor-pointer rounded-[4px] px-3 py-1.5 text-center transition ${
+            className={`flex-1 cursor-pointer rounded-[4px] px-3 py-1.5 text-center whitespace-nowrap transition-colors ${
               method === m ? 'bg-surface-strong font-medium text-fg shadow-sm' : 'text-muted hover:text-fg'
             }`}
           >
-            {label} <span className="hidden text-xs font-normal text-muted sm:inline">· {hint}</span>
+            {label} <span className="ml-1 hidden text-xs font-normal text-muted sm:inline lg:hidden xl:inline">{hint}</span>
           </button>
         ))}
       </div>
@@ -559,10 +553,12 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
           {scene}
         </div>
         <Cursor x={cursor.x} y={cursor.y} visible={cursor.visible} clicking={clicking} />
-        <span className="absolute top-2 right-2 z-40 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-medium text-white">
-          {step + 1} / {steps.length}
-        </span>
-        {reduced && (
+      </div>
+
+      {/* Reduced motion: the guide stays on its first frame, and the choice to play sits beside it, never over it. */}
+      {reduced && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-subtle px-3 py-2">
+          <span className="text-[13px] text-muted">Animations are reduced on this device.</span>
           <button
             type="button"
             onClick={() => {
@@ -570,33 +566,27 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
               setPlaying(true);
               setPhase(0);
             }}
-            className="absolute inset-0 z-50 flex cursor-pointer flex-col items-center justify-center gap-2 bg-black/35 text-white backdrop-blur-[1px] transition hover:bg-black/25"
+            className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md border border-line bg-surface px-3 text-[13px] font-medium text-fg transition-colors hover:bg-subtle active:translate-y-px"
           >
-            <span className="bg-primary flex h-14 w-14 items-center justify-center rounded-full text-primary-fg shadow-lg">
-              <Icon name="play" size={22} />
-            </span>
-            {/* Solid backing: the text must stay readable over any frame of the picture. */}
-            <span className="flex flex-col items-center gap-0.5 rounded-lg bg-black/80 px-3 py-1.5 text-center">
-              <span className="text-sm font-semibold">Play walkthrough</span>
-              <span className="text-[11px] text-white/85">Animations are reduced on this device. Click to play anyway</span>
-            </span>
+            <Icon name="play" size={13} />
+            Play walkthrough
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Step progress: fills over each step while playing */}
       <div className="h-1 overflow-hidden rounded-full bg-line">
         <div
           key={`${method}-${step}-${reduced}`}
           // duration = PHASE_MS × PHASES (kept in the class so the reduced-motion opt-in can restore it)
-          className={`bg-primary h-full rounded-full ${reduced ? 'w-full opacity-40' : 'animate-[guide-progress_4600ms_linear_forwards]'}`}
+          className={`bg-primary h-full w-full origin-left rounded-full ${reduced ? 'opacity-40' : 'animate-[guide-progress_4600ms_linear_forwards]'}`}
           style={reduced ? undefined : { animationPlayState: playing ? 'running' : 'paused' }}
         />
       </div>
 
       <div className="min-h-[3.5rem]">
         <div className="text-sm font-semibold text-fg">
-          <span className="mr-1.5 font-mono text-xs text-muted">STEP {step + 1}</span>
+          <span className="mr-1.5 text-muted">Step {step + 1} of {steps.length}:</span>
           {current.title}
         </div>
         <p className="mt-1 text-[13px] leading-relaxed text-muted">{current.body}</p>
@@ -614,7 +604,7 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
               className="group flex h-6 min-w-6 cursor-pointer items-center justify-center px-[9px]"
             >
               {/* 24 px tap target around a small dot */}
-              <span className={`h-1.5 rounded-full transition-all ${i === step ? 'bg-primary w-6' : 'w-1.5 bg-line-strong group-hover:bg-muted'}`} />
+              <span className={`h-1.5 rounded-full transition-colors ${i === step ? 'bg-primary w-6' : 'w-1.5 bg-line-strong group-hover:bg-muted'}`} />
             </button>
           ))}
         </div>

@@ -3,7 +3,7 @@ import { LegalPage } from '@/components/legal/LegalPage';
 import { LEGAL } from '@/lib/legal';
 import { PLANS } from '@/lib/plans';
 
-export const metadata = { title: 'Refund Policy — ShotDomain' };
+export const metadata = { title: 'Refund Policy | ShotDomain' };
 
 export default function RefundsPage() {
   const { product, refundDays: days } = LEGAL;
@@ -14,7 +14,7 @@ export default function RefundsPage() {
       intro={
         <p>
           We want you to be happy with {product}. If it isn’t right for you, you can get your money back within <b>{days} days</b> of any
-          payment — no questions asked.
+          payment, no questions asked.
         </p>
       }
     >
@@ -22,7 +22,7 @@ export default function RefundsPage() {
       <ul>
         <li>
           <b>{PLANS.pro.name}, monthly or yearly</b>
-          : full refund of any payment — the first one or a renewal — if you ask within {days} days of being charged.
+          : full refund of any payment (the first one or a renewal) if you ask within {days} days of being charged.
         </li>
         <li>
           <b>{PLANS.lifetime.name}</b>: full refund if you ask within {days} days of purchase.
@@ -52,7 +52,7 @@ export default function RefundsPage() {
       </ol>
       <p>
         Payments are processed by Paddle, our reseller and Merchant of Record, so refunds are issued by Paddle to your original payment
-        method. They usually arrive within 5–10 business days, depending on your bank.
+        method. They usually arrive within 5 to 10 business days, depending on your bank.
       </p>
 
       <h2>What happens to your account</h2>
@@ -72,7 +72,7 @@ export default function RefundsPage() {
 
       <h2>Abuse</h2>
       <p>
-        We may decline refunds that look like abuse of this policy — for example, repeated buy-and-refund cycles, or buying, using a plan
+        We may decline refunds that look like abuse of this policy, for example repeated buy-and-refund cycles, or buying, using a plan
         heavily and refunding repeatedly.
       </p>
     </LegalPage>

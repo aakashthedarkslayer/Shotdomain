@@ -62,7 +62,7 @@ function NumberInput({ id, label, value, onChange }: { id: string; label: string
         min={1}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="h-9 w-28 rounded-xl border border-line bg-field pr-2 pl-7 font-mono text-sm text-fg outline-none hover:border-line-strong focus:border-accent focus:ring-3 focus:ring-accent/15"
+        className="h-9 w-28 rounded-md border border-field-edge bg-field pr-2 pl-7 text-sm tabular-nums text-fg hover:border-fg"
       />
     </div>
   );
@@ -156,13 +156,11 @@ export default function CaptureSettingsStep({
                   <Icon name={d.icon} size={18} className={active ? 'text-accent' : 'text-muted'} />
                   <div>
                     <div className="text-sm font-medium text-fg">{d.name}</div>
-                    <div className="text-xs text-muted">
-                      {d.name === 'Desktop' ? '' : `${d.model} · `}
-                      {preset ? `${preset.width}×${preset.height}` : ''}
-                    </div>
+                    {d.name !== 'Desktop' && <div className="text-xs text-muted">{d.model}</div>}
+                    <div className="text-xs text-muted tabular-nums">{preset ? `${preset.width}×${preset.height}` : ''}</div>
                   </div>
                   {active && (
-                    <span className="absolute top-2.5 right-2.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-white">
+                    <span className="absolute top-2.5 right-2.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-accent-ink">
                       <Icon name="check" size={11} strokeWidth={3} />
                     </span>
                   )}
@@ -186,8 +184,8 @@ export default function CaptureSettingsStep({
               {selectedDevices.map((d) => {
                 const p = DEVICE_PRESETS[d];
                 return (
-                  <span key={d} className="rounded-md bg-subtle px-2 py-0.5 font-mono text-xs text-muted">
-                    {d} {p ? `${p.width}×${p.height}` : ''}
+                  <span key={d} className="rounded-md bg-subtle px-2 py-0.5 text-xs text-muted tabular-nums">
+                    {d}{p ? `, ${p.width} by ${p.height}` : ''}
                   </span>
                 );
               })}
@@ -204,7 +202,7 @@ export default function CaptureSettingsStep({
               aria-pressed={settings.linked}
               title={settings.linked ? 'Aspect ratio locked' : 'Aspect ratio unlocked'}
               className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg transition disabled:cursor-not-allowed disabled:opacity-40 ${
-                settings.linked ? 'bg-accent-soft text-accent-ink' : 'text-faint hover:bg-subtle hover:text-fg'
+                settings.linked ? 'bg-accent-soft text-accent-text' : 'text-faint hover:bg-subtle hover:text-fg'
               }`}
             >
               <Icon name={settings.linked ? 'link' : 'unlink'} size={16} />
@@ -317,7 +315,7 @@ export default function CaptureSettingsStep({
                         type="color"
                         value={settings.backgroundColor}
                         onChange={(e) => onSettingsChange({ backgroundColor: e.target.value })}
-                        className="h-7 w-7 cursor-pointer rounded border border-line bg-transparent p-0.5"
+                        className="h-7 w-7 cursor-pointer rounded border border-field-edge bg-transparent p-0.5"
                         aria-label="Background color"
                       />
                       {settings.backgroundColor}

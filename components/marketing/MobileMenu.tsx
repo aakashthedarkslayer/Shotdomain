@@ -37,7 +37,7 @@ export function MobileMenu({ links, account }: { links: MenuLink[]; account: Men
 
   const row = 'flex h-12 items-center border-b border-line text-base tracking-[-0.01em] text-fg';
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <button
         type="button"
         aria-expanded={open}

@@ -30,13 +30,13 @@ function StatusIcon({ status }: { status: CaptureResult['status'] }) {
       return <Spinner size={16} className="text-accent" />;
     case 'done':
       return (
-        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-success text-white" title="Done">
+        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-success text-on-status" title="Done">
           <Icon name="check" size={11} strokeWidth={3} />
         </span>
       );
     case 'failed':
       return (
-        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-danger text-white" title="Failed">
+        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-danger text-on-status" title="Failed">
           <Icon name="x" size={11} strokeWidth={3} />
         </span>
       );
@@ -89,18 +89,17 @@ export default function CaptureProgressStep({
               <h2 className="text-base font-semibold text-fg">{isComplete ? 'Capture finished' : 'Capturing…'}</h2>
               {isComplete ? <Badge tone={failed > 0 ? 'warning' : 'success'}>Done</Badge> : <Badge tone="accent">Running</Badge>}
             </div>
-            <p className="mt-0.5 text-sm text-muted">
-              {completed} captured
-              {failed > 0 && <span className="text-danger"> · {failed} failed</span>}
-              {notes > 0 && <span className="text-warning"> · {notes} with notes</span>}
-              {' · '}
-              {total} total
+            <p className="mt-0.5 flex flex-wrap gap-x-4 text-sm text-muted tabular-nums">
+              <span>{completed} captured</span>
+              {failed > 0 && <span className="text-danger">{failed} failed</span>}
+              {notes > 0 && <span className="text-warning">{notes} with notes</span>}
+              <span>{total} total</span>
             </p>
           </div>
           <div className="text-right">
-            <span className="font-mono text-2xl font-semibold tabular-nums text-fg">{pct}%</span>
+            <span className="text-2xl font-semibold tabular-nums text-fg">{pct}%</span>
             <p className="text-xs text-muted tabular-nums">
-              {isComplete ? `Took ${duration(elapsed)}` : etaMs !== undefined ? `${duration(elapsed)} · about ${duration(etaMs)} left` : duration(elapsed)}
+              {isComplete ? `Took ${duration(elapsed)}` : etaMs !== undefined ? `${duration(elapsed)}, about ${duration(etaMs)} left` : duration(elapsed)}
             </p>
           </div>
         </div>
@@ -161,7 +160,7 @@ export default function CaptureProgressStep({
                 {!isComplete && <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />}
                 {isComplete ? 'Last captured' : 'Just captured'}
               </p>
-              <div className="overflow-hidden rounded-lg border border-line bg-white shadow-sm">
+              <div className="overflow-hidden rounded-lg border border-line bg-shot-paper shadow-sm">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img key={latest.fileName} src={previewUrl(jobId, latest.fileName)} alt={`Screenshot of ${latest.url}`} className="block max-h-72 w-full object-cover object-top" />
               </div>

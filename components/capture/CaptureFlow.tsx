@@ -296,10 +296,7 @@ export function CaptureFlow({ start }: { start: CaptureStart }) {
       <div className="mb-8 space-y-4">
         <Stepper current={currentStep} />
         {rootUrl && currentStep > 1 && (
-          <p className="flex items-center justify-center gap-2 font-mono text-xs text-muted">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-success" />
-            <span className="truncate">{urlHost(rootUrl)}</span>
-          </p>
+          <p className="truncate text-center text-sm font-medium text-fg">{urlHost(rootUrl)}</p>
         )}
       </div>
 

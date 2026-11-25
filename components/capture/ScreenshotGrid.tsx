@@ -52,8 +52,8 @@ export function ScreenshotGrid({
         <p className="px-6 py-12 text-center text-sm text-muted">{emptyText}</p>
       ) : (
         <ul className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2 sm:p-6 lg:grid-cols-3">
-          {visible.map((item) => (
-            <li key={item.key} className="card group overflow-hidden rounded-xl transition hover:-translate-y-0.5">
+          {visible.map((item, index) => (
+            <li key={item.key} className="card group overflow-hidden rounded-xl transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-float)]">
               <button
                 type="button"
                 onClick={() => setPreview(item)}
@@ -64,11 +64,12 @@ export function ScreenshotGrid({
                 <img
                   src={item.src}
                   alt={`Screenshot of ${item.url}`}
-                  loading="lazy"
-                  className="h-full w-full object-cover object-top transition duration-300 group-hover:scale-[1.02]"
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  fetchPriority={index === 0 ? 'high' : 'auto'}
+                  className="h-full w-full object-cover object-top"
                 />
                 {item.warning && (
-                  <span title={item.warning} className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-warning text-white shadow-sm">
+                  <span title={item.warning} className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-warning text-surface shadow-sm">
                     <Icon name="alert" size={13} />
                   </span>
                 )}
@@ -146,9 +147,11 @@ export function FailedList({ items }: { items: { url: string; device?: string; e
       <ul className="divide-y divide-line border-t border-line">
         {items.map((r, idx) => (
           <li key={idx} className="flex flex-col gap-0.5 px-5 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6">
-            <span className="truncate font-mono text-[13px] text-fg" title={r.url}>
-              {r.url}
-              {r.device ? <span className="text-muted"> · {r.device}</span> : null}
+            <span className="flex min-w-0 items-baseline gap-3">
+              <span className="truncate font-mono text-[13px] text-fg" title={r.url}>
+                {r.url}
+              </span>
+              {r.device ? <span className="shrink-0 text-xs text-muted">{r.device}</span> : null}
             </span>
             <span className="shrink-0 text-xs text-danger">{r.error ?? 'Unknown error'}</span>
           </li>

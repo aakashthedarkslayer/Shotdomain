@@ -178,7 +178,7 @@ export default function PageSelectionStep({
         {truncated && <Alert tone="warning">Discovery stopped at 500 pages. This site may have more.</Alert>}
         {!loggedIn && urls.length <= 3 && onAddLogin && (
           <div className="flex flex-col gap-3 rounded-xl bg-accent-soft px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-2.5 text-[13px] text-accent-ink">
+            <div className="flex items-start gap-2.5 text-[13px] text-accent-text">
               <Icon name="shield" size={16} className="mt-px shrink-0" />
               <span>
                 <b>Only {urls.length} {urls.length === 1 ? 'page' : 'pages'} found.</b> If this site needs a login (a web app or dashboard),

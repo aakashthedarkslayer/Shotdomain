@@ -4,7 +4,8 @@ import { Icon } from './Icon';
 import type { IconName } from './Icon';
 
 const FIELD_BASE =
-  'w-full rounded-md border bg-field text-sm text-fg placeholder:text-faint transition-colors outline-none focus:ring-3 disabled:cursor-not-allowed disabled:opacity-60';
+  // Edges at 3:1 (--field-edge); focus is the site-wide outline, never a border or a shadow ring.
+  'w-full rounded-md border bg-field text-sm text-fg placeholder:text-faint transition-colors disabled:cursor-not-allowed disabled:opacity-60';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: IconName;
@@ -26,7 +27,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         ref={ref}
         aria-invalid={invalid || undefined}
         className={`${FIELD_BASE} ${height} ${icon ? 'pl-9' : 'pl-3'} pr-3 ${
-          invalid ? 'border-danger focus:ring-danger/15' : 'border-line hover:border-line-strong focus:border-fg focus:ring-fg/10'
+          invalid ? 'border-danger' : 'border-field-edge hover:border-fg'
         } ${className}`}
         {...props}
       />
@@ -42,7 +43,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSel
     <div className="relative">
       <select
         ref={ref}
-        className={`${FIELD_BASE} h-10 cursor-pointer appearance-none border-line pr-8 pl-3 hover:border-line-strong focus:border-fg focus:ring-fg/10 ${className}`}
+        className={`${FIELD_BASE} h-10 cursor-pointer appearance-none border-field-edge pr-8 pl-3 hover:border-fg ${className}`}
         {...props}
       >
         {children}
@@ -60,7 +61,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<H
     <textarea
       ref={ref}
       rows={rows}
-      className={`${FIELD_BASE} border-line px-3 py-2 font-mono text-[13px] hover:border-line-strong focus:border-fg focus:ring-fg/10 ${className}`}
+      className={`${FIELD_BASE} border-field-edge px-3 py-2 font-mono text-[13px] hover:border-fg ${className}`}
       {...props}
     />
   );

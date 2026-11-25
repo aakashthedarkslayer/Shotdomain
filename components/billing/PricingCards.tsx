@@ -45,7 +45,7 @@ export function IntervalToggle({ value, onChange }: { value: Interval; onChange:
         >
           {i === 'month' ? 'Monthly' : 'Yearly'}
           {i === 'year' && saving && (
-            <span className={`font-mono text-[11px] ${value === i ? 'opacity-70' : 'text-accent'}`}>{saving.toUpperCase()}</span>
+            <span className={`text-xs ${value === i ? 'opacity-80' : 'text-accent-text'}`}>{saving}</span>
           )}
         </button>
       ))}
@@ -87,17 +87,17 @@ export function PricingCards({
           return (
             <div
               key={id}
-              className={`relative flex flex-col rounded-xl p-8 ${featured ? 'band-flip border border-line shadow-[0_8px_24px_-8px_#00000040]' : 'card-float'}`}
+              className={`relative flex flex-col rounded-xl p-8 ${featured ? 'band-flip border border-line shadow-featured' : 'card-float'}`}
             >
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-2xl font-semibold tracking-[-0.04em] text-fg">{plan.name}</h3>
                 {label && (
                   <span
-                    className={`rounded-full border px-2 py-0.5 font-mono text-[11px] ${
-                      current === id ? 'border-accent/40 bg-accent-soft text-accent-ink' : 'border-line text-muted'
+                    className={`rounded-full border px-2 py-0.5 text-xs ${
+                      current === id ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line text-muted'
                     }`}
                   >
-                    {label.toUpperCase()}
+                    {label}
                   </span>
                 )}
               </div>
@@ -106,7 +106,7 @@ export function PricingCards({
                 <span className="text-5xl font-semibold tracking-[-0.05em] text-fg">{price.amount}</span>
                 <span className="text-sm text-muted">{price.cadence}</span>
               </p>
-              <p className="mt-1 h-4 font-mono text-xs text-faint">{price.note}</p>
+              <p className="mt-1 h-4 text-xs text-faint">{price.note}</p>
               <ul className="mt-8 flex-1 space-y-3 border-t border-line pt-6">
                 {plan.highlights.map((f) => (
                   <li key={f} className="flex items-start gap-2.5 text-sm leading-5 tracking-[-0.01em] text-fg">

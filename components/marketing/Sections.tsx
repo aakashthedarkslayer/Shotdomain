@@ -2,40 +2,98 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { buttonClass } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
-import { Logo } from '@/components/ui/Logo';
+import { LogoMark } from '@/components/ui/Logo';
 import { CookieGuide } from '@/components/capture/CookieGuide';
 import { MarketingPricing } from '@/components/billing/MarketingPricing';
 import { CaptureButton } from './CaptureButton';
+import { OutputPanel } from './OutputPanel';
+import { DEVICE_PRESETS } from '@/lib/devices';
 import { SHARE_DAYS } from '@/lib/plans';
 import { LEGAL } from '@/lib/legal';
 
 /*
- * Homepage bands (DESIGN.md): canvas-soft / canvas sections divided by
- * hairlines, display-lg sentence-case headlines, mono only for eyebrows and
- * technical detail. Each band has its own layout so the page doesn't read as
- * one template repeated.
+ * Homepage sections (DESIGN.md surfaces, Hallmark Workbench shape): plain
+ * sentence-case headings with no eyebrows, each section in its own
+ * composition. The worked example shows real ShotDomain output.
  */
 
-function Band({ id, tone = 'soft', children }: { id?: string; tone?: 'soft' | 'white'; children: ReactNode }) {
+function Band({ id, tone = 'soft', labelledBy, children }: { id?: string; tone?: 'soft' | 'white'; labelledBy?: string; children: ReactNode }) {
   return (
-    <section id={id} className={`scroll-mt-16 border-b border-line px-4 py-24 sm:px-6 ${tone === 'white' ? 'bg-surface' : 'bg-bg'}`}>
+    <section id={id} aria-labelledby={labelledBy} className={`scroll-mt-16 border-b border-line px-4 py-24 sm:px-6 lg:py-28 ${tone === 'white' ? 'bg-surface' : 'bg-bg'}`}>
       <div className="mx-auto max-w-6xl">{children}</div>
     </section>
   );
 }
 
-function Heading({ eyebrow, children, className = '' }: { eyebrow: ReactNode; children: ReactNode; className?: string }) {
+function Heading({ id, children, className = '' }: { id?: string; children: ReactNode; className?: string }) {
   return (
-    <div className={className}>
-      <p className="mono-label">{eyebrow}</p>
-      <h2 className="mt-3 text-[32px] leading-10 font-semibold tracking-[-0.04em] text-fg">{children}</h2>
-    </div>
+    <h2 id={id} className={`text-[32px] leading-10 font-semibold tracking-[-0.04em] text-fg ${className}`}>
+      {children}
+    </h2>
   );
 }
 
 /* ------------------------------------------------------------------------ */
 
-const STEPS: { title: string; body: string; detail: string; mono?: boolean }[] = [
+/**
+ * Real output: ShotDomain run on its own site, then the share page that run
+ * made, captured (see public/screens/README.md for how they were taken).
+ */
+export function WorkedExampleSection() {
+  const phone = DEVICE_PRESETS['Mobile (iOS)'];
+  return (
+    <Band id="example" labelledBy="example-heading">
+      <div className="max-w-2xl">
+        <Heading id="example-heading">One ZIP, or a link for your client.</Heading>
+        <p className="mt-4 text-lg leading-7 text-muted">ShotDomain run on its own site: a full-page screenshot of every page, on every device you pick.</p>
+      </div>
+
+      <figure className="mt-12">
+        <div className="overflow-hidden rounded-xl border border-line bg-surface shadow-[var(--shadow-float)]">
+          {/* eslint-disable-next-line @next/next/no-img-element -- a static WebP sized at build, below the fold */}
+          <img
+            src="/screens/share-desktop.webp"
+            width={2304}
+            height={1440}
+            alt="A ShotDomain share page: the site's name, a Download ZIP button, device tabs and a grid of page screenshots."
+            loading="lazy"
+            decoding="async"
+            className="block h-auto w-full"
+          />
+        </div>
+        <figcaption className="mt-4 max-w-2xl text-sm leading-6 text-muted">
+          <span className="font-medium text-fg">The link your client opens.</span> Every page, by device, with one button for the ZIP. No account needed, and it
+          is kept for {SHARE_DAYS} days.
+        </figcaption>
+      </figure>
+
+      <div className="mt-16 grid items-center gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
+        <OutputPanel />
+        <figure className="mx-auto w-full max-w-[300px]">
+          <div className="aspect-[393/760] overflow-hidden rounded-[28px] border border-line bg-surface shadow-[var(--shadow-float)]">
+            {/* eslint-disable-next-line @next/next/no-img-element -- a static WebP sized at build, below the fold */}
+            <img
+              src="/screens/home-mobile-ios.webp"
+              width={900}
+              height={1740}
+              alt="ShotDomain's homepage as captured on iPhone 14 Pro: the headline and the capture form."
+              loading="lazy"
+              decoding="async"
+              className="block h-full w-full object-cover object-top"
+            />
+          </div>
+          <figcaption className="mt-4 text-sm leading-6 text-muted">
+            <span className="font-medium text-fg">mobile-ios/home.png</span>, the top of it, as ShotDomain took it: {phone.width} px wide at {phone.deviceScaleFactor}x.
+          </figcaption>
+        </figure>
+      </div>
+    </Band>
+  );
+}
+
+/* ------------------------------------------------------------------------ */
+
+const STEPS: { title: string; body: string; detail: string }[] = [
   {
     title: 'Finds the pages',
     body: 'Reads sitemap.xml and every sitemap robots.txt lists. No sitemap? It follows the site’s links, including menus built with JavaScript.',
@@ -49,8 +107,7 @@ const STEPS: { title: string; body: string; detail: string; mono?: boolean }[] =
   {
     title: 'Shoots every device',
     body: 'Full-page screenshots in real device profiles, at their real pixel density and with touch on.',
-    detail: 'Desktop · iPad Pro 11 · iPhone 14 Pro · Pixel 7',
-    mono: true,
+    detail: 'Desktop, iPad Pro 11, iPhone 14 Pro and Pixel 7.',
   },
   {
     title: 'Hands them over',
@@ -59,25 +116,26 @@ const STEPS: { title: string; body: string; detail: string; mono?: boolean }[] =
   },
 ];
 
-/** What happens to one domain, step by step (replaces separate "how it works" and "features" grids). */
+/** What happens to one domain, as rows: the head block beside the four steps. */
 export function HowItWorksSection() {
   return (
-    <Band id="how-it-works">
-      <div className="grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16">
+    <Band id="how-it-works" tone="white" labelledBy="how-heading">
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
         <div>
-          <Heading eyebrow="How it works">One domain in, every page out.</Heading>
+          <Heading id="how-heading">One domain in, every page out.</Heading>
           <p className="mt-4 max-w-sm text-base leading-6 text-muted">
             It’s polite about it: at most four pages at a time, robots.txt respected and an honest user agent. If a site blocks bots, ShotDomain
             says so instead of working around it.
           </p>
         </div>
-        <ol className="grid gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2">
-          {STEPS.map((s, i) => (
-            <li key={s.title} className="flex flex-col bg-surface p-6 sm:p-7">
-              <span className="font-mono text-xs text-faint">0{i + 1}</span>
-              <h3 className="mt-3 text-xl leading-7 font-semibold tracking-[-0.03em] text-fg">{s.title}</h3>
-              <p className="mt-2 text-sm leading-6 tracking-[-0.01em] text-muted">{s.body}</p>
-              <p className={`mt-auto pt-4 text-fg ${s.mono ? 'font-mono text-xs leading-5' : 'text-[13px] leading-5 font-medium tracking-[-0.01em]'}`}>{s.detail}</p>
+        <ol className="divide-y divide-line border-y border-line">
+          {STEPS.map((s) => (
+            <li key={s.title} className="grid gap-2 py-7 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] sm:gap-8">
+              <h3 className="text-xl leading-7 font-semibold tracking-[-0.03em] text-fg">{s.title}</h3>
+              <div>
+                <p className="text-base leading-6 text-muted">{s.body}</p>
+                <p className="mt-2 text-sm leading-5 font-medium text-fg">{s.detail}</p>
+              </div>
             </li>
           ))}
         </ol>
@@ -99,18 +157,10 @@ const SESSION_FACTS = [
 /** Pages behind a login (Pro), with the animated guide to copying a session. */
 export function LoginPagesSection() {
   return (
-    <Band id="login-pages" tone="white">
-      <div className="grid items-start gap-12 lg:grid-cols-[1fr_1.15fr]">
+    <Band id="login-pages" labelledBy="login-heading">
+      <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
         <div>
-          <Heading
-            eyebrow={
-              <>
-                Pages behind a login <span className="ml-1 rounded-full border border-line px-1.5 py-px text-[11px] text-fg">PRO</span>
-              </>
-            }
-          >
-            Screenshot what’s behind the login.
-          </Heading>
+          <Heading id="login-heading">Screenshot what’s behind the login.</Heading>
           <p className="mt-4 max-w-md text-base leading-6 text-muted">
             Dashboards, client portals, staging sites. Copy your session from your own browser and paste it in. You never hand over a password,
             and it works with two-factor and single sign-on.
@@ -148,10 +198,10 @@ export function LoginPagesSection() {
 
 export function PricingSection({ billingEnabled = false, lifetimeLeft = 0 }: { billingEnabled?: boolean; lifetimeLeft?: number }) {
   return (
-    <Band id="pricing">
-      <div className="mx-auto mb-12 max-w-2xl text-center">
-        <Heading eyebrow="Pricing">Free for small sites. $5 a month for the rest.</Heading>
-        <p className="mt-3 text-base leading-6 text-muted">
+    <Band id="pricing" tone="white" labelledBy="pricing-heading">
+      <div className="mb-12 grid gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-16">
+        <Heading id="pricing-heading">Free for small sites. $5 a month for the rest.</Heading>
+        <p className="text-base leading-6 text-muted">
           Prices in USD, taxes added at checkout. Cancel any time, and get your money back within {LEGAL.refundDays} days if it isn’t for you.
         </p>
       </div>
@@ -195,9 +245,9 @@ const FAQS = [
 
 export function FaqSection() {
   return (
-    <Band id="faq" tone="white">
-      <div className="grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16">
-        <Heading eyebrow="FAQ">Common questions.</Heading>
+    <Band id="faq" labelledBy="faq-heading">
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
+        <Heading id="faq-heading">Common questions.</Heading>
         <div className="divide-y divide-line border-y border-line">
           {FAQS.map((f) => (
             <details key={f.q} className="group">
@@ -243,29 +293,36 @@ const FOOTER_COLUMNS: { title: string; links: { href: string; label: string }[] 
   },
 ];
 
+/** A mast: the wordmark large over the page's real links and the legal line. */
 export function Footer() {
   return (
-    <footer className="bg-surface px-4 py-16 sm:px-6">
-      <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
-        <div className="space-y-3">
-          <Logo />
-          <p className="max-w-xs text-sm leading-5 tracking-[-0.01em] text-muted">Every page of a site, screenshotted on every device.</p>
-          <p className="font-mono text-xs text-faint">© {new Date().getFullYear()} ShotDomain</p>
+    <footer className="bg-surface px-4 pt-20 pb-10 sm:px-6">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-end">
+          <div>
+            <Link href="/" className="inline-flex items-center gap-3 text-[40px] leading-none font-semibold tracking-[-0.05em] text-fg sm:text-[56px]">
+              <LogoMark size={44} />
+              ShotDomain
+            </Link>
+            <p className="mt-4 max-w-xs text-base leading-6 text-muted">Every page of a site, screenshotted on every device.</p>
+          </div>
+          <div className="grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3">
+            {FOOTER_COLUMNS.map((col) => (
+              <nav key={col.title} aria-label={col.title}>
+                <ul className="space-y-1">
+                  {col.links.map((l) => (
+                    <li key={l.href}>
+                      <Link href={l.href} className="inline-block py-1 text-sm text-muted transition-colors hover:text-fg">
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            ))}
+          </div>
         </div>
-        {FOOTER_COLUMNS.map((col) => (
-          <nav key={col.title} aria-label={col.title}>
-            <p className="mono-label">{col.title}</p>
-            <ul className="mt-3 space-y-1">
-              {col.links.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="inline-block py-1 text-sm tracking-[-0.01em] text-muted transition-colors hover:text-fg">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        ))}
+        <p className="mt-16 border-t border-line pt-6 text-sm text-faint">© {new Date().getFullYear()} ShotDomain</p>
       </div>
     </footer>
   );

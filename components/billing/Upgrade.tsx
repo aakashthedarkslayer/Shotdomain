@@ -9,7 +9,7 @@ import { PLANS } from '@/lib/plans';
 export function PlanLock({ plan = 'pro', className = '', link = true }: { plan?: PlanId; className?: string; link?: boolean }) {
   if (!link) {
     return (
-      <span className={`inline-flex items-center gap-1 rounded-md bg-accent-soft px-1.5 py-0.5 text-xs font-medium whitespace-nowrap text-accent-ink ${className}`}>
+      <span className={`inline-flex items-center gap-1 rounded-md bg-accent-soft px-1.5 py-0.5 text-xs font-medium whitespace-nowrap text-accent-text ${className}`}>
         <Icon name="lock" size={11} /> {PLANS[plan].name}
       </span>
     );
@@ -17,7 +17,7 @@ export function PlanLock({ plan = 'pro', className = '', link = true }: { plan?:
   return (
     <Link
       href={`/billing?plan=${plan}`}
-      className={`inline-flex items-center gap-1 rounded-md bg-accent-soft px-1.5 py-0.5 text-xs font-medium whitespace-nowrap text-accent-ink hover:underline ${className}`}
+      className={`inline-flex items-center gap-1 rounded-md bg-accent-soft px-1.5 py-0.5 text-xs font-medium whitespace-nowrap text-accent-text hover:underline ${className}`}
     >
       <Icon name="lock" size={11} /> {PLANS[plan].name}
     </Link>

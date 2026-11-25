@@ -39,7 +39,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
       aria-labelledby={title ? titleId : undefined}
       aria-describedby={description ? descId : undefined}
     >
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="absolute inset-0 bg-scrim" onClick={onClose} />
       <div
         className={`relative flex max-h-[90vh] w-full flex-col overflow-hidden card-elevated rounded-xl ${
           size === 'xl' ? 'max-w-5xl' : size === 'lg' ? 'max-w-2xl' : 'max-w-lg'

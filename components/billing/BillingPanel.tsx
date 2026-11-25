@@ -330,7 +330,7 @@ export function BillingPanel({ enabled, plan, subscription, lifetime, lifetimeLe
         <a href="/refunds" className="underline underline-offset-2 hover:text-fg">
           Refund Policy
         </a>{' '}
-        ·{' '}
+        and the{' '}
         <a href="/terms" className="underline underline-offset-2 hover:text-fg">
           Terms
         </a>

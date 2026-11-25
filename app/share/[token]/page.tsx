@@ -11,7 +11,7 @@ import { getProfile } from '@/lib/userData';
 import { BrandLogo } from '@/components/share/BrandLogo';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Shared screenshots — ShotDomain', robots: { index: false, follow: false } };
+export const metadata = { title: 'Shared screenshots | ShotDomain', robots: { index: false, follow: false } };
 
 /** The share owner's own name and logo, when their plan includes branding. */
 interface Brand {
@@ -58,7 +58,15 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
         <Card>
           <CardHeader
             title={hostOf(capture.rootUrl)}
-            description={`${capture.done} ${capture.done === 1 ? 'screenshot' : 'screenshots'} · ${capture.devices.join(', ')} · captured ${formatDateTime(capture.createdAt)}`}
+            description={
+              <span className="flex flex-wrap gap-x-4">
+                <span>
+                  {capture.done} {capture.done === 1 ? 'screenshot' : 'screenshots'}
+                </span>
+                <span>{capture.devices.join(', ')}</span>
+                <span>Captured {formatDateTime(capture.createdAt)}</span>
+              </span>
+            }
             actions={
               done.length > 1 ? (
                 <a href={`/share/${token}/download`} className={buttonClass('primary', 'md')}>

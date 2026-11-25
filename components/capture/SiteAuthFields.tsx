@@ -272,7 +272,7 @@ function CookieInput({
             id="auth-cookies"
             rows={4}
             spellCheck={false}
-            placeholder={"curl 'https://yoursite.com/dashboard' -H 'cookie: session_id=…' …\n— or —\nsession_id=abc123; csrftoken=xyz"}
+            placeholder={"curl 'https://yoursite.com/dashboard' -H 'cookie: session_id=…' …\nor\nsession_id=abc123; csrftoken=xyz"}
             value={auth.cookies ?? ''}
             onChange={(e) => {
               if (!takeCopiedRequest(e.target.value)) {
@@ -376,7 +376,7 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
     <div className="space-y-4">
       {!usingPassword ? (
         <>
-          <div className="flex items-start gap-2.5 rounded-lg bg-accent-soft px-3 py-2.5 text-[13px] text-accent-ink">
+          <div className="flex items-start gap-2.5 rounded-lg bg-accent-soft px-3 py-2.5 text-[13px] text-accent-text">
             <Icon name="shield" size={16} className="mt-px" />
             <span>
               <b>No password needed.</b> Log in to the site in your own browser and paste your session below. Treat it like a key: it works
@@ -398,7 +398,7 @@ export function SiteAuthFields({ siteUrl, auth, onChange }: { siteUrl: string; a
                 <Textarea
                   id="auth-ls"
                   rows={3}
-                  placeholder={'{"auth_token":"eyJhbGciOi..."}\n— or —\nauth_token=eyJhbGciOi...'}
+                  placeholder={'{"auth_token":"eyJhbGciOi..."}\nor\nauth_token=eyJhbGciOi...'}
                   value={auth.localStorage ?? ''}
                   onChange={(e) => set({ localStorage: e.target.value })}
                 />

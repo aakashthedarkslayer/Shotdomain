@@ -15,7 +15,7 @@ import { listShares } from '@/lib/shareStore';
 import { revokeShareAction } from '@/app/actions/profile';
 import { StopSharingButton } from '@/components/share/StopSharingButton';
 
-export const metadata = { title: 'Profile — ShotDomain' };
+export const metadata = { title: 'Profile | ShotDomain' };
 // Share links are read from disk on every request; never prerender them.
 export const dynamic = 'force-dynamic';
 
@@ -32,13 +32,35 @@ export default async function ProfilePage() {
     <div className="min-h-screen pb-24">
       <AppHeader />
       <main className="mx-auto max-w-5xl space-y-6 px-4 pt-10 sm:px-6">
+        <div className="flex items-center gap-4 pb-2">
+          <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-line bg-subtle text-lg font-semibold text-fg">
+            {user?.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={user.image} alt="" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
+            ) : (
+              (user?.name || user?.email || 'L').charAt(0).toUpperCase()
+            )}
+          </span>
+          <div className="min-w-0">
+            <h1 className="truncate text-2xl font-semibold tracking-[-0.04em] text-fg">{user ? user.name || user.email : 'Local user'}</h1>
+            {user ? (
+              <>
+                {user.email && <p className="truncate text-sm text-muted">{user.email}</p>}
+                {user.company && <p className="truncate text-sm text-muted">{user.company}</p>}
+              </>
+            ) : (
+              <p className="truncate text-sm text-muted">Sign-in isn’t configured on this server.</p>
+            )}
+          </div>
+        </div>
+
         {/* Share links */}
         <Card id="share-links">
           <CardHeader
             title="Share links"
             description={`Anyone with one of these links can view and download its screenshots without signing in. Each link and its screenshots are deleted after ${SHARE_DAYS} days.`}
             actions={
-              <span className="font-mono text-xs whitespace-nowrap text-muted">
+              <span className="text-sm whitespace-nowrap text-muted tabular-nums">
                 {shares.length} of {shareLimit} in use
               </span>
             }
@@ -61,10 +83,11 @@ export default async function ProfilePage() {
                 <li key={sh.token} className="flex items-center gap-3 px-5 py-3 sm:px-6">
                   <div className="min-w-0 flex-1">
                     <a href={`/share/${sh.token}`} target="_blank" rel="noreferrer" className="block truncate text-sm font-medium text-fg hover:underline">
-                      {sh.label}
+                      {sh.label.replace(' · ', ', ')}
                     </a>
-                    <p className="text-xs text-muted">
-                      Shared {formatDateTime(sh.createdAt)} · deleted on {formatDate(sh.expiresAt)}
+                    <p className="flex flex-wrap gap-x-4 text-xs text-muted">
+                      <span>Shared {formatDateTime(sh.createdAt)}</span>
+                      <span>Deleted on {formatDate(sh.expiresAt)}</span>
                     </p>
                   </div>
                   <form action={revokeShareAction}>
@@ -78,22 +101,7 @@ export default async function ProfilePage() {
         </Card>
         {/* Profile */}
         <Card>
-          <div className="flex items-center gap-4 border-b border-line px-5 py-5 sm:px-6">
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-line bg-subtle text-lg font-semibold text-fg">
-              {user?.image ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={user.image} alt="" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
-              ) : (
-                (user?.name || user?.email || 'L').charAt(0).toUpperCase()
-              )}
-            </span>
-            <div className="min-w-0">
-              <h1 className="truncate text-2xl font-semibold tracking-[-0.04em] text-fg">{user ? user.name || user.email : 'Local user'}</h1>
-              <p className="truncate text-sm text-muted">
-                {user ? [user.email, user.company].filter(Boolean).join(' · ') : 'Sign-in isn’t configured on this server.'}
-              </p>
-            </div>
-          </div>
+          <CardHeader title="Profile" description="Your name and company, and the logo on your share links." />
           <div className="px-5 py-5 sm:px-6">
             {user ? (
               <ProfileForm

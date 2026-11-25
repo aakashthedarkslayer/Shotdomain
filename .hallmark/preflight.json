@@ -1,0 +1,16 @@
+{
+  "scanned": "2026-11-25",
+  "findings": {
+    "design.md": "DESIGN.md at the root: a locked Vercel-inspired system (ink, 100-step greys, hairlines, stacked shadows, mesh gradient at hero scale only); CLAUDE.md lists ShotDomain's adaptations",
+    "fonts": "Geist + Geist Mono via next/font (app/layout.tsx L3-L15)",
+    "palette": "hex custom properties in app/globals.css :root L9-L35, dark L37-L64, .band-dark/.band-flip L67-L110, mapped to Tailwind in @theme inline",
+    "motion": "CSS transitions and keyframes only, no motion library (package.json)",
+    "spacing": "Tailwind v4 default 4px scale",
+    "framework": "Next.js 16.3.5 App Router, React 19, Tailwind v4 (package.json)",
+    "product": "runs locally (npm run build && npm start); rendered through --url",
+    "signal8": "no Inspo MCP",
+    "signal9": "no TOGETHER_API_KEY"
+  },
+  "preserve": ["DESIGN.md system and its tokens", "Geist + Geist Mono", "every link, field, handler and route", "the page copy except where a gate names a line; legal text verbatim"],
+  "introduce": ["the Floor and gate fixes", "the check stamp in app/globals.css"]
+}

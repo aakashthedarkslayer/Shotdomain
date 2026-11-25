@@ -354,7 +354,7 @@ async function diagnose(page: Page, requestedUrl: string, response: PageResponse
   if (info?.passwordField && !botCheck) {
     warnings.push(
       loggedIn
-        ? 'Landed on a login form — the saved session may have expired. Log in again and update it.'
+        ? 'Landed on a login form, so the saved session may have expired. Log in again and update it.'
         : 'This page shows a login form. If it needs an account, turn on “This site needs a login” on the first step.',
     );
   }
@@ -413,7 +413,7 @@ async function captureOne(
         } catch {
           throw err; // report the HTTPS failure the user asked about
         }
-        warnings.push('Captured over plain HTTP — the site did not answer over HTTPS.');
+        warnings.push('Captured over plain HTTP: the site did not answer over HTTPS.');
       } else {
         await page.waitForTimeout(1_000);
         response = await navigate(page, url);
@@ -437,7 +437,7 @@ async function captureOne(
       if (height > MAX_FULLPAGE_HEIGHT) {
         const width = page.viewportSize()?.width ?? settings.width;
         clip = { x: 0, y: 0, width, height: MAX_FULLPAGE_HEIGHT };
-        warnings.push(`Very tall page (${height.toLocaleString()} px) — captured the first ${MAX_FULLPAGE_HEIGHT.toLocaleString()} px.`);
+        warnings.push(`Very tall page (${height.toLocaleString()} px). Captured the first ${MAX_FULLPAGE_HEIGHT.toLocaleString()} px.`);
       }
     }
 

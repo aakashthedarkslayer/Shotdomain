@@ -32,7 +32,7 @@ const SHAPES: Record<ButtonShape, string> = {
 
 /** Class string for anything that should look like a button (e.g. <a> or <Link>). */
 export function buttonClass(variant: ButtonVariant = 'primary', size: ButtonSize = 'md', extra = '', shape: ButtonShape = 'rect') {
-  return `inline-flex shrink-0 cursor-pointer select-none items-center justify-center font-medium tracking-[-0.01em] whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50 ${VARIANTS[variant]} ${SIZES[size]} ${SHAPES[shape]} ${extra}`;
+  return `inline-flex shrink-0 cursor-pointer select-none items-center justify-center font-medium tracking-[-0.01em] whitespace-nowrap transition-colors active:translate-y-px disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 ${VARIANTS[variant]} ${SIZES[size]} ${SHAPES[shape]} ${extra}`;
 }
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

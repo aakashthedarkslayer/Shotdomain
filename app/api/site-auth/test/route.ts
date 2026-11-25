@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       cookieCount: resolved.cookies.length,
       cookiesExpireAt: earliestExpiry(resolved.cookies),
       warning: stillOnLogin
-        ? 'The page still shows a password field — you may not be logged in.'
+        ? 'The page still shows a password field, so you may not be logged in.'
         : status === 401 || status === 403
           ? `The site answered ${status} (not authorized).`
           : undefined,
