@@ -21,24 +21,24 @@ PICKED-BY-USER: "Template piles"
 ASSETS: illustrated-in-code
 
 ## Directions (required while PHASE is directions: all 4 types, each with its own file and custom art)
-DIRECTION: art-led | file: <design/a-art-led.html> | art: <what the artwork is + its file, e.g. painted hero illustration art/a-hero.svg>
-DIRECTION: art+motion | file: <design/b.html> | art: <layered parallax art art/b-layers.svg>
-DIRECTION: world | file: <design/c.html> | art: <the world's material/objects art/c-world.svg>
-DIRECTION: wildcard | file: <design/d.html> | art: <generative / 3D / shader file>
+DIRECTION: art-led | file: design/directions/dir-a.html | art: CSS 3D paper reams on painted colour fields, design/directions/shots/a/art.png
+DIRECTION: art+motion | file: design/directions/dir-b.html | art: CSS 3D riffle stacks on a cobalt set, design/directions/shots/b/art.png
+DIRECTION: world | file: design/directions/dir-c.html | art: SVG sorting frame, shutters, stamps, parcel and envelope, design/directions/shots/c/art.png
+DIRECTION: wildcard | file: design/directions/dir-d.html | art: canvas likeness field of 412 page glyphs, design/directions/shots/d/art.png
 
 ## Key screens (one line per key screen; at least 2 custom-rendered elements each)
 SCREEN: <home> | custom: <element 1 (painter/shader/mesh/physics/custom shape/transition)>, <element 2> | art: <art file shown on it>
 
 ## Evidence of the look
-REST-STILLS: <shots/round2/home-rest.png shots/round2/detail-rest.png>   (no taps; First glance is scored from these)
-PREVIOUS-STILLS: <shots/round1/home-rest.png, or NONE on the first round>
-SAME-APP: <NO>   (old vs new rest stills side by side: would a non-designer call it the same app in 3 seconds?)
-SEEN-BEFORE: <NO>   (the critic's answer to "has the user seen anything like this before?")
+REST-STILLS: design/directions/shots/a/rest.png design/directions/shots/b/rest.png design/directions/shots/c/art.png design/directions/shots/d/rest.png   (no taps; First glance is scored from these)
+PREVIOUS-STILLS: design/critic/previous-home.png
+SAME-APP: NO   (old vs new rest stills side by side: would a non-designer call it the same app in 3 seconds?)
+SEEN-BEFORE: YES   (C is the only direction the critic rated not seen before; A, B and D were)   (the critic's answer to "has the user seen anything like this before?")
 
 ## Critic (ui-critic output saved to a file; scores are read from it)
-CRITIC-REPORT: design/critic/sweep.md   (in the sweep: the critic's never-seen answers; a "Skeleton: standard" line in it caps Wow at 7)
-FIRST-GLANCE: <9>
-WOW: <9>
+CRITIC-REPORT: design/critic/directions-r1.md   (in the sweep: the critic's never-seen answers; a "Skeleton: standard" line in it caps Wow at 7)
+FIRST-GLANCE: 7
+WOW: 7
 
 ## Below the bar (First glance or Wow < 9) only
 ## Ask the user, stating the gap plainly ("this is 8/6, below your bar of 9/9"), then paste their exact words.
