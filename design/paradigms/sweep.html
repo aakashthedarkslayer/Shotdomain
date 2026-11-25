@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>ShotDomain: paradigm sweep</title><link rel="stylesheet" href="sketch.css">
+<style>
+  body { width: 1440px; height: auto; overflow: visible; padding: 40px 48px 60px; }
+  h1 { margin: 0; font-size: 34px; letter-spacing: -0.02em; }
+  .lede { margin: 8px 0 26px; color: var(--muted); max-width: 900px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .card { background: var(--paper); border: 1.5px solid var(--block-2); padding: 12px 12px 16px; position: relative; }
+  .card img { width: 100%; display: block; border: 1px solid var(--block-2); }
+  .card h2 { margin: 12px 0 4px; font-size: 18px; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 8px; margin-right: 6px; border: 1.5px solid var(--ink); }
+  .tag.yes { background: var(--ink); color: var(--paper); }
+  .card p { margin: 6px 0 0; font-size: 13px; color: var(--ink); }
+  .card .t { color: var(--muted); }
+  .rec { outline: 4px solid var(--mark); outline-offset: 3px; }
+  .rec::after { content: "Critic's pick"; position: absolute; top: -14px; right: 12px; background: var(--mark); color: #fff; font-size: 12px; font-weight: 700; padding: 3px 10px; }
+  .dropped { opacity: .45; }
+  .hybrid { margin-top: 30px; background: var(--ink); color: var(--paper); padding: 18px 22px; }
+  .hybrid b { font-size: 17px; }
+</style></head><body>
+<h1>ShotDomain: nine new ways to use it</h1>
+<p class="lede">Rough grey sketches of mechanics, not looks. The ui-critic judged each one: has a designer seen it before, is it the standard layout under a skin, does every real function still fit, and does it work for a 400-page site. Three were the standard layout under a skin, so they were dropped and replaced.</p>
+<div class="grid">
+  <div class="card rec"><img src="7-template-piles.png" alt=""><h2>7 Template piles</h2><span class="tag yes">Never seen</span><span class="tag">New skeleton</span>
+    <p>Pages grouped into piles by template; you review a pile, and the pages that break the template are pulled out for you.</p>
+    <p class="t">412 pages become 6 decisions. The detection must be real and right, or it misleads you.</p></div>
+  <div class="card"><img src="1-survey-map.png" alt=""><h2>1 Survey map</h2><span class="tag">Seen before</span><span class="tag">New skeleton</span>
+    <p>The site as a map with sections as districts; lasso a district to pick it; captures fill each plot in place.</p>
+    <p class="t">You see the shape of the whole site; picking three stray pages is slower than a list.</p></div>
+  <div class="card"><img src="4-synced-tapes.png" alt=""><h2>4 Synced tapes</h2><span class="tag">Seen before</span><span class="tag">New skeleton</span>
+    <p>Full pages hang as tapes; one scroll moves them all, so you compare the same depth on every page and device.</p>
+    <p class="t">The best way to spot a broken footer everywhere, but it only covers reviewing results.</p></div>
+  <div class="card"><img src="8-culling-deck.png" alt=""><h2>8 Culling deck</h2><span class="tag">Seen before</span><span class="tag">New for this category</span>
+    <p>One page at a time on every device; keep or flag with one key; kept pages become the link and ZIP, flagged a fix list.</p>
+    <p class="t">The most honest checking tool, but it turns a quick download into a review session.</p></div>
+  <div class="card"><img src="6-bound-book.png" alt=""><h2>6 Bound book</h2><span class="tag yes">Never seen</span><span class="tag">New skeleton</span>
+    <p>A capture prints a book, one spread per page, device tabs on the edge; your client dog-ears pages.</p>
+    <p class="t">The most moving thing to send a client, but it is only the output, and page curls can look dated.</p></div>
+  <div class="card"><img src="9-endless-roll.png" alt=""><h2>9 Endless roll</h2><span class="tag">Seen before</span><span class="tag">Standard skeleton</span>
+    <p>The whole site as one continuous scroll joined at perforations; tear a page off to pick it.</p>
+    <p class="t">You read the site like a visitor, but finding one page or comparing devices is slow.</p></div>
+  <div class="card dropped"><img src="2-light-table.png" alt=""><h2>2 Light table (dropped)</h2><span class="tag">Standard skeleton</span><p class="t">The current results grid with a loupe on top.</p></div>
+  <div class="card dropped"><img src="3-one-sentence.png" alt=""><h2>3 One sentence (dropped)</h2><span class="tag">Standard skeleton</span><p class="t">The settings form written inline; kept as a part for the hybrid.</p></div>
+  <div class="card dropped"><img src="5-device-dial.png" alt=""><h2>5 Device dial (dropped)</h2><span class="tag">Standard skeleton</span><p class="t">A responsive-preview line-up; the spin is fun, moving around is slow.</p></div>
+</div>
+<div class="hybrid"><b>The critic's best hybrid: piles on the map, reviewed as tapes.</b> Template piles laid out as the map's districts and filling in as they capture; open a pile and its pages hang as synced tapes across devices, odd pages first; K and F keep or flag any tape (kept pages become the link and ZIP, flagged a fix list); devices and options live in a one-sentence caption that rewrites itself as you pick.</div>
+</body></html>

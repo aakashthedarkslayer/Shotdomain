@@ -51,3 +51,31 @@ Every sketch, the pick included, is still a direction, not a design. None of thi
 ## Orchestrator action
 
 2 Light table, 3 One sentence and 5 Device dial are "Skeleton: standard" (skins, not paradigms), so they are replaced by three new mechanics (sketches 7 to 9) and judged in round 2 below.
+
+# Round 2: ui-critic report on the replacement sketches
+
+**7 Template piles: never-seen: YES** for this category (stacks exist in macOS and Photos, but grouping a site by template and pulling out the pages that break it is new here)
+- Art away: group cards above a thumbnail strip. Skeleton: new in structure, because you pick templates, not rows. On screen it is still cards over a row, so it needs a stronger form.
+- Real app: devices, options, progress and retry have no place yet. The app can only spot the odd pages after capture, or from the HTML during the crawl. So at picking time the piles are really URL patterns.
+- Scale: the best of the nine. 412 pages become 6 decisions.
+- Trade-off: you check 3 odd posts instead of 214. But if the detection misses a broken page, the client sees it before you do.
+
+**8 Culling deck: never-seen: NO** (the pick and reject keys in Photo Mechanic and Lightroom)
+- Art away: one page in four frames, three buttons and a progress strip, which is a review queue. Skeleton: new for this category, standard for review tools.
+- Real app: it covers the ZIP and the link, and adds a fix list (new scope). Setup and capture progress are missing. The frames show viewports, not the full pages the product sells.
+- Scale: 400 keystrokes is a chore unless you can keep a whole pile at once.
+- Trade-off: the most honest checking tool here, but it turns a 10-second download into a 20-minute review. "Keep all" must stay one press away.
+
+**9 Endless roll: never-seen: NO** (a PDF reader in continuous scroll with a bookmark sidebar; tearing at the perforations is the new part)
+- Art away: a sidebar list and one long viewer. Skeleton: standard.
+- Real app: it shows one device at a time, so the other three are hidden. Setup, progress and the ZIP have no place.
+- Scale: 400 full pages is millions of pixels of scroll; it needs lazy loading and a folding section rail.
+- Trade-off: you read the site the way a visitor would, but finding one page or comparing devices is slower than in any other sketch.
+
+**Ranking of the nine** (2, 3 and 5 dropped): 7 Template piles, 1 Survey map, 4 Synced tapes, 8 Culling deck, 6 Bound book, 9 Endless roll.
+
+**Pick: 7 Template piles.** The only mechanic that makes the tool better at 400 pages, not just prettier; "3 posts look different", pulled out for you, is the moment people would screen-record. Condition: the detection must be real (comparing page layouts or the screenshots themselves) and right, or the mechanic lies to the user.
+
+**Best hybrid: piles on the map, reviewed as tapes.** Template piles laid out as the survey map's districts, filling in where they lie during capture; opening a pile hangs its pages as synced tapes across devices, odd pages first; the culling deck's K and F keys work on any tape (kept pages become the link and ZIP, flagged pages a fix list); devices and options live in a one-sentence caption that rewrites itself as you pick. The piles solve scale, the map carries the love and the live progress, the tapes and keys make review fast.
+
+These are grey sketches of mechanics; every direction stays below the bar until it is designed.

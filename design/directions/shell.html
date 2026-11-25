@@ -1,0 +1,196 @@
+<title>ShotDomain: four looks for Template piles</title>
+<style>
+/* Shell chrome stays quiet so the directions lead. Four tabs, then one stage per direction:
+   a live 1280 x 800 screen scaled to fit, two smaller stills under it, and a spec panel. */
+:root{
+  --sh-bg:#efefec; --sh-panel:#fff; --sh-line:#dcdcd6; --sh-fg:#1b1b1a; --sh-muted:#62625d; --sh-accent:#1b1b1a;
+  --sh-ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root{--sh-bg:#141413;--sh-panel:#1d1d1b;--sh-line:#30302c;--sh-fg:#f1f1ec;--sh-muted:#a3a39b;--sh-accent:#f1f1ec;color-scheme:dark}}
+html,body{margin:0;background:var(--sh-bg);color:var(--sh-fg)}
+body{font-family:var(--sh-ui)}
+.sh-wrap{max-width:1600px;margin:0 auto;padding:28px 24px 64px}
+.sh-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 32px}
+.sh-head h1{margin:0;font-size:30px;letter-spacing:-.02em}
+.sh-head p{margin:0;max-width:70ch;color:var(--sh-muted);font-size:14px;line-height:1.55}
+.sh-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:22px 0 16px}
+.sh-tabs button{all:unset;box-sizing:border-box;cursor:pointer;padding:12px 14px;background:var(--sh-panel);border:1px solid var(--sh-line);display:grid;gap:2px}
+.sh-tabs button[aria-selected="true"]{border-color:var(--sh-fg);box-shadow:0 0 0 1px var(--sh-fg)}
+.sh-tabs button:focus-visible{outline:2px solid var(--sh-accent);outline-offset:3px}
+.sh-tabs .n{font-weight:700;font-size:14px}
+.sh-tabs .d{font-size:12px;color:var(--sh-muted)}
+.sh-tabs .rec{font-size:11px;font-weight:700;margin-left:6px;padding:1px 6px;border:1px solid currentColor}
+
+/* ---- Contract styles every direction uses ---- */
+.direction{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start}
+@media (max-width:1180px){.direction{grid-template-columns:minmax(0,1fr)}}
+.direction[hidden]{display:none}
+.direction > .stage{min-width:0;overflow:hidden;position:relative;padding:22px}
+.stage > .screens{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.screen{margin:0;min-width:0}
+.screen.live{grid-column:1 / -1}
+.screen > figcaption{font:600 12px var(--sh-ui);margin-top:8px;opacity:.75}
+.screen.live > figcaption::after{content:"Live: try it";margin-left:8px;padding:1px 6px;border:1px solid currentColor}
+/* A 1280 x 800 artboard scaled to its frame by the shell (--s is set on each .frame). */
+.frame{position:relative;aspect-ratio:16/10;overflow:hidden;box-shadow:0 1px 2px #0000001a,0 18px 40px -18px #00000059}
+.frame > .artboard{position:absolute;left:0;top:0;width:1280px;height:800px;transform-origin:0 0;transform:scale(var(--s,0.5))}
+.direction > .panel{background:var(--sh-panel);border:1px solid var(--sh-line);padding:20px;min-width:0;font-size:13px;line-height:1.5}
+.panel h2{margin:0 0 6px;font-size:26px;letter-spacing:-.02em}
+.panel h3{margin:18px 0 6px;font-size:13px}
+.panel ul{margin:0;padding-left:18px;display:grid;gap:5px}
+.panel .swatches{display:flex;gap:6px;flex-wrap:wrap}
+.panel .swatches i{width:28px;height:28px;box-shadow:inset 0 0 0 1px #00000014}
+.panel .tradeoff{margin-top:14px;padding:10px 12px;background:var(--sh-bg)}
+@media (prefers-reduced-motion: reduce){.direction *{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+
+<div class="sh-wrap">
+  <div class="sh-head">
+    <h1>Template piles, four looks</h1>
+    <p>One mechanic, four ways to see it. Every direction shows the same site (example.com, 412 pages in six templates, six pages that break their template), the same moment in each screen, and every real ShotDomain function. The big screen is live: try it.</p>
+  </div>
+  <div class="sh-tabs" role="tablist" aria-label="Directions">
+    <button role="tab" id="tab-a" aria-controls="dir-a" aria-selected="false" data-dir="a"><span class="n">A Art-led</span><span class="d">Polished, rich artwork, calm</span></button>
+    <button role="tab" id="tab-b" aria-controls="dir-b" aria-selected="true" data-dir="b"><span class="n">B Art and motion<span class="rec">Recommended</span></span><span class="d">A's art with a signature moment</span></button>
+    <button role="tab" id="tab-c" aria-controls="dir-c" aria-selected="false" data-dir="c"><span class="n">C A world</span><span class="d">Every action is a ritual</span></button>
+    <button role="tab" id="tab-d" aria-controls="dir-d" aria-selected="false" data-dir="d"><span class="n">D Wild card</span><span class="d">One unexpected idea</span></button>
+  </div>
+  <main>
+<!--DIRECTIONS-->
+  </main>
+</div>
+
+<script>
+/* ===== Shared contract: sample data, page art, registry. Directions read these; they never redefine them. ===== */
+window.SAMPLE_SITE = {
+  domain: 'example.com',
+  totalPages: 412,
+  devices: [
+    { id: 'desktop', name: 'Desktop', width: 1920, picked: true },
+    { id: 'ipad', name: 'iPad Pro 11', width: 834, picked: false },
+    { id: 'iphone', name: 'iPhone 14 Pro', width: 393, picked: true },
+    { id: 'pixel', name: 'Pixel 7', width: 412, picked: false }
+  ],
+  options: { fullPage: true, hideCookieBanners: true, login: false, customCss: false },
+  share: { url: 'shotdomain.app/s/7Hq2…', daysLeft: 30 },
+  templates: [
+    { id: 'blog', name: 'Blog post', pattern: '/blog/*', count: 214, picked: true,
+      paths: ['/blog/launch-notes', '/blog/pricing-update', '/blog/hiring-designers', '/blog/q3-roadmap', '/blog/customer-story-ferro', '/blog/accessibility-audit'],
+      outliers: [
+        { path: '/blog/2019-recap', why: 'Hero image missing', variant: 'no-hero' },
+        { path: '/blog/benchmarks', why: 'Table runs off the page', variant: 'overflow' },
+        { path: '/blog/old-theme-post', why: 'Old header and fonts', variant: 'stray-font' }
+      ],
+      capture: { done: 214, total: 214, failed: 0 } },
+    { id: 'docs', name: 'Docs page', pattern: '/docs/*', count: 140, picked: true,
+      paths: ['/docs', '/docs/setup', '/docs/api', '/docs/webhooks', '/docs/limits', '/docs/faq'],
+      outliers: [
+        { path: '/docs/api/v1', why: 'Code block runs off the page', variant: 'overflow' },
+        { path: '/docs/legacy', why: 'Old sidebar and fonts', variant: 'stray-font' }
+      ],
+      capture: { done: 96, total: 140, failed: 2, failedPaths: ['/docs/changelog', '/docs/status'] } },
+    { id: 'product', name: 'Product', pattern: '/product/*', count: 48, picked: true,
+      paths: ['/product/desk-lamp', '/product/oak-shelf', '/product/linen-throw', '/product/gift-card'],
+      outliers: [ { path: '/product/gift-card', why: 'No product photo', variant: 'no-hero' } ],
+      capture: { done: 0, total: 48, failed: 0 } },
+    { id: 'home', name: 'Home', pattern: '/', count: 1, picked: true, paths: ['/'], outliers: [], capture: { done: 1, total: 1, failed: 0 } },
+    { id: 'pricing', name: 'Pricing', pattern: '/pricing', count: 1, picked: true, paths: ['/pricing'], outliers: [], capture: { done: 1, total: 1, failed: 0 } },
+    { id: 'oneoff', name: 'One-off pages', pattern: '/about, /contact and 6 more', count: 8, picked: false,
+      paths: ['/about', '/contact', '/careers', '/press', '/terms', '/privacy', '/security', '/status'], outliers: [], capture: { done: 0, total: 8, failed: 0 } }
+  ]
+};
+
+/*
+ * PAGE_ART.render(templateId, seed, opts) -> an SVG string of a miniature page built from that template.
+ * opts: { device: 'desktop' | 'phone', variant: 'normal' | 'no-hero' | 'overflow' | 'stray-font' }
+ * Colours come from CSS custom properties on any ancestor, so each direction tints the same pages:
+ *   --pa-paper (page background), --pa-ink (headings, nav), --pa-soft (text lines, blocks),
+ *   --pa-accent (buttons, links, image tint), --pa-image (image fill)
+ * Same templateId + seed always draws the same page, so every direction shows identical content.
+ */
+window.PAGE_ART = (function () {
+  function rnd(seed) { let s = (seed * 9301 + 49297) % 233280; return () => { s = (s * 9301 + 49297) % 233280; return s / 233280; }; }
+  const P = 'var(--pa-paper, #fafaf8)', I = 'var(--pa-ink, #222)', S = 'var(--pa-soft, #d9d9d4)', A = 'var(--pa-accent, #4a6cf7)', IM = 'var(--pa-image, #c9cfdc)';
+  function lines(r, x, y, w, n, gap, h) { let o = ''; for (let k = 0; k < n; k++) { const ww = w * (0.6 + r() * 0.4); o += `<rect x="${x}" y="${y + k * gap}" width="${ww.toFixed(1)}" height="${h}" rx="${h / 2}" fill="${S}"/>`; } return o; }
+  function nav(W, phone, stray) {
+    const h = phone ? 16 : 14;
+    if (stray) return `<rect width="${W}" height="${h + 4}" fill="${S}"/><rect x="6" y="5" width="${phone ? 30 : 46}" height="7" fill="${I}"/>`;
+    return `<rect width="${W}" height="${h}" fill="${P}"/><rect x="${phone ? 6 : 10}" y="${h / 2 - 2.5}" width="${phone ? 18 : 22}" height="5" rx="2" fill="${I}"/>` +
+      (phone ? `<rect x="${W - 14}" y="${h / 2 - 3}" width="8" height="6" fill="${I}"/>` : [0, 1, 2, 3].map((k) => `<rect x="${W - 120 + k * 26}" y="${h / 2 - 1.5}" width="18" height="3" rx="1.5" fill="${S}"/>`).join(''));
+  }
+  function img(x, y, w, h, variant) {
+    if (variant === 'no-hero') return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="${S}" stroke-width="1.5" stroke-dasharray="4 3"/><path d="M${x + w / 2 - 7} ${y + h / 2 + 5}l5-6 4 4 3-3 5 5z" fill="${S}"/><circle cx="${x + w / 2 + 5}" cy="${y + h / 2 - 5}" r="2" fill="${S}"/>`;
+    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${IM}"/><path d="M${x} ${y + h} l${w * 0.3} ${-h * 0.45} ${w * 0.2} ${h * 0.25} ${w * 0.25} ${-h * 0.35} ${w * 0.25} ${h * 0.55}z" fill="${A}" opacity=".35"/>`;
+  }
+  function body(t, W, H, phone, r, variant) {
+    const stray = variant === 'stray-font', pad = phone ? 6 : 14, cw = W - pad * 2, top = phone ? 22 : 22;
+    const title = (y, w) => stray ? `<rect x="${pad}" y="${y}" width="${w * 0.9}" height="${phone ? 9 : 12}" fill="${I}" transform="skewX(-12)"/>` : `<rect x="${pad}" y="${y}" width="${w}" height="${phone ? 6 : 8}" rx="2" fill="${I}"/>`;
+    let o = '';
+    if (t === 'home') {
+      o += title(top + 10, cw * 0.7) + `<rect x="${pad}" y="${top + 22}" width="${cw * 0.5}" height="${phone ? 5 : 6}" rx="2" fill="${I}"/>`;
+      o += lines(r, pad, top + 34, cw * 0.6, 2, 7, 3);
+      o += `<rect x="${pad}" y="${top + 50}" width="${phone ? 30 : 40}" height="${phone ? 9 : 10}" rx="5" fill="${A}"/>`;
+      o += img(phone ? pad : W * 0.55, phone ? top + 66 : top + 6, phone ? cw : W * 0.4, phone ? 46 : 62, variant);
+      const ty = phone ? top + 120 : top + 80; const n = phone ? 1 : 3;
+      for (let k = 0; k < n; k++) { const x = pad + k * (cw / n); o += `<rect x="${x}" y="${ty}" width="${cw / n - 8}" height="${phone ? 30 : 34}" fill="${S}" opacity=".55"/>`; }
+    } else if (t === 'blog') {
+      o += img(pad, top + 4, cw, phone ? 46 : 58, variant);
+      o += title(top + (phone ? 56 : 70), cw * 0.75);
+      o += lines(r, pad, top + (phone ? 70 : 86), cw, phone ? 12 : 9, 7, 3);
+      if (variant === 'overflow') o += `<rect x="${pad}" y="${top + (phone ? 110 : 120)}" width="${cw * 1.6}" height="${phone ? 26 : 30}" fill="none" stroke="${I}" stroke-width="1"/><path d="M${pad} ${top + (phone ? 119 : 130)}h${cw * 1.6}M${pad} ${top + (phone ? 128 : 140)}h${cw * 1.6}" stroke="${I}" stroke-width=".6"/>`;
+    } else if (t === 'docs') {
+      if (!phone) { o += `<rect x="0" y="${top - 6}" width="${W * 0.22}" height="${H}" fill="${S}" opacity="${variant === 'stray-font' ? '.9' : '.35'}"/>` + lines(r, 8, top + 4, W * 0.15, 9, 9, 3); }
+      const x0 = phone ? pad : W * 0.26, w0 = phone ? cw : W * 0.68;
+      o += `<rect x="${x0}" y="${top + 6}" width="${w0 * 0.55}" height="${phone ? 6 : 8}" rx="2" fill="${I}"/>`;
+      o += lines(r, x0, top + 20, w0, 4, 7, 3);
+      const cbw = variant === 'overflow' ? w0 * 1.5 : w0;
+      o += `<rect x="${x0}" y="${top + 52}" width="${cbw}" height="${phone ? 34 : 40}" fill="${I}" opacity=".88"/>` + lines(r, x0 + 6, top + 58, Math.min(cbw, w0) * 0.7, 4, 7, 2.5).replaceAll(S, A);
+      o += lines(r, x0, top + (phone ? 94 : 100), w0, phone ? 10 : 6, 7, 3);
+    } else if (t === 'product') {
+      if (phone) { o += img(pad, top + 4, cw, 70, variant); o += title(top + 82, cw * 0.7) + `<rect x="${pad}" y="${top + 94}" width="24" height="6" rx="2" fill="${A}"/>` + lines(r, pad, top + 106, cw, 6, 7, 3) + `<rect x="${pad}" y="${top + 152}" width="${cw}" height="11" rx="5" fill="${I}"/>`; }
+      else { o += img(pad, top + 6, W * 0.46, 104, variant); const x1 = W * 0.54; o += `<rect x="${x1}" y="${top + 10}" width="${W * 0.32}" height="8" rx="2" fill="${I}"/><rect x="${x1}" y="${top + 26}" width="40" height="8" rx="2" fill="${A}"/>` + lines(r, x1, top + 44, W * 0.38, 5, 7, 3) + `<rect x="${x1}" y="${top + 88}" width="70" height="12" rx="6" fill="${I}"/>`; }
+    } else if (t === 'pricing') {
+      o += `<rect x="${W / 2 - cw * 0.25}" y="${top + 8}" width="${cw * 0.5}" height="${phone ? 6 : 8}" rx="2" fill="${I}"/>`;
+      const n = phone ? 1 : 3;
+      for (let k = 0; k < (phone ? 3 : n); k++) {
+        const x = phone ? pad : pad + k * (cw / 3), y = phone ? top + 24 + k * 50 : top + 28, w = phone ? cw : cw / 3 - 8, h = phone ? 44 : 100;
+        o += `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${k === 1 ? I : S}" opacity="${k === 1 ? 1 : .5}"/>` + `<rect x="${x + 6}" y="${y + 8}" width="${w * 0.4}" height="5" rx="2" fill="${k === 1 ? P : I}"/>`;
+      }
+    } else {
+      o += title(top + 8, cw * 0.4);
+      o += lines(r, pad, top + 24, cw * (phone ? 1 : 0.55), phone ? 14 : 10, 7, 3);
+      if (!phone) o += img(W * 0.62, top + 24, W * 0.32, 80, variant);
+    }
+    return o;
+  }
+  return {
+    render(templateId, seed = 1, opts = {}) {
+      const phone = opts.device === 'phone', variant = opts.variant || 'normal';
+      const W = phone ? 90 : 320, H = phone ? 195 : 200, r = rnd(seed + templateId.length * 31);
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMin slice" role="img" aria-hidden="true">` +
+        `<rect width="${W}" height="${H}" fill="${P}"/>` + nav(W, phone, variant === 'stray-font') + body(templateId, W, H, phone, r, variant) + `</svg>`;
+    }
+  };
+})();
+
+/* Registry: each direction sets Directions.<x> = { mount(sectionEl), show(), hide() }. */
+window.Directions = window.Directions || {};
+window.PREFERS_REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').matches;
+</script>
+<!--SCRIPTS-->
+<script>
+/* Shell: scale artboards, switch tabs, autoplay each live screen's signature moment once (directions do the playing). */
+(function () {
+  function fit() { document.querySelectorAll('.frame').forEach((f) => f.style.setProperty('--s', (f.clientWidth / 1280).toFixed(4))); }
+  new ResizeObserver(fit).observe(document.body); fit();
+  const mounted = {};
+  function select(x) {
+    document.querySelectorAll('.sh-tabs button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.dir === x)));
+    document.querySelectorAll('.direction').forEach((s) => { const on = s.id === 'dir-' + x; const was = !s.hidden; s.hidden = !on; const D = window.Directions[s.id.slice(4)]; if (!D) return; if (on) { if (!mounted[x]) { D.mount(s); mounted[x] = 1; } fit(); D.show(); } else if (was) D.hide(); });
+    if (location.hash !== '#' + x) history.replaceState(null, '', '#' + x);
+  }
+  document.querySelectorAll('.sh-tabs button').forEach((b) => b.addEventListener('click', () => select(b.dataset.dir)));
+  const start = (location.hash || '#b').slice(1);
+  select(['a', 'b', 'c', 'd'].includes(start) ? start : 'b');
+})();
+</script>
