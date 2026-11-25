@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>1 Survey map</title><link rel="stylesheet" href="sketch.css">
+<style>
+  .stage { position: absolute; inset: 56px 0 0 0; }
+  svg { position: absolute; inset: 0; }
+  .node { position: absolute; width: 132px; text-align: center; }
+  .node .shot { width: 132px; height: 84px; }
+  .node .cap { margin-top: 4px; }
+  .district { position: absolute; border: 1.5px dashed var(--line); border-radius: 40px; }
+  .district span { position: absolute; top: -11px; left: 24px; background: var(--bg); padding: 0 8px; font-weight: 700; font-size: 13px; }
+  .lasso { position: absolute; border: 3px solid var(--mark); border-radius: 46% 54% 50% 50% / 55% 45% 55% 45%; }
+  .tray { position: absolute; left: 32px; top: 24px; width: 300px; background: var(--paper); border: 1.5px solid var(--line); padding: 14px; }
+  .tray input { width: 100%; height: 36px; border: 1.5px solid var(--line); background: #fff; padding: 0 10px; font: inherit; }
+  .btn { display: inline-block; margin-top: 10px; background: var(--ink); color: var(--paper); padding: 8px 12px; font-weight: 700; font-size: 13px; }
+</style></head><body>
+<div class="bar"><span class="logo">ShotDomain</span><span class="muted">example.com, 42 pages found, drawn as a map</span></div>
+<div class="stage">
+  <svg width="1440" height="844">
+    <g stroke="#9a9a93" stroke-width="1.5" fill="none">
+      <path d="M720 420 L470 250"/><path d="M720 420 L980 250"/><path d="M720 420 L470 600"/><path d="M720 420 L990 610"/>
+      <path d="M470 250 L330 170"/><path d="M470 250 L330 330"/><path d="M980 250 L1130 170"/><path d="M980 250 L1150 320"/>
+      <path d="M990 610 L1160 700"/><path d="M470 600 L320 690"/>
+    </g>
+  </svg>
+  <div class="district" style="left:250px;top:120px;width:330px;height:300px"><span>/blog (14)</span></div>
+  <div class="district" style="left:890px;top:120px;width:360px;height:280px"><span>/docs (18)</span></div>
+  <div class="lasso" style="left:870px;top:100px;width:400px;height:320px"></div>
+  <div class="node" style="left:654px;top:370px"><div class="shot" style="width:132px;height:84px"><i style="top:30%"></i><i style="top:50%;right:45%"></i></div><div class="cap">/ home</div></div>
+  <div class="node" style="left:404px;top:200px"><div class="shot"><i style="top:35%"></i></div><div class="cap">/blog</div></div>
+  <div class="node" style="left:264px;top:130px"><div class="shot"></div><div class="cap">/blog/launch-notes</div></div>
+  <div class="node" style="left:264px;top:290px"><div class="shot"></div><div class="cap">/blog/pricing-update</div></div>
+  <div class="node" style="left:914px;top:200px"><div class="shot"><i style="top:35%"></i></div><div class="cap">/docs</div></div>
+  <div class="node" style="left:1064px;top:130px"><div class="shot"></div><div class="cap">/docs/setup</div></div>
+  <div class="node" style="left:1084px;top:280px"><div class="shot"></div><div class="cap">/docs/api</div></div>
+  <div class="node" style="left:404px;top:556px"><div class="shot"></div><div class="cap">/pricing</div></div>
+  <div class="node" style="left:924px;top:566px"><div class="shot"></div><div class="cap">/about</div></div>
+  <div class="node" style="left:254px;top:646px"><div class="shot"></div><div class="cap">/contact</div></div>
+  <div class="node" style="left:1094px;top:656px"><div class="shot"></div><div class="cap">/careers</div></div>
+  <div class="tray"><b>Capture this map</b><br><span class="cap">Lasso a district to pick it. 18 pages picked.</span><br><input value="example.com"><span class="btn">Capture 18 pages</span></div>
+</div>
+<div class="note"><b>1 Survey map</b>The site unfolds as a map: home in the middle, sections as districts. You pick by lassoing a district, not ticking a list; captures fill each plot in place, and the share link is the finished map.</div>
+</body></html>

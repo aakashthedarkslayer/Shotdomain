@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>7 Template piles</title><link rel="stylesheet" href="sketch.css">
+<style>
+  .piles { position: absolute; left: 60px; top: 110px; display: flex; gap: 70px; align-items: flex-end; }
+  .pile { position: relative; width: 220px; height: 300px; }
+  .pile .shot { position: absolute; width: 200px; height: 150px; }
+  .pile .label { position: absolute; top: 250px; left: 0; font-weight: 800; }
+  .pile .label span { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
+  .picked { outline: 3px solid var(--mark); outline-offset: 6px; }
+  .fan { position: absolute; left: 60px; top: 470px; width: 1320px; height: 300px; border-top: 1.5px solid var(--block-2); padding-top: 18px; }
+  .fan h3 { margin: 0 0 12px; font-size: 16px; }
+  .row { display: flex; gap: 14px; }
+  .row .shot { width: 150px; height: 110px; }
+  .odd { outline: 3px dashed var(--mark); outline-offset: 3px; }
+  .oddcap { position: absolute; left: 1010px; top: 640px; width: 300px; font-size: 13px; color: var(--mark); font-weight: 700; }
+</style></head><body>
+<div class="bar"><span class="logo">ShotDomain</span><span class="muted">example.com, 412 pages, built from 6 templates</span></div>
+<div class="piles">
+  <div class="pile picked"><div class="shot" style="left:0;top:40px"></div><div class="shot" style="left:6px;top:30px"></div><div class="shot" style="left:12px;top:20px"><i style="top:35%"></i></div><div class="label">Blog post<span>/blog/*, 214 pages</span></div></div>
+  <div class="pile picked"><div class="shot" style="left:0;top:40px"></div><div class="shot" style="left:6px;top:30px"></div><div class="shot" style="left:12px;top:20px"><i style="top:35%"></i></div><div class="label">Docs page<span>/docs/*, 140 pages</span></div></div>
+  <div class="pile"><div class="shot" style="left:6px;top:30px"></div><div class="shot" style="left:12px;top:20px"><i style="top:35%"></i></div><div class="label">Product<span>/product/*, 48 pages</span></div></div>
+  <div class="pile picked"><div class="shot" style="left:12px;top:20px"><i style="top:30%"></i></div><div class="label">Home<span>/, 1 page</span></div></div>
+  <div class="pile"><div class="shot" style="left:12px;top:20px"></div><div class="label">One-offs<span>/pricing, /about..., 9 pages</span></div></div>
+</div>
+<div class="fan"><h3>Blog post, fanned out: 214 pages, 3 look different</h3>
+  <div class="row"><div class="shot"></div><div class="shot"></div><div class="shot"></div><div class="shot"></div><div class="shot"></div><div class="shot"></div><div class="shot odd"><i style="top:60%"></i></div><div class="shot odd" style="background:#e3e3dd"></div></div>
+</div>
+<div class="oddcap">Pulled out of the pile: these 3 posts break the template (missing hero image, overflowing table).</div>
+<div class="note"><b>7 Template piles</b>Pages are grouped into piles by the template they are built from. You pick and review a pile, not 214 rows; fan it out to see every page, and the pages that break the template are pulled out for you.</div>
+</body></html>

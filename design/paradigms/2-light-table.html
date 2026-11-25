@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>2 Light table</title><link rel="stylesheet" href="sketch.css">
+<style>
+  .table { position: absolute; left: 32px; top: 80px; width: 1040px; height: 780px; background: #fbfbf9; border: 1.5px solid var(--line); box-shadow: inset 0 0 80px #fff; }
+  .grid { position: absolute; inset: 28px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; }
+  .f .shot { height: 128px; }
+  .f .cap { margin-top: 4px; }
+  .loupe { position: absolute; left: 430px; top: 250px; width: 260px; height: 260px; border-radius: 50%; border: 14px solid var(--ink); background: #fff; overflow: hidden; box-shadow: 0 20px 40px #0004; }
+  .loupe .shot { position: absolute; inset: -40px; border: 0; }
+  .loupe .shot i { height: 9%; }
+  .handle { position: absolute; left: 650px; top: 470px; width: 26px; height: 150px; background: var(--ink); transform: rotate(-40deg); transform-origin: top; border-radius: 6px; }
+  .ring { position: absolute; border: 3px solid var(--mark); border-radius: 50%; }
+  .env { position: absolute; right: 32px; top: 120px; width: 300px; height: 210px; background: var(--block); border: 1.5px solid var(--line); }
+  .env::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom right, transparent 49.5%, var(--line) 50%, transparent 50.5%), linear-gradient(to bottom left, transparent 49.5%, var(--line) 50%, transparent 50.5%); }
+  .env b { position: absolute; left: 16px; bottom: 14px; z-index: 1; }
+  .side { position: absolute; right: 32px; top: 350px; width: 300px; font-size: 13px; color: var(--muted); }
+</style></head><body>
+<div class="bar"><span class="logo">ShotDomain</span><span class="muted">example.com, 20 frames on the table</span></div>
+<div class="table"><div class="grid">
+  <div class="f"><div class="shot"><i style="top:30%"></i></div><div class="cap">1 /</div></div>
+  <div class="f"><div class="shot"></div><div class="cap">2 /pricing</div></div>
+  <div class="f"><div class="shot"></div><div class="cap">3 /about</div></div>
+  <div class="f"><div class="shot"></div><div class="cap">4 /blog</div></div>
+  <div class="f"><div class="shot"></div><div class="cap">5 /contact</div></div>
+  <div class="f"><div class="shot"></div><div class="cap">6 /careers</div></div>
+  <div class="f"><div class="shot"></div><div class="cap">7 /docs</div></div>
+  <div class="f"><div class="shot"></div><div class="cap">8 /docs/api</div></div>
+  <div class="f"><div class="shot"></div><div class="cap">9 /blog/launch</div></div>
+  <div class="f"><div class="shot"></div><div class="cap">10 /terms</div></div>
+  <div class="f"><div class="shot"></div><div class="cap">11 /privacy</div></div>
+  <div class="f"><div class="shot"></div><div class="cap">12 /login</div></div>
+  <div class="f"><div class="shot"></div><div class="cap">13 /signup</div></div>
+  <div class="f"><div class="shot"></div><div class="cap">14 /team</div></div>
+  <div class="f"><div class="shot"></div><div class="cap">15 /press</div></div>
+</div>
+<div class="ring" style="left:12px;top:12px;width:200px;height:190px"></div>
+<div class="ring" style="left:426px;top:12px;width:200px;height:190px"></div>
+<div class="loupe"><div class="shot"><i style="top:30%"></i><i style="top:45%;right:50%"></i><i style="top:60%;right:20%"></i></div></div><div class="handle"></div>
+</div>
+<div class="env"><b>Client envelope: 2 frames</b></div>
+<div class="side">Move the loupe to read any frame at 100%. Circle a frame with the marker to pick it. Slide picks into the envelope to share them.</div>
+<div class="note"><b>2 Light table</b>Every page lies on a lit table. You inspect with a loupe, pick by drawing a ring, and share by sliding frames into the client's envelope. No checklist, no results grid.</div>
+</body></html>

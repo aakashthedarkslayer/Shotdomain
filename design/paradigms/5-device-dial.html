@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>5 Device dial</title><link rel="stylesheet" href="sketch.css">
+<style>
+  .stage { position: absolute; left: 60px; right: 420px; top: 150px; height: 470px; display: flex; align-items: flex-end; gap: 28px; justify-content: center; border-bottom: 6px solid var(--block-2); padding-bottom: 0; }
+  .dev .shot { margin: 0 auto; }
+  .dev .cap { text-align: center; margin-top: 6px; }
+  .dial { position: absolute; right: 70px; top: 170px; width: 300px; height: 300px; border-radius: 50%; border: 2px solid var(--line); background: radial-gradient(circle, var(--paper) 0 55%, var(--block) 56% 100%); }
+  .tick { position: absolute; left: 50%; top: 50%; width: 2px; height: 150px; transform-origin: 0 0; background: none; }
+  .tick span { position: absolute; top: 118px; left: -60px; width: 120px; text-align: center; font-size: 12px; color: var(--muted); }
+  .knob { position: absolute; left: 50%; top: 50%; width: 70px; height: 70px; margin: -35px; border-radius: 50%; background: var(--ink); }
+  .ptr { position: absolute; left: 50%; top: 22px; width: 4px; height: 44px; margin-left: -2px; background: var(--mark); }
+  .now { position: absolute; right: 70px; top: 490px; width: 300px; text-align: center; font-size: 28px; font-weight: 800; }
+  .off { position: absolute; left: 80px; top: 680px; display: flex; gap: 14px; align-items: center; color: var(--muted); font-size: 13px; }
+  .off .shot { width: 40px; height: 70px; opacity: .6; }
+</style></head><body>
+<div class="bar"><span class="logo">ShotDomain</span><span class="muted">example.com, the same page on every device, at true scale</span></div>
+<div class="stage">
+  <div class="dev"><div class="shot" style="width:384px;height:216px"><i style="top:30%"></i></div><div class="cap">Desktop 1920</div></div>
+  <div class="dev"><div class="shot" style="width:167px;height:239px"><i style="top:30%"></i></div><div class="cap">iPad 834</div></div>
+  <div class="dev"><div class="shot" style="width:79px;height:170px"><i style="top:30%;right:10%"></i></div><div class="cap">iPhone 393</div></div>
+  <div class="dev"><div class="shot" style="width:82px;height:183px"><i style="top:30%;right:10%"></i></div><div class="cap">Pixel 412</div></div>
+</div>
+<div class="dial">
+  <div class="tick" style="transform:rotate(-60deg)"><span>/about</span></div>
+  <div class="tick" style="transform:rotate(0deg)"><span>/pricing</span></div>
+  <div class="tick" style="transform:rotate(60deg)"><span>/blog</span></div>
+  <div class="ptr"></div><div class="knob"></div>
+</div>
+<div class="now">/pricing, page 2 of 42</div>
+<div class="off"><div class="shot"></div>Flick a device off the stage to drop it from the capture; drag it back to add it.</div>
+<div class="note"><b>5 Device dial</b>One page stands on every device at true relative size. Turning the dial flips the whole site, and every device turns together. Devices are chosen by placing them on the stage, not by ticking boxes.</div>
+</body></html>
