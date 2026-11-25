@@ -12,6 +12,8 @@ import { Icon } from '@/components/ui/Icon';
 
 const PHASE_MS = 1150;
 const PHASES = 4; // 3 action phases + 1 hold
+/** The step shown first when motion is reduced: the copy step, in both methods. */
+const STILL_STEP = 3;
 
 interface Step {
   title: string;
@@ -132,27 +134,33 @@ function Cursor({ x, y, visible, clicking }: { x: number; y: number; visible: bo
 /* ---------------------------------------------------------------- scenes */
 
 function BrowserChrome({ loggedIn, children }: { loggedIn: boolean; children: ReactNode }) {
+  // A stand-in site drawn in greys: a page with a header, a heading and a row of cards.
   return (
-    <div className="absolute inset-0 flex flex-col bg-white text-slate-800">
-      <div className="relative flex-1 overflow-hidden">
-        <div className="flex items-center justify-between bg-guide-site px-3 py-[2.2%] text-[10px] font-semibold text-white">
+    <div className="absolute inset-0 flex flex-col bg-shot-paper text-guide-ink">
+      <div className="relative flex flex-1 flex-col overflow-hidden">
+        <div className="flex items-center justify-between bg-guide-site px-3 py-[2.2%] text-[10px] font-semibold text-shot-paper">
           <span>YourSite</span>
           {loggedIn ? (
-            <span className="flex items-center gap-1 rounded-full bg-black/25 py-0.5 pr-2 pl-0.5 text-[9px]">
-              <span className="h-3.5 w-3.5 rounded-full bg-amber-300" /> Signed in
+            <span className="flex items-center gap-1 rounded-full bg-guide-key py-0.5 pr-2 pl-0.5 text-[9px]">
+              <span className="h-3.5 w-3.5 rounded-full bg-guide-edge" /> Signed in
             </span>
           ) : (
-            <span data-guide="login-btn" className="rounded bg-white px-2 py-0.5 text-[9px] text-indigo-700">
+            <span data-guide="login-btn" className="rounded bg-shot-paper px-2 py-0.5 text-[9px] text-guide-ink">
               Log in
             </span>
           )}
         </div>
-        <div className="space-y-1.5 p-3">
-          <div className="h-2 w-1/3 rounded bg-slate-700" />
-          <div className="h-1.5 w-2/3 rounded bg-slate-200" />
-          <div className="grid grid-cols-3 gap-2 pt-1">
+        <div className="flex flex-1 flex-col gap-2 p-[4%]">
+          <div className="h-[6%] w-2/5 rounded bg-guide-ink" />
+          <div className="h-[3.5%] w-3/5 rounded bg-guide-line" />
+          <div className="h-[3.5%] w-1/2 rounded bg-guide-line" />
+          <div className="grid flex-1 grid-cols-3 gap-[3%] pt-[2%]">
             {[0, 1, 2].map((i) => (
-              <div key={i} className={`h-8 rounded ${loggedIn ? 'bg-indigo-100' : 'bg-slate-100'}`} />
+              <div key={i} className="flex flex-col gap-1.5 rounded-md border border-guide-line p-[6%]">
+                <div className={`flex-1 rounded ${loggedIn ? 'bg-guide-edge' : 'bg-guide-tile'}`} />
+                <div className="h-1.5 w-3/4 rounded bg-guide-line" />
+                <div className="h-1.5 w-1/2 rounded bg-guide-line" />
+              </div>
             ))}
           </div>
         </div>
@@ -340,12 +348,12 @@ function AppDevTools({ step, phase }: { step: number; phase: number }) {
 
 function KeysOverlay({ phase, keys }: { phase: number; keys: string[] }) {
   return (
-    <div className="absolute inset-0 z-20 flex items-center justify-center gap-2 bg-slate-900/25">
+    <div className="absolute inset-0 z-20 flex items-center justify-center gap-2 bg-scrim">
       {keys.map((k, i) => (
         <span
           key={k}
           className={`rounded-lg border-b-4 px-3 py-2 font-mono text-sm font-semibold shadow-lg transition-[transform,background-color,border-color,color] duration-200 ${
-            phase >= i ? 'translate-y-0.5 border-indigo-800 bg-indigo-500 text-white' : 'border-slate-400 bg-white text-slate-700'
+            phase >= i ? 'translate-y-0.5 border-guide-ink bg-guide-key text-shot-paper' : 'border-guide-edge bg-shot-paper text-guide-ink'
           }`}
         >
           {k}
@@ -454,10 +462,15 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const apply = () => setSystemReduced(mq.matches);
-    apply();
-    mq.addEventListener('change', apply);
-    return () => mq.removeEventListener('change', apply);
+    // Without autoplay, open on the step that shows the most (the copy step), not the bare site.
+    const apply = (first = false) => {
+      setSystemReduced(mq.matches);
+      if (first && mq.matches) setStep(STILL_STEP);
+    };
+    const onChange = () => apply();
+    apply(true);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
   }, []);
 
   // With reduced motion: no autoplay, each step shows its final state.
@@ -499,7 +512,7 @@ export function CookieGuide({ initialMethod = 'curl' }: { initialMethod?: GuideM
 
   const switchMethod = (m: GuideMethod) => {
     setMethod(m);
-    setStep(0);
+    setStep(reduced ? STILL_STEP : 0);
     setPhase(0);
   };
 

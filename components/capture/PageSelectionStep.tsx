@@ -299,7 +299,7 @@ export default function PageSelectionStep({
           <span className="text-sm text-muted">
             <span className="font-medium text-fg">{selectedUrls.length}</span> of {urls.length} selected
           </span>
-          <Button iconRight="arrowRight" disabled={selectedUrls.length === 0 || overLimit} onClick={onContinue}>
+          <Button disabled={selectedUrls.length === 0 || overLimit} onClick={onContinue}>
             Continue
           </Button>
         </div>

@@ -83,7 +83,7 @@ export default function UrlInputStep({ onDiscover, onQuickCapture, isLoading, in
             if (error) setError('');
           }}
         />
-        <Button type="submit" size="lg" isLoading={isLoading} iconRight="arrowRight">
+        <Button type="submit" size="lg" isLoading={isLoading}>
           Find pages
           </Button>
       </form>

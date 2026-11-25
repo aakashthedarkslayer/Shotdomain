@@ -17,9 +17,26 @@ import { LEGAL } from '@/lib/legal';
  * composition. The worked example shows real ShotDomain output.
  */
 
-function Band({ id, tone = 'soft', labelledBy, children }: { id?: string; tone?: 'soft' | 'white'; labelledBy?: string; children: ReactNode }) {
+function Band({
+  id,
+  tone = 'soft',
+  labelledBy,
+  flushTop = false,
+  children,
+}: {
+  id?: string;
+  tone?: 'soft' | 'white';
+  labelledBy?: string;
+  /** Start right under the previous band (the worked example's capture shows at the hero's fold). */
+  flushTop?: boolean;
+  children: ReactNode;
+}) {
   return (
-    <section id={id} aria-labelledby={labelledBy} className={`scroll-mt-16 border-b border-line px-4 py-24 sm:px-6 lg:py-28 ${tone === 'white' ? 'bg-surface' : 'bg-bg'}`}>
+    <section
+      id={id}
+      aria-labelledby={labelledBy}
+      className={`scroll-mt-16 border-b border-line px-4 sm:px-6 ${flushTop ? 'pt-8 pb-24 lg:pb-28' : 'py-24 lg:py-28'} ${tone === 'white' ? 'bg-surface' : 'bg-bg'}`}
+    >
       <div className="mx-auto max-w-6xl">{children}</div>
     </section>
   );
@@ -42,24 +59,21 @@ function Heading({ id, children, className = '' }: { id?: string; children: Reac
 export function WorkedExampleSection() {
   const phone = DEVICE_PRESETS['Mobile (iOS)'];
   return (
-    <Band id="example" labelledBy="example-heading">
-      <div className="max-w-2xl">
-        <Heading id="example-heading">One ZIP, or a link for your client.</Heading>
-        <p className="mt-4 text-lg leading-7 text-muted">ShotDomain run on its own site: a full-page screenshot of every page, on every device you pick.</p>
-      </div>
-
-      <figure className="mt-12">
+    <Band id="example" labelledBy="example-heading" flushTop>
+      <figure>
         <div className="overflow-hidden rounded-xl border border-line bg-surface shadow-[var(--shadow-float)]">
-          {/* eslint-disable-next-line @next/next/no-img-element -- a static WebP sized at build, below the fold */}
-          <img
-            src="/screens/share-desktop.webp"
-            width={2304}
-            height={1440}
-            alt="A ShotDomain share page: the site's name, a Download ZIP button, device tabs and a grid of page screenshots."
-            loading="lazy"
-            decoding="async"
-            className="block h-auto w-full"
-          />
+          <picture>
+            {/* On a phone, the same share page as a phone shows it, so it stays readable. */}
+            <source media="(max-width: 639px)" srcSet="/screens/share-phone.webp" width={780} height={1200} />
+            <img
+              src="/screens/share-desktop.webp"
+              width={2304}
+              height={1440}
+              alt="A ShotDomain share page: the site's name, a Download ZIP button, device tabs and a grid of page screenshots."
+              decoding="async"
+              className="block h-auto w-full"
+            />
+          </picture>
         </div>
         <figcaption className="mt-4 max-w-2xl text-sm leading-6 text-muted">
           <span className="font-medium text-fg">The link your client opens.</span> Every page, by device, with one button for the ZIP. No account needed, and it
@@ -67,15 +81,21 @@ export function WorkedExampleSection() {
         </figcaption>
       </figure>
 
-      <div className="mt-16 grid items-center gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
-        <OutputPanel />
-        <figure className="mx-auto w-full max-w-[300px]">
-          <div className="aspect-[393/760] overflow-hidden rounded-[28px] border border-line bg-surface shadow-[var(--shadow-float)]">
+      <div className="mt-20 grid items-start gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+        <div>
+          <Heading id="example-heading">One ZIP, or a link for your client.</Heading>
+          <p className="mt-4 max-w-xl text-lg leading-7 text-muted">ShotDomain run on its own site: a full-page screenshot of every page, on every device you pick.</p>
+          <div className="mt-10">
+            <OutputPanel />
+          </div>
+        </div>
+        <figure className="w-full max-w-[300px] lg:justify-self-end">
+          <div className="aspect-[393/640] overflow-hidden rounded-[28px] border border-line bg-surface shadow-[var(--shadow-float)]">
             {/* eslint-disable-next-line @next/next/no-img-element -- a static WebP sized at build, below the fold */}
             <img
               src="/screens/home-mobile-ios.webp"
               width={900}
-              height={1740}
+              height={1466}
               alt="ShotDomain's homepage as captured on iPhone 14 Pro: the headline and the capture form."
               loading="lazy"
               decoding="async"
@@ -177,7 +197,6 @@ export function LoginPagesSection() {
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <CaptureButton login className={buttonClass('primary', 'md', '', 'pill')}>
               Try it on your app
-              <Icon name="arrowRight" />
             </CaptureButton>
             <span className="text-sm text-muted">In Pro and Lifetime.</span>
           </div>
@@ -308,8 +327,11 @@ export function Footer() {
           </div>
           <div className="grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3">
             {FOOTER_COLUMNS.map((col) => (
-              <nav key={col.title} aria-label={col.title}>
-                <ul className="space-y-1">
+              <nav key={col.title} aria-labelledby={`footer-${col.title.toLowerCase()}`}>
+                <p id={`footer-${col.title.toLowerCase()}`} className="text-sm font-medium text-fg">
+                  {col.title}
+                </p>
+                <ul className="mt-2 space-y-1">
                   {col.links.map((l) => (
                     <li key={l.href}>
                       <Link href={l.href} className="inline-block py-1 text-sm text-muted transition-colors hover:text-fg">

@@ -36,7 +36,7 @@ export function OutputPanel() {
   const phone = DEVICE_PRESETS['Mobile (iOS)'];
   const total = (PAGES.length + MORE) * 2;
   return (
-    <figure className="mx-auto max-w-3xl text-left">
+    <figure className="text-left">
       <div className="band-dark overflow-hidden rounded-lg border border-line font-mono text-[13px] leading-5">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-5 py-3">
           <span className="text-fg">example.com-2026-11-24.zip</span>
@@ -49,7 +49,7 @@ export function OutputPanel() {
           <Folder name="mobile-ios" size={`${phone.width} px @${phone.deviceScaleFactor}x`} collapse />
         </div>
       </div>
-      <figcaption className="mt-3 text-center text-[13px] text-muted">
+      <figcaption className="mt-3 text-sm leading-6 text-muted">
         What you download: a folder per device, a full-page PNG per page, named after the page.
       </figcaption>
     </figure>

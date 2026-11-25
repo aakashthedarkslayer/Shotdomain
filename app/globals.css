@@ -6,10 +6,11 @@
 /* Hallmark · waive 29 · one .hero-mesh wash at 25% opacity behind the hero only · DESIGN.md's brand gradient sits behind the hero headline and nowhere else */
 /* Hallmark · waive 81 · .hero-mesh is a backdrop behind the capture form, not a picture slot · the hero's visual is the working capture form itself */
 /* Hallmark · waive 59 · bands part by 96 to 128px and every band changes paper · DESIGN.md sets ShotDomain's band padding at 64 to 96px; the captures carry the mass */
-/* Hallmark · waive 78 · h2 at 32px display-lg under a 96px hero head · DESIGN.md sets section headlines at display-lg; the screenshots are the large objects */
+/* Hallmark · waive 78 · h2 at 32px display-lg under a 76px hero head · DESIGN.md sets section headlines at display-lg; the screenshots are the large objects */
 /* Hallmark · waive 39b · nav Log in and Sign up at 32px with 44px targets on phones · DESIGN.md nav CTAs stand 28 to 32px tall on every ShotDomain page */
 /* Hallmark · waive 44c · /terms, /privacy and /refunds open on a Banner (the title band, then the document beside a rail of the three pages) · Tailwind's compiler drops CSS comments, so the render tier cannot read the per-route hero field */
 /* Hallmark · waive 79 · /terms, /privacy and /refunds are Banner routes whose document starts 360px down and runs past the fold · the homepage Counter leaves 143px under its content at 1440 x 900 without this waiver */
+/* Hallmark · finish-review: subagent · fix · 8 findings · 7 resolved 1 unresolved (the FAQ head "Common questions.": its wording is the owner's, no copy gate names it) · gap: none · hero-review: not run as its own stage, the hero was reviewed with the page */
 /* Hallmark · reworded "Every page of a site. In one shot." to "Every page of a site. One shot." · the hero head is seven words or fewer */
 @import "tailwindcss";
 
@@ -66,7 +67,14 @@
   --mesh-6: #f9cb28;
   --devtools-bg: #202124;
   --devtools-menu: #2a2b2e;
-  --guide-site: #4f46e5;
+  /* The stand-in site in the login guide: a plain light page in greys, the same in both modes. */
+  --guide-site: var(--gray-900);
+  --guide-ink: var(--gray-900);
+  --guide-key: var(--gray-700);
+  --guide-text: var(--gray-600);
+  --guide-line: var(--gray-150);
+  --guide-edge: var(--gray-400);
+  --guide-tile: var(--gray-100);
   /* Text and icons on a status fill (blue, red): white in both modes. */
   --on-status: var(--gray-0);
   /* Behind a dialog. */
@@ -230,6 +238,12 @@
   --color-devtools: var(--devtools-bg);
   --color-devtools-menu: var(--devtools-menu);
   --color-guide-site: var(--guide-site);
+  --color-guide-ink: var(--guide-ink);
+  --color-guide-key: var(--guide-key);
+  --color-guide-text: var(--guide-text);
+  --color-guide-line: var(--guide-line);
+  --color-guide-edge: var(--guide-edge);
+  --color-guide-tile: var(--guide-tile);
   --color-on-status: var(--on-status);
   --color-scrim: var(--scrim);
   --color-shot-paper: var(--shot-paper);

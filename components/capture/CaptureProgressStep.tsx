@@ -182,7 +182,7 @@ export default function CaptureProgressStep({
         {isComplete ? (
           <>
             <span className="text-sm text-muted">{failed > 0 ? 'You can retry failed pages above.' : 'All pages captured.'}</span>
-            <Button iconRight="arrowRight" onClick={onViewResults} disabled={completed === 0}>
+            <Button onClick={onViewResults} disabled={completed === 0}>
               View {completed} {completed === 1 ? 'screenshot' : 'screenshots'}
             </Button>
           </>

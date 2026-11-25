@@ -30,7 +30,9 @@ ShotDomain's adaptations of the spec:
 - **Status colours:** blue (`#0070f3`) means done/success and links, as in the
   spec; text uses the deep variants (`#ab570a` warning, `#c50000` error) so it
   stays readable. Blue text on the pale-blue fill uses `text-accent-text`
-  (the spec's link-deep `#0761d1`, 5.2:1).
+  (the spec's link-deep `#0761d1`, 5.2:1). Text and icons on a solid status
+  or accent fill use `text-on-status` / `text-accent-ink`: white in light
+  mode, black in dark mode, where the fills turn light.
 - **Faint text** (`--faint`) is `#6f6f6f` in light mode, darker than the
   spec's `#888`, which is 3.4:1 on the canvas and fails WCAG AA for small text.
 - **Accessibility floor:** every text pair 4.5:1 or more, tap targets at least
@@ -43,3 +45,39 @@ ShotDomain's adaptations of the spec:
   customers), no icon-in-a-circle feature grids, and give each homepage band
   its own layout rather than repeating eyebrow + centred heading + grid.
   Copy is plain: concrete facts, no em dashes.
+
+## Hallmark
+
+The site was redesigned with the Hallmark skill (`.claude/skills/hallmark`,
+MIT). Where Hallmark and `DESIGN.md` disagree, Hallmark wins:
+
+- **No eyebrows.** A section opens on its heading. No small label above it,
+  in mono or otherwise.
+- **No mono or tracked-capital labels.** Labels, tags, captions and table
+  heads use the body face, a step smaller, in sentence case. Mono is only for
+  real technical material: URLs, file names, cookie names and values, code.
+- **No middle-dot meta lines** (`A · B · C`). Put the facts in separate
+  spans with a gap, or in columns.
+- **No arrows glued to button or link labels.** The verb stands alone.
+- **No dashes in copy.** Use a comma, a colon, a full stop or parentheses.
+- **Every colour goes through a token.** Raw values live only as primitives
+  in `:root` in `app/globals.css`; components use the semantic names. Input
+  borders use `border-field-edge` (3:1 against the page).
+- **The stamp.** The first lines of `app/globals.css` are Hallmark's stamp,
+  critique line and waivers. Keep them first, and update them when the
+  design changes.
+- **Real screenshots.** The homepage's worked example uses real ShotDomain
+  output in `public/screens/`. Retake it as `public/screens/README.md`
+  describes after a visual change to the homepage or the share page.
+
+After a visual change, run the linter with the app running on port 3000
+(`npm run build && npx next start -p 3000`). Fix every FAIL, and fix or
+waive every REFLEX in the stamp:
+
+```
+node .claude/skills/hallmark/scripts/sloplint.mjs app components --genre modern-minimal --render --url http://localhost:3000/ --url http://localhost:3000/terms
+node .claude/skills/hallmark/scripts/sloplint.mjs app components --genre modern-minimal --render --scope app --url http://localhost:3000/profile --url http://localhost:3000/billing --url http://localhost:3000/login
+```
+
+The render tier needs `puppeteer-core` and a Chrome or Chromium. Point it at
+them with `HALLMARK_PUPPETEER` and `CHROME_PATH`.

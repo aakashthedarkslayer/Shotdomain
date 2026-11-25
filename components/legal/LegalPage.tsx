@@ -47,7 +47,7 @@ export function LegalPage({ title, intro, current, children }: { title: string; 
               </ul>
             </nav>
             <article
-              className="card max-w-[calc(65ch+5rem)] rounded-xl px-6 py-8 text-base leading-7 text-muted sm:px-10 sm:py-10
+              className="card rounded-xl px-6 py-8 text-base leading-7 text-muted sm:px-10 sm:py-10 [&>*]:max-w-[65ch]
                 [&_a]:font-medium [&_a]:text-accent [&_a:hover]:underline [&_b]:font-semibold [&_b]:text-fg
                 [&_h2]:mt-10 [&_h2]:mb-3 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:tracking-[-0.02em] [&_h2]:text-fg
                 [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:font-semibold [&_h3]:text-fg [&_li]:mt-1.5 [&_p]:mt-3

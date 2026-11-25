@@ -77,7 +77,7 @@ export function HeroSection({ needsSignIn = false }: { needsSignIn?: boolean }) 
   return (
     <section
       id="capture"
-      className={`relative scroll-mt-16 overflow-hidden border-b border-line bg-surface px-4 sm:px-6 ${start ? 'pt-12 pb-24 md:pt-14' : 'flex min-h-[calc(100dvh-64px)] flex-col justify-center py-16'}`}
+      className={`relative scroll-mt-16 overflow-hidden border-b border-line bg-surface px-4 sm:px-6 ${start ? 'pt-12 pb-24 md:pt-14' : 'pt-16 pb-14 sm:pt-24 sm:pb-20 lg:pt-[152px] lg:pb-[124px]'}`}
     >
       {/* The brand gradient: hero scale only, the page's single decoration. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -top-40 mx-auto h-[420px] max-w-4xl opacity-25 dark:opacity-20">
@@ -91,20 +91,20 @@ export function HeroSection({ needsSignIn = false }: { needsSignIn?: boolean }) 
       ) : (
         // Counter: the capture form is the hero's visual, set large under a short head.
         <div className="relative mx-auto w-full max-w-4xl text-center">
-          <h1 className="text-[44px] leading-[1.02] font-semibold tracking-[-0.05em] text-fg sm:text-[64px] lg:text-[84px] xl:text-[96px] 2xl:text-[112px]">
-            <span className="block">Every page</span>
-            <span className="block">of a site.</span>
-            <span className="block">One shot.</span>
+          <h1 className="text-[44px] leading-[1.02] font-semibold tracking-[-0.05em] text-fg sm:text-[60px] lg:text-[76px]">
+            Every page of a site.
+            <br />
+            One shot.
           </h1>
-          <p className="mx-auto mt-8 max-w-2xl text-lg leading-7 text-muted sm:text-xl sm:leading-8">Type a domain and get every page on desktop, tablet and phone.</p>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-7 text-muted sm:text-xl sm:leading-8">Desktop, tablet and phone screenshots, as one ZIP or a client link.</p>
 
-          <div className="card-float mx-auto mt-12 max-w-2xl rounded-[28px] p-3 sm:p-4">
+          <div className="card-float mx-auto mt-10 max-w-[720px] rounded-[40px] p-3 sm:p-5">
             <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-3 sm:flex-row">
               <label htmlFor="hero-url" className="sr-only">
                 Website URL
               </label>
               <div className="relative flex-1">
-                <Icon name="globe" size={20} className="pointer-events-none absolute top-1/2 left-5 -translate-y-1/2 text-faint" />
+                <Icon name="globe" size={22} className="pointer-events-none absolute top-1/2 left-6 -translate-y-1/2 text-faint" />
                 <input
                   id="hero-url"
                   ref={inputRef}
@@ -119,10 +119,10 @@ export function HeroSection({ needsSignIn = false }: { needsSignIn?: boolean }) 
                   spellCheck={false}
                   aria-invalid={!!error}
                   aria-describedby={error ? 'hero-url-error hero-terms' : 'hero-terms'}
-                  className="h-16 w-full rounded-full border border-field-edge bg-surface pr-5 pl-13 text-lg text-fg transition-colors placeholder:text-faint hover:border-fg aria-invalid:border-danger"
+                  className="h-16 w-full rounded-full border border-field-edge bg-surface pr-6 pl-14 text-lg text-fg transition-colors placeholder:text-faint hover:border-fg aria-invalid:border-danger sm:h-[72px] sm:text-xl"
                 />
               </div>
-              <Button type="submit" size="lg" shape="pill" iconRight="arrowRight" className="h-16 px-8 text-lg">
+              <Button type="submit" size="lg" shape="pill" className="h-16 px-9 text-lg sm:h-[72px]">
                 Capture site
               </Button>
             </form>
@@ -131,7 +131,7 @@ export function HeroSection({ needsSignIn = false }: { needsSignIn?: boolean }) 
                 {error}
               </p>
             )}
-            <div className="mt-3 border-t border-line px-2 pt-3 pb-1 text-sm text-muted sm:flex sm:items-center sm:justify-between sm:gap-4 sm:text-left">
+            <div className="mt-4 border-t border-line px-3 pt-4 pb-1 text-sm text-muted sm:flex sm:items-center sm:justify-between sm:gap-4 sm:text-left">
               <p id="hero-terms">
                 Free for sites up to 15 pages.{needsSignIn ? ' You’ll sign in with Google first.' : ''}
               </p>
