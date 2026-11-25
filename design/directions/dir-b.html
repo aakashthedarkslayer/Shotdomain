@@ -1,2 +1,1248 @@
-<style>#dir-b .stage{background:#ddd}</style>
-<section id="dir-b" class="direction" hidden><div class="stage"><div class="screens"><figure class="screen live"><div class="frame"><div class="artboard"></div></div><figcaption>stub</figcaption></figure></div></div><aside class="panel"><h2>stub</h2></aside></section>
+<style>
+/*B-FONTS*/
+/* Direction B, Riffle: the piles are real paper stacks on a cobalt studio set, lit by one window at the upper left.
+   Tokens first; everything below reads them. */
+#dir-b{
+  --b-set:#2547d0; --b-set-deep:#1f3dbd; --b-set-pool:#2d4fd6; --b-set-low:#1b36aa;
+  --b-ink:#0d1a5c; --b-ink-2:#4a5590; --b-paper:#ffffff; --b-paper-2:#eef1fa; --b-edge:#dfe4f3;
+  --b-sky:#c9d6ff; --b-field:#93a9f2; --b-flag:#ffd23f; --b-fail:#ff7a66;
+  --b-shade:9,20,82;
+  --b-display:'dirB Display','dirB Sans',ui-sans-serif,system-ui,sans-serif;
+  --b-ui:'dirB Sans',ui-sans-serif,system-ui,sans-serif;
+  --b-decel:cubic-bezier(.2,0,0,1); --b-pop:cubic-bezier(.34,1.56,.64,1);
+  --b-t-fast:160ms; --b-t-mid:320ms; --b-t-slow:620ms;
+}
+#dir-b .b-art{position:absolute;inset:0;overflow:hidden;background:var(--b-set);color:#fff;font:400 14px/1.4 var(--b-ui);-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 1}
+#dir-b .b-art *{box-sizing:border-box}
+#dir-b .b-art button{font:inherit;color:inherit}
+#dir-b .b-table{position:absolute;inset:0;background:
+  radial-gradient(760px 520px at 16% 4%, var(--b-set-pool) 0%, rgba(45,79,214,0) 70%),
+  radial-gradient(900px 620px at 96% 108%, var(--b-set-low) 0%, rgba(27,54,170,0) 70%),
+  var(--b-set)}
+#dir-b .b-grain{position:absolute;inset:0;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+#dir-b .b-vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+#dir-b .b-art :focus-visible{outline:2px solid #fff;outline-offset:3px}
+
+/* ---------- 3D world ---------- */
+#dir-b .b-wrap{position:absolute;inset:0;perspective:1500px;perspective-origin:520px 330px;pointer-events:none;transition:opacity var(--b-t-mid) var(--b-decel)}
+#dir-b .b-pile,#dir-b .b-ream,#dir-b .b-sheet,#dir-b .b-fly{position:absolute;left:0;top:0;transform-style:preserve-3d;transform-origin:0 0}
+#dir-b .b-sheet{will-change:transform}
+#dir-b .b-sheet > img,#dir-b .b-fly > img{position:absolute;inset:0;width:100%;height:100%;display:block;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+#dir-b .b-back{position:absolute;inset:0;transform:rotateX(180deg);backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;background:linear-gradient(180deg,#f3f5fc,#e1e6f4)}
+#dir-b .b-back img{width:100%;height:100%;display:block;opacity:.13;filter:grayscale(1)}
+#dir-b .b-gloss{position:absolute;inset:0;backface-visibility:hidden;pointer-events:none;background:linear-gradient(128deg,rgba(255,255,255,.26) 0%,rgba(255,255,255,0) 38%,rgba(var(--b-shade),0) 70%,rgba(var(--b-shade),.07) 100%)}
+#dir-b .b-cast{position:absolute;inset:0;transform:translateZ(-.6px);opacity:0;background:rgba(var(--b-shade),.18);box-shadow:3px 4px 3px rgba(var(--b-shade),.32),14px 18px 22px rgba(var(--b-shade),.34)}
+#dir-b .b-face{position:absolute;left:0;top:0;transform-origin:0 0}
+#dir-b .b-face.top{background:var(--b-paper)}
+#dir-b .b-face.side{background:
+  repeating-linear-gradient(180deg,rgba(var(--b-shade),.12) 0 1px,rgba(255,255,255,0) 1px 2.4px),
+  linear-gradient(180deg,#aab4d8 0%,#dfe4f3 26%,#eef1fa 100%)}
+#dir-b .b-face.side.right{background:
+  repeating-linear-gradient(180deg,rgba(var(--b-shade),.16) 0 1px,rgba(255,255,255,0) 1px 2.4px),
+  linear-gradient(180deg,#8994c2 0%,#b8c1e2 30%,#c8d0ec 100%)}
+#dir-b .b-face.side.left{background:
+  repeating-linear-gradient(180deg,rgba(var(--b-shade),.08) 0 1px,rgba(255,255,255,0) 1px 2.4px),
+  linear-gradient(180deg,#c4cce9 0%,#f4f6fd 30%,#ffffff 100%)}
+#dir-b .b-ghost .b-face{border:1.5px dashed rgba(201,214,255,.8);background:none}
+#dir-b .b-ghost.faint .b-face{border-color:rgba(201,214,255,.42)}
+#dir-b .b-shadow{position:absolute;left:0;top:0;transform-origin:0 0;background:rgba(var(--b-shade),.35)}
+#dir-b .b-sheen{position:absolute;left:0;top:0;overflow:hidden;transform-origin:0 0;pointer-events:none;opacity:0}
+#dir-b .b-sheen i{position:absolute;top:0;bottom:0;width:90px;left:-90px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.75),rgba(255,255,255,0))}
+#dir-b .b-failed{position:absolute;inset:0;background:#fff;border:2px dashed var(--b-fail)}
+#dir-b .b-failed b{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:var(--b-fail);color:var(--b-ink);font:800 22px/34px var(--b-display);text-align:center}
+#dir-b .b-fly{will-change:transform}
+
+/* ---------- top bar ---------- */
+#dir-b .b-top{position:absolute;left:0;right:0;top:0;height:76px;display:flex;align-items:center;gap:12px;padding:0 24px 0 28px;z-index:6}
+#dir-b .b-logo{display:flex;align-items:center;gap:10px;font:800 21px/1 var(--b-display);letter-spacing:-.01em;margin-right:12px;white-space:nowrap}
+#dir-b .b-logo svg{width:26px;height:26px}
+#dir-b .b-domain{position:relative;display:flex;align-items:baseline;gap:10px;height:42px;padding:0 16px 0 18px;background:var(--b-paper);color:var(--b-ink);border-radius:6px;align-items:center;
+  -webkit-mask:radial-gradient(circle 6px at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 6px at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;
+  mask:radial-gradient(circle 6px at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 6px at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat}
+#dir-b .b-domain strong{font:800 18px/1 var(--b-display)}
+#dir-b .b-domain span{font:600 13px/1 var(--b-ui);color:var(--b-ink-2)}
+#dir-b .b-search{position:relative;display:flex;align-items:center;height:42px;width:236px;border:1.5px solid var(--b-field);border-radius:6px;background:var(--b-set-deep);padding:0 10px}
+#dir-b .b-search svg{width:18px;height:18px;flex:none;color:var(--b-sky)}
+#dir-b .b-search input{all:unset;flex:1;min-width:0;margin-left:8px;font:400 14px var(--b-ui);color:#fff}
+#dir-b .b-search input::placeholder{color:var(--b-sky);opacity:1}
+#dir-b .b-search:focus-within{outline:2px solid #fff;outline-offset:3px}
+#dir-b .b-search input:focus-visible{outline:none}
+#dir-b .b-found{position:absolute;left:0;top:50px;min-width:236px;padding:9px 12px;background:var(--b-paper);color:var(--b-ink);font:600 13px/1.35 var(--b-ui);box-shadow:0 2px 3px rgba(var(--b-shade),.25),0 16px 30px -8px rgba(var(--b-shade),.55);opacity:0;transform:translateY(-4px);transition:opacity var(--b-t-fast),transform var(--b-t-fast) var(--b-decel);pointer-events:none}
+#dir-b .b-found.on{opacity:1;transform:none}
+#dir-b .b-devs{display:flex;gap:4px}
+#dir-b .b-dev{all:unset;box-sizing:border-box;width:40px;height:42px;display:grid;place-items:center;border-radius:6px;border:1.5px solid var(--b-field);color:var(--b-sky);cursor:pointer;transition:background var(--b-t-fast),color var(--b-t-fast)}
+#dir-b .b-dev svg{width:22px;height:22px}
+#dir-b .b-dev[aria-pressed="true"]{background:var(--b-paper);border-color:var(--b-paper);color:var(--b-ink)}
+#dir-b .b-dev:focus-visible{outline:2px solid #fff;outline-offset:3px}
+#dir-b .b-btn{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px;border-radius:6px;font:600 14px/1 var(--b-ui);cursor:pointer;white-space:nowrap;transition:background var(--b-t-fast),transform var(--b-t-fast) var(--b-decel)}
+#dir-b .b-btn:active{transform:scale(.97)}
+#dir-b .b-btn svg{width:18px;height:18px;flex:none}
+#dir-b .b-btn--line{border:1.5px solid var(--b-paper);color:#fff}
+#dir-b .b-btn--line:hover{background:rgba(255,255,255,.1)}
+#dir-b .b-btn--ghost{color:#fff}
+#dir-b .b-btn--ghost:hover{background:rgba(255,255,255,.1)}
+#dir-b .b-btn--paper{background:var(--b-paper);color:var(--b-ink)}
+#dir-b .b-btn--paper:hover{background:#e8edff}
+#dir-b .b-btn--sm{height:32px;padding:0 12px;font-size:13px}
+#dir-b .b-btn:focus-visible{outline:2px solid #fff;outline-offset:3px}
+#dir-b .b-spacer{flex:1}
+#dir-b .b-pop{position:absolute;top:70px;z-index:8;width:300px;padding:16px 18px 14px;background:var(--b-paper);color:var(--b-ink);box-shadow:0 2px 3px rgba(var(--b-shade),.25),0 22px 40px -10px rgba(var(--b-shade),.6);opacity:0;transform:translateY(-6px) scale(.98);transform-origin:top right;pointer-events:none;transition:opacity var(--b-t-fast),transform var(--b-t-mid) var(--b-decel)}
+#dir-b .b-pop.on{opacity:1;transform:none;pointer-events:auto}
+#dir-b .b-pop h3{margin:0 0 10px;font:800 18px/1.1 var(--b-display)}
+#dir-b .b-pop p{margin:0 0 10px;font-size:13px;color:var(--b-ink-2)}
+#dir-b .b-pop .b-link{display:block;padding:9px 10px;background:var(--b-paper-2);font:600 14px var(--b-ui);color:var(--b-ink);margin-bottom:10px}
+#dir-b .b-pop .b-row{display:flex;gap:8px}
+#dir-b .b-pop .b-btn--ink{background:var(--b-set);color:#fff}
+#dir-b .b-pop .b-btn--danger{border:1.5px solid #b3203a;color:#a51c34}
+#dir-b .b-sw{all:unset;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;width:100%;padding:9px 0;border-top:1px solid #e4e8f4;font:600 14px var(--b-ui);color:var(--b-ink);cursor:pointer}
+#dir-b .b-sw small{display:block;font-weight:400;font-size:12px;color:var(--b-ink-2)}
+#dir-b .b-sw i{position:relative;flex:none;width:36px;height:22px;border-radius:11px;background:#c3cbe6;transition:background var(--b-t-fast)}
+#dir-b .b-sw i::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(var(--b-shade),.35);transition:transform var(--b-t-mid) var(--b-pop)}
+#dir-b .b-sw[aria-checked="true"] i{background:var(--b-set)}
+#dir-b .b-sw[aria-checked="true"] i::after{transform:translateX(14px)}
+#dir-b .b-sw:focus-visible{outline:2px solid var(--b-set);outline-offset:2px}
+
+/* ---------- pile labels ---------- */
+#dir-b .b-label{position:absolute;width:268px;z-index:3;transition:opacity var(--b-t-mid) var(--b-decel),transform var(--b-t-mid) var(--b-decel)}
+#dir-b .b-label .b-name{display:flex;align-items:center;gap:10px;font:800 22px/1.1 var(--b-display);letter-spacing:-.005em}
+#dir-b .b-pick{all:unset;box-sizing:border-box;flex:none;width:22px;height:22px;border-radius:6px;border:1.5px solid var(--b-sky);display:grid;place-items:center;cursor:pointer;transition:background var(--b-t-fast)}
+#dir-b .b-pick svg{width:14px;height:14px;opacity:0;transform:scale(.6);transition:opacity var(--b-t-fast),transform var(--b-t-mid) var(--b-pop)}
+#dir-b .b-pick[aria-checked="true"]{background:var(--b-paper);border-color:var(--b-paper);color:var(--b-set)}
+#dir-b .b-pick[aria-checked="true"] svg{opacity:1;transform:none}
+#dir-b .b-pick:focus-visible{outline:2px solid #fff;outline-offset:3px}
+#dir-b .b-pat{margin:4px 0 0 32px;font:400 14px/1.3 var(--b-ui);color:var(--b-sky)}
+#dir-b .b-stat{display:flex;align-items:center;gap:10px;margin:8px 0 0 32px;font:600 14px/1 var(--b-ui)}
+#dir-b .b-stat .b-n{font:800 16px/1 var(--b-display)}
+#dir-b .b-bar{position:relative;width:96px;height:6px;background:rgba(201,214,255,.3);overflow:hidden}
+#dir-b .b-bar i{position:absolute;left:0;top:0;bottom:0;width:100%;background:#fff;transform-origin:0 0;transition:transform var(--b-t-mid) var(--b-decel)}
+#dir-b .b-bar b{position:absolute;top:0;bottom:0;background:var(--b-fail)}
+#dir-b .b-chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;font:600 13px/1 var(--b-ui);border-radius:6px}
+#dir-b .b-chip svg{width:14px;height:14px}
+#dir-b .b-chip.done{background:rgba(255,255,255,.14)}
+#dir-b .b-chip.fail{background:var(--b-fail);color:var(--b-ink)}
+#dir-b .b-chip.wait{border:1.5px solid rgba(201,214,255,.6);color:var(--b-sky)}
+#dir-b .b-retry{margin-left:2px}
+#dir-b .b-hit{all:unset;position:absolute;z-index:2;cursor:grab;touch-action:none}
+#dir-b .b-hit:focus-visible{outline:2px dashed #fff;outline-offset:-6px}
+#dir-b .b-tag{position:absolute;z-index:7;left:0;top:0;padding:8px 12px 9px;background:var(--b-paper);color:var(--b-ink);font:600 14px/1.2 var(--b-ui);white-space:nowrap;pointer-events:none;opacity:0;box-shadow:0 1px 2px rgba(var(--b-shade),.3),0 14px 26px -10px rgba(var(--b-shade),.6);transition:opacity var(--b-t-fast)}
+#dir-b .b-tag::after{content:"";position:absolute;left:22px;bottom:-7px;width:14px;height:14px;background:var(--b-paper);transform:rotate(45deg)}
+#dir-b .b-tag small{display:block;font:400 12px/1.2 var(--b-ui);color:var(--b-ink-2);margin-top:3px}
+#dir-b .b-tag.on{opacity:1}
+
+/* ---------- odd ones lane ---------- */
+#dir-b .b-lane{position:absolute;left:1000px;top:86px;width:256px;height:646px;z-index:3;background:var(--b-set-deep);box-shadow:inset 3px 4px 10px rgba(var(--b-shade),.45),inset -1px -1px 0 rgba(255,255,255,.08);transition:opacity var(--b-t-mid) var(--b-decel)}
+#dir-b .b-lane h3{margin:18px 18px 0;font:800 24px/1 var(--b-display)}
+#dir-b .b-lane > p{margin:8px 18px 0;font:400 13px/1.4 var(--b-ui);color:var(--b-sky)}
+#dir-b .b-lane .b-grp{position:absolute;left:18px;font:600 13px/1 var(--b-ui);color:var(--b-sky)}
+#dir-b .b-card{position:absolute;left:0;width:256px;height:104px}
+#dir-b .b-thumb{position:absolute;background:#fff;box-shadow:1px 2px 2px rgba(var(--b-shade),.35),8px 12px 16px -4px rgba(var(--b-shade),.45)}
+#dir-b .b-thumb img{width:100%;height:100%;display:block}
+#dir-b .b-flag{position:absolute;display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px 0 8px;background:var(--b-flag);color:var(--b-ink);font:600 13px/1 var(--b-ui);white-space:nowrap;box-shadow:0 1px 2px rgba(var(--b-shade),.35);transform-origin:0 50%;
+  clip-path:polygon(0 0,100% 0,calc(100% - 7px) 50%,100% 100%,0 100%)}
+#dir-b .b-flag{padding-right:16px}
+#dir-b .b-flag svg{width:13px;height:13px;flex:none}
+#dir-b .b-path{position:absolute;font:400 13px/1.2 var(--b-ui);color:#fff;white-space:nowrap}
+#dir-b .b-card .b-thumb,#dir-b .b-card .b-flag,#dir-b .b-card .b-path{transition:opacity var(--b-t-mid) var(--b-decel),transform var(--b-t-slow) var(--b-pop)}
+#dir-b .b-card.off .b-thumb{opacity:0}
+#dir-b .b-card.off .b-flag{opacity:0;transform:scale(.4) rotate(-8deg)}
+#dir-b .b-card.off .b-path{opacity:0;transform:translateY(4px)}
+#dir-b .b-slot{position:absolute;border:1.5px dashed rgba(201,214,255,.55)}
+#dir-b .b-card.pulse .b-flag{animation:b-wag 700ms var(--b-decel) 2}
+@keyframes b-wag{0%,100%{transform:none}30%{transform:rotate(-7deg) scale(1.06)}60%{transform:rotate(4deg)}}
+
+/* ---------- footer ---------- */
+#dir-b .b-foot{position:absolute;left:28px;right:24px;bottom:14px;height:48px;display:flex;align-items:center;gap:20px;z-index:5;transition:opacity var(--b-t-mid)}
+#dir-b .b-foot .b-total{font:800 20px/1 var(--b-display)}
+#dir-b .b-foot .b-sub{font:400 13px/1.3 var(--b-ui);color:var(--b-sky)}
+#dir-b .b-pbar{display:flex;gap:3px;width:380px;height:12px}
+#dir-b .b-pbar span{position:relative;height:100%;background:rgba(201,214,255,.26);overflow:hidden}
+#dir-b .b-pbar span i{position:absolute;inset:0;background:#fff;transform-origin:0 0;transition:transform var(--b-t-mid) var(--b-decel)}
+#dir-b .b-pbar span.off{background:repeating-linear-gradient(135deg,rgba(201,214,255,.3) 0 2px,rgba(201,214,255,0) 2px 5px)}
+#dir-b .b-pbar span b{position:absolute;right:0;top:0;bottom:0;background:var(--b-fail)}
+
+/* ---------- ghost cursor ---------- */
+#dir-b .b-ghostc{position:absolute;left:0;top:0;z-index:9;width:30px;height:34px;pointer-events:none;opacity:0;filter:drop-shadow(1px 3px 3px rgba(9,20,82,.45))}
+#dir-b .b-ghostc svg{width:30px;height:34px;display:block}
+#dir-b .b-ghostc i{position:absolute;left:-15px;top:-15px;width:30px;height:30px;border-radius:50%;border:2px solid #fff;background:rgba(255,255,255,.18);transform:scale(.3);opacity:0}
+
+/* ---------- open view ---------- */
+#dir-b .b-open{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;visibility:hidden}
+#dir-b .b-open.on{pointer-events:auto;visibility:visible}
+#dir-b .b-open .b-oh{position:absolute;left:40px;top:90px;right:40px;display:flex;align-items:flex-end;gap:22px}
+#dir-b .b-open h3{margin:0;font:800 44px/0.95 var(--b-display);letter-spacing:-.015em}
+#dir-b .b-open .b-meta{display:flex;gap:18px;padding-bottom:4px;font:400 15px/1.2 var(--b-ui);color:var(--b-sky)}
+#dir-b .b-open .b-meta b{font-weight:600;color:#fff}
+#dir-b .b-cap{position:absolute;font:400 14px/1.2 var(--b-ui);color:#fff;white-space:nowrap}
+#dir-b .b-cap span{color:var(--b-sky)}
+#dir-b .b-slotbtn{all:unset;position:absolute;cursor:zoom-in}
+#dir-b .b-slotbtn:focus-visible{outline:2px solid #fff;outline-offset:4px}
+#dir-b .b-ocol{position:absolute;left:900px;top:176px;width:340px}
+#dir-b .b-ocol h4{margin:0;font:800 22px/1 var(--b-display)}
+#dir-b .b-ocol p{margin:6px 0 0;font-size:13px;color:var(--b-sky)}
+#dir-b .b-ocard{position:absolute;left:0;width:340px;height:160px}
+#dir-b .b-more{position:absolute;left:40px;top:716px;font:600 14px var(--b-ui);color:var(--b-sky)}
+#dir-b .b-open .b-fade{opacity:0;transform:translateY(8px)}
+#dir-b .b-open.ready .b-fade{opacity:1;transform:none;transition:opacity var(--b-t-mid) var(--b-decel),transform var(--b-t-slow) var(--b-decel)}
+
+/* ---------- full-size preview ---------- */
+#dir-b .b-prev{position:absolute;inset:0;z-index:10;visibility:hidden;pointer-events:none}
+#dir-b .b-prev.on{visibility:visible;pointer-events:auto}
+#dir-b .b-prev .b-scrim{position:absolute;inset:0;background:rgba(27,54,170,.94);opacity:0;transition:opacity var(--b-t-mid) var(--b-decel)}
+#dir-b .b-prev.on .b-scrim{opacity:1}
+#dir-b .b-prev .b-big{position:absolute;left:48px;top:126px;width:840px;height:525px;background:#fff;transform-origin:0 0;box-shadow:2px 3px 4px rgba(var(--b-shade),.35),30px 40px 70px -20px rgba(var(--b-shade),.7)}
+#dir-b .b-prev .b-bigp{position:absolute;left:930px;top:126px;width:242px;height:525px;background:#fff;transform-origin:0 0;box-shadow:2px 3px 4px rgba(var(--b-shade),.35),30px 40px 70px -20px rgba(var(--b-shade),.7)}
+#dir-b .b-prev img{width:100%;height:100%;display:block}
+#dir-b .b-prev .b-ph{position:absolute;left:48px;top:62px;right:40px;display:flex;align-items:center;gap:16px;opacity:0;transition:opacity var(--b-t-mid) var(--b-decel) 120ms}
+#dir-b .b-prev.on .b-ph,#dir-b .b-prev.on .b-pc{opacity:1}
+#dir-b .b-prev h3{margin:0;font:800 30px/1 var(--b-display)}
+#dir-b .b-prev .b-pc{position:absolute;top:664px;font:600 14px var(--b-ui);opacity:0;transition:opacity var(--b-t-mid) 160ms}
+#dir-b .b-prev .b-pc span{font-weight:400;color:var(--b-sky);margin-left:8px}
+
+/* ---------- start still ---------- */
+#dir-b .b-start h3{position:absolute;left:64px;top:118px;width:520px;margin:0;font:800 58px/0.96 var(--b-display);letter-spacing:-.02em}
+#dir-b .b-big-in{position:absolute;left:64px;top:290px;width:500px;height:70px;display:flex;align-items:center;gap:6px;padding:0 22px;background:#fff;color:var(--b-ink);border-radius:8px}
+#dir-b .b-big-in strong{font:800 30px/1 var(--b-display)}
+#dir-b .b-big-in .b-caret{width:2.5px;height:34px;background:var(--b-set)}
+#dir-b .b-big-in span{margin-left:auto;font:600 15px var(--b-ui);color:var(--b-ink-2)}
+#dir-b .b-sl{position:absolute;left:64px;font:600 15px var(--b-ui);color:var(--b-sky)}
+#dir-b .b-dtiles{position:absolute;left:64px;top:416px;display:flex;gap:10px}
+#dir-b .b-dtile{width:116px;height:96px;border-radius:8px;border:1.5px solid var(--b-field);padding:12px;color:var(--b-sky);display:grid;align-content:space-between}
+#dir-b .b-dtile svg{width:28px;height:28px}
+#dir-b .b-dtile b{display:block;font:600 14px/1.15 var(--b-ui);color:#fff}
+#dir-b .b-dtile small{font-size:12px}
+#dir-b .b-dtile.on{background:#fff;border-color:#fff;color:var(--b-set)}
+#dir-b .b-dtile.on b{color:var(--b-ink)}
+#dir-b .b-dtile.on small{color:var(--b-ink-2)}
+#dir-b .b-opts{position:absolute;left:64px;top:566px;width:500px;display:grid;grid-template-columns:1fr 1fr;gap:10px 28px}
+#dir-b .b-opt{display:flex;align-items:center;gap:10px;font:600 15px var(--b-ui)}
+#dir-b .b-opt i{position:relative;flex:none;width:36px;height:22px;border-radius:11px;background:rgba(201,214,255,.35)}
+#dir-b .b-opt i::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff}
+#dir-b .b-opt.on i{background:#fff}
+#dir-b .b-opt.on i::after{background:var(--b-set);transform:translateX(14px)}
+#dir-b .b-cta{position:absolute;left:64px;top:670px;height:64px;padding:0 28px;display:flex;align-items:center;border-radius:8px;background:var(--b-flag);color:var(--b-ink);font:800 24px/1 var(--b-display)}
+#dir-b .b-cta-sub{position:absolute;left:390px;top:680px;width:200px;font:400 14px/1.35 var(--b-ui);color:var(--b-sky)}
+#dir-b .b-slip{position:absolute;left:0;top:0;height:26px;padding:0 10px;display:flex;align-items:center;background:#fff;color:var(--b-ink);font:600 12px/1 var(--b-ui);white-space:nowrap;transform-origin:0 50%;box-shadow:1px 2px 2px rgba(var(--b-shade),.3),8px 12px 14px -6px rgba(var(--b-shade),.45)}
+#dir-b .b-spl{position:absolute;width:190px;text-align:left}
+#dir-b .b-spl b{display:block;font:800 20px/1.1 var(--b-display)}
+#dir-b .b-spl span{font:400 14px var(--b-ui);color:var(--b-sky)}
+
+/* ---------- panel ---------- */
+#dir-b .panel .b-lede{margin:0 0 4px;font-size:14px}
+#dir-b .panel dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 10px}
+#dir-b .panel dt{font-weight:600}
+#dir-b .panel dd{margin:0}
+#dir-b .panel .swatches i{display:block}
+@media (prefers-reduced-motion: reduce){
+  #dir-b .b-art *{transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
+</style>
+
+<section id="dir-b" class="direction" hidden aria-label="Direction B, Riffle">
+  <div class="stage">
+    <div class="screens">
+      <figure class="screen live">
+        <div class="frame"><div class="artboard b-live-board"></div></div>
+        <figcaption>The piles mid-capture. Run the pointer across a pile to riffle it, click a pile to open it.</figcaption>
+      </figure>
+      <figure class="screen">
+        <div class="frame"><div class="artboard b-open-board"></div></div>
+        <figcaption>Blog post opened: its pages on Desktop and iPhone, the 3 odd ones pulled out with reasons.</figcaption>
+      </figure>
+      <figure class="screen">
+        <div class="frame"><div class="artboard b-start-board"></div></div>
+        <figcaption>The start: the crawl sorts every URL into a pile by its pattern.</figcaption>
+      </figure>
+    </div>
+  </div>
+  <aside class="panel">
+    <h2>Riffle</h2>
+    <p class="b-lede">Every pile is a real stack of your pages, lit by one window. Run the pointer across a stack and it flicks through like a flip book. When a pile finishes, the pages that break its template jump out of the stack into the Odd ones lane.</p>
+    <h3>Try this</h3>
+    <ul>
+      <li>Move across the Blog post stack, slowly then fast. Let go and the pages slap back down.</li>
+      <li>Click a stack: it spreads into every page on Desktop and iPhone in one move.</li>
+      <li>Click a page there for the full-size preview.</li>
+      <li>Type /blog/benchmarks in Find a page.</li>
+      <li>Watch Docs: pages drop onto it as they are captured. Retry its 2 failed pages.</li>
+      <li>Keyboard: Tab to a stack, arrow keys riffle, Enter opens.</li>
+    </ul>
+    <h3>Palette</h3>
+    <div class="swatches" aria-label="Palette">
+      <i style="background:#2547d0" title="Cobalt set #2547d0"></i><i style="background:#1f3dbd" title="Lane #1f3dbd"></i><i style="background:#ffffff" title="Paper #ffffff"></i><i style="background:#c9d6ff" title="Sky #c9d6ff"></i><i style="background:#ffd23f" title="Flag #ffd23f"></i><i style="background:#ff7a66" title="Failed #ff7a66"></i><i style="background:#0d1a5c" title="Ink #0d1a5c"></i>
+    </div>
+    <p style="margin:8px 0 0">Cobalt set #2547d0, paper #ffffff, sky #c9d6ff, flag yellow #ffd23f for odd ones, coral #ff7a66 for failures, ink #0d1a5c.</p>
+    <h3>Type</h3>
+    <p style="margin:0">Funnel Display 800 for names and counts, Funnel Sans for everything you read. Both embedded.</p>
+    <h3>Where everything lives</h3>
+    <dl>
+      <dt>Enter a domain, start</dt><dd>The start screen: the domain slip and Capture 404 pages. The live top bar keeps the domain.</dd>
+      <dt>Piles by URL pattern</dt><dd>Each stack's name, pattern and count sit under it. Stack height is the page count.</dd>
+      <dt>Pick or unpick</dt><dd>The box beside each pile's name. One-off pages is unpicked, drawn as an empty outline.</dd>
+      <dt>Find one page</dt><dd>Find a page in the top bar. The pile riffles to it.</dd>
+      <dt>Devices</dt><dd>The four device buttons in the top bar. Every stack is a pair: Desktop ream and iPhone ream.</dd>
+      <dt>Options</dt><dd>Options in the top bar: full page, hide cookie banners, a login session, custom CSS.</dd>
+      <dt>Live progress</dt><dd>Each stack grows as pages land on it, plus its bar; the footer bar shows every pile.</dd>
+      <dt>Failed pages, retry</dt><dd>Docs: 2 pages hang off its edge, with Retry under the pile.</dd>
+      <dt>Odd pages</dt><dd>The Odd ones lane on the right, each with its reason.</dd>
+      <dt>Review across devices</dt><dd>Open a pile: every page as a Desktop and iPhone pair.</dd>
+      <dt>Full-size preview</dt><dd>Click any page in an open pile.</dd>
+      <dt>Download ZIP</dt><dd>Top bar, and per pile when it is open.</dd>
+      <dt>Share link</dt><dd>Share in the top bar: the link, 30 days left, Stop sharing.</dd>
+    </dl>
+    <p class="tradeoff">Trade-off: the riffle is a joy with a pointer, but a stack only shows about ten pages at a time; past that you open the pile. Real 3D in CSS needs care to stay smooth with hundreds of pages, so each stack draws ten sheets and a ream, never every page.</p>
+  </aside>
+</section>
+
+<script>
+(function () {
+  'use strict';
+  const SITE = window.SAMPLE_SITE, ART = window.PAGE_ART;
+  const TPL = {}; SITE.templates.forEach((t) => { TPL[t.id] = t; });
+  const RM = () => !!window.PREFERS_REDUCED_MOTION;
+
+  /* ---------- tokens: geometry and motion ---------- */
+  const TILT = 56, SW = 200, SH = 125, PW = 50, PH = 108, PGAP = 16, ZGAP = 1.1, PER_PAGE = 0.15, NLOOSE = 10;
+  const FW = SW + PGAP + PW, FH = SH;
+  const SPR = { lift: [520, 30], drop: [330, 20], hop: [380, 24] };
+  const MS = { stagger: 55, phoneLag: 34, land: 460, open: 860, openStagger: 32, flyOut: 200, fly: 760 };
+  function bezier(x1, y1, x2, y2) {
+    const bx = (u) => 3 * (1 - u) * (1 - u) * u * x1 + 3 * (1 - u) * u * u * x2 + u * u * u;
+    const by = (u) => 3 * (1 - u) * (1 - u) * u * y1 + 3 * (1 - u) * u * u * y2 + u * u * u;
+    const dx = (u) => 3 * (1 - u) * (1 - u) * x1 + 6 * (1 - u) * u * (x2 - x1) + 3 * u * u * (1 - x2);
+    return (t) => { if (t <= 0) return 0; if (t >= 1) return 1; let u = t; for (let i = 0; i < 10; i++) { const e = bx(u) - t; if (Math.abs(e) < 1e-5) break; const d = dx(u); if (Math.abs(d) < 1e-6) break; u = Math.min(1, Math.max(0, u - e / d)); } return by(u); };
+  }
+  const decel = bezier(0.2, 0, 0, 1), dropE = bezier(0.6, 0, 0.95, 0.45), inout = bezier(0.45, 0, 0.2, 1);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const lerp = (a, b, u) => a + (b - a) * u;
+  function rng(seed) { let s = (seed * 2654435761) % 2147483647; if (s <= 0) s += 2147483646; return () => (s = (s * 16807) % 2147483647) / 2147483647; }
+
+  /* ---------- art: PAGE_ART tinted for this set, rasterized once as images ---------- */
+  const TINT = { paper: '#ffffff', ink: '#1b2150', soft: '#dfe4f0', accent: '#ef5a3c' };
+  const IMG = { blog: '#ffc9b8', docs: '#c6d6ff', product: '#c2e6d2', home: '#dcd0ff', pricing: '#ffdf9e', oneoff: '#dde2ec' };
+  const artCache = new Map();
+  function art(t, seed, phone, variant) {
+    const key = t + '|' + seed + '|' + (phone ? 1 : 0) + '|' + (variant || 'normal');
+    let u = artCache.get(key);
+    if (!u) {
+      let svg = ART.render(t, seed, { device: phone ? 'phone' : 'desktop', variant: variant || 'normal' });
+      svg = svg.replace(/var\(--pa-(paper|ink|soft|accent|image)[^)]*\)/g, (m, n) => (n === 'image' ? IMG[t] : TINT[n]));
+      u = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      artCache.set(key, u);
+    }
+    return u;
+  }
+  const EXTRA = {
+    blog: ['/blog/design-tokens', '/blog/studio-move', '/blog/type-notes', '/blog/case-study-arlo', '/blog/year-in-review', '/blog/new-office'],
+    docs: ['/docs/auth', '/docs/errors', '/docs/pagination', '/docs/sdk', '/docs/glossary', '/docs/migrate'],
+    product: ['/product/wool-rug', '/product/ceramic-vase', '/product/desk-tray', '/product/brass-hook', '/product/walnut-stool', '/product/candle', '/product/linen-sheet'],
+    home: [], pricing: [], oneoff: []
+  };
+  const LAND = { blog: ['/blog/team-retreat', '/blog/new-pricing', '/blog/hello-world'], docs: ['/docs/billing', '/docs/teams', '/docs/sso', '/docs/exports', '/docs/embeds', '/docs/search', '/docs/cli', '/docs/events', '/docs/roles', '/docs/domains'], product: ['/product/desk-lamp', '/product/oak-shelf', '/product/linen-throw', '/product/wool-rug', '/product/ceramic-vase', '/product/desk-tray', '/product/brass-hook', '/product/walnut-stool', '/product/candle'] };
+  function samplesFor(id) {
+    const t = TPL[id], odd = new Set(t.outliers.map((o) => o.path));
+    const list = t.paths.filter((p) => !odd.has(p)).concat(EXTRA[id] || []);
+    return list.slice(0, Math.min(NLOOSE, t.count)).map((path, i) => ({ path, seed: i + 1 }));
+  }
+  const LAYOUT = {
+    blog: { x: 168, y: 232, rz: 11, s: 1.0 },
+    docs: { x: 498, y: 232, rz: 13, s: 1.0 },
+    product: { x: 826, y: 232, rz: 10, s: 0.94 },
+    home: { x: 168, y: 528, rz: 12, s: 0.86 },
+    pricing: { x: 498, y: 528, rz: 10, s: 0.86 },
+    oneoff: { x: 826, y: 528, rz: 13, s: 0.86 }
+  };
+
+  /* ---------- tiny DOM helpers ---------- */
+  function h(tag, cls, html, attrs) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  const ICON = {
+    logo: '<svg viewBox="0 0 28 28" aria-hidden="true"><path d="M2 10V2h8M18 2h8v8M26 18v8h-8M10 26H2v-8" fill="none" stroke="currentColor" stroke-width="3"/></svg>',
+    find: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5l5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+    desktop: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2.5" y="4" width="19" height="12.5" rx="1.5"/><path d="M9 20.5h6M12 16.5v4"/></svg>',
+    ipad: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4.5" y="2.5" width="15" height="19" rx="2"/><path d="M11 18.5h2"/></svg>',
+    iphone: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="7" y="2" width="10" height="20" rx="2.6"/><rect x="10" y="3.8" width="4" height="1.3" rx=".65" fill="currentColor" stroke="none"/></svg>',
+    pixel: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="7" y="2" width="10" height="20" rx="1.6"/><circle cx="12" cy="4.8" r=".9" fill="currentColor" stroke="none"/></svg>',
+    tick: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    flag: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5v13" stroke="currentColor" stroke-width="1.8"/><path d="M4 2h9l-2.2 3.2L13 8.5H4z" fill="currentColor"/></svg>',
+    warn: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="currentColor"/><path d="M8 4.2v4.6" stroke="#ff7a66" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="11.6" r="1.1" fill="#ff7a66"/></svg>',
+    ream: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 9l8-4 8 4-8 4z"/><path d="M4 13l8 4 8-4M4 17l8 4 8-4"/></svg>',
+    opts: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg>',
+    share: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>',
+    stack: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="9" width="16" height="10"/><path d="M6 6h12M8 3h8"/></svg>'
+  };
+
+  /* ---------- the frame loop: runs only while something moves ---------- */
+  const loop = { items: new Set(), raf: 0, last: 0, on: false };
+  function wake(it) { if (it) loop.items.add(it); if (loop.on && !loop.raf && loop.items.size) { loop.last = performance.now(); loop.raf = requestAnimationFrame(frame); } }
+  function frame(now) {
+    const dt = Math.min(0.034, Math.max(0.001, (now - loop.last) / 1000)); loop.last = now;
+    for (const it of Array.from(loop.items)) { if (!it.step(dt, now)) loop.items.delete(it); }
+    for (const id in piles) if (piles[id].dirty) piles[id].render();
+    for (const f of flyers) if (f.dirty) f.render();
+    loop.raf = loop.items.size ? requestAnimationFrame(frame) : 0;
+  }
+  function tween(dur, ease, fn, delay, done) {
+    if (RM() || dur <= 0) { fn(1); if (done) done(); return null; }
+    const it = { t0: performance.now() + (delay || 0), step(dt, now) { if (now < this.t0) return true; const u = Math.min(1, (now - this.t0) / dur); fn(ease(u)); if (u >= 1) { if (done) done(); return false; } return true; } };
+    wake(it); return it;
+  }
+  function springStep(o, f, k, c, dt) {
+    const v = f + 'v', tg = f + 'T';
+    if (Math.abs(o[f] - o[tg]) < 0.03 && Math.abs(o[v]) < 0.08) { if (o[f] !== o[tg]) { o[f] = o[tg]; return true; } o[v] = 0; return false; }
+    const n = 3, hh = dt / n;
+    for (let i = 0; i < n; i++) { const a = -k * (o[f] - o[tg]) - c * o[v]; o[v] += a * hh; o[f] += o[v] * hh; }
+    if (f === 'th' && o[f] < 0) { o[f] = 0; o[v] = -o[v] * 0.22; }
+    return true;
+  }
+
+  /* ---------- timers (stopped on hide) ---------- */
+  let timers = [];
+  function later(ms, fn) { const id = setTimeout(() => { timers = timers.filter((x) => x !== id); fn(); }, ms); timers.push(id); return id; }
+  function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+
+  /* ---------- builders shared by the live screen and the stills ---------- */
+  function faceBox(w, d, cls) {
+    const g = h('div', 'b-ream' + (cls ? ' ' + cls : ''));
+    const f = { top: h('div', 'b-face top'), front: h('div', 'b-face side'), back: h('div', 'b-face side'), left: h('div', 'b-face side left'), right: h('div', 'b-face side right') };
+    for (const k in f) g.appendChild(f[k]);
+    g._f = f; g._w = w; g._d = d; g._T = -1;
+    return g;
+  }
+  function setBox(g, T, z0) {
+    z0 = z0 || 0; const w = g._w, d = g._d, f = g._f, t = Math.max(0.01, T - z0);
+    if (g._T === T && g._z0 === z0) return; g._T = T; g._z0 = z0;
+    const vis = T - z0 > 0.2 ? '' : 'hidden';
+    f.top.style.cssText = `width:${w}px;height:${d}px;transform:translate3d(0,0,${T}px);visibility:${vis}`;
+    f.front.style.cssText = `width:${w}px;height:${t}px;transform:translate3d(0,${d}px,${z0}px) rotateX(90deg);visibility:${vis}`;
+    f.back.style.cssText = `width:${w}px;height:${t}px;transform:translate3d(0,0,${z0}px) rotateX(90deg);visibility:${vis}`;
+    f.left.style.cssText = `width:${d}px;height:${t}px;transform:translate3d(0,0,${z0}px) rotateZ(90deg) rotateX(90deg);visibility:${vis}`;
+    f.right.style.cssText = `width:${d}px;height:${t}px;transform:translate3d(${w}px,0,${z0}px) rotateZ(90deg) rotateX(90deg);visibility:${vis}`;
+  }
+  function makeSheet(w, hgt, src) {
+    const el = h('div', 'b-sheet');
+    el.style.width = w + 'px'; el.style.height = hgt + 'px';
+    const cast = h('i', 'b-cast'); el.appendChild(cast);
+    const img = h('img', null, null, { alt: '', src: src || '', draggable: 'false' }); el.appendChild(img);
+    const back = h('div', 'b-back'); const bimg = h('img', null, null, { alt: '', src: src || '' }); back.appendChild(bimg); el.appendChild(back);
+    el.appendChild(h('i', 'b-gloss'));
+    return { el, img, bimg, cast, w, h: hgt, x: 0, y: 0, z: 0, r: 0, sc: 1, th: 0, thv: 0, thT: 0, hop: 0, hopv: 0, hopT: 0, k: SPR.lift[0], c: SPR.lift[1], due: 0, dueT: 0, op: 1, shadow: 0 };
+  }
+  function setSrc(s, src) { if (s.src === src) return; s.src = src; s.img.src = src; s.bimg.src = src; }
+  function sheetTransform(s) {
+    return `translate3d(${s.x.toFixed(2)}px,${s.y.toFixed(2)}px,${s.z.toFixed(2)}px) rotateZ(${s.r.toFixed(2)}deg) rotateX(${s.th.toFixed(2)}deg) translate3d(0,${s.h}px,0) rotateX(${(-s.hop * 11).toFixed(2)}deg) translate3d(0,${-s.h}px,${(s.hop * 7).toFixed(2)}px) scale(${s.sc.toFixed(4)})`;
+  }
+  function renderSheet(s) {
+    s.el.style.transform = sheetTransform(s);
+    const op = s.op.toFixed(3); if (s._op !== op) { s._op = op; s.img.style.opacity = op; s.el.querySelector('.b-back').style.opacity = op; s.el.querySelector('.b-gloss').style.opacity = op; }
+    const sh = s.shadow.toFixed(3); if (s._sh !== sh) { s._sh = sh; s.cast.style.opacity = sh; }
+  }
+  function chain(p) { return `translate3d(${p.cx.toFixed(2)}px,${p.cy.toFixed(2)}px,0) rotateX(${p.tilt.toFixed(3)}deg) rotateZ(${p.rz.toFixed(3)}deg) scale3d(${p.s},${p.s},${p.s}) translate3d(${-FW / 2}px,${-FH / 2}px,0)`; }
+
+  /* A pile: a Desktop ream and an iPhone ream side by side, ten loose sheets on each, a contact and an ambient shadow. */
+  function buildPile(id, opts) {
+    opts = opts || {};
+    const t = TPL[id], L = LAYOUT[id];
+    const P = { id, t, cx: L.x, cy: L.y, tilt: TILT, rz: L.rz, s: L.s, dirty: true, L: 0, first: 0, picked: t.picked,
+      done: opts.done != null ? opts.done : t.capture.done, total: t.capture.total, failed: t.capture.failed, samples: samplesFor(id), landed: 0, odd: [], fails: [] };
+    P.n = P.samples.length;
+    P.wrap = h('div', 'b-wrap');
+    P.el = h('div', 'b-pile'); P.wrap.appendChild(P.el);
+    const r = rng(id.length * 97 + 13);
+    // shadows on the table, cast away from the window at the upper left
+    P.shadowD = h('div', 'b-shadow'); P.shadowP = h('div', 'b-shadow');
+    P.el.appendChild(P.shadowD); P.el.appendChild(P.shadowP);
+    P.ghostD = faceBox(SW, SH, 'b-ghost' + (t.picked ? '' : ' faint')); P.ghostP = faceBox(PW, PH, 'b-ghost' + (t.picked ? '' : ' faint'));
+    P.ghostP.style.transform = `translate3d(${SW + PGAP}px,${SH - PH}px,0)`;
+    P.reamD = faceBox(SW, SH); P.reamP = faceBox(PW, PH);
+    P.reamP.style.transform = `translate3d(${SW + PGAP}px,${SH - PH}px,0)`;
+    [P.ghostD, P.ghostP, P.reamD, P.reamP].forEach((g) => P.el.appendChild(g));
+    // the odd ones sit inside the stack, sticking out of its side, until the pile finishes
+    if (opts.oddInside) {
+      t.outliers.forEach((o, k) => {
+        const sd = makeSheet(SW, SH, art(id, 101 + k, false, o.variant)), sp = makeSheet(PW, PH, art(id, 101 + k, true, o.variant));
+        P.odd.push({ o, k, d: sd, p: sp, frac: 0.28 + k * 0.24, out: 22 + k * 9, rr: 2.5 + k * 1.8 });
+        P.el.appendChild(sd.el); P.el.appendChild(sp.el);
+      });
+    }
+    P.sheets = []; P.psheets = [];
+    for (let i = 0; i < P.n; i++) {
+      const sm = P.samples[i];
+      const d = makeSheet(SW, SH, art(id, sm.seed, false)), p = makeSheet(PW, PH, art(id, sm.seed, true));
+      d.path = p.path = sm.path;
+      const top = i === 0 ? 0.35 : 1;
+      d.bx = (r() - 0.5) * 5 * top; d.by = (r() - 0.5) * 4 * top; d.br = (r() - 0.5) * 2.2 * top;
+      p.bx = SW + PGAP + (r() - 0.5) * 3 * top; p.by = SH - PH + (r() - 0.5) * 3 * top; p.br = (r() - 0.5) * 2.6 * top;
+      P.sheets.push(d); P.psheets.push(p);
+    }
+    // bottom sheets first so the DOM order matches the stack
+    for (let i = P.n - 1; i >= 0; i--) { P.el.appendChild(P.sheets[i].el); P.el.appendChild(P.psheets[i].el); }
+    if (id === 'docs' && !opts.still) {
+      (t.capture.failedPaths || []).forEach((path, k) => {
+        const el = h('div', 'b-sheet'); el.style.width = SW * 0.62 + 'px'; el.style.height = SH * 0.62 + 'px';
+        el.appendChild(h('div', 'b-failed', '<b>!</b>'));
+        P.el.appendChild(el); P.fails.push({ el, path, k });
+      });
+    }
+    P.lander = makeSheet(SW, SH); P.plander = makeSheet(PW, PH); P.lander.op = P.plander.op = 0;
+    P.el.appendChild(P.lander.el); P.el.appendChild(P.plander.el);
+    P.sheen = h('div', 'b-sheen', '<i></i>'); P.el.appendChild(P.sheen);
+    layoutPile(P);
+    P.render = function () { renderPile(P); };
+    P.step = function (dt, now) { return stepPile(P, dt, now); };
+    renderPile(P);
+    return P;
+  }
+  function reamT(P) { return Math.max(0, P.done - Math.min(P.done, P.n)) * PER_PAGE + (P.done > 0 ? 1.5 : 0); }
+  function layoutPile(P) {
+    const T = reamT(P), visible = Math.min(P.n, P.done);
+    P.first = P.n - visible;
+    for (let i = 0; i < P.n; i++) {
+      const d = P.sheets[i], p = P.psheets[i];
+      const z = T + (P.n - 1 - i) * ZGAP + 0.6 - P.first * ZGAP;
+      d.x = d.bx; d.y = d.by; d.z = z; d.r = d.br; p.x = p.bx; p.y = p.by; p.z = z; p.r = p.br;
+      d.op = p.op = i >= P.first ? 1 : 0;
+      d.sc = p.sc = 1;
+    }
+    P.topZ = T + Math.max(0, visible - 1) * ZGAP + 0.6;
+    setBox(P.reamD, T); setBox(P.reamP, T);
+    const full = P.total * PER_PAGE + Math.min(P.total, P.n) * ZGAP;
+    const showGhost = P.done < P.total;
+    P.ghostD.style.display = P.ghostP.style.display = showGhost ? '' : 'none';
+    if (showGhost) { setBox(P.ghostD, full, 0); setBox(P.ghostP, full, 0); }
+    P.odd.forEach((od) => {
+      const z = Math.max(0.5, T * od.frac);
+      Object.assign(od.d, { x: od.out, y: 6 + od.k * 3, z, r: od.rr });
+      Object.assign(od.p, { x: SW + PGAP + od.out * 0.35, y: SH - PH + 4, z, r: od.rr * 0.6 });
+    });
+    P.fails.forEach((f) => { f.x = SW * 0.62 + f.k * 18; f.y = SH * 0.42 + f.k * 10; f.z = P.topZ + 1.2 + f.k * 0.8; f.r = 14 + f.k * 9; });
+    const H = Math.max(T, P.topZ), sh = 4 + H * 0.5;
+    const shadow = (el, w, hh, x, y) => { el.style.cssText = `width:${w}px;height:${hh}px;transform:translate3d(${x}px,${y}px,-.4px);box-shadow:${(2 + H * 0.12).toFixed(1)}px ${(3 + H * 0.15).toFixed(1)}px ${(3 + H * 0.15).toFixed(1)}px rgba(9,20,82,.42),${(sh * 0.9).toFixed(1)}px ${(sh * 1.1).toFixed(1)}px ${(sh * 1.6).toFixed(1)}px rgba(9,20,82,.32),${(sh * 2.2).toFixed(1)}px ${(sh * 2.6).toFixed(1)}px ${(sh * 3.4).toFixed(1)}px rgba(9,20,82,.2);opacity:${P.done > 0 ? 1 : 0}`; };
+    shadow(P.shadowD, SW, SH, 0, 0); shadow(P.shadowP, PW, PH, SW + PGAP, SH - PH);
+    P.sheen.style.cssText = `width:${FW}px;height:${FH}px;transform:translate3d(0,0,${P.topZ + 1}px)`;
+    P.dirty = true;
+  }
+  function renderPile(P) {
+    P.el.style.transform = chain(P);
+    for (let i = 0; i < P.n; i++) { renderSheet(P.sheets[i]); renderSheet(P.psheets[i]); }
+    P.odd.forEach((od) => { if (!od.gone) { renderSheet(od.d); renderSheet(od.p); } });
+    P.fails.forEach((f) => { f.el.style.transform = `translate3d(${f.x}px,${f.y}px,${f.z}px) rotateZ(${f.r}deg) rotateY(${f.k ? -8 : -12}deg)`; f.el.style.opacity = f.op == null ? 1 : f.op; });
+    renderSheet(P.lander); renderSheet(P.plander);
+    P.dirty = false;
+  }
+  function stepPile(P, dt, now) {
+    let moving = false;
+    const all = P.sheets.concat(P.psheets);
+    for (const s of all) {
+      if (s.due) { if (now >= s.due) { s.thT = s.dueT; s.due = 0; } else moving = true; }
+      const lifting = s.thT > s.th;
+      const k = lifting ? SPR.lift : SPR.drop;
+      moving = springStep(s, 'th', k[0], k[1], dt) || moving;
+      moving = springStep(s, 'hop', SPR.hop[0], SPR.hop[1], dt) || moving;
+    }
+    P.dirty = true;
+    return moving;
+  }
+
+  /* ---------- the riffle ---------- */
+  function riffleTo(P, L, quiet) {
+    if (P.done === 0 || P.opened) return;
+    L = clamp(L, P.first, P.n - 1);
+    if (L === P.L && P.riffling) return;
+    const prev = P.L; P.L = L; P.riffling = true;
+    if (RM()) {
+      // reduced motion: no flicking, the shown page simply changes
+      const s = P.sheets[L];
+      setSrc(P.sheets[P.first], s.src); setSrc(P.psheets[P.first], P.psheets[L].src);
+      showTag(P, L); return;
+    }
+    const now = performance.now();
+    [P.sheets, P.psheets].forEach((arr, k) => arr.forEach((s, i) => {
+      if (i < P.first) return;
+      const lifted = i < L;
+      const tgt = lifted ? Math.min(130, 97 + (L - 1 - i) * 2.8) : 0;
+      if (k) { s.due = now + MS.phoneLag; s.dueT = tgt; } else { s.thT = tgt; s.due = 0; }
+      s.hopT = i === L ? 1 : 0;
+    }));
+    if (!quiet) showTag(P, L);
+    if (L !== prev && navigator.vibrate && P._touch) try { navigator.vibrate(4); } catch (e) { /* no haptics */ }
+    wake(P);
+  }
+  function release(P) {
+    if (!P.riffling) return;
+    P.riffling = false;
+    if (RM()) { layoutPileArt(P); hideTag(); return; }
+    const now = performance.now(), L = P.L;
+    [P.sheets, P.psheets].forEach((arr, k) => arr.forEach((s, i) => {
+      if (i < L) { s.due = now + (L - 1 - i) * MS.stagger + (k ? MS.phoneLag : 0); s.dueT = 0; }
+      s.hopT = 0;
+    }));
+    P.L = P.first;
+    hideTag(); wake(P);
+  }
+  function layoutPileArt(P) { P.sheets.forEach((s, i) => setSrc(s, art(P.id, P.samples[i] ? P.samples[i].seed : s.seed, false))); P.psheets.forEach((s, i) => setSrc(s, art(P.id, P.samples[i] ? P.samples[i].seed : s.seed, true))); }
+
+  /* ---------- live screen state ---------- */
+  let section, live, piles = {}, flyers = [], labels = {}, lane, tagEl, ghostC, liveRegion, openEl, prevEl, foot, mounted = false, shownOnce = false;
+  let auto = null, ticker = null, opened = null, oddPlaced = { blog: false, docs: false, product: false };
+
+  function topBar(board, startMode) {
+    const bar = h('div', 'b-top');
+    bar.appendChild(h('div', 'b-logo', ICON.logo + '<span>ShotDomain</span>'));
+    if (startMode) { bar.appendChild(h('div', 'b-spacer')); bar.appendChild(h('span', 'b-btn b-btn--ghost', 'Past captures')); board.appendChild(bar); return bar; }
+    bar.appendChild(h('div', 'b-domain', '<strong>example.com</strong><span>412 pages</span>', { title: 'Site being captured' }));
+    const search = h('label', 'b-search', ICON.find + '<input type="search" placeholder="Find a page" aria-label="Find one exact page by its path" autocomplete="off" spellcheck="false"><div class="b-found" role="status"></div>');
+    bar.appendChild(search);
+    const devs = h('div', 'b-devs', null, { role: 'group', 'aria-label': 'Devices' });
+    const dIcon = { desktop: ICON.desktop, ipad: ICON.ipad, iphone: ICON.iphone, pixel: ICON.pixel };
+    SITE.devices.forEach((d) => {
+      const b = h('button', 'b-dev', dIcon[d.id], { type: 'button', 'aria-pressed': String(d.picked), 'aria-label': `${d.name}, ${d.width} px wide`, title: `${d.name}, ${d.width} px` });
+      b.addEventListener('click', () => { b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')); updateFoot(); });
+      devs.appendChild(b);
+    });
+    bar.appendChild(devs);
+    bar.appendChild(h('div', 'b-spacer'));
+    const optB = h('button', 'b-btn b-btn--ghost', ICON.opts + 'Options', { type: 'button', 'aria-expanded': 'false', 'aria-haspopup': 'dialog' });
+    const shareB = h('button', 'b-btn b-btn--line', ICON.share + 'Share', { type: 'button', 'aria-expanded': 'false', 'aria-haspopup': 'dialog' });
+    const zipB = h('button', 'b-btn b-btn--paper', ICON.ream + 'Download ZIP', { type: 'button' });
+    bar.appendChild(optB); bar.appendChild(shareB); bar.appendChild(zipB);
+    board.appendChild(bar);
+    // popovers
+    const optPop = h('div', 'b-pop', '<h3>Options</h3>', { role: 'dialog', 'aria-label': 'Options' }); optPop.style.right = '262px';
+    const o = SITE.options;
+    [['fullPage', 'Full page', 'Capture the whole scroll, not just the first screen'], ['hideCookieBanners', 'Hide cookie banners', 'Click away consent pop-ups first'], ['login', 'Use a login session', 'Capture pages behind a sign-in'], ['customCss', 'Custom CSS', 'Inject your own CSS before each shot']].forEach(([k, name, sub]) => {
+      const sw = h('button', 'b-sw', `<span>${name}<small>${sub}</small></span><i></i>`, { type: 'button', role: 'switch', 'aria-checked': String(!!o[k]) });
+      sw.addEventListener('click', () => sw.setAttribute('aria-checked', String(sw.getAttribute('aria-checked') !== 'true')));
+      optPop.appendChild(sw);
+    });
+    const sharePop = h('div', 'b-pop', `<h3>Share link</h3><p>Anyone with the link sees the piles and every page. It stops working in ${SITE.share.daysLeft} days.</p><span class="b-link">${SITE.share.url}</span><div class="b-row"><button type="button" class="b-btn b-btn--sm b-btn--ink">Copy link</button><button type="button" class="b-btn b-btn--sm b-btn--danger">Stop sharing</button></div>`, { role: 'dialog', 'aria-label': 'Share link' });
+    sharePop.style.right = '160px';
+    const stopB = sharePop.querySelector('.b-btn--danger');
+    stopB.addEventListener('click', () => { sharePop.querySelector('h3').textContent = 'Sharing stopped'; sharePop.querySelector('p').textContent = 'The link no longer works. Share again to make a new one.'; sharePop.querySelector('.b-link').style.textDecoration = 'line-through'; stopB.disabled = true; stopB.textContent = 'Stopped'; });
+    sharePop.querySelector('.b-btn--ink').addEventListener('click', (e) => { e.currentTarget.textContent = 'Copied'; });
+    board.appendChild(optPop); board.appendChild(sharePop);
+    function pop(btn, el, other, otherBtn) {
+      btn.addEventListener('click', () => { const on = !el.classList.contains('on'); el.classList.toggle('on', on); btn.setAttribute('aria-expanded', String(on)); other.classList.remove('on'); otherBtn.setAttribute('aria-expanded', 'false'); });
+    }
+    pop(optB, optPop, sharePop, shareB); pop(shareB, sharePop, optPop, optB);
+    board.addEventListener('keydown', (e) => { if (e.key === 'Escape') { optPop.classList.remove('on'); sharePop.classList.remove('on'); optB.setAttribute('aria-expanded', 'false'); shareB.setAttribute('aria-expanded', 'false'); } });
+    zipB.addEventListener('click', () => { zipB.lastChild.textContent = 'Preparing ZIP'; later(1400, () => { zipB.lastChild.textContent = 'Download ZIP'; }); });
+    // find one exact page
+    const input = search.querySelector('input'), found = search.querySelector('.b-found');
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') findPage(input.value.trim(), found); e.stopPropagation(); });
+    input.addEventListener('input', () => { if (!input.value) found.classList.remove('on'); });
+    return bar;
+  }
+
+  function findPage(q, found) {
+    if (!q) return;
+    if (q[0] !== '/') q = '/' + q;
+    let hit = null;
+    for (const id in piles) {
+      const P = piles[id];
+      const i = P.sheets.findIndex((s) => s.path === q);
+      if (i >= 0) { hit = { P, i }; break; }
+      const o = TPL[id].outliers.find((x) => x.path === q);
+      if (o) { hit = { P, odd: o }; break; }
+      if ((TPL[id].capture.failedPaths || []).includes(q) && P.failed) { hit = { P, failed: true }; break; }
+    }
+    if (!hit) { found.textContent = `No page at ${q}. Paths start with a slash, like /blog/benchmarks.`; found.classList.add('on'); say(found.textContent); return; }
+    const name = TPL[hit.P.id].name;
+    if (hit.odd) {
+      found.textContent = `${q} is in Odd ones: ${hit.odd.why}.`;
+      const card = lane.querySelector(`[data-path="${q}"]`);
+      if (card && !card.classList.contains('off')) { card.classList.remove('pulse'); void card.offsetWidth; card.classList.add('pulse'); }
+      else found.textContent = `${q} is in ${name}. It will be pulled out when the pile finishes: ${hit.odd.why}.`;
+    } else if (hit.failed) {
+      found.textContent = `${q} failed in ${name}. Retry it under the pile.`;
+    } else {
+      found.textContent = `${q} is in ${name}. Showing it on the pile.`;
+      const P = hit.P;
+      if (P.opened) { /* already spread out */ } else {
+        // riffle the pile to it, one page at a time
+        let L = P.first; const step = () => { if (L > hit.i) return; riffleTo(P, L); L++; later(70, step); };
+        step(); later(70 * (hit.i - P.first + 1) + 1800, () => { if (!P._pointer) release(P); });
+      }
+    }
+    found.classList.add('on'); say(found.textContent);
+  }
+
+  function say(msg) { if (liveRegion) { liveRegion.textContent = ''; later(20, () => { liveRegion.textContent = msg; }); } }
+
+  /* labels under each pile */
+  function buildLabel(P) {
+    const t = P.t, L = LAYOUT[P.id];
+    const el = h('div', 'b-label');
+    el.style.left = (L.x - 126) + 'px'; el.style.top = (L.y + (L.y > 400 ? 62 : 74)) + 'px';
+    el.innerHTML = `<div class="b-name"><button type="button" class="b-pick" role="checkbox" aria-checked="${P.picked}" aria-label="Capture ${t.name}">${ICON.tick}</button><span>${t.name}</span></div><div class="b-pat">${t.pattern}</div><div class="b-stat"></div>`;
+    const pick = el.querySelector('.b-pick');
+    pick.addEventListener('click', () => { P.picked = !P.picked; pick.setAttribute('aria-checked', String(P.picked)); P.wrap.style.opacity = P.picked ? '' : (P.done > 0 ? '.4' : ''); [P.ghostD, P.ghostP].forEach((g) => g.classList.toggle('faint', !P.picked)); updateLabel(P); updateFoot(); });
+    labels[P.id] = el;
+    updateLabel(P);
+    return el;
+  }
+  function updateLabel(P) {
+    const el = labels[P.id]; if (!el) return;
+    const st = el.querySelector('.b-stat'), t = P.t;
+    const total = P.total, done = P.done;
+    let html = '';
+    if (!P.picked) html = `<span class="b-n">${total}</span><span>pages</span><span class="b-chip wait">Not picked</span>`;
+    else if (done >= total - P.failed && P.failed === 0 && done >= total) html = `<span class="b-n">${total}</span><span>${total === 1 ? 'page' : 'pages'}</span><span class="b-chip done">${ICON.tick}Done</span>`;
+    else if (done === 0) html = `<span class="b-n">${total}</span><span>pages</span><span class="b-chip wait">${P.id === 'product' && piles.docs && piles.docs.done + piles.docs.failed < piles.docs.total ? 'Queued, after Docs' : 'Queued'}</span>`;
+    else {
+      html = `<span class="b-n">${done}</span><span>of ${total}</span><span class="b-bar"><i style="transform:scaleX(${(done / total).toFixed(3)})"></i>${P.failed ? `<b style="left:${(done / total * 100).toFixed(1)}%;width:${Math.max(3, P.failed / total * 100).toFixed(1)}%"></b>` : ''}</span>`;
+    }
+    st.innerHTML = html;
+    if (P.failed && P.picked) {
+      const row = h('div', 'b-stat', `<span class="b-chip fail">${ICON.warn}${P.failed} failed</span><button type="button" class="b-btn b-btn--sm b-btn--line b-retry">Retry ${P.failed}</button>`);
+      row.querySelector('.b-retry').addEventListener('click', () => retry(P));
+      st.after(row); const old = el.querySelectorAll('.b-stat'); if (old.length > 2) old[2].remove();
+    } else { const old = el.querySelectorAll('.b-stat'); for (let i = 1; i < old.length; i++) old[i].remove(); }
+    const hit = P.hit; if (hit) hit.setAttribute('aria-label', `${t.name}, ${t.pattern}, ${P.done >= total ? total + ' pages, done' : P.done + ' of ' + total + ' captured'}. Arrow keys riffle, Enter opens.`);
+  }
+  function updateFoot() {
+    if (!foot) return;
+    let done = 0, total = 0;
+    const segs = foot.querySelectorAll('.b-pbar span');
+    SITE.templates.forEach((t, k) => {
+      const P = piles[t.id];
+      if (P.picked) { done += P.done; total += P.total; }
+      const seg = segs[k]; seg.classList.toggle('off', !P.picked);
+      seg.firstChild.style.transform = `scaleX(${P.picked ? (P.done / P.total).toFixed(3) : 0})`;
+      seg.lastChild.style.width = P.failed ? Math.max(3, P.failed / P.total * 100) + '%' : '0';
+    });
+    const devs = Array.from(live.querySelectorAll('.b-dev[aria-pressed="true"]')).map((b) => b.getAttribute('title').split(',')[0]);
+    const devText = devs.length ? devs.slice(0, -1).join(', ') + (devs.length > 1 ? ' and ' : '') + devs[devs.length - 1] : 'no device';
+    foot.querySelector('.b-total').textContent = `${done} of ${total} pages`;
+    foot.querySelector('.b-sub').textContent = done >= total ? `All captured on ${devText}` : `captured on ${devText}`;
+  }
+
+  function buildLane(board) {
+    lane = h('div', 'b-lane', '<h3>Odd ones</h3><p>Pages that break their template, pulled out when a pile finishes.</p>', { role: 'region', 'aria-label': 'Odd ones' });
+    board.appendChild(lane);
+    let y = 120;
+    const groups = [['blog', 'Blog post'], ['docs', 'Docs page'], ['product', 'Product']];
+    groups.forEach(([id, name]) => {
+      const t = TPL[id];
+      const g = h('div', 'b-grp', `${name}, ${t.outliers.length}`); g.style.top = y + 'px'; lane.appendChild(g); y += 22;
+      t.outliers.forEach((o, k) => {
+        const card = laneCard(id, o, k); card.style.top = y + 'px'; card.dataset.top = y; lane.appendChild(card);
+        y += id === 'blog' ? 104 : 96;
+      });
+      y += 6;
+    });
+    return lane;
+  }
+  function laneCard(id, o, k) {
+    const card = h('div', 'b-card off', null, { 'data-path': o.path, 'data-id': id });
+    const dx = 52, dy = 10, dw = 128, dh = 80, px = 196, py = 12, pw = 36, ph = 78;
+    card.innerHTML = `<div class="b-thumb" style="left:${dx}px;top:${dy}px;width:${dw}px;height:${dh}px;transform:rotate(${k % 2 ? 1.2 : -1.4}deg)"><img alt="" src="${art(id, 101 + k, false, o.variant)}"></div>` +
+      `<div class="b-thumb" style="left:${px}px;top:${py}px;width:${pw}px;height:${ph}px;transform:rotate(${k % 2 ? -1 : 1.6}deg)"><img alt="" src="${art(id, 101 + k, true, o.variant)}"></div>` +
+      `<div class="b-flag" style="left:16px;top:${dy + 14}px">${ICON.flag}${o.why}</div>` +
+      `<div class="b-path" style="left:${dx}px;top:${dy + dh + 6}px">${o.path}</div>`;
+    card.setAttribute('aria-label', `${o.path}: ${o.why}`);
+    card._slot = { dx, dy, dw, dh, px, py, pw, ph };
+    return card;
+  }
+  function laneSlot(id, k) {
+    const card = lane.querySelector(`.b-card[data-id="${id}"][data-path="${TPL[id].outliers[k].path}"]`);
+    const top = +card.dataset.top - lane.scrollTop, s = card._slot, lx = 1000, ly = 86;
+    return { card, d: { x: lx + s.dx, y: ly + top + s.dy, w: s.dw, rz: k % 2 ? 1.2 : -1.4 }, p: { x: lx + s.px, y: ly + top + s.py, w: s.pw, rz: k % 2 ? -1 : 1.6 } };
+  }
+
+  /* ---------- the odd ones jump out ---------- */
+  function flyer(sheet, P, isPhone) {
+    // a free sheet in its own perspective wrap, starting exactly where it sat in the pile
+    const wrap = h('div', 'b-wrap'); wrap.style.zIndex = 4;
+    const el = h('div', 'b-fly'); el.style.width = sheet.w + 'px'; el.style.height = sheet.h + 'px';
+    el.innerHTML = `<img alt="" src="${sheet.src}"><div class="b-back"><img alt="" src="${sheet.src}"></div>`;
+    wrap.appendChild(el); live.appendChild(wrap);
+    const f = { wrap, el, cx: P.cx, cy: P.cy, tilt: P.tilt, rz: P.rz, s: P.s, x: sheet.x, y: sheet.y, z: sheet.z, r: sheet.r, lift: 0, spin: 0, k: 1, dirty: true, w: sheet.w, h: sheet.h };
+    f.render = function () {
+      el.style.transform = `translate3d(${f.cx.toFixed(2)}px,${f.cy.toFixed(2)}px,0) rotateX(${f.tilt.toFixed(2)}deg) rotateZ(${f.rz.toFixed(2)}deg) scale3d(${f.s},${f.s},${f.s}) translate3d(${-FW / 2}px,${-FH / 2}px,0) translate3d(${f.x.toFixed(2)}px,${f.y.toFixed(2)}px,${(f.z + f.lift).toFixed(2)}px) rotateZ(${f.r.toFixed(2)}deg) rotateX(${f.spin.toFixed(2)}deg) scale(${f.k.toFixed(4)})`;
+      f.dirty = false;
+    };
+    f.render(); flyers.push(f);
+    return f;
+  }
+  function jumpOut(P, od, delay, onLand) {
+    const slot = laneSlot(P.id, od.k);
+    const go = () => {
+      od.gone = true; od.d.el.style.visibility = od.p.el.style.visibility = 'hidden';
+      [[od.d, slot.d, 0], [od.p, slot.p, 60]].forEach(([sheet, to, lag], which) => {
+        const f = flyer(sheet, P, which === 1);
+        const from = { cx: f.cx, cy: f.cy, tilt: f.tilt, rz: f.rz, s: f.s, x: f.x, y: f.y, z: f.z, r: f.r };
+        // the target: flat, unrotated pile frame placed so the sheet's corner lands on the lane slot
+        const k = to.w / sheet.w;
+        const tgt = { tilt: 0, rz: 0, s: 1, x: 0, y: 0, z: 0, r: to.rz, cx: to.x + FW / 2, cy: to.y + FH / 2 };
+        const outX = from.x + 64 + od.k * 6;
+        // 1. slide out of the stack
+        tween(MS.flyOut, decel, (u) => { f.x = lerp(from.x, outX, u); f.z = from.z + u * 10; f.dirty = true; }, lag, () => {
+          const a = { x: f.x, z: f.z };
+          // 2. spring through the air into the lane
+          tween(MS.fly, decel, (u) => {
+            const v = inout(Math.min(1, u * 1.08));
+            f.cx = lerp(from.cx, tgt.cx, u); f.cy = lerp(from.cy, tgt.cy, u);
+            f.tilt = lerp(from.tilt, 0, v); f.rz = lerp(from.rz, 0, v); f.s = lerp(from.s, 1, v);
+            f.x = lerp(a.x, 0, u); f.y = lerp(from.y, 0, u); f.z = lerp(a.z, 0, u);
+            f.lift = Math.sin(Math.PI * Math.min(1, u * 1.04)) * 170;
+            f.r = lerp(from.r, to.rz, u) + Math.sin(Math.PI * u) * (od.k % 2 ? -14 : 12);
+            f.k = lerp(1, k, v);
+            f.spin = -360 * inout(Math.min(1, u * 1.15));
+            f.dirty = true;
+          }, 0, () => {
+            // land: hand over to the lane's own thumbnail
+            later(16, () => { f.wrap.remove(); flyers.splice(flyers.indexOf(f), 1); });
+            if (which === 1) { slot.card.classList.remove('off'); if (onLand) onLand(); }
+            else { const th = slot.card.querySelectorAll('.b-thumb')[0]; th.style.opacity = 1; }
+          });
+        });
+      });
+    };
+    if (RM()) { od.gone = true; od.d.el.style.visibility = od.p.el.style.visibility = 'hidden'; slot.card.classList.remove('off'); if (onLand) onLand(); return; }
+    later(delay, go);
+  }
+  function placeOddsNow(id) {
+    const P = piles[id]; if (!P) return;
+    P.odd.forEach((od) => { od.gone = true; od.d.el.style.visibility = od.p.el.style.visibility = 'hidden'; });
+    lane.querySelectorAll(`.b-card[data-id="${id}"]`).forEach((c) => { c.classList.remove('off'); c.querySelectorAll('.b-thumb').forEach((t) => { t.style.opacity = ''; }); });
+    oddPlaced[id] = true;
+  }
+  function sheen(P) {
+    if (RM()) return;
+    const band = P.sheen.firstChild; P.sheen.style.opacity = 1;
+    tween(560, inout, (u) => { band.style.transform = `translateX(${(u * (FW + 120)).toFixed(1)}px)`; }, 0, () => { P.sheen.style.opacity = 0; band.style.transform = ''; });
+  }
+  function finishPile(P, animate) {
+    updateLabel(P); updateFoot();
+    if (oddPlaced[P.id] || !TPL[P.id].outliers.length) return;
+    oddPlaced[P.id] = true;
+    say(`${TPL[P.id].name} is done. ${TPL[P.id].outliers.length} odd ${TPL[P.id].outliers.length === 1 ? 'page' : 'pages'} pulled out.`);
+    if (!animate || RM()) { placeOddsNow(P.id); return; }
+    sheen(P);
+    P.odd.forEach((od, k) => jumpOut(P, od, 330 + k * 180));
+    // scroll the lane to its group if it is below the fold
+    const first = lane.querySelector(`.b-card[data-id="${P.id}"]`);
+    if (first && +first.dataset.top > 520) later(200, () => lane.scrollTo({ top: +first.dataset.top - 150, behavior: 'smooth' }));
+  }
+
+  /* ---------- capture: pages land on their pile ---------- */
+  function landPage(P, path, seed, done) {
+    const d = P.lander, p = P.plander;
+    setSrc(d, art(P.id, seed, false)); setSrc(p, art(P.id, seed, true));
+    d.path = p.path = path;
+    const r = rng(seed * 7 + P.id.length);
+    const z0 = P.topZ + 1.2, jx = (r() - 0.5) * 18, jr = (r() - 0.5) * 9;
+    const commit = () => {
+      P.done += 1; P.landed++;
+      if (!P.riffling) {
+        // the new page becomes the top sheet; everything below shifts down one
+        for (let i = P.n - 1; i > 0; i--) { setSrc(P.sheets[i], P.sheets[i - 1].src); P.sheets[i].path = P.sheets[i - 1].path; setSrc(P.psheets[i], P.psheets[i - 1].src); }
+        setSrc(P.sheets[0], d.src); P.sheets[0].path = path; setSrc(P.psheets[0], p.src);
+      }
+      d.op = p.op = 0; layoutPile(P); P.sheets[P.first].hopv = -4; P.psheets[P.first].hopv = -4; wake(P);
+      updateLabel(P); updateFoot(); if (done) done();
+    };
+    if (RM()) { commit(); return; }
+    d.x = jx; d.y = (r() - 0.5) * 8; d.r = jr; p.x = SW + PGAP + jx * 0.3; p.y = SH - PH; p.r = jr * 0.7;
+    tween(MS.land, dropE, (u) => {
+      d.z = z0 + (1 - u) * 110; p.z = z0 + (1 - u) * 110;
+      d.op = p.op = Math.min(1, u * 3.5); d.x = jx * (1 - u) + P.sheets[0].bx * u; d.r = jr * (1 - u) + P.sheets[0].br * u;
+      p.x = SW + PGAP + jx * 0.3 * (1 - u) + (P.psheets[0].bx - SW - PGAP) * u; p.r = jr * 0.7 * (1 - u);
+      P.dirty = true;
+    }, 0, commit);
+  }
+  function startTicker() {
+    stopTicker();
+    const D = piles.docs, Pr = piles.product;
+    let di = 0, pi = 0;
+    const tick = () => {
+      if (D.done + D.failed < D.total) {
+        landPage(D, LAND.docs[di % LAND.docs.length], 30 + di, () => {
+          if (D.done + D.failed >= D.total) { finishPile(D, true); updateLabel(Pr); }
+        });
+        di++; ticker = later(2400, tick); return;
+      }
+      if (Pr.picked && Pr.done < Pr.total) {
+        landPage(Pr, LAND.product[pi % LAND.product.length], 60 + pi, () => { if (Pr.done >= Pr.total) finishPile(Pr, true); });
+        pi++; ticker = later(1300, tick); return;
+      }
+      ticker = null; updateFoot();
+    };
+    ticker = later(1600, tick);
+  }
+  function stopTicker() { if (ticker) { clearTimeout(ticker); timers = timers.filter((x) => x !== ticker); ticker = null; } }
+  function retry(P) {
+    if (!P.failed) return;
+    const fails = P.fails.slice();
+    P.failed = 0; updateLabel(P);
+    fails.forEach((f, k) => {
+      const seed = 80 + k;
+      const go = () => {
+        tween(RM() ? 0 : 300, decel, (u) => { f.op = 1 - u; f.z += 0.6; P.dirty = true; }, k * 160, () => {
+          f.el.remove(); P.fails.splice(P.fails.indexOf(f), 1);
+          landPage(P, f.path, seed, () => { if (P.done + P.failed >= P.total) finishPile(P, true); });
+        });
+      };
+      go();
+    });
+    say(`Retrying ${fails.length} pages in ${P.t.name}.`);
+  }
+
+  /* ---------- the riffle's floating tag ---------- */
+  function showTag(P, L) {
+    const s = P.sheets[L]; if (!s) return;
+    const lay = LAYOUT[P.id];
+    tagEl.innerHTML = `${s.path}<small>${P.t.name}, Desktop and iPhone</small>`;
+    tagEl.style.transform = `translate(${lay.x - 132}px,${lay.y - 150}px)`;
+    tagEl.classList.add('on');
+    if (!P._sayT || performance.now() - P._sayT > 900) { P._sayT = performance.now(); say(`Showing ${s.path}`); }
+  }
+  function hideTag() { tagEl.classList.remove('on'); }
+
+  /* ---------- pointer and keyboard on a pile ---------- */
+  function buildHit(P) {
+    const lay = LAYOUT[P.id];
+    const b = h('button', 'b-hit', `<span class="b-vh">${P.t.name}</span>`, { type: 'button' });
+    const w = 300 * lay.s, top = lay.y - 120 * lay.s, bottom = lay.y + 58 * lay.s;
+    b.style.cssText = `left:${lay.x - w / 2}px;top:${top}px;width:${w}px;height:${bottom - top}px`;
+    P.hit = b; updateLabel(P);
+    let downX = 0, moved = false;
+    const pos = (e) => {
+      const r = b.getBoundingClientRect();
+      const u = clamp((e.clientX - r.left - r.width * 0.12) / (r.width * 0.76), 0, 1);
+      return P.first + Math.round(u * (P.n - 1 - P.first));
+    };
+    b.addEventListener('pointerenter', (e) => { P._pointer = true; P._touch = e.pointerType === 'touch'; });
+    b.addEventListener('pointermove', (e) => { if (e.pointerType === 'touch' && !e.buttons) return; if (Math.abs(e.clientX - downX) > 6) moved = true; riffleTo(P, pos(e)); });
+    b.addEventListener('pointerdown', (e) => { downX = e.clientX; moved = false; if (e.pointerType === 'touch') { b.setPointerCapture(e.pointerId); riffleTo(P, pos(e)); } });
+    b.addEventListener('pointerup', (e) => { if (e.pointerType === 'touch') release(P); });
+    b.addEventListener('pointerleave', () => { P._pointer = false; release(P); });
+    b.addEventListener('click', (e) => { if (moved && e.pointerType === 'touch') return; openPile(P); });
+    b.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); const L = (P.riffling ? P.L : P.first) + (e.key === 'ArrowRight' ? 1 : -1); riffleTo(P, L); }
+      if (e.key === 'Escape') release(P);
+    });
+    b.addEventListener('blur', () => release(P));
+    return b;
+  }
+
+  /* ---------- opening a pile: the stack spreads into its layout in one move ---------- */
+  const OPEN = { x0: 40, y0: 196, cw: 284, rh: 172, px: 168, py: 28 };
+  function slotXY(i) { const c = i % 3, r = Math.floor(i / 3); return { x: OPEN.x0 + c * OPEN.cw, y: OPEN.y0 + r * OPEN.rh }; }
+  const OCARD = { x: 900, y: 236, pitch: 162, dw: 176, dh: 110, px: 196, py: 22, pw: 46, ph: 100 };
+  function buildOpenView(id, staticMode) {
+    const t = TPL[id], P = piles[id];
+    const done = P ? P.done : t.capture.done;
+    const v = h('div', 'b-open' + (staticMode ? ' on ready' : ''), null, staticMode ? null : { role: 'region', 'aria-label': `${t.name}, opened` });
+    if (staticMode) v.style.opacity = 1;
+    const samples = samplesFor(id).slice(0, 9);
+    const odd = t.outliers;
+    v.innerHTML = `<div class="b-oh b-fade">${staticMode ? `<span class="b-btn b-btn--line">${ICON.stack}Back to piles</span>` : `<button type="button" class="b-btn b-btn--line b-back-btn">${ICON.stack}Back to piles</button>`}<h3>${t.name}</h3><div class="b-meta"><span>${t.pattern}</span><span><b>${done >= t.count ? t.count : done + ' of ' + t.count}</b> pages</span><span>Desktop and iPhone 14 Pro</span>${odd.length ? `<span><b>${odd.length}</b> odd</span>` : ''}</div><span class="b-spacer"></span><${staticMode ? 'span' : 'button type="button"'} class="b-btn b-btn--paper">${ICON.ream}Download ${t.name} ZIP</${staticMode ? 'span' : 'button'}></div>`;
+    samples.forEach((sm, i) => {
+      const xy = slotXY(i);
+      if (staticMode) {
+        v.appendChild(h('div', 'b-thumb', `<img alt="" src="${art(id, sm.seed, false)}">`, { style: `left:${xy.x}px;top:${xy.y}px;width:${SW}px;height:${SH}px` }));
+        v.appendChild(h('div', 'b-thumb', `<img alt="" src="${art(id, sm.seed, true)}">`, { style: `left:${xy.x + OPEN.px}px;top:${xy.y + OPEN.py}px;width:${PW}px;height:${PH}px` }));
+      } else {
+        const b = h('button', 'b-slotbtn', `<span class="b-vh">Preview ${sm.path}</span>`, { type: 'button', style: `left:${xy.x}px;top:${xy.y}px;width:${OPEN.px + PW}px;height:${OPEN.py + PH}px` });
+        b.addEventListener('click', () => preview(id, sm, xy, false));
+        v.appendChild(b);
+      }
+      v.appendChild(h('div', 'b-cap b-fade', `${sm.path}`, { style: `left:${xy.x}px;top:${xy.y + OPEN.py + PH + 10}px;transition-delay:${i * 30}ms` }));
+    });
+    const more = done - samples.length - (done >= t.count ? odd.length : 0);
+    if (more > 0) v.appendChild(h('div', 'b-more b-fade', `And ${more} more pages. Scroll to see them all.`));
+    if (odd.length) {
+      const col = h('div', 'b-ocol b-fade', `<h4>Odd ones, pulled out</h4><p>Each shown on Desktop and iPhone.</p>`);
+      v.appendChild(col);
+      odd.forEach((o, k) => {
+        const y = OCARD.y + k * OCARD.pitch - 176;
+        const c = h('div', 'b-ocard', `<div class="b-thumb" style="left:0;top:${OCARD.py + 14}px;width:${OCARD.dw}px;height:${OCARD.dh}px"><img alt="" src="${art(id, 101 + k, false, o.variant)}"></div><div class="b-thumb" style="left:${OCARD.px}px;top:${OCARD.py + 24}px;width:${OCARD.pw}px;height:${OCARD.ph}px"><img alt="" src="${art(id, 101 + k, true, o.variant)}"></div><div class="b-flag" style="left:0;top:${OCARD.py - 12}px">${ICON.flag}${o.why}</div><div class="b-path" style="left:${OCARD.pw + OCARD.px + 14}px;top:${OCARD.py + 30}px">${o.path.replace(/^\/[^/]+/, (m) => m + '<br>')}</div>`);
+        c.style.top = y + 'px';
+        if (!staticMode) { const b = h('button', 'b-slotbtn', `<span class="b-vh">Preview ${o.path}</span>`, { type: 'button', style: `left:0;top:${OCARD.py + 14}px;width:${OCARD.px + OCARD.pw}px;height:${OCARD.ph + 10}px` }); b.addEventListener('click', () => preview(id, { path: o.path, seed: 101 + k, variant: o.variant, why: o.why }, { x: OCARD.x, y: OCARD.y + k * OCARD.pitch + 14 }, true)); c.appendChild(b); }
+        col.appendChild(c);
+      });
+    }
+    return v;
+  }
+  function openPile(P) {
+    if (opened || P.done === 0) { if (P.done === 0) say(`${P.t.name} has no pages yet. It opens once pages are captured.`); return; }
+    if (auto) finishAuto();
+    release(P); hideTag();
+    opened = P; P.opened = true;
+    // fade everything else away
+    for (const id in piles) if (id !== P.id) { piles[id].wrap.style.opacity = 0; }
+    for (const id in labels) labels[id].style.opacity = 0, labels[id].style.pointerEvents = 'none';
+    for (const id in piles) piles[id].hit.style.visibility = 'hidden';
+    lane.style.opacity = 0; lane.style.pointerEvents = 'none';
+    openEl = buildOpenView(P.id, false); live.appendChild(openEl);
+    openEl.classList.add('on'); openEl.style.opacity = 1;
+    openEl.querySelector('.b-back-btn').addEventListener('click', () => closePile());
+    const from = { cx: P.cx, cy: P.cy, tilt: P.tilt, rz: P.rz, s: P.s };
+    const to = { cx: FW / 2, cy: FH / 2, tilt: 0, rz: 0, s: 1 };
+    const dur = MS.open;
+    // the ream sinks away as its sheets leave it
+    const faces = [].concat(Object.values(P.reamD._f), Object.values(P.reamP._f), [P.shadowD, P.shadowP], Object.values(P.ghostD._f), Object.values(P.ghostP._f));
+    tween(dur * 0.6, decel, (u) => { faces.forEach((f) => { f.style.opacity = 1 - u; }); P.fails.forEach((f) => { f.op = 1 - u; }); }, 0);
+    tween(dur, decel, (u) => { P.cx = lerp(from.cx, to.cx, u); P.cy = lerp(from.cy, to.cy, u); P.tilt = lerp(from.tilt, to.tilt, u); P.rz = lerp(from.rz, to.rz, u); P.s = lerp(from.s, to.s, u); P.dirty = true; });
+    const count = Math.min(9, P.n);
+    for (let i = 0; i < P.n; i++) {
+      const d = P.sheets[i], p = P.psheets[i];
+      const sd = { x: d.x, y: d.y, z: d.z, r: d.r, th: d.th }, sp = { x: p.x, y: p.y, z: p.z, r: p.r };
+      d.thT = 0; d.th = 0; p.thT = 0; p.th = 0; d.hopT = p.hopT = 0;
+      if (i < count && i >= P.first) {
+        const xy = slotXY(i);
+        tween(dur, decel, (u) => {
+          d.x = lerp(sd.x, xy.x, u); d.y = lerp(sd.y, xy.y, u); d.z = lerp(sd.z, 0, u) + Math.sin(Math.PI * u) * (40 + i * 6); d.r = lerp(sd.r, 0, u); d.shadow = u;
+          p.x = lerp(sp.x, xy.x + OPEN.px, u); p.y = lerp(sp.y, xy.y + OPEN.py, u); p.z = lerp(sp.z, 0.4, u) + Math.sin(Math.PI * u) * (52 + i * 6); p.r = lerp(sp.r, 0, u); p.shadow = u;
+          P.dirty = true;
+        }, i * MS.openStagger);
+      } else {
+        tween(dur * 0.5, decel, (u) => { d.op = p.op = 1 - u; P.dirty = true; }, 0);
+      }
+    }
+    // the lane's odd ones travel to the open view's column
+    const cards = openEl.querySelectorAll('.b-ocard');
+    cards.forEach((c, k) => {
+      const lc = lane.querySelector(`.b-card[data-id="${P.id}"][data-path="${P.t.outliers[k].path}"]`);
+      if (!lc || lc.classList.contains('off') || RM()) return;
+      const lt = +lc.dataset.top + 86 - lane.scrollTop;
+      const dx = 1000 + 52 - OCARD.x, dy = lt + 10 - (OCARD.y + k * OCARD.pitch + OCARD.py - 14 + 14 + 14), sc = 128 / OCARD.dw;
+      c.animate([{ transform: `translate(${dx}px,${dy}px) scale(${sc})`, transformOrigin: '0 0' }, { transform: 'none', transformOrigin: '0 0' }], { duration: dur, easing: 'cubic-bezier(.2,0,0,1)', delay: 80 + k * 50, fill: 'backwards' });
+    });
+    later(RM() ? 0 : dur * 0.62, () => openEl && openEl.classList.add('ready'));
+    later(RM() ? 0 : dur + 200, () => { const b = openEl && openEl.querySelector('.b-back-btn'); if (b) b.focus({ preventScroll: true }); });
+    say(`${P.t.name} opened. ${P.done} pages on Desktop and iPhone 14 Pro.`);
+  }
+  function closePile() {
+    const P = opened; if (!P) return;
+    if (prevEl.classList.contains('on')) closePreview();
+    const ov = openEl; openEl = null; ov.classList.remove('ready');
+    tween(RM() ? 0 : 200, decel, (u) => { ov.style.opacity = 1 - u; }, 0, () => ov.remove());
+    const L = LAYOUT[P.id], dur = MS.open;
+    const from = { cx: P.cx, cy: P.cy, tilt: P.tilt, rz: P.rz, s: P.s };
+    tween(dur, decel, (u) => { P.cx = lerp(from.cx, L.x, u); P.cy = lerp(from.cy, L.y, u); P.tilt = lerp(from.tilt, TILT, u); P.rz = lerp(from.rz, L.rz, u); P.s = lerp(from.s, L.s, u); P.dirty = true; }, 60);
+    const T0 = reamT(P);
+    const faces = [].concat(Object.values(P.reamD._f), Object.values(P.reamP._f), [P.shadowD, P.shadowP], Object.values(P.ghostD._f), Object.values(P.ghostP._f));
+    tween(dur * 0.5, decel, (u) => { faces.forEach((f) => { f.style.opacity = u; }); P.fails.forEach((f) => { f.op = u; }); }, dur * 0.45);
+    for (let i = 0; i < P.n; i++) {
+      const d = P.sheets[i], p = P.psheets[i];
+      const sd = { x: d.x, y: d.y, z: d.z, r: d.r, op: d.op }, sp = { x: p.x, y: p.y, z: p.z, r: p.r };
+      const zt = T0 + (P.n - 1 - i) * ZGAP + 0.6 - P.first * ZGAP;
+      const back = (P.n - 1 - i);
+      tween(dur, decel, (u) => {
+        d.x = lerp(sd.x, d.bx, u); d.y = lerp(sd.y, d.by, u); d.z = lerp(sd.z, zt, u) + Math.sin(Math.PI * u) * 30; d.r = lerp(sd.r, d.br, u); d.shadow = 1 - u;
+        p.x = lerp(sp.x, p.bx, u); p.y = lerp(sp.y, p.by, u); p.z = lerp(sp.z, zt, u) + Math.sin(Math.PI * u) * 36; p.r = lerp(sp.r, p.br, u); p.shadow = 1 - u;
+        if (i >= P.first) { d.op = p.op = Math.max(sd.op, u); }
+        P.dirty = true;
+      }, back * MS.openStagger * 0.7, i === 0 ? () => { P.opened = false; opened = null; layoutPile(P); restoreRest(P); } : null);
+    }
+  }
+  function restoreRest(P) {
+    for (const id in piles) { piles[id].wrap.style.opacity = piles[id].picked || piles[id].done === 0 ? '' : '.4'; piles[id].hit.style.visibility = ''; }
+    for (const id in labels) { labels[id].style.opacity = ''; labels[id].style.pointerEvents = ''; }
+    lane.style.opacity = ''; lane.style.pointerEvents = '';
+    if (P && P.hit) P.hit.focus({ preventScroll: true });
+  }
+
+  /* ---------- full-size preview: the page lifts off the grid ---------- */
+  function preview(id, sm, xy, isOdd) {
+    const big = prevEl.querySelector('.b-big'), bigp = prevEl.querySelector('.b-bigp');
+    big.firstChild.src = art(id, sm.seed, false, sm.variant); bigp.firstChild.src = art(id, sm.seed, true, sm.variant);
+    prevEl.querySelector('h3').textContent = sm.path;
+    prevEl.querySelector('.b-why').textContent = isOdd ? sm.why : '';
+    prevEl.querySelector('.b-why').style.display = isOdd ? '' : 'none';
+    prevEl.classList.add('on');
+    if (!RM()) {
+      const fromD = { x: xy.x, y: xy.y, w: isOdd ? OCARD.dw : SW }, fromP = { x: xy.x + (isOdd ? OCARD.px : OPEN.px), y: xy.y + (isOdd ? 10 : OPEN.py), w: isOdd ? OCARD.pw : PW };
+      big.animate([{ transform: `translate(${fromD.x - 48}px,${fromD.y - 126}px) scale(${fromD.w / 840})` }, { transform: 'none' }], { duration: 560, easing: 'cubic-bezier(.2,0,0,1)' });
+      bigp.animate([{ transform: `translate(${fromP.x - 930}px,${fromP.y - 126}px) scale(${fromP.w / 242})` }, { transform: 'none' }], { duration: 600, easing: 'cubic-bezier(.2,0,0,1)', delay: 30, fill: 'backwards' });
+    }
+    later(60, () => prevEl.querySelector('.b-close').focus({ preventScroll: true }));
+    prevEl._back = document.activeElement;
+  }
+  function closePreview() {
+    prevEl.classList.remove('on');
+    if (prevEl._back && prevEl._back.focus) prevEl._back.focus({ preventScroll: true });
+  }
+
+  /* ---------- the signature moment: ghost cursor riffles Blog post, it finishes, its odd ones jump out ---------- */
+  function startAuto() {
+    const B = piles.blog;
+    const L = LAYOUT.blog;
+    const p0 = { x: 640, y: 720 }, pA = { x: L.x - 128, y: L.y + 8 }, pB = { x: L.x + 132, y: L.y - 4 }, pC = { x: L.x + 300, y: L.y + 150 };
+    let landed = false, released = false, finished = false;
+    const ring = ghostC.querySelector('i');
+    auto = {
+      t0: performance.now(),
+      step(dt, now) {
+        if (!auto) return false;
+        const t = now - this.t0;
+        let x, y, op = 1, press = 0;
+        if (t < 950) { const u = decel(t / 950); x = lerp(p0.x, pA.x, u); y = lerp(p0.y, pA.y, u); op = Math.min(1, t / 250); }
+        else if (t < 1150) { x = pA.x; y = pA.y; press = (t - 950) / 200; }
+        else if (t < 3250) { const u = inout((t - 1150) / 2100); x = lerp(pA.x, pB.x, u); y = lerp(pA.y, pB.y, u) + Math.sin(u * Math.PI) * -6; press = 1; riffleTo(B, B.first + Math.round(u * (B.n - 1 - B.first))); }
+        else { const u = decel(Math.min(1, (t - 3250) / 1300)); x = lerp(pB.x, pC.x, u); y = lerp(pB.y, pC.y, u); press = Math.max(0, 1 - (t - 3250) / 180); op = 1 - clamp((t - 4300) / 500, 0, 1); if (!released) { released = true; release(B); } }
+        ghostC.style.opacity = op.toFixed(3);
+        ghostC.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`;
+        ring.style.opacity = (press * 0.9).toFixed(2); ring.style.transform = `scale(${(0.3 + press * 0.7).toFixed(3)})`;
+        if (!landed && t > 3700) { landed = true; landPage(B, LAND.blog[2], 9, () => { finishPile(B, true); }); }
+        if (!finished && t > 6100) { finished = true; finishAuto(); return false; }
+        return true;
+      }
+    };
+    // the last pages land just before the cursor arrives
+    later(120, () => auto && landPage(B, LAND.blog[0], 7));
+    later(560, () => auto && landPage(B, LAND.blog[1], 8));
+    wake(auto);
+  }
+  function finishAuto() {
+    if (!auto) return;
+    auto = null;
+    ghostC.style.opacity = 0;
+    const B = piles.blog;
+    clearTimers();
+    // land whatever was in flight, then settle on the end state
+    flyers.slice().forEach((f) => { f.wrap.remove(); }); flyers = [];
+    B.done = B.total; B.lander.op = B.plander.op = 0;
+    layoutPileArt(B); B.sheets.forEach((s, i) => { s.path = B.samples[i].path; });
+    if (B.riffling) release(B);
+    B.sheets.concat(B.psheets).forEach((s) => { s.th = s.thT = 0; s.thv = 0; s.due = 0; s.hop = s.hopT = 0; });
+    layoutPile(B); placeOddsNow('blog'); updateLabel(B); updateFoot(); hideTag();
+    B.sheen.style.opacity = 0;
+    loop.items.forEach((it) => { if (it !== B && !piles[Object.keys(piles).find((k) => piles[k] === it)]) loop.items.delete(it); });
+    startTicker();
+  }
+  function cancelOnInput(e) {
+    if (!auto) return;
+    if (e.type === 'pointermove' && e.pointerType === 'mouse' && !e.isTrusted) return;
+    finishAuto();
+  }
+
+  /* ---------- live screen ---------- */
+  function buildLive(board) {
+    const a = h('div', 'b-art'); board.appendChild(a); live = a;
+    a.appendChild(h('div', 'b-table')); a.appendChild(h('div', 'b-grain'));
+    a.appendChild(h('h3', 'b-vh', 'example.com, piles mid-capture'));
+    liveRegion = h('div', 'b-vh', null, { 'aria-live': 'polite' }); a.appendChild(liveRegion);
+    const playAuto = !RM();
+    SITE.templates.forEach((t) => {
+      const P = buildPile(t.id, { oddInside: t.outliers.length > 0, done: t.id === 'blog' && playAuto ? t.capture.done - 3 : undefined });
+      piles[t.id] = P; a.appendChild(P.wrap);
+    });
+    SITE.templates.forEach((t) => { const P = piles[t.id]; a.appendChild(buildLabel(P)); a.appendChild(buildHit(P)); if (!t.picked) P.wrap.style.opacity = ''; });
+    buildLane(a);
+    tagEl = h('div', 'b-tag', null, { 'aria-hidden': 'true' }); a.appendChild(tagEl);
+    foot = h('div', 'b-foot', `<div><div class="b-total"></div><div class="b-sub"></div></div><div class="b-pbar" aria-hidden="true">${SITE.templates.map((t) => `<span style="flex:${Math.max(6, t.count)}"><i></i><b></b></span>`).join('')}</div><span class="b-spacer"></span><span class="b-sub">Full pages, cookie banners hidden</span><button type="button" class="b-btn b-btn--sm b-btn--line">Pause capture</button>`);
+    a.appendChild(foot);
+    const pauseB = foot.querySelector('button');
+    pauseB.addEventListener('click', () => { if (ticker || auto) { stopTicker(); pauseB.textContent = 'Resume capture'; } else { startTicker(); pauseB.textContent = 'Pause capture'; } });
+    topBar(a, false);
+    ghostC = h('div', 'b-ghostc', '<i></i><svg viewBox="0 0 30 34" aria-hidden="true"><path d="M3 2l22 15.5-9.6 1.6 5.4 10.6-4.3 2.2-5.4-10.7L3.8 28z" fill="#fff" stroke="#0d1a5c" stroke-width="1.8" stroke-linejoin="round"/></svg>'); a.appendChild(ghostC);
+    prevEl = h('div', 'b-prev', `<div class="b-scrim"></div><div class="b-ph"><h3></h3><span class="b-flag b-why" style="position:relative"></span><span class="b-spacer"></span><button type="button" class="b-btn b-btn--paper b-close">Close preview</button></div><div class="b-big"><img alt=""></div><div class="b-bigp"><img alt=""></div><div class="b-pc" style="left:48px">Desktop<span>1920 px wide</span></div><div class="b-pc" style="left:930px">iPhone 14 Pro<span>393 px</span></div>`, { role: 'dialog', 'aria-label': 'Full-size preview' });
+    a.appendChild(prevEl);
+    prevEl.querySelector('.b-close').addEventListener('click', closePreview);
+    a.addEventListener('keydown', (e) => { if (e.key === 'Escape') { if (prevEl.classList.contains('on')) closePreview(); else if (opened) closePile(); } });
+    ['pointerdown', 'keydown', 'wheel'].forEach((ev) => a.addEventListener(ev, cancelOnInput, { passive: true }));
+    a.addEventListener('pointermove', cancelOnInput, { passive: true });
+    updateFoot();
+  }
+
+  /* ---------- still: Blog post opened ---------- */
+  function buildOpenStill(board) {
+    const a = h('div', 'b-art'); board.appendChild(a);
+    a.appendChild(h('div', 'b-table')); a.appendChild(h('div', 'b-grain'));
+    topBar(a, false);
+    a.querySelectorAll('button,input').forEach((b) => { b.tabIndex = -1; });
+    a.querySelectorAll('.b-pop').forEach((p) => p.remove());
+    const v = buildOpenView('blog', true); a.appendChild(v);
+    a.setAttribute('aria-hidden', 'true');
+  }
+
+  /* ---------- still: the start ---------- */
+  function buildStartStill(board) {
+    const a = h('div', 'b-art b-start'); board.appendChild(a);
+    a.appendChild(h('div', 'b-table')); a.appendChild(h('div', 'b-grain'));
+    topBar(a, true);
+    a.appendChild(h('h3', null, 'Every page of a site, sorted into piles.'));
+    a.appendChild(h('div', 'b-big-in', '<strong>example.com</strong><i class="b-caret"></i><span>Found 412 pages</span>'));
+    const sl1 = h('div', 'b-sl', 'Devices'); sl1.style.top = '388px'; a.appendChild(sl1);
+    const tiles = h('div', 'b-dtiles');
+    const dIcon = { desktop: ICON.desktop, ipad: ICON.ipad, iphone: ICON.iphone, pixel: ICON.pixel };
+    SITE.devices.forEach((d) => tiles.appendChild(h('div', 'b-dtile' + (d.picked ? ' on' : ''), `${dIcon[d.id]}<div><b>${d.name}</b><small>${d.width} px</small></div>`)));
+    a.appendChild(tiles);
+    const sl2 = h('div', 'b-sl', 'Options'); sl2.style.top = '538px'; a.appendChild(sl2);
+    const o = SITE.options, opts = h('div', 'b-opts');
+    [['fullPage', 'Full page'], ['hideCookieBanners', 'Hide cookie banners'], ['login', 'Use a login session'], ['customCss', 'Custom CSS']].forEach(([k, n]) => opts.appendChild(h('div', 'b-opt' + (o[k] ? ' on' : ''), `<i></i>${n}`)));
+    a.appendChild(opts);
+    a.appendChild(h('div', 'b-cta', 'Capture 404 pages'));
+    a.appendChild(h('div', 'b-cta-sub', 'On Desktop and iPhone 14 Pro. One-off pages left out.'));
+    // the sorter: URL slips arc from the domain into six piles
+    const spots = { blog: [740, 380], docs: [940, 380], product: [1140, 380], home: [740, 612], pricing: [940, 612], oneoff: [1140, 612] };
+    const src = [560, 326];
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg'); svg.setAttribute('width', 1280); svg.setAttribute('height', 800); svg.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none';
+    a.appendChild(svg);
+    const curves = {};
+    Object.keys(spots).forEach((id, k) => {
+      const [x, y] = spots[id];
+      const c1 = [src[0] + 120, src[1] - 150 + k * 10], c2 = [x - 40, y - 230 + (y > 500 ? 60 : 0)], end = [x, y - 50];
+      const d = `M${src[0]} ${src[1]} C${c1[0]} ${c1[1]} ${c2[0]} ${c2[1]} ${end[0]} ${end[1]}`;
+      const p = document.createElementNS(svgNS, 'path'); p.setAttribute('d', d); p.setAttribute('fill', 'none'); p.setAttribute('stroke', 'rgba(201,214,255,.35)'); p.setAttribute('stroke-width', '1.5'); p.setAttribute('stroke-dasharray', '2 6'); p.setAttribute('stroke-linecap', 'round');
+      svg.appendChild(p); curves[id] = [src, c1, c2, end];
+    });
+    const bz = (c, u) => { const m = 1 - u; return [0, 1].map((j) => m * m * m * c[0][j] + 3 * m * m * u * c[1][j] + 3 * m * u * u * c[2][j] + u * u * u * c[3][j]); };
+    // slip piles: reams of URL slips, height by count
+    const counts = { blog: 214, docs: 140, product: 48, home: 1, pricing: 1, oneoff: 8 };
+    Object.keys(spots).forEach((id) => {
+      const [x, y] = spots[id], t = TPL[id];
+      const wrap = h('div', 'b-wrap'); wrap.style.perspectiveOrigin = '900px 360px'; a.appendChild(wrap);
+      const pile = h('div', 'b-pile'); wrap.appendChild(pile);
+      const w = 132, d = 40, T = 2 + counts[id] * 0.12;
+      pile.style.transform = `translate3d(${x}px,${y}px,0) rotateX(${TILT}deg) rotateZ(${10 + (id.length % 3)}deg) translate3d(${-w / 2}px,${-d / 2}px,0)`;
+      const sh = h('div', 'b-shadow'); sh.style.cssText = `width:${w}px;height:${d}px;box-shadow:3px 4px 4px rgba(9,20,82,.4),${4 + T * 0.4}px ${5 + T * 0.5}px ${8 + T * 0.7}px rgba(9,20,82,.32)`; pile.appendChild(sh);
+      const box = faceBox(w, d, t.picked ? '' : 'b-ghost faint'); setBox(box, T); pile.appendChild(box);
+      const top = h('div', 'b-sheet', `<div style="position:absolute;inset:0;background:#fff;display:flex;align-items:center;padding:0 10px;font:600 13px var(--b-ui);color:#0d1a5c">${t.pattern.split(',')[0]}</div>`); top.style.cssText = `width:${w}px;height:${d}px;transform:translate3d(1px,-1px,${T + 0.6}px) rotateZ(-1deg)`;
+      if (t.picked) pile.appendChild(top);
+      const lab = h('div', 'b-spl', `<b>${counts[id]}</b><span>${t.name}</span>`); lab.style.left = (x - 64) + 'px'; lab.style.top = (y + 36) + 'px'; a.appendChild(lab);
+    });
+    // slips in flight along each curve
+    const slipsFor = { blog: ['/blog/q3-roadmap', '/blog/launch-notes', '/blog/benchmarks'], docs: ['/docs/webhooks', '/docs/api'], product: ['/product/oak-shelf', '/product/desk-lamp'], home: ['/'], pricing: ['/pricing'], oneoff: ['/careers', '/press'] };
+    Object.keys(slipsFor).forEach((id) => {
+      slipsFor[id].forEach((path, k, arr) => {
+        const u = 0.22 + (k / Math.max(1, arr.length)) * 0.55 + (id.length % 2) * 0.06;
+        const p = bz(curves[id], u), q = bz(curves[id], u + 0.01);
+        const ang = Math.atan2(q[1] - p[1], q[0] - p[0]) * 180 / Math.PI;
+        const slip = h('div', 'b-slip', path);
+        slip.style.transform = `translate(${p[0].toFixed(1)}px,${(p[1] - 13).toFixed(1)}px) rotate(${(ang * 0.35).toFixed(1)}deg) scale(${(0.9 + u * 0.15).toFixed(2)})`;
+        a.appendChild(slip);
+      });
+    });
+    a.setAttribute('aria-hidden', 'true');
+  }
+
+  /* ---------- registry ---------- */
+  function mount(sec) {
+    section = sec;
+    if (mounted) return; mounted = true;
+    buildLive(sec.querySelector('.b-live-board'));
+    buildOpenStill(sec.querySelector('.b-open-board'));
+    buildStartStill(sec.querySelector('.b-start-board'));
+    for (const id in piles) piles[id].render();
+  }
+  function show() {
+    loop.on = true;
+    if (!shownOnce) {
+      shownOnce = true;
+      if (!RM()) { later(450, startAuto); }
+      else { piles.blog.done = piles.blog.total; layoutPile(piles.blog); placeOddsNow('blog'); updateLabel(piles.blog); updateFoot(); startTicker(); }
+    } else if (!auto) startTicker();
+    wake();
+  }
+  function hide() {
+    if (auto) finishAuto();
+    loop.on = false; if (loop.raf) cancelAnimationFrame(loop.raf); loop.raf = 0;
+    clearTimers(); ticker = null;
+  }
+  window.Directions.b = { mount, show, hide };
+})();
+</script>
