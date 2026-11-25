@@ -204,7 +204,7 @@
 #dir-c .c-rv-tray{position:absolute;left:20px;top:524px;width:1240px;height:264px}
 #dir-c .c-rv-tray .c-tr-plate{left:28px;top:-12px;font-size:19px;padding:5px 12px 6px}
 #dir-c .c-chalk3{position:absolute;left:40px;right:40px;top:110px;text-align:center;font:400 20px/1.3 var(--c-hand);color:var(--c-birch-ink)}
-#dir-c .c-rv-retry{position:absolute;left:880px;top:612px}
+#dir-c .c-rv-retry{position:absolute;left:880px;top:600px}
 #dir-c .c-spread{position:absolute;left:32px;top:110px;width:1216px;height:390px;display:grid;grid-template-columns:repeat(22,48px);grid-auto-rows:30px;gap:6px 7.4px;align-content:start}
 #dir-c .c-mini{position:relative;width:48px;height:30px;padding:2px;background:var(--c-card);box-shadow:0 2px 3px -1px rgba(0,0,0,.5)}
 #dir-c .c-mini svg{display:block;width:100%;height:100%}
@@ -234,7 +234,7 @@
 #dir-c .c-flyc{z-index:6}
 
 /* full-size preview */
-#dir-c .c-lb{position:absolute;inset:0;z-index:8;background:rgba(9,28,24,.82)}
+#dir-c .c-lb{position:absolute;inset:0;z-index:8;background:rgba(9,28,24,.94)}
 #dir-c .c-lb-h{position:absolute;left:80px;right:80px;top:44px;display:flex;align-items:baseline;gap:18px;color:#eef4f1}
 #dir-c .c-lb-h b{font:800 30px/1 var(--c-ui);font-stretch:80%}
 #dir-c .c-lb-h span{font-size:15px;color:#c3d6ce}
@@ -324,7 +324,7 @@
     const s = { mode: kind === 'start' ? 'start' : 'live', t: {}, dev: {}, opt: Object.assign({}, SITE.options), posted: true, tray: kind === 'rest', stamped: kind === 'rest', zip: false, open: null };
     SITE.devices.forEach((d) => (s.dev[d.id] = d.picked));
     SITE.templates.forEach((t) => (s.t[t.id] = { picked: t.picked, done: t.capture.done, total: t.capture.total, failed: t.capture.failed, found: t.count }));
-    if (kind === 'pre') { s.t.blog.done = 208; s.t.docs.done = 92; }
+    if (kind === 'pre') { s.t.blog.done = 209; s.t.docs.done = 93; }
     if (kind === 'start') { const f = { blog: 186, docs: 121, product: 40, home: 1, pricing: 1, oneoff: 6 }; for (const k in f) { s.t[k].found = f[k]; s.t[k].done = 0; s.t[k].failed = 0; } }
     if (keep) { s.dev = Object.assign({}, keep.dev); s.opt = Object.assign({}, keep.opt); }
     return s;
@@ -449,7 +449,7 @@
       <div class="c-shut${st.picked ? ' up' : ''}"><div class="c-slats"></div><span class="c-plate">Not picked<small>Roll up to pick ${pages(t.count)}</small></span></div><div class="c-housing"></div></div>`;
     if (s.mode === 'live' && st.picked) h += `<button class="c-openb" data-act="open" data-id="${id}" aria-label="${esc(openLabel(s, id))}"></button>`;
     h += `<button class="c-pull${st.picked ? '' : ' full'}" data-act="pick" data-id="${id}" aria-pressed="${st.picked}" aria-label="${st.picked ? 'Picked: roll the shutter down to leave out ' : 'Not picked: roll the shutter up to pick '}${lab}"><i></i></button>`;
-    if (s.mode === 'live' && st.picked && st.failed) h += `<div class="c-ret" data-ret="${id}"><div class="c-pc c-rc" style="left:96px;top:46px;rotate:-8deg">${art(id, 201)}<span class="c-stp c-stp-s">Returned</span></div><div class="c-pc c-rc" style="left:150px;top:72px;rotate:7deg">${art(id, 202)}<span class="c-stp c-stp-s">Returned</span></div><button class="c-retry" data-act="retry" data-id="${id}" aria-label="Retry the ${st.failed} returned pages: ${esc((t.capture.failedPaths || []).join(' and '))}">Retry<small>${pages(st.failed)}</small></button></div>`;
+    if (s.mode === 'live' && st.picked && st.failed) h += `<div class="c-ret" data-ret="${id}"><div class="c-pc c-rc" style="left:82px;top:38px;rotate:-8deg">${art(id, 201)}<span class="c-stp c-stp-s" style="top:6px;left:10px">Returned</span></div><div class="c-pc c-rc" style="left:158px;top:76px;rotate:7deg">${art(id, 202)}<span class="c-stp c-stp-s">Returned</span></div><button class="c-retry" data-act="retry" data-id="${id}" aria-label="Retry the ${st.failed} returned pages: ${esc((t.capture.failedPaths || []).join(' and '))}">Retry<small>${pages(st.failed)}</small></button></div>`;
     if (s.mode === 'live' && id === 'blog' && s.stamped && st.picked) h += `<span class="c-tag">3 don't fit</span>`;
     h += `</div><div class="c-rail" style="left:${r.x}px;top:${r.y + HH}px"><div class="c-brass"><div class="c-lab"><b>${lab}</b><span class="c-cnt">${s.mode === 'start' ? st.found : t.count}<small> ${t.count === 1 ? 'page' : 'pages'}</small></span></div></div><div class="c-l2"><span class="c-pat">${esc(t.pattern)}</span><span class="c-prog">${progText(s, id)}</span></div></div></div>`;
     return h;
@@ -502,7 +502,7 @@
   }
   function flyingSlips() {
     const arcs = '<svg class="c-room" viewBox="0 0 1280 800" width="1280" height="800" aria-hidden="true" style="z-index:3"><g fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2" stroke-dasharray="3 7" stroke-linecap="round"><path d="M170 640C120 520 110 330 176 230"/><path d="M190 640C260 520 400 380 452 236"/><path d="M210 650C380 560 600 420 712 250"/><path d="M200 655C300 600 400 520 452 470"/></g></svg>';
-    const S = [['/blog/hiring-designers', 108, 388, -9], ['/blog/benchmarks', 150, 252, 6], ['/docs/webhooks', 330, 430, 11], ['/product/oak-shelf', 560, 420, -7], ['/pricing', 372, 530, 5], ['/docs/limits', 238, 566, -4]];
+    const S = [['/blog/hiring-designers', 108, 388, -9], ['/blog/benchmarks', 140, 190, 6], ['/docs/webhooks', 330, 420, 11], ['/product/oak-shelf', 540, 196, -7], ['/pricing', 410, 462, 5], ['/docs/limits', 236, 592, -4]];
     return arcs + S.map(([p, x, y, r]) => `<div class="c-slip fl" style="left:${x}px;top:${y}px;rotate:${r}deg">${p}</div>`).join('');
   }
   function sceneHTML(s, u) {
@@ -515,14 +515,14 @@
   }
 
   /* ---------- review table ---------- */
-  const RV = { gx: 32, gy: 112, cw: 412, rh: 196, ox: 52, oy: 572, ow: 404 };
+  const RV = { gx: 62, gy: 112, cw: 412, rh: 196, ox: 80, oy: 572, ow: 404 };
   const goodPages = (id) => T[id].paths.filter((p) => !T[id].outliers.some((o) => o.path === p)).slice(0, 6);
   function fitCount(s, id) { return s.t[id].done - (id === 'blog' ? 3 : 0); }
   function reviewHTML(s, id, mode) {
     const t = T[id], st = s.t[id], u = ++uid, good = goodPages(id), fit = fitCount(s, id);
     const firstStamp = mode === 'stage';
     let sumA, sumB;
-    if (id === 'blog') { sumA = `${fit} fit the template`; sumB = "3 don't fit: stamped and pulled into the tray below"; }
+    if (id === 'blog') { sumA = `${fit} fit the template`; sumB = "Each page on Desktop and iPhone 14 Pro. 3 don't fit: stamped into the tray."; }
     else if (st.failed) { sumA = `${st.done} of ${st.total} captured`; sumB = `${st.failed} came back returned`; }
     else { sumA = st.done >= st.total ? `${pages(st.done)}, all fit the template` : `${st.done} of ${st.total} captured`; sumB = 'Desktop beside iPhone 14 Pro'; }
     let h = `<svg class="c-rv-bg" viewBox="0 0 1280 800" width="1280" height="800" aria-hidden="true"><defs><filter id="rm${u}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".018 .09" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 .85 0 0 0 0 .9 0 0 0 0 .93 0 0 0 .26 -.06"/><feComposite in2="SourceGraphic" operator="in"/></filter><radialGradient id="rl${u}" cx="15%" cy="0%" r="110%"><stop offset="0" stop-color="#fff" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity=".2"/></radialGradient><filter id="rb${u}"><feGaussianBlur stdDeviation="8"/></filter></defs>
@@ -545,7 +545,7 @@
     } else if (st.failed) {
       plate = `Returned<small>${pages(st.failed)}</small>`;
       body = (t.capture.failedPaths || []).map((p, j) => `<div class="c-oddp" data-j="${j}" style="left:${RV.ox + j * RV.ow}px;top:${RV.oy}px"><div class="c-pc dk" style="rotate:${[-1.2, 0.8][j]}deg">${art(id, 201 + j)}<span class="c-stp"><small>Returned</small>Page timed out</span></div><div class="c-pc ph">${art(id, 201 + j, 'phone')}</div><span class="c-cap">${esc(p)}</span></div>`).join('') +
-        `<div class="c-rv-retry"><button class="c-btn" data-act="retry" data-id="${id}">Retry ${pages(st.failed)}</button></div><span class="c-chalk3" style="left:870px;right:40px;top:150px;text-align:left">Odd pages are pulled out when Docs finishes</span>`;
+        `<div class="c-rv-retry"><button class="c-btn" data-act="retry" data-id="${id}">Retry ${pages(st.failed)}</button></div><span class="c-chalk3" style="left:880px;right:60px;top:652px;text-align:left">Odd pages are pulled out when Docs finishes</span>`;
     } else {
       plate = `Doesn't fit<small>none</small>`;
       body = `<span class="c-chalk3" style="top:640px;left:60px;right:60px">${st.done >= st.total ? 'Every page fits the template' : `Odd pages are pulled out when ${esc(t.name)} finishes`}</span>`;
@@ -561,7 +561,7 @@
   }
 
   /* ---------- animation plumbing: WAAPI only, nothing runs when nothing moves ---------- */
-  let root, board, st, run = 0, playing = false, busy = false, played = false, opener = null, gpos = [0, 0];
+  let root, board, st, run = 0, playing = false, busy = false, played = false, opener = null, lbOpener = null, gpos = [0, 0];
   const live = new Set(), timers = new Set();
   const $ = (sel) => board.querySelector(sel);
   function go(el, kf, o) {
@@ -616,7 +616,7 @@
       c.className = 'c-pc c-flyc'; c.innerHTML = art(id, 30 + k);
       c.style.left = r.x + L + 'px'; c.style.top = r.y + top + 'px'; fly.appendChild(c);
       const sx = 452 - (r.x + L + 86) + k * 12, sy = -(r.y + top) - 150;
-      ps.push(go(c, [{ transform: `translate(${sx}px,${sy}px) rotate(${-12 + k * 4}deg) scale(1.2)`, opacity: 1 }, { transform: 'translate(0,-14px) rotate(0deg) scale(1.04)', opacity: 1, offset: 0.72 }, { transform: 'translate(0,3px) scale(.95)', opacity: 0 }], { duration: 640, delay: (d0 || 0) + k * gap, easing: EASE }).then(() => { c.remove(); if (rid !== run) return; st.t[id].done++; bump(id); }));
+      ps.push(go(c, [{ transform: `translate(${sx}px,${sy}px) rotate(${-12 + k * 4}deg) scale(1.2)`, opacity: 1 }, { transform: 'translate(0,-14px) rotate(0deg) scale(1.04)', opacity: 1, offset: 0.72 }, { transform: 'translate(0,3px) scale(.95)', opacity: 0 }], { duration: 560, delay: (d0 || 0) + k * gap, easing: EASE }).then(() => { c.remove(); if (rid !== run) return; st.t[id].done++; bump(id); }));
     }
     return Promise.all(ps);
   }
@@ -626,13 +626,13 @@
     st = makeState('pre'); renderLive();
     try {
       ghostShow(1120, 720);
-      const fills = Promise.all([fill('blog', 6, 150, rid, 0), fill('docs', 4, 230, rid, 160)]);
-      await wait(200); chk(rid);
-      await ghostTo(178, 214, 1000); chk(rid);
+      const fills = Promise.all([fill('blog', 5, 110, rid, 0), fill('docs', 3, 170, rid, 120)]);
+      await wait(120); chk(rid);
+      await ghostTo(178, 214, 860); chk(rid);
       await fills; chk(rid);
       await ghostPress(); chk(rid);
       await openPile('blog', { auto: true, rid });
-      await wait(700); chk(rid);
+      await wait(420); chk(rid);
       await closePile({ rid });
       await ghostHide();
     } catch (e) { swallow(e); return; }
@@ -671,19 +671,19 @@
     [...pairs, ...odds].forEach((e) => (e.style.opacity = '0'));
     const string = rv.querySelector('.c-string'); string.style.opacity = '0';
     const dx = CX - (bx + 86), dy = CY - (by + 54);
-    go(scene, [{ transform: 'translateY(0)' }, { transform: 'translateY(-800px)' }], { duration: 720, delay: 140, easing: EASE });
-    go(rv, [{ transform: 'translateY(800px)' }, { transform: 'translateY(0)' }], { duration: 720, delay: 140, easing: EASE });
-    if (o.auto) ghostTo(CX + 30, CY + 30, 760, 60);
-    await go(B, [{ transform: 'translate(0,0) scale(1)' }, { transform: 'translate(0,16px) scale(1.12)', offset: 0.2 }, { transform: `translate(${dx}px,${dy}px) scale(${SC})` }], { duration: 840, easing: EASE });
+    go(scene, [{ transform: 'translateY(0)' }, { transform: 'translateY(-800px)' }], { duration: 640, delay: 100, easing: EASE });
+    go(rv, [{ transform: 'translateY(800px)' }, { transform: 'translateY(0)' }], { duration: 640, delay: 100, easing: EASE });
+    if (o.auto) ghostTo(CX + 21, CY - 2, 640, 60);
+    await go(B, [{ transform: 'translate(0,0) scale(1)' }, { transform: 'translate(0,16px) scale(1.12)', offset: 0.2 }, { transform: `translate(${dx}px,${dy}px) scale(${SC})` }], { duration: 720, easing: EASE });
     chk(rid);
     // untie the string
     const bow = B.querySelector('.c-bow'), sh = B.querySelector('.c-sh'), sv = B.querySelector('.c-sv');
-    if (o.auto) { await ghostTo(CX + 21, CY - 2, 200); chk(rid); ghostPress(); ghostTo(CX + 90, CY + 70, 520, 120); }
+    if (o.auto) { ghostPress(); ghostTo(CX + 90, CY + 70, 460, 100); }
     await Promise.all([
-      go(bow, [{ transform: 'scale(1) rotate(0deg)', opacity: 1 }, { transform: 'scale(1.2) rotate(-14deg)', opacity: 1, offset: 0.35 }, { transform: 'scale(.3) rotate(55deg)', opacity: 0 }], { duration: 460, easing: EASE }),
-      go(sh, [{ transform: 'translateX(0)', opacity: 1 }, { transform: 'translateX(70px)', opacity: 0 }], { duration: 380, delay: 150, easing: OUT }),
-      go(sv, [{ transform: 'translateY(0)', opacity: 1 }, { transform: 'translateY(60px)', opacity: 0 }], { duration: 380, delay: 190, easing: OUT }),
-      go(string, [{ opacity: 0, transform: 'translateY(-10px)' }, { opacity: 1, transform: 'none' }], { duration: 360, delay: 340, easing: EASE })
+      go(bow, [{ transform: 'scale(1) rotate(0deg)', opacity: 1 }, { transform: 'scale(1.2) rotate(-14deg)', opacity: 1, offset: 0.35 }, { transform: 'scale(.3) rotate(55deg)', opacity: 0 }], { duration: 380, easing: EASE }),
+      go(sh, [{ transform: 'translateX(0)', opacity: 1 }, { transform: 'translateX(70px)', opacity: 0 }], { duration: 320, delay: 100, easing: OUT }),
+      go(sv, [{ transform: 'translateY(0)', opacity: 1 }, { transform: 'translateY(60px)', opacity: 0 }], { duration: 320, delay: 130, easing: OUT }),
+      go(string, [{ opacity: 0, transform: 'translateY(-10px)' }, { opacity: 1, transform: 'none' }], { duration: 300, delay: 200, easing: EASE })
     ]);
     chk(rid);
     if (o.auto) ghostHide();
@@ -694,9 +694,9 @@
       const x = parseFloat(p.style.left), y = parseFloat(p.style.top), d = p.querySelector('.dk'), ph = p.querySelector('.ph'), cap = p.querySelector('.c-cap');
       p.style.opacity = '1'; ph.style.opacity = '0'; cap.style.opacity = '0';
       const r0 = (k % 2 ? 1 : -1) * (3 + k);
-      deals.push(go(d, [{ transform: `translate(${CX - (x + 120)}px,${CY - (y + 75)}px) scale(1.25) rotate(${r0}deg)` }, { transform: 'none' }], { duration: 580, delay: k * 60, easing: EASE }));
-      deals.push(go(ph, [{ transform: 'translateX(-110px) scale(.9)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 420, delay: 320 + k * 60, easing: EASE }));
-      deals.push(go(cap, [{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: 440 + k * 60 }));
+      deals.push(go(d, [{ transform: `translate(${CX - (x + 120)}px,${CY - (y + 75)}px) scale(1.25) rotate(${r0}deg)` }, { transform: 'none' }], { duration: 480, delay: k * 45, easing: EASE }));
+      deals.push(go(ph, [{ transform: 'translateX(-110px) scale(.9)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 380, delay: 240 + k * 45, easing: EASE }));
+      deals.push(go(cap, [{ opacity: 0 }, { opacity: 1 }], { duration: 260, delay: 340 + k * 45 }));
     });
     odds.forEach((p, j) => {
       const x = parseFloat(p.style.left), y = parseFloat(p.style.top), d = p.querySelector('.dk'), ph = p.querySelector('.ph'), cap = p.querySelector('.c-cap');
@@ -706,7 +706,7 @@
       if (firstStamp) {
         const sT = `translate(${CX + (j - 1) * 150 - fx}px,${CY + 20 + Math.abs(j - 1) * 14 - fy}px) rotate(${(j - 1) * 7}deg) scale(1.15)`;
         stage.push(sT);
-        deals.push(go(d, [{ transform: from, opacity: 0 }, { transform: from, opacity: 1, offset: 0.15 }, { transform: sT, opacity: 1 }], { duration: 560, delay: 380 + j * 70, easing: EASE }));
+        deals.push(go(d, [{ transform: from, opacity: 0 }, { transform: from, opacity: 1, offset: 0.15 }, { transform: sT, opacity: 1 }], { duration: 480, delay: 260 + j * 50, easing: EASE }));
       } else {
         deals.push(go(d, [{ transform: from }, { transform: 'none' }], { duration: 600, delay: 360 + j * 70, easing: EASE }));
         deals.push(go(ph, [{ transform: 'translateX(-110px) scale(.9)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 420, delay: 700 + j * 70, easing: EASE }));
@@ -716,25 +716,25 @@
     await Promise.all(deals); chk(rid);
     if (firstStamp) {
       // stamp each odd card, then let it drop into the tray
-      await Promise.all(odds.map((p, j) => wait(j * 250).then(async () => {
+      await Promise.all(odds.map((p, j) => wait(j * 180).then(async () => {
         chk(rid);
         const x = parseFloat(p.style.left), y = parseFloat(p.style.top), card = p.querySelector('.dk'), imp = card.querySelector('.c-stp');
         const sx = CX + (j - 1) * 150 + 12, sy = CY + 20 + Math.abs(j - 1) * 14 + 22;
         const S = document.createElement('div'); S.className = 'c-stamper'; S.innerHTML = '<i class="c-sb"></i><i class="c-sk"></i>';
         S.style.left = sx - 75 + 'px'; S.style.top = sy - 43 + 'px'; rv.appendChild(S);
-        go(S, [{ transform: 'translateY(-46px) scale(1.4)', opacity: 0 }, { transform: 'translateY(-10px) scale(1.12)', opacity: 1, offset: 0.42, easing: DROP }, { transform: 'scale(1)', opacity: 1, offset: 0.6 }, { transform: 'scale(1)', opacity: 1, offset: 0.7, easing: EASE }, { transform: 'translateY(-60px) scale(1.3)', opacity: 0 }], { duration: 560 }).then(() => S.remove());
-        await wait(330); chk(rid);
+        go(S, [{ transform: 'translateY(-46px) scale(1.4)', opacity: 0 }, { transform: 'translateY(-10px) scale(1.12)', opacity: 1, offset: 0.42, easing: DROP }, { transform: 'scale(1)', opacity: 1, offset: 0.6 }, { transform: 'scale(1)', opacity: 1, offset: 0.7, easing: EASE }, { transform: 'translateY(-60px) scale(1.3)', opacity: 0 }], { duration: 460 }).then(() => S.remove());
+        await wait(270); chk(rid);
         imp.classList.remove('c-wait');
         go(imp, [{ opacity: 0.5, transform: 'scale(1.06)' }, { opacity: 1, transform: 'none' }], { duration: 160 });
-        await go(card, [{ transform: stage[j] }, { transform: stage[j] + ' translateY(4px) scale(.985)' }, { transform: stage[j] }], { duration: 200 });
+        await go(card, [{ transform: stage[j] }, { transform: stage[j] + ' translateY(4px) scale(.985)' }, { transform: stage[j] }], { duration: 160 });
         chk(rid);
       })));
       chk(rid);
       finishStamp();
       await Promise.all(odds.map((p, j) => {
         const card = p.querySelector('.dk'), ph = p.querySelector('.ph'), cap = p.querySelector('.c-cap');
-        return go(card, [{ transform: stage[j], easing: DROP }, { transform: 'translate(0,0)', offset: 0.7, easing: EASE }, { transform: 'translate(0,-9px)', offset: 0.85, easing: 'ease-in' }, { transform: 'none' }], { duration: 640, delay: j * 90 })
-          .then(() => Promise.all([go(ph, [{ transform: 'translateX(-90px) scale(.9)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 380, easing: EASE }), go(cap, [{ opacity: 0 }, { opacity: 1 }], { duration: 260 })]));
+        return go(card, [{ transform: stage[j], easing: DROP }, { transform: 'translate(0,0)', offset: 0.7, easing: EASE }, { transform: 'translate(0,-9px)', offset: 0.85, easing: 'ease-in' }, { transform: 'none' }], { duration: 540, delay: j * 70 })
+          .then(() => { go(ph, [{ transform: 'translateX(-90px) scale(.9)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 340, easing: EASE }); go(cap, [{ opacity: 0 }, { opacity: 1 }], { duration: 240 }); });
       }));
       chk(rid);
     }
@@ -753,14 +753,14 @@
     const done = () => { const hi = $(`[data-hole="${id}"] .c-in`); if (hi) hi.style.opacity = '1'; rv.hidden = true; rv.innerHTML = ''; rv.style.transform = ''; scene.style.transform = ''; st.open = null; busy = false; if (opener && !playing && board.contains(opener)) opener.focus(); opener = null; };
     if (reduced()) { done(); return; }
     const items = [...rv.querySelectorAll('.c-pair, .c-mini')];
-    await Promise.all(items.map((p, k) => { const x = p.offsetLeft + (p.classList.contains('c-mini') ? 32 : 0), y = p.offsetTop + (p.classList.contains('c-mini') ? 110 : 0); return go(p, [{ transform: 'none', opacity: 1 }, { transform: `translate(${CX - (x + 150)}px,${CY - (y + 75)}px) scale(.8)`, opacity: 0 }], { duration: 320, delay: Math.min(k, 12) * 25, easing: OUT }); }));
+    await Promise.all(items.map((p, k) => { const x = p.offsetLeft + (p.classList.contains('c-mini') ? 32 : 0), y = p.offsetTop + (p.classList.contains('c-mini') ? 110 : 0); return go(p, [{ transform: 'none', opacity: 1 }, { transform: `translate(${CX - (x + 150)}px,${CY - (y + 75)}px) scale(.8)`, opacity: 0 }], { duration: 260, delay: Math.min(k, 12) * 15, easing: OUT }); }));
     chk(rid);
     const B = bundleEl(id), bx = r.x + L, by = r.y + top;
     B.style.left = bx + 'px'; B.style.top = by + 'px'; fly.appendChild(B);
     const dx = CX - (bx + 86), dy = CY - (by + 54);
-    go(rv, [{ transform: 'translateY(0)' }, { transform: 'translateY(800px)' }], { duration: 660, easing: EASE });
-    go(scene, [{ transform: 'translateY(-800px)' }, { transform: 'translateY(0)' }], { duration: 660, easing: EASE });
-    await go(B, [{ transform: `translate(${dx}px,${dy}px) scale(${SC})`, opacity: 1 }, { transform: 'translate(0,-10px) scale(1.04)', opacity: 1, offset: 0.8 }, { transform: 'translate(0,0) scale(1)', opacity: 1 }], { duration: 700, easing: EASE });
+    go(rv, [{ transform: 'translateY(0)' }, { transform: 'translateY(800px)' }], { duration: 560, easing: EASE });
+    go(scene, [{ transform: 'translateY(-800px)' }, { transform: 'translateY(0)' }], { duration: 560, easing: EASE });
+    await go(B, [{ transform: `translate(${dx}px,${dy}px) scale(${SC})`, opacity: 1 }, { transform: 'translate(0,-10px) scale(1.04)', opacity: 1, offset: 0.8 }, { transform: 'translate(0,0) scale(1)', opacity: 1 }], { duration: 600, easing: EASE });
     chk(rid);
     B.remove(); done();
   }
@@ -832,7 +832,7 @@
     const queued = !s.picked || s.done === 0, failed = fi >= 0 && s.failed;
     const title = path || `${t.name}, page ${n}`;
     const status = queued ? (s.picked ? 'Queued, not captured yet' : 'Not picked') : failed ? 'Returned, retry from the Docs hole' : oi >= 0 ? (st.stamped ? "Doesn't fit its template" : 'Captured') : 'Captured';
-    const lb = $('.c-lb'); opener = from || document.activeElement;
+    const lb = $('.c-lb'); lbOpener = from || document.activeElement;
     const cover = queued || failed ? `<span class="c-lb-q">${queued ? 'Not captured yet' : 'Returned: page timed out'}</span>` : '';
     lb.innerHTML = `<div role="dialog" aria-modal="true" aria-labelledby="c-lbt${uid}"><div class="c-lb-h"><b id="c-lbt${uid}">${esc(title)}</b><span>${esc(t.name)}</span><span>${status}</span><button class="c-btn" data-act="lbclose">Close</button></div>
       <div class="c-pc c-lb-d">${art(id, seed, 'desktop', variant)}${cover}${oi >= 0 && st.stamped && !queued ? `<span class="c-stp"><small>Doesn't fit</small>${esc(t.outliers[oi].why)}</span>` : ''}</div><div class="c-pc c-lb-p">${art(id, seed, 'phone', variant)}${cover}</div>
@@ -840,7 +840,7 @@
     lb.hidden = false; lb.querySelector('[data-act="lbclose"]').focus();
     if (!reduced()) { go(lb, [{ opacity: 0 }, { opacity: 1 }], { duration: 220 }); lb.querySelectorAll('.c-pc').forEach((c, k) => go(c, [{ transform: 'translateY(30px) scale(.94)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 420, delay: k * 70, easing: EASE })); }
   }
-  function closeLB() { const lb = board && $('.c-lb'); if (!lb || lb.hidden) return; lb.hidden = true; lb.innerHTML = ''; if (opener && board.contains(opener)) opener.focus(); }
+  function closeLB() { const lb = board && $('.c-lb'); if (!lb || lb.hidden) return; lb.hidden = true; lb.innerHTML = ''; if (lbOpener && board.contains(lbOpener)) lbOpener.focus(); lbOpener = null; }
   function onSearch(inp) {
     const v = inp.value.trim().toLowerCase(), res = inp.parentNode.querySelector('.c-res');
     board.querySelectorAll('.c-hole.lit').forEach((h) => h.classList.remove('lit'));
@@ -851,7 +851,7 @@
       all.forEach((p) => { if (p.toLowerCase().includes(v)) { out.push([t, p]); holes.add(t.id); } });
     });
     holes.forEach((id) => { const h = $(`[data-hole="${id}"]`); if (h) h.classList.add('lit'); });
-    res.innerHTML = out.length ? out.slice(0, 6).map(([t, p]) => { const s = st.t[t.id], f = (t.capture.failedPaths || []).includes(p) && s.failed, odd = t.outliers.some((o) => o.path === p) && st.stamped; return `<button class="c-r" data-act="find" data-id="${t.id}" data-path="${esc(p)}"><b>${esc(p)}</b><span>In ${esc(t.name)}</span><em class="${f || odd ? 'red' : ''}">${!s.picked ? 'Not picked' : f ? 'Returned' : odd ? "Doesn't fit" : s.done ? 'Captured' : 'Queued'}</em></button>`; }).join('') : `<span class="c-nores">No page at that address. Try /docs or /blog.</span>`;
+    res.innerHTML = out.length ? out.slice(0, 6).map(([t, p]) => { const s = st.t[t.id], f = (t.capture.failedPaths || []).includes(p) && s.failed, odd = t.id === 'blog' && t.outliers.some((o) => o.path === p) && st.stamped; return `<button class="c-r" data-act="find" data-id="${t.id}" data-path="${esc(p)}"><b>${esc(p)}</b><span>In ${esc(t.name)}</span><em class="${f || odd ? 'red' : ''}">${!s.picked ? 'Not picked' : f ? 'Returned' : odd ? "Doesn't fit" : s.done ? 'Captured' : 'Queued'}</em></button>`; }).join('') : `<span class="c-nores">No page at that address. Try /docs or /blog.</span>`;
     res.hidden = false;
   }
 
