@@ -85,8 +85,8 @@
 #dir-d .d-odd{position:absolute;display:grid;gap:1px;z-index:2;opacity:0;transform:translateY(4px);transition:opacity var(--d-t3) var(--d-ease),transform var(--d-t3) var(--d-ease);pointer-events:none;padding:2px 4px!important;margin:-2px -4px}
 #dir-d .d-odd.on{opacity:1;transform:none;pointer-events:auto}
 #dir-d .d-odd.away{opacity:0!important;pointer-events:none!important}
-#dir-d .d-odd .why{font:700 13px/1.3 var(--d-ui);color:var(--d-ink)}
-#dir-d .d-odd .path{font:400 11.5px/1.3 var(--d-mono);color:var(--d-muted)}
+#dir-d .d-odd .why{font:700 13px/1.3 var(--d-ui);color:var(--d-ink);white-space:nowrap}
+#dir-d .d-odd .path{font:400 11.5px/1.3 var(--d-mono);color:var(--d-muted);white-space:nowrap}
 #dir-d .d-odd:hover .why,#dir-d .d-odd.hot .why{text-decoration:underline;text-underline-offset:3px}
 #dir-d .d-odd.r{text-align:left}
 #dir-d .d-odd.l{text-align:right}
@@ -118,17 +118,18 @@
 #dir-d .d-ophead .m .p{font:400 13px var(--d-mono);color:var(--d-ink)}
 #dir-d .d-ophead .m b{color:var(--d-ink)}
 #dir-d .d-ophead .hint{margin-top:12px;font-size:12px;color:var(--d-faint)}
-#dir-d .d-cards{position:absolute;left:900px;top:86px;width:356px;z-index:3;display:grid;gap:18px;pointer-events:none}
+#dir-d .d-cards{position:absolute;left:884px;top:84px;width:372px;z-index:3;display:grid;gap:14px;pointer-events:none}
 #dir-d .d-card{position:relative;padding:12px 14px 14px;background:color-mix(in srgb,var(--d-plate) 88%,transparent);border:1px solid var(--d-rule);border-left:2px solid var(--d-hue);opacity:0;transform:translateX(-10px);transition:opacity var(--d-t2) var(--d-ease),transform var(--d-t3) var(--d-ease)}
 #dir-d .d-cards.on .d-card{opacity:1;transform:none;pointer-events:auto}
-#dir-d .d-card .why{font:400 20px/1.1 var(--d-display)}
-#dir-d .d-card .path{font:400 12px var(--d-mono);color:var(--d-muted);margin-top:3px}
-#dir-d .d-card .shots{display:flex;gap:10px;align-items:flex-start;margin-top:10px}
-#dir-d .d-card .dk{width:200px;aspect-ratio:320/200;display:block;line-height:0;outline:1px solid color-mix(in srgb,var(--d-ink) 25%,transparent)}
-#dir-d .d-card .ph{width:58px;aspect-ratio:90/195;display:block;line-height:0;outline:1px solid color-mix(in srgb,var(--d-ink) 25%,transparent);border-radius:6px;overflow:hidden}
+#dir-d .d-card .why{font:400 19px/1.1 var(--d-display)}
+#dir-d .d-card .path{font:400 11px/1.35 var(--d-mono);color:var(--d-muted);word-break:break-all}
+#dir-d .d-card .side{display:grid;gap:8px;align-content:start;min-width:0}
+#dir-d .d-card .shots{display:flex;gap:8px;align-items:flex-start;margin-top:9px}
+#dir-d .d-card .dk{width:168px;aspect-ratio:320/200;display:block;line-height:0;outline:1px solid color-mix(in srgb,var(--d-ink) 25%,transparent)}
+#dir-d .d-card .ph{width:48px;aspect-ratio:90/195;display:block;line-height:0;outline:1px solid color-mix(in srgb,var(--d-ink) 25%,transparent);border-radius:6px;overflow:hidden}
 #dir-d .d-card svg,#dir-d .d-dlg svg{width:100%;height:100%;display:block}
-#dir-d .d-card .lab{font:400 11px var(--d-ui);color:var(--d-muted);margin-top:4px;display:flex;gap:10px}
-#dir-d .d-card .full{position:absolute;right:12px;top:12px;height:28px;padding:0 10px!important;border:1px solid var(--d-edge)!important;border-radius:3px;font:700 12px var(--d-ui)!important}
+#dir-d .d-card .lab{font:400 11px var(--d-ui);color:var(--d-muted)}
+#dir-d .d-card .full{justify-self:start;height:28px;padding:0 10px!important;border:1px solid var(--d-edge)!important;border-radius:3px;font:700 12px var(--d-ui)!important}
 #dir-d .d-card .full:hover{background:var(--d-plate2)!important}
 #dir-d .d-note{position:absolute;left:900px;top:96px;width:320px;font-size:14px;color:var(--d-muted);z-index:3;opacity:0;transition:opacity var(--d-t2)}
 #dir-d .d-note.on{opacity:1}
@@ -177,7 +178,7 @@
 #dir-d .d-start .d-group+.d-group{margin-top:18px}
 #dir-d .d-crawl{position:absolute;left:560px;top:96px;z-index:3;font-size:13px;color:var(--d-muted)}
 #dir-d .d-crawl b{display:block;font:400 22px var(--d-display);color:var(--d-ink)}
-#dir-d .d-spl{position:absolute;z-index:2;display:grid;gap:1px}
+#dir-d .d-spl{position:absolute;z-index:2;display:grid;gap:1px;padding:3px 7px;margin:-3px -7px;background:color-mix(in srgb,var(--d-sky0) 72%,transparent)}
 #dir-d .d-spl .p{font:400 13px var(--d-mono)}
 #dir-d .d-spl .c{font:400 12px var(--d-ui);color:var(--d-muted)}
 #dir-d .d-spl.unpicked .p{color:var(--d-muted)}
@@ -258,6 +259,15 @@
   function spring(t, z, w) { if (t <= 0) return 0; const wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * t) * (Math.cos(wd * t) + (z * w / wd) * Math.sin(wd * t)); }
   function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
   function gauss(r) { let u = 0; while (!u) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(TAU * r()); }
+  function mix(a, b, t) { const A = parseInt(a.replace('#', ''), 16), B = parseInt(b.replace('#', ''), 16); const c = (sh) => Math.round(lerp((A >> sh) & 255, (B >> sh) & 255, t)); return '#' + ((1 << 24) | (c(16) << 16) | (c(8) << 8) | c(0)).toString(16).slice(1); }
+  /* each pile's pages are tinted with a whisper of its own ink, so an opened pile glows in its colour */
+  const PT = {};
+  function pileTint(id) {
+    if (PT[id]) return PT[id];
+    const h = TK[id], paper = TK['pa-paper'];
+    return (PT[id] = { paper: mix(paper, h, 0.2), ink: TK['pa-ink'], soft: mix(paper, h, 0.55), accent: mix(h, TK['pa-ink'], 0.45), image: mix(paper, h, 0.75) });
+  }
+  function tintCSS(id) { const t = pileTint(id); return `--pa-paper:${t.paper};--pa-ink:${t.ink};--pa-soft:${t.soft};--pa-accent:${t.accent};--pa-image:${t.image};`; }
   function rgba(hex, a) { const n = parseInt(hex.replace('#', ''), 16); return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`; }
 
   /* Motion in one place. Seconds. */
@@ -269,8 +279,8 @@
     blog: { cx: 560, cy: 482, rx: 152, ry: 108, rot: -0.3, spread: 0.36, clumps: [[0, 0, 0.56], [-0.55, 0.32, 0.24], [0.58, -0.3, 0.2]] },
     docs: { cx: 970, cy: 348, rx: 106, ry: 80, rot: 0.45, spread: 0.38, clumps: [[0, 0, 0.62], [0.5, 0.42, 0.38]] },
     product: { cx: 1010, cy: 606, rx: 58, ry: 44, rot: 0.15, spread: 0.42, clumps: [[0, 0, 1]] },
-    home: { cx: 664, cy: 170, single: true },
-    pricing: { cx: 790, cy: 214, single: true },
+    home: { cx: 566, cy: 152, single: true },
+    pricing: { cx: 690, cy: 212, single: true },
     oneoff: { cx: 196, cy: 400, rx: 150, ry: 62, loose: true },
   };
   /* Where the odd pages drift: farther means less alike. */
@@ -278,13 +288,13 @@
     '/blog/2019-recap': { x: 700, y: 300, side: 'r' },
     '/blog/benchmarks': { x: 800, y: 676, side: 'r' },
     '/blog/old-theme-post': { x: 270, y: 606, side: 'l' },
-    '/docs/api/v1': { x: 1146, y: 196, side: 'r' },
+    '/docs/api/v1': { x: 1150, y: 168, side: 'l' },
     '/docs/legacy': { x: 1166, y: 468, side: 'b' },
   };
   const LABEL = {
-    blog: [360, 268], docs: [808, 446], product: [1090, 586], home: [680, 150], pricing: [806, 196], oneoff: [52, 452],
+    blog: [360, 268], docs: [808, 446], product: [1090, 586], home: [582, 132], pricing: [706, 194], oneoff: [52, 452],
   };
-  const OPEN = { cx: 470, cy: 462, rx: 352, ry: 244 };
+  const OPEN = { cx: 500, cy: 474, rx: 334, ry: 232 };
   const WORDS_A = ['spring', 'field', 'quiet', 'open', 'team', 'north', 'paper', 'studio', 'city', 'winter', 'color', 'small', 'night', 'early', 'remote', 'annual'];
   const WORDS_B = ['notes', 'report', 'guide', 'story', 'update', 'review', 'letter', 'plan', 'recap', 'tips', 'checklist', 'interview'];
 
@@ -319,7 +329,7 @@
       const used = new Set();
       byLike.forEach((p, i) => {
         if (i < t.paths.length && !t.outliers.some((o) => o.path === t.paths[i] && detected.includes(o))) { p.path = t.paths[i]; }
-        else if (base) { let s; let k = 0; do { s = `${base}${WORDS_A[(i * 7 + k) % WORDS_A.length]}-${WORDS_B[(i * 5 + k * 3) % WORDS_B.length]}`; k++; } while (used.has(s)); p.path = s; }
+        else if (base) { let s; let k = 0; do { s = `${base}${WORDS_A[(i * 7 + k) % WORDS_A.length]}-${WORDS_B[(i * 5 + k * 3) % WORDS_B.length]}${k > 24 ? '-' + (k - 23) : ''}`; k++; } while (used.has(s)); p.path = s; }
         else p.path = t.paths[i % t.paths.length];
         used.add(p.path);
       });
@@ -356,7 +366,7 @@
     /* opened layout: a likeness spiral, the most typical page in the middle */
     piles.forEach((P) => {
       const n = P.n, area = (Math.PI * OPEN.rx * OPEN.ry) / Math.max(n, 1);
-      P.th = n === 1 ? 150 : clamp(0.44 * Math.sqrt(area), 12, 96);
+      P.th = n === 1 ? 150 : clamp(0.5 * Math.sqrt(area), 12, 96);
       const c = 1 / Math.sqrt(n + 0.6);
       P.byLike.forEach((p, i) => {
         if (n === 1) { p.ox = OPEN.cx; p.oy = OPEN.cy; return; }
@@ -380,7 +390,8 @@
   function svgFor(tpl, seed, dev, variant) {
     const s = ART.render(tpl, seed, { device: dev, variant: variant || 'normal' });
     const vb = dev === 'phone' ? [90, 195] : [320, 200];
-    return s.replace('<svg ', `<svg width="${vb[0] * 3}" height="${vb[1] * 3}" `).replace(/var\(--pa-(\w+), [^)]+\)/g, (_, k) => TINT[k] || '#888');
+    const tint = pileTint(tpl);
+    return s.replace('<svg ', `<svg width="${vb[0] * 3}" height="${vb[1] * 3}" `).replace(/var\(--pa-(\w+), [^)]+\)/g, (_, k) => tint[k] || TINT[k]);
   }
   function loadImg(tpl, seed, dev, variant) {
     const key = `${tpl}|${seed}|${dev}|${variant || 'normal'}`;
@@ -522,7 +533,7 @@
           html += `<button class="d-odd ${s === 'b' ? 'r' : s}" data-act="preview" data-pile="${P.id}" data-odd="${k}" style="${s === 'l' ? `right:${W - x}px` : `left:${x}px`};top:${y}px" aria-label="Odd page ${esc(o.path)}: ${esc(o.why)}. Preview full size"><span class="why">${esc(o.why)}</span><span class="path">${esc(o.path)}</span></button>`;
         });
       });
-      html += `<div class="d-ophead"><button class="d-back" data-act="close">${ICON.back}<span>Back to the field</span></button><h3></h3><div class="m"></div><p class="hint">Middle: the most typical page. Outward: less alike. Hover a page for the loupe.</p></div>`;
+      html += `<div class="d-ophead"><button class="d-back" data-act="close">${ICON.back}<span>Back to the field</span></button><h3></h3><div class="m"></div><p class="hint">Most typical in the middle, less alike outward.</p></div>`;
       html += `<div class="d-cards"></div><p class="d-note"></p>`;
       html += `<footer class="d-rail">${beadsHTML(st)}<div class="d-prog" aria-live="polite"></div></footer>`;
       html += `<div class="d-hint" aria-hidden="true"></div>`;
@@ -537,7 +548,7 @@
         ${beadsHTML(st)}</div>
         <div class="d-crawl"><b>Found 412 pages</b>Sorting them into piles by URL pattern</div>`;
       MODEL.piles.forEach((P) => {
-        const p = startMap(P.g.cx, P.g.cy), off = { blog: [-40, -150], docs: [62, -86], product: [48, -10], home: [16, -12], pricing: [16, -12], oneoff: [-30, 46] }[P.id];
+        const p = startMap(P.g.cx, P.g.cy), off = { blog: [-40, 100], docs: [-40, 72], product: [-120, 40], home: [16, -14], pricing: [16, -12], oneoff: [-40, 40] }[P.id];
         html += `<div class="d-spl${st.picked[P.id] ? '' : ' unpicked'}${P.n > 100 ? ' big' : ''}" style="left:${Math.round(p[0] + off[0])}px;top:${Math.round(p[1] + off[1])}px"><span class="p">${esc(P.t.pattern)}</span><span class="c">${esc(P.t.name)}, ${P.t.count} ${P.t.count === 1 ? 'page' : 'pages'}</span></div>`;
       });
     }
@@ -550,7 +561,7 @@
     if (mode === 'live') wire(F);
   }
 
-  function startMap(x, y) { return [600 + (x - 52) * 0.53, 196 + (y - 150) * 0.86]; }
+  function startMap(x, y) { return [650 + (x - 52) * 0.54, 170 + (y - 120) * 0.82]; }
 
   function renderProgress(F) {
     const { st } = F, T = totals(st), el = F.$('.d-prog'); if (!el) return;
@@ -596,10 +607,11 @@
     head.querySelector('h3').textContent = P.t.name;
     head.querySelector('.m').innerHTML = `<span class="p">${esc(P.t.pattern)}</span><span><b>${P.t.count} ${P.t.count === 1 ? 'page' : 'pages'}</b>, ${!st.picked[id] ? 'not picked' : c.done >= P.t.count ? 'all captured' : c.done ? `${c.done} captured, ${c.failed} failed` : 'queued'}</span><span>${dv.length ? esc(dv.join(' and ')) : 'No devices picked'}</span>${P.odd.length ? `<span><b>${P.odd.length} odd ${P.odd.length === 1 ? 'page' : 'pages'}</b> pulled out</span>` : ''}`;
     head.style.setProperty('--d-hue', `var(--d-${id})`);
-    cards.innerHTML = P.odd.map((o, k) => `<article class="d-card" style="--d-hue:var(--d-${id});transition-delay:${80 + k * 70}ms">
-        <div class="why">${esc(o.why)}</div><div class="path">${esc(o.path)}</div>
-        <div class="shots"><div><span class="dk">${ART.render(id, o.seed, { device: 'desktop', variant: o.variant })}</span><span class="lab">Desktop</span></div><div><span class="ph">${ART.render(id, o.seed, { device: 'phone', variant: o.variant })}</span><span class="lab">iPhone</span></div></div>
-        <button class="full" data-act="preview" data-pile="${id}" data-odd="${k}" aria-label="Full size: ${esc(o.path)}">Full size</button></article>`).join('');
+    cards.innerHTML = P.odd.map((o, k) => `<article class="d-card" style="--d-hue:var(--d-${id});${tintCSS(id)}transition-delay:${80 + k * 70}ms">
+        <div class="why">${esc(o.why)}</div>
+        <div class="shots"><span class="dk">${ART.render(id, o.seed, { device: 'desktop', variant: o.variant })}</span><span class="ph">${ART.render(id, o.seed, { device: 'phone', variant: o.variant })}</span>
+        <div class="side"><span class="path">${esc(o.path)}</span><span class="lab">Desktop and iPhone</span><button class="full" data-act="preview" data-pile="${id}" data-odd="${k}" aria-label="Full size: ${esc(o.path)}">Full size</button></div></div></article>`).join('');
+    F.cardRects = Array.from(cards.querySelectorAll('.dk')).map((el) => { let x = 0, y = 0, e = el; while (e && e !== F.board) { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; } return { x, y, w: el.offsetWidth, h: el.offsetHeight }; });
     if (P.odd.length) note.classList.remove('on');
     else {
       note.innerHTML = id === 'product' ? '<b>Odd pages appear after capture.</b>These 48 pages are queued. Once they are captured, any page that breaks the template drifts out here with its reason.' :
@@ -616,9 +628,7 @@
     const s = lerp(1, 2.3, e), tx = lerp(P.g.cx, OPEN.cx, e), ty = lerp(P.g.cy, OPEN.cy, e);
     return (x, y) => [(x - P.g.cx) * s + tx, (y - P.g.cy) * s + ty];
   }
-  function oddCardRect(F, k) {
-    return { x: 914 + 0, y: 86 + 12 + 38 + 10 + k * (12 + 38 + 10 + 125 + 20 + 14 + 18), w: 200, h: 125 };
-  }
+  function oddCardRect(F, k) { return (F.cardRects && F.cardRects[k]) || { x: 900, y: 120 + k * 160, w: 168, h: 105 }; }
 
   function draw(F) {
     const { ctx, st, mode } = F, T = st.time, k = F.k, rm = reduced();
@@ -701,7 +711,7 @@
         if (isOpen && oi > 0.35) { drawTile(F, P, p, x, y, clamp((oi - 0.35) / 0.4), state); return; }
         const land = clamp((intro - p.delay) / 0.9);
         let a = fade * (0.35 + 0.65 * land);
-        if (!picked) { ctx.globalAlpha = a * 0.55; ctx.fillStyle = tk.oneoff; ctx.fillRect(x - 1.3, y - 1.7, 2.6, 3.4); return; }
+        if (!picked) { ctx.globalAlpha = a * 0.9; ctx.fillStyle = tk.oneoff; ctx.fillRect(x - 1.4, y - 1.8, 2.8, 3.6); return; }
         if (state === 'done') {
           const g = (0.55 + 0.25 * Math.sin(T * 1.3 + p.ph) * (rm ? 0 : 1)) + flare * 1.2;
           ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = clamp(a * g * 0.8);
@@ -828,12 +838,13 @@
     const showD = st.devices.desktop || (!st.devices.iphone), showP = st.devices.iphone;
     const tw = (showD ? dw : 0) + (showD && showP ? 2 : 0) + (showP ? pw : 0);
     let x0 = x - tw / 2; const y0 = y - th / 2;
-    const dim = !st.picked[P.id] ? 0.35 : state === 'queued' ? 0.4 : 1;
+    const dim = !st.picked[P.id] ? 0.3 : state === 'queued' || state === 'flight' ? 0.26 : 1;
+    if (dim === 1) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = a * 0.22; const gs = tw * 1.5; ctx.drawImage(glow(TK[P.id]), x - gs / 2, y - gs / 2, gs, gs); ctx.globalCompositeOperation = 'source-over'; }
     ctx.globalAlpha = a * dim;
     if (showD) { const b = bmp(P.id, p.seed, 'desktop', 'normal', dw, th, k); if (b) ctx.drawImage(b, x0, y0, dw, th); x0 += dw + 2; }
     if (showP) { const b = bmp(P.id, p.seed, 'phone', 'normal', pw, th, k); if (b) ctx.drawImage(b, x0, y0, pw, th); }
     if (state === 'failed') { ctx.globalAlpha = a; ctx.strokeStyle = TK.fail; ctx.lineWidth = 1.5; ctx.strokeRect(x - tw / 2 - 1.5, y0 - 1.5, tw + 3, th + 3); }
-    if (state === 'queued' && st.picked[P.id]) { ctx.globalAlpha = a * 0.7; ctx.fillStyle = rgba(TK.sky0, 0.35); ctx.fillRect(x - tw / 2, y0, tw, th); }
+    if ((state === 'queued' || state === 'flight') && st.picked[P.id]) { ctx.globalAlpha = a * 0.75; ctx.strokeStyle = rgba(TK[P.id], 0.6); ctx.lineWidth = 1; ctx.setLineDash([2, 3]); ctx.strokeRect(x - tw / 2 - 0.5, y0 - 0.5, tw + 1, th + 1); ctx.setLineDash([]); }
     ctx.globalAlpha = 1;
   }
   function drawLoupe(F, P, L) {
@@ -860,37 +871,32 @@
     ctx.globalCompositeOperation = 'lighter';
     MODEL.piles.forEach((P) => { if (P.g.loose) return; const [cx, cy] = startMap(P.g.cx, P.g.cy), R = (P.g.single ? 50 : P.ringR * 1.25); ctx.globalAlpha = P.g.single ? 0.5 : 0.35; ctx.drawImage(light(tk[P.id]), cx - R, cy - R, R * 2, R * 2); });
     ctx.globalCompositeOperation = 'source-over';
-    const src = [508, 330];
-    const flying = [];
+    /* the crawl: each URL found is read for its pattern and patched into its pile */
+    const rows = [['blog', '/blog/q3-roadmap'], ['docs', '/docs/webhooks'], ['blog', '/blog/hiring-designers'], ['product', '/product/oak-shelf'], ['docs', '/docs/limits'], ['oneoff', '/careers'], ['blog', '/blog/launch-notes'], ['pricing', '/pricing']];
+    const RX = 560, RY = 182, RH = 23;
+    const rowOf = {}; rows.forEach(([id], i) => { if (rowOf[id] == null) rowOf[id] = i; });
+    ctx.font = '400 12px "dirD Mono"';
+    const ends = rows.map(([id, path], i) => [RX + 14 + ctx.measureText(path).width + 10, RY + i * RH - 4]);
+    const curveTo = (i, tx, ty) => { const [x0, y0] = ends[i]; const cx1 = lerp(x0, tx, 0.55), cy1 = y0; return (u) => [(1 - u) * (1 - u) * x0 + 2 * (1 - u) * u * cx1 + u * u * tx, (1 - u) * (1 - u) * y0 + 2 * (1 - u) * u * cy1 + u * u * ty]; };
     MODEL.piles.forEach((P) => {
       const hue = tk[P.id];
-      if (!P.g.single && !P.g.loose) { const [cx, cy] = startMap(P.g.cx, P.g.cy); ctx.globalAlpha = 0.35; ctx.strokeStyle = rgba(hue, 0.5); ctx.setLineDash([2, 5]); ctx.beginPath(); ctx.arc(cx, cy, P.ringR * 0.62, 0, TAU); ctx.stroke(); ctx.setLineDash([]); }
+      if (!P.g.single && !P.g.loose) { const [cx, cy] = startMap(P.g.cx, P.g.cy); ctx.globalAlpha = 0.35; ctx.strokeStyle = rgba(hue, 0.5); ctx.lineWidth = 1; ctx.setLineDash([2, 5]); ctx.beginPath(); ctx.arc(cx, cy, P.ringR * 0.56, 0, TAU); ctx.stroke(); ctx.setLineDash([]); }
       P.pts.forEach((p, i) => {
         const [tx, ty] = startMap(p.x, p.y);
-        const f = (i * 37 + P.ti * 11) % 100 / 100;
-        const inFlight = f > 0.9 && P.n > 4;
-        if (inFlight) { flying.push([P, p, tx, ty, (f - 0.9) * 10]); return; }
-        ctx.globalAlpha = P.t.picked ? 0.85 : 0.4; ctx.fillStyle = P.t.picked ? hue : tk.oneoff;
+        const f = ((i * 37 + P.ti * 11) % 100) / 100;
+        if (f > 0.93 && P.n > 4 && rowOf[P.id] != null) { const c = curveTo(rowOf[P.id], tx, ty), [x, y] = c(0.35 + (f - 0.93) * 9); ctx.globalAlpha = 0.9; ctx.fillStyle = hue; ctx.fillRect(x - 1.2, y - 1.6, 2.4, 3.2); return; }
+        ctx.globalAlpha = P.t.picked ? 0.85 : 0.5; ctx.fillStyle = P.t.picked ? hue : tk.oneoff;
         ctx.fillRect(tx - 1.2, ty - 1.6, 2.4, 3.2);
         if (P.g.single) { ctx.strokeStyle = rgba(hue, 0.5); ctx.beginPath(); ctx.moveTo(tx - 12, ty); ctx.lineTo(tx + 12, ty); ctx.moveTo(tx, ty - 12); ctx.lineTo(tx, ty + 12); ctx.stroke(); ctx.fillRect(tx - 2.4, ty - 3.2, 4.8, 6.4); }
       });
     });
-    /* trails for pages still in flight */
-    flying.slice(0, 70).forEach(([P, p, tx, ty, t]) => {
-      const e = 0.35 + t * 0.6, cx1 = lerp(src[0], tx, 0.45), cy1 = Math.min(src[1], ty) - 60;
-      const qx = (u) => (1 - u) * (1 - u) * src[0] + 2 * (1 - u) * u * cx1 + u * u * tx, qy = (u) => (1 - u) * (1 - u) * src[1] + 2 * (1 - u) * u * cy1 + u * u * ty;
-      ctx.strokeStyle = rgba(tk[P.id], 0.32); ctx.lineWidth = 0.8; ctx.globalAlpha = 1; ctx.beginPath();
-      for (let u = Math.max(0, e - 0.3); u <= e; u += 0.03) { const x = qx(u), y = qy(u); if (u === Math.max(0, e - 0.3)) ctx.moveTo(x, y); else ctx.lineTo(x, y); }
-      ctx.stroke(); ctx.fillStyle = tk[P.id]; ctx.fillRect(qx(e) - 1.2, qy(e) - 1.6, 2.4, 3.2);
-    });
-    /* a few URLs mid-flight, as text, shrinking toward their pile */
-    const urls = [['blog', '/blog/q3-roadmap', 0.32], ['docs', '/docs/webhooks', 0.5], ['blog', '/blog/hiring-designers', 0.58], ['product', '/product/oak-shelf', 0.42], ['docs', '/docs/limits', 0.22], ['oneoff', '/careers', 0.38], ['blog', '/blog/launch-notes', 0.75]];
-    urls.forEach(([id, path, e]) => {
-      const P = MODEL.byId[id], p = P.byLike[Math.floor(r() * P.n)], [tx, ty] = startMap(p.x, p.y);
-      const cx1 = lerp(src[0], tx, 0.45), cy1 = Math.min(src[1], ty) - 60;
-      const x = (1 - e) * (1 - e) * src[0] + 2 * (1 - e) * e * cx1 + e * e * tx, y = (1 - e) * (1 - e) * src[1] + 2 * (1 - e) * e * cy1 + e * e * ty;
-      ctx.globalAlpha = clamp(1.2 - e); ctx.font = `400 ${Math.round(lerp(14, 9, e))}px "dirD Mono"`; ctx.fillStyle = tk.ink; ctx.fillText(path, x + 6, y - 6);
-      ctx.fillStyle = tk[id]; ctx.globalAlpha = 1; ctx.fillRect(x - 1.5, y - 2, 3, 4);
+    rows.forEach(([id, path], i) => {
+      const P = MODEL.byId[id], p = P.byLike[(i * 13) % P.n], [tx, ty] = startMap(p.x, p.y), c = curveTo(i, tx, ty), fade = 1 - i * 0.07;
+      ctx.globalAlpha = 0.55 * fade; ctx.strokeStyle = rgba(tk[id], 0.7); ctx.lineWidth = 0.9; ctx.beginPath();
+      for (let u = 0; u <= 1.001; u += 0.04) { const [x, y] = c(u); if (u === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); }
+      ctx.stroke();
+      ctx.globalAlpha = fade; ctx.fillStyle = tk[id]; ctx.beginPath(); ctx.arc(RX + 4, RY + i * RH - 4, 3, 0, TAU); ctx.fill();
+      ctx.fillStyle = tk.ink; ctx.fillText(path, RX + 14, RY + i * RH);
     });
     ctx.globalAlpha = 1;
   }

@@ -16,11 +16,13 @@
 }
 #dir-b .b-art{position:absolute;inset:0;overflow:hidden;background:var(--b-set);color:#fff;font:400 14px/1.4 var(--b-ui);-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 1}
 #dir-b .b-art *{box-sizing:border-box}
-#dir-b .b-art button{font:inherit;color:inherit}
 #dir-b .b-table{position:absolute;inset:0;background:
   radial-gradient(760px 520px at 16% 4%, var(--b-set-pool) 0%, rgba(45,79,214,0) 70%),
   radial-gradient(900px 620px at 96% 108%, var(--b-set-low) 0%, rgba(27,54,170,0) 70%),
   var(--b-set)}
+#dir-b .b-gobo{position:absolute;inset:0;pointer-events:none;background:
+  linear-gradient(112deg,rgba(255,255,255,0) 8%,rgba(255,255,255,.09) 12%,rgba(255,255,255,.09) 24%,rgba(255,255,255,0) 28%,rgba(255,255,255,0) 31%,rgba(255,255,255,.075) 35%,rgba(255,255,255,.075) 47%,rgba(255,255,255,0) 51%);
+  -webkit-mask:linear-gradient(200deg,#000 0%,rgba(0,0,0,.55) 45%,rgba(0,0,0,0) 78%);mask:linear-gradient(200deg,#000 0%,rgba(0,0,0,.55) 45%,rgba(0,0,0,0) 78%)}
 #dir-b .b-grain{position:absolute;inset:0;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 #dir-b .b-vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 #dir-b .b-art :focus-visible{outline:2px solid #fff;outline-offset:3px}
@@ -51,7 +53,7 @@
 #dir-b .b-sheen{position:absolute;left:0;top:0;overflow:hidden;transform-origin:0 0;pointer-events:none;opacity:0}
 #dir-b .b-sheen i{position:absolute;top:0;bottom:0;width:90px;left:-90px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.75),rgba(255,255,255,0))}
 #dir-b .b-failed{position:absolute;inset:0;background:#fff;border:2px dashed var(--b-fail)}
-#dir-b .b-failed b{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:var(--b-fail);color:var(--b-ink);font:800 22px/34px var(--b-display);text-align:center}
+#dir-b .b-failed b{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:var(--b-fail);color:var(--b-ink);font:800 17px/26px var(--b-display);text-align:center}
 #dir-b .b-fly{will-change:transform}
 
 /* ---------- top bar ---------- */
@@ -132,7 +134,8 @@
 #dir-b .b-tag.on{opacity:1}
 
 /* ---------- odd ones lane ---------- */
-#dir-b .b-lane{position:absolute;left:1000px;top:86px;width:256px;height:646px;z-index:3;background:var(--b-set-deep);box-shadow:inset 3px 4px 10px rgba(var(--b-shade),.45),inset -1px -1px 0 rgba(255,255,255,.08);transition:opacity var(--b-t-mid) var(--b-decel)}
+#dir-b .b-lane{position:absolute;left:1000px;top:86px;width:256px;height:646px;z-index:3;background:var(--b-set-deep);box-shadow:inset 3px 4px 10px rgba(var(--b-shade),.45),inset -1px -1px 0 rgba(255,255,255,.08);transition:opacity var(--b-t-mid) var(--b-decel);overflow:hidden auto;scrollbar-width:none}
+#dir-b .b-lane::-webkit-scrollbar{display:none}
 #dir-b .b-lane h3{margin:18px 18px 0;font:800 24px/1 var(--b-display)}
 #dir-b .b-lane > p{margin:8px 18px 0;font:400 13px/1.4 var(--b-ui);color:var(--b-sky)}
 #dir-b .b-lane .b-grp{position:absolute;left:18px;font:600 13px/1 var(--b-ui);color:var(--b-sky)}
@@ -146,6 +149,9 @@
 #dir-b .b-path{position:absolute;font:400 13px/1.2 var(--b-ui);color:#fff;white-space:nowrap}
 #dir-b .b-card .b-thumb,#dir-b .b-card .b-flag,#dir-b .b-card .b-path{transition:opacity var(--b-t-mid) var(--b-decel),transform var(--b-t-slow) var(--b-pop)}
 #dir-b .b-card.off .b-thumb{opacity:0}
+#dir-b .b-card .b-wait{position:absolute;border:1.5px dashed rgba(201,214,255,.55);transition:opacity var(--b-t-mid)}
+#dir-b .b-card .b-waitt{position:absolute;font:400 13px/1.3 var(--b-ui);color:var(--b-sky);transition:opacity var(--b-t-mid)}
+#dir-b .b-card:not(.off) .b-wait,#dir-b .b-card:not(.off) .b-waitt{opacity:0}
 #dir-b .b-card.off .b-flag{opacity:0;transform:scale(.4) rotate(-8deg)}
 #dir-b .b-card.off .b-path{opacity:0;transform:translateY(4px)}
 #dir-b .b-slot{position:absolute;border:1.5px dashed rgba(201,214,255,.55)}
@@ -189,7 +195,7 @@
 /* ---------- full-size preview ---------- */
 #dir-b .b-prev{position:absolute;inset:0;z-index:10;visibility:hidden;pointer-events:none}
 #dir-b .b-prev.on{visibility:visible;pointer-events:auto}
-#dir-b .b-prev .b-scrim{position:absolute;inset:0;background:rgba(27,54,170,.94);opacity:0;transition:opacity var(--b-t-mid) var(--b-decel)}
+#dir-b .b-prev .b-scrim{position:absolute;inset:0;background:rgba(27,54,170,.97);opacity:0;transition:opacity var(--b-t-mid) var(--b-decel)}
 #dir-b .b-prev.on .b-scrim{opacity:1}
 #dir-b .b-prev .b-big{position:absolute;left:48px;top:126px;width:840px;height:525px;background:#fff;transform-origin:0 0;box-shadow:2px 3px 4px rgba(var(--b-shade),.35),30px 40px 70px -20px rgba(var(--b-shade),.7)}
 #dir-b .b-prev .b-bigp{position:absolute;left:930px;top:126px;width:242px;height:525px;background:#fff;transform-origin:0 0;box-shadow:2px 3px 4px rgba(var(--b-shade),.35),30px 40px 70px -20px rgba(var(--b-shade),.7)}
@@ -320,14 +326,14 @@
 
   /* ---------- art: PAGE_ART tinted for this set, rasterized once as images ---------- */
   const TINT = { paper: '#ffffff', ink: '#1b2150', soft: '#dfe4f0', accent: '#ef5a3c' };
-  const IMG = { blog: '#ffc9b8', docs: '#c6d6ff', product: '#c2e6d2', home: '#dcd0ff', pricing: '#ffdf9e', oneoff: '#dde2ec' };
+  const IMG = { blog: ['#ffc9b8', '#ffdca6', '#f7c4dc', '#cdd9ff', '#c6ead6', '#ffd0b0'], docs: ['#c6d6ff', '#cfe8ff', '#dad1ff', '#c9ecef'], product: ['#c2e6d2', '#ffe0b0', '#f6cfc4', '#d4dcff', '#e9dcc8'], home: ['#dcd0ff'], pricing: ['#ffdf9e'], oneoff: ['#dde2ec', '#e4dcf5', '#d6ece4'] };
   const artCache = new Map();
   function art(t, seed, phone, variant) {
     const key = t + '|' + seed + '|' + (phone ? 1 : 0) + '|' + (variant || 'normal');
     let u = artCache.get(key);
     if (!u) {
       let svg = ART.render(t, seed, { device: phone ? 'phone' : 'desktop', variant: variant || 'normal' });
-      svg = svg.replace(/var\(--pa-(paper|ink|soft|accent|image)[^)]*\)/g, (m, n) => (n === 'image' ? IMG[t] : TINT[n]));
+      svg = svg.replace(/var\(--pa-(paper|ink|soft|accent|image)[^)]*\)/g, (m, n) => (n === 'image' ? IMG[t][seed % IMG[t].length] : TINT[n]));
       u = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
       artCache.set(key, u);
     }
@@ -346,12 +352,12 @@
     return list.slice(0, Math.min(NLOOSE, t.count)).map((path, i) => ({ path, seed: i + 1 }));
   }
   const LAYOUT = {
-    blog: { x: 168, y: 232, rz: 11, s: 1.0 },
-    docs: { x: 498, y: 232, rz: 13, s: 1.0 },
-    product: { x: 826, y: 232, rz: 10, s: 0.94 },
-    home: { x: 168, y: 528, rz: 12, s: 0.86 },
-    pricing: { x: 498, y: 528, rz: 10, s: 0.86 },
-    oneoff: { x: 826, y: 528, rz: 13, s: 0.86 }
+    blog: { x: 172, y: 262, rz: 11, s: 1.08 },
+    docs: { x: 502, y: 262, rz: 13, s: 1.08 },
+    product: { x: 830, y: 262, rz: 10, s: 1.0 },
+    home: { x: 172, y: 556, rz: 12, s: 0.9 },
+    pricing: { x: 502, y: 556, rz: 10, s: 0.9 },
+    oneoff: { x: 830, y: 556, rz: 13, s: 0.9 }
   };
 
   /* ---------- tiny DOM helpers ---------- */
@@ -423,10 +429,10 @@
     const el = h('div', 'b-sheet');
     el.style.width = w + 'px'; el.style.height = hgt + 'px';
     const cast = h('i', 'b-cast'); el.appendChild(cast);
-    const img = h('img', null, null, { alt: '', src: src || '', draggable: 'false' }); el.appendChild(img);
-    const back = h('div', 'b-back'); const bimg = h('img', null, null, { alt: '', src: src || '' }); back.appendChild(bimg); el.appendChild(back);
+    const img = h('img', null, null, src ? { alt: '', src, draggable: 'false' } : { alt: '', draggable: 'false' }); el.appendChild(img);
+    const back = h('div', 'b-back'); const bimg = h('img', null, null, src ? { alt: '', src } : { alt: '' }); back.appendChild(bimg); el.appendChild(back);
     el.appendChild(h('i', 'b-gloss'));
-    return { el, img, bimg, cast, w, h: hgt, x: 0, y: 0, z: 0, r: 0, sc: 1, th: 0, thv: 0, thT: 0, hop: 0, hopv: 0, hopT: 0, k: SPR.lift[0], c: SPR.lift[1], due: 0, dueT: 0, op: 1, shadow: 0 };
+    return { el, img, bimg, cast, src: src || '', w, h: hgt, x: 0, y: 0, z: 0, r: 0, sc: 1, th: 0, thv: 0, thT: 0, hop: 0, hopv: 0, hopT: 0, k: SPR.lift[0], c: SPR.lift[1], due: 0, dueT: 0, op: 1, shadow: 0 };
   }
   function setSrc(s, src) { if (s.src === src) return; s.src = src; s.img.src = src; s.bimg.src = src; }
   function sheetTransform(s) {
@@ -479,7 +485,7 @@
     for (let i = P.n - 1; i >= 0; i--) { P.el.appendChild(P.sheets[i].el); P.el.appendChild(P.psheets[i].el); }
     if (id === 'docs' && !opts.still) {
       (t.capture.failedPaths || []).forEach((path, k) => {
-        const el = h('div', 'b-sheet'); el.style.width = SW * 0.62 + 'px'; el.style.height = SH * 0.62 + 'px';
+        const el = h('div', 'b-sheet'); el.style.width = SW * 0.46 + 'px'; el.style.height = SH * 0.46 + 'px';
         el.appendChild(h('div', 'b-failed', '<b>!</b>'));
         P.el.appendChild(el); P.fails.push({ el, path, k });
       });
@@ -514,8 +520,9 @@
       const z = Math.max(0.5, T * od.frac);
       Object.assign(od.d, { x: od.out, y: 6 + od.k * 3, z, r: od.rr });
       Object.assign(od.p, { x: SW + PGAP + od.out * 0.35, y: SH - PH + 4, z, r: od.rr * 0.6 });
+      od.d.op = od.p.op = P.done > 8 ? 1 : 0;
     });
-    P.fails.forEach((f) => { f.x = SW * 0.62 + f.k * 18; f.y = SH * 0.42 + f.k * 10; f.z = P.topZ + 1.2 + f.k * 0.8; f.r = 14 + f.k * 9; });
+    P.fails.forEach((f) => { f.x = 18 + f.k * 70; f.y = SH - 30 + f.k * 4; f.z = P.topZ + 1.2 + f.k * 0.8; f.r = -9 + f.k * 16; });
     const H = Math.max(T, P.topZ), sh = 4 + H * 0.5;
     const shadow = (el, w, hh, x, y) => { el.style.cssText = `width:${w}px;height:${hh}px;transform:translate3d(${x}px,${y}px,-.4px);box-shadow:${(2 + H * 0.12).toFixed(1)}px ${(3 + H * 0.15).toFixed(1)}px ${(3 + H * 0.15).toFixed(1)}px rgba(9,20,82,.42),${(sh * 0.9).toFixed(1)}px ${(sh * 1.1).toFixed(1)}px ${(sh * 1.6).toFixed(1)}px rgba(9,20,82,.32),${(sh * 2.2).toFixed(1)}px ${(sh * 2.6).toFixed(1)}px ${(sh * 3.4).toFixed(1)}px rgba(9,20,82,.2);opacity:${P.done > 0 ? 1 : 0}`; };
     shadow(P.shadowD, SW, SH, 0, 0); shadow(P.shadowP, PW, PH, SW + PGAP, SH - PH);
@@ -526,7 +533,7 @@
     P.el.style.transform = chain(P);
     for (let i = 0; i < P.n; i++) { renderSheet(P.sheets[i]); renderSheet(P.psheets[i]); }
     P.odd.forEach((od) => { if (!od.gone) { renderSheet(od.d); renderSheet(od.p); } });
-    P.fails.forEach((f) => { f.el.style.transform = `translate3d(${f.x}px,${f.y}px,${f.z}px) rotateZ(${f.r}deg) rotateY(${f.k ? -8 : -12}deg)`; f.el.style.opacity = f.op == null ? 1 : f.op; });
+    P.fails.forEach((f) => { f.el.style.transform = `translate3d(${f.x}px,${f.y}px,${f.z}px) rotateZ(${f.r}deg) rotateX(${f.k ? -10 : -14}deg)`; f.el.style.opacity = f.op == null ? 1 : f.op; });
     renderSheet(P.lander); renderSheet(P.plander);
     P.dirty = false;
   }
@@ -560,7 +567,7 @@
     [P.sheets, P.psheets].forEach((arr, k) => arr.forEach((s, i) => {
       if (i < P.first) return;
       const lifted = i < L;
-      const tgt = lifted ? Math.min(130, 97 + (L - 1 - i) * 2.8) : 0;
+      const tgt = lifted ? Math.min(148, 124 + (L - 1 - i) * 2.4) : 0;
       if (k) { s.due = now + MS.phoneLag; s.dueT = tgt; } else { s.thT = tgt; s.due = 0; }
       s.hopT = i === L ? 1 : 0;
     }));
@@ -673,7 +680,7 @@
   function buildLabel(P) {
     const t = P.t, L = LAYOUT[P.id];
     const el = h('div', 'b-label');
-    el.style.left = (L.x - 126) + 'px'; el.style.top = (L.y + (L.y > 400 ? 62 : 74)) + 'px';
+    el.style.left = (L.x - 126) + 'px'; el.style.top = (L.y + (L.y > 400 ? 58 : 70)) + 'px';
     el.innerHTML = `<div class="b-name"><button type="button" class="b-pick" role="checkbox" aria-checked="${P.picked}" aria-label="Capture ${t.name}">${ICON.tick}</button><span>${t.name}</span></div><div class="b-pat">${t.pattern}</div><div class="b-stat"></div>`;
     const pick = el.querySelector('.b-pick');
     pick.addEventListener('click', () => { P.picked = !P.picked; pick.setAttribute('aria-checked', String(P.picked)); P.wrap.style.opacity = P.picked ? '' : (P.done > 0 ? '.4' : ''); [P.ghostD, P.ghostP].forEach((g) => g.classList.toggle('faint', !P.picked)); updateLabel(P); updateFoot(); });
@@ -720,25 +727,26 @@
   function buildLane(board) {
     lane = h('div', 'b-lane', '<h3>Odd ones</h3><p>Pages that break their template, pulled out when a pile finishes.</p>', { role: 'region', 'aria-label': 'Odd ones' });
     board.appendChild(lane);
-    let y = 120;
+    let y = 112;
     const groups = [['blog', 'Blog post'], ['docs', 'Docs page'], ['product', 'Product']];
     groups.forEach(([id, name]) => {
       const t = TPL[id];
       const g = h('div', 'b-grp', `${name}, ${t.outliers.length}`); g.style.top = y + 'px'; lane.appendChild(g); y += 22;
       t.outliers.forEach((o, k) => {
         const card = laneCard(id, o, k); card.style.top = y + 'px'; card.dataset.top = y; lane.appendChild(card);
-        y += id === 'blog' ? 104 : 96;
+        y += 124;
       });
-      y += 6;
+      y += 4;
     });
     return lane;
   }
   function laneCard(id, o, k) {
     const card = h('div', 'b-card off', null, { 'data-path': o.path, 'data-id': id });
-    const dx = 52, dy = 10, dw = 128, dh = 80, px = 196, py = 12, pw = 36, ph = 78;
+    const dx = 40, dy = 16, dw = 124, dh = 78, px = 180, py = 16, pw = 36, ph = 78;
     card.innerHTML = `<div class="b-thumb" style="left:${dx}px;top:${dy}px;width:${dw}px;height:${dh}px;transform:rotate(${k % 2 ? 1.2 : -1.4}deg)"><img alt="" src="${art(id, 101 + k, false, o.variant)}"></div>` +
       `<div class="b-thumb" style="left:${px}px;top:${py}px;width:${pw}px;height:${ph}px;transform:rotate(${k % 2 ? -1 : 1.6}deg)"><img alt="" src="${art(id, 101 + k, true, o.variant)}"></div>` +
-      `<div class="b-flag" style="left:16px;top:${dy + 14}px">${ICON.flag}${o.why}</div>` +
+      `<div class="b-wait" style="left:${dx}px;top:${dy}px;width:${dw}px;height:${dh}px"></div><div class="b-wait" style="left:${px}px;top:${py}px;width:${pw}px;height:${ph}px"></div><div class="b-waitt" style="left:${dx + 10}px;top:${dy + 24}px;width:${dw - 20}px">Waits for the pile to finish</div>` +
+      `<div class="b-flag" style="left:${dx - 26}px;top:0">${ICON.flag}${o.why}</div>` +
       `<div class="b-path" style="left:${dx}px;top:${dy + dh + 6}px">${o.path}</div>`;
     card.setAttribute('aria-label', `${o.path}: ${o.why}`);
     card._slot = { dx, dy, dw, dh, px, py, pw, ph };
@@ -775,16 +783,16 @@
         // the target: flat, unrotated pile frame placed so the sheet's corner lands on the lane slot
         const k = to.w / sheet.w;
         const tgt = { tilt: 0, rz: 0, s: 1, x: 0, y: 0, z: 0, r: to.rz, cx: to.x + FW / 2, cy: to.y + FH / 2 };
-        const outX = from.x + 64 + od.k * 6;
-        // 1. slide out of the stack
-        tween(MS.flyOut, decel, (u) => { f.x = lerp(from.x, outX, u); f.z = from.z + u * 10; f.dirty = true; }, lag, () => {
-          const a = { x: f.x, z: f.z };
+        const outX = from.x + 26 + od.k * 4, outY = from.y - 30 - od.k * 6;
+        // 1. spring up out of the stack
+        tween(MS.flyOut, decel, (u) => { f.x = lerp(from.x, outX, u); f.y = lerp(from.y, outY, u); f.z = from.z + u * 46; f.dirty = true; }, lag, () => {
+          const a = { x: f.x, y: f.y, z: f.z };
           // 2. spring through the air into the lane
           tween(MS.fly, decel, (u) => {
             const v = inout(Math.min(1, u * 1.08));
             f.cx = lerp(from.cx, tgt.cx, u); f.cy = lerp(from.cy, tgt.cy, u);
             f.tilt = lerp(from.tilt, 0, v); f.rz = lerp(from.rz, 0, v); f.s = lerp(from.s, 1, v);
-            f.x = lerp(a.x, 0, u); f.y = lerp(from.y, 0, u); f.z = lerp(a.z, 0, u);
+            f.x = lerp(a.x, 0, u); f.y = lerp(a.y, 0, u); f.z = lerp(a.z, 0, u);
             f.lift = Math.sin(Math.PI * Math.min(1, u * 1.04)) * 170;
             f.r = lerp(from.r, to.rz, u) + Math.sin(Math.PI * u) * (od.k % 2 ? -14 : 12);
             f.k = lerp(1, k, v);
@@ -894,7 +902,7 @@
     const s = P.sheets[L]; if (!s) return;
     const lay = LAYOUT[P.id];
     tagEl.innerHTML = `${s.path}<small>${P.t.name}, Desktop and iPhone</small>`;
-    tagEl.style.transform = `translate(${lay.x - 132}px,${lay.y - 150}px)`;
+    tagEl.style.transform = `translate(${lay.x + 36}px,${lay.y - 142}px)`;
     tagEl.classList.add('on');
     if (!P._sayT || performance.now() - P._sayT > 900) { P._sayT = performance.now(); say(`Showing ${s.path}`); }
   }
@@ -930,7 +938,7 @@
   /* ---------- opening a pile: the stack spreads into its layout in one move ---------- */
   const OPEN = { x0: 40, y0: 196, cw: 284, rh: 172, px: 168, py: 28 };
   function slotXY(i) { const c = i % 3, r = Math.floor(i / 3); return { x: OPEN.x0 + c * OPEN.cw, y: OPEN.y0 + r * OPEN.rh }; }
-  const OCARD = { x: 900, y: 236, pitch: 162, dw: 176, dh: 110, px: 196, py: 22, pw: 46, ph: 100 };
+  const OCARD = { x: 900, y: 236, pitch: 164, dw: 160, dh: 100, px: 176, py: 32, pw: 46, ph: 100 };
   function buildOpenView(id, staticMode) {
     const t = TPL[id], P = piles[id];
     const done = P ? P.done : t.capture.done;
@@ -958,9 +966,9 @@
       v.appendChild(col);
       odd.forEach((o, k) => {
         const y = OCARD.y + k * OCARD.pitch - 176;
-        const c = h('div', 'b-ocard', `<div class="b-thumb" style="left:0;top:${OCARD.py + 14}px;width:${OCARD.dw}px;height:${OCARD.dh}px"><img alt="" src="${art(id, 101 + k, false, o.variant)}"></div><div class="b-thumb" style="left:${OCARD.px}px;top:${OCARD.py + 24}px;width:${OCARD.pw}px;height:${OCARD.ph}px"><img alt="" src="${art(id, 101 + k, true, o.variant)}"></div><div class="b-flag" style="left:0;top:${OCARD.py - 12}px">${ICON.flag}${o.why}</div><div class="b-path" style="left:${OCARD.pw + OCARD.px + 14}px;top:${OCARD.py + 30}px">${o.path.replace(/^\/[^/]+/, (m) => m + '<br>')}</div>`);
+        const c = h('div', 'b-ocard', `<div class="b-thumb" style="left:0;top:${OCARD.py}px;width:${OCARD.dw}px;height:${OCARD.dh}px"><img alt="" src="${art(id, 101 + k, false, o.variant)}"></div><div class="b-thumb" style="left:${OCARD.px}px;top:${OCARD.py}px;width:${OCARD.pw}px;height:${OCARD.ph}px"><img alt="" src="${art(id, 101 + k, true, o.variant)}"></div><div class="b-flag" style="left:0;top:0">${ICON.flag}${o.why}</div><div class="b-path" style="left:${OCARD.px + OCARD.pw + 16}px;top:${OCARD.py + 4}px;white-space:normal;width:100px">${o.path}<br><span style="color:var(--b-sky)">Desktop and iPhone</span></div>`);
         c.style.top = y + 'px';
-        if (!staticMode) { const b = h('button', 'b-slotbtn', `<span class="b-vh">Preview ${o.path}</span>`, { type: 'button', style: `left:0;top:${OCARD.py + 14}px;width:${OCARD.px + OCARD.pw}px;height:${OCARD.ph + 10}px` }); b.addEventListener('click', () => preview(id, { path: o.path, seed: 101 + k, variant: o.variant, why: o.why }, { x: OCARD.x, y: OCARD.y + k * OCARD.pitch + 14 }, true)); c.appendChild(b); }
+        if (!staticMode) { const b = h('button', 'b-slotbtn', `<span class="b-vh">Preview ${o.path}</span>`, { type: 'button', style: `left:0;top:${OCARD.py}px;width:${OCARD.px + OCARD.pw}px;height:${OCARD.ph}px` }); b.addEventListener('click', () => preview(id, { path: o.path, seed: 101 + k, variant: o.variant, why: o.why }, { x: OCARD.x, y: OCARD.y + k * OCARD.pitch + OCARD.py }, true)); c.appendChild(b); }
         col.appendChild(c);
       });
     }
@@ -975,7 +983,7 @@
     for (const id in piles) if (id !== P.id) { piles[id].wrap.style.opacity = 0; }
     for (const id in labels) labels[id].style.opacity = 0, labels[id].style.pointerEvents = 'none';
     for (const id in piles) piles[id].hit.style.visibility = 'hidden';
-    lane.style.opacity = 0; lane.style.pointerEvents = 'none';
+    lane.style.opacity = 0; lane.style.pointerEvents = 'none'; foot.style.opacity = 0;
     openEl = buildOpenView(P.id, false); live.appendChild(openEl);
     openEl.classList.add('on'); openEl.style.opacity = 1;
     openEl.querySelector('.b-back-btn').addEventListener('click', () => closePile());
@@ -1007,8 +1015,9 @@
     cards.forEach((c, k) => {
       const lc = lane.querySelector(`.b-card[data-id="${P.id}"][data-path="${P.t.outliers[k].path}"]`);
       if (!lc || lc.classList.contains('off') || RM()) return;
-      const lt = +lc.dataset.top + 86 - lane.scrollTop;
-      const dx = 1000 + 52 - OCARD.x, dy = lt + 10 - (OCARD.y + k * OCARD.pitch + OCARD.py - 14 + 14 + 14), sc = 128 / OCARD.dw;
+      const sl = lc._slot, sc = sl.dw / OCARD.dw;
+      const lx = 1000 + sl.dx, ly = +lc.dataset.top + 86 - lane.scrollTop + sl.dy;
+      const dx = lx - OCARD.x, dy = ly - (OCARD.y + k * OCARD.pitch) - sc * OCARD.py;
       c.animate([{ transform: `translate(${dx}px,${dy}px) scale(${sc})`, transformOrigin: '0 0' }, { transform: 'none', transformOrigin: '0 0' }], { duration: dur, easing: 'cubic-bezier(.2,0,0,1)', delay: 80 + k * 50, fill: 'backwards' });
     });
     later(RM() ? 0 : dur * 0.62, () => openEl && openEl.classList.add('ready'));
@@ -1042,7 +1051,7 @@
   function restoreRest(P) {
     for (const id in piles) { piles[id].wrap.style.opacity = piles[id].picked || piles[id].done === 0 ? '' : '.4'; piles[id].hit.style.visibility = ''; }
     for (const id in labels) { labels[id].style.opacity = ''; labels[id].style.pointerEvents = ''; }
-    lane.style.opacity = ''; lane.style.pointerEvents = '';
+    lane.style.opacity = ''; lane.style.pointerEvents = ''; foot.style.opacity = '';
     if (P && P.hit) P.hit.focus({ preventScroll: true });
   }
 
@@ -1055,7 +1064,7 @@
     prevEl.querySelector('.b-why').style.display = isOdd ? '' : 'none';
     prevEl.classList.add('on');
     if (!RM()) {
-      const fromD = { x: xy.x, y: xy.y, w: isOdd ? OCARD.dw : SW }, fromP = { x: xy.x + (isOdd ? OCARD.px : OPEN.px), y: xy.y + (isOdd ? 10 : OPEN.py), w: isOdd ? OCARD.pw : PW };
+      const fromD = { x: xy.x, y: xy.y, w: isOdd ? OCARD.dw : SW }, fromP = { x: xy.x + (isOdd ? OCARD.px : OPEN.px), y: xy.y + (isOdd ? 0 : OPEN.py), w: isOdd ? OCARD.pw : PW };
       big.animate([{ transform: `translate(${fromD.x - 48}px,${fromD.y - 126}px) scale(${fromD.w / 840})` }, { transform: 'none' }], { duration: 560, easing: 'cubic-bezier(.2,0,0,1)' });
       bigp.animate([{ transform: `translate(${fromP.x - 930}px,${fromP.y - 126}px) scale(${fromP.w / 242})` }, { transform: 'none' }], { duration: 600, easing: 'cubic-bezier(.2,0,0,1)', delay: 30, fill: 'backwards' });
     }
@@ -1123,7 +1132,7 @@
   /* ---------- live screen ---------- */
   function buildLive(board) {
     const a = h('div', 'b-art'); board.appendChild(a); live = a;
-    a.appendChild(h('div', 'b-table')); a.appendChild(h('div', 'b-grain'));
+    a.appendChild(h('div', 'b-table')); a.appendChild(h('div', 'b-gobo')); a.appendChild(h('div', 'b-grain'));
     a.appendChild(h('h3', 'b-vh', 'example.com, piles mid-capture'));
     liveRegion = h('div', 'b-vh', null, { 'aria-live': 'polite' }); a.appendChild(liveRegion);
     const playAuto = !RM();
@@ -1152,7 +1161,7 @@
   /* ---------- still: Blog post opened ---------- */
   function buildOpenStill(board) {
     const a = h('div', 'b-art'); board.appendChild(a);
-    a.appendChild(h('div', 'b-table')); a.appendChild(h('div', 'b-grain'));
+    a.appendChild(h('div', 'b-table')); a.appendChild(h('div', 'b-gobo')); a.appendChild(h('div', 'b-grain'));
     topBar(a, false);
     a.querySelectorAll('button,input').forEach((b) => { b.tabIndex = -1; });
     a.querySelectorAll('.b-pop').forEach((p) => p.remove());
@@ -1163,9 +1172,9 @@
   /* ---------- still: the start ---------- */
   function buildStartStill(board) {
     const a = h('div', 'b-art b-start'); board.appendChild(a);
-    a.appendChild(h('div', 'b-table')); a.appendChild(h('div', 'b-grain'));
+    a.appendChild(h('div', 'b-table')); a.appendChild(h('div', 'b-gobo')); a.appendChild(h('div', 'b-grain'));
     topBar(a, true);
-    a.appendChild(h('h3', null, 'Every page of a site, sorted into piles.'));
+    a.appendChild(h('h3', null, 'Every page, sorted into piles.'));
     a.appendChild(h('div', 'b-big-in', '<strong>example.com</strong><i class="b-caret"></i><span>Found 412 pages</span>'));
     const sl1 = h('div', 'b-sl', 'Devices'); sl1.style.top = '388px'; a.appendChild(sl1);
     const tiles = h('div', 'b-dtiles');
@@ -1179,15 +1188,15 @@
     a.appendChild(h('div', 'b-cta', 'Capture 404 pages'));
     a.appendChild(h('div', 'b-cta-sub', 'On Desktop and iPhone 14 Pro. One-off pages left out.'));
     // the sorter: URL slips arc from the domain into six piles
-    const spots = { blog: [740, 380], docs: [940, 380], product: [1140, 380], home: [740, 612], pricing: [940, 612], oneoff: [1140, 612] };
-    const src = [560, 326];
+    const spots = { blog: [770, 420], docs: [975, 420], product: [1170, 420], home: [770, 640], pricing: [975, 640], oneoff: [1170, 640] };
+    const src = [566, 325];
     const svgNS = 'http://www.w3.org/2000/svg';
     const svg = document.createElementNS(svgNS, 'svg'); svg.setAttribute('width', 1280); svg.setAttribute('height', 800); svg.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none';
     a.appendChild(svg);
     const curves = {};
     Object.keys(spots).forEach((id, k) => {
       const [x, y] = spots[id];
-      const c1 = [src[0] + 120, src[1] - 150 + k * 10], c2 = [x - 40, y - 230 + (y > 500 ? 60 : 0)], end = [x, y - 50];
+      const c1 = [src[0] + 110, src[1] - 40 - k * 8], c2 = [x - 70, y - 190], end = [x, y - 30];
       const d = `M${src[0]} ${src[1]} C${c1[0]} ${c1[1]} ${c2[0]} ${c2[1]} ${end[0]} ${end[1]}`;
       const p = document.createElementNS(svgNS, 'path'); p.setAttribute('d', d); p.setAttribute('fill', 'none'); p.setAttribute('stroke', 'rgba(201,214,255,.35)'); p.setAttribute('stroke-width', '1.5'); p.setAttribute('stroke-dasharray', '2 6'); p.setAttribute('stroke-linecap', 'round');
       svg.appendChild(p); curves[id] = [src, c1, c2, end];
@@ -1199,23 +1208,23 @@
       const [x, y] = spots[id], t = TPL[id];
       const wrap = h('div', 'b-wrap'); wrap.style.perspectiveOrigin = '900px 360px'; a.appendChild(wrap);
       const pile = h('div', 'b-pile'); wrap.appendChild(pile);
-      const w = 132, d = 40, T = 2 + counts[id] * 0.12;
+      const w = 168, d = 52, T = 2 + counts[id] * 0.13;
       pile.style.transform = `translate3d(${x}px,${y}px,0) rotateX(${TILT}deg) rotateZ(${10 + (id.length % 3)}deg) translate3d(${-w / 2}px,${-d / 2}px,0)`;
       const sh = h('div', 'b-shadow'); sh.style.cssText = `width:${w}px;height:${d}px;box-shadow:3px 4px 4px rgba(9,20,82,.4),${4 + T * 0.4}px ${5 + T * 0.5}px ${8 + T * 0.7}px rgba(9,20,82,.32)`; pile.appendChild(sh);
       const box = faceBox(w, d, t.picked ? '' : 'b-ghost faint'); setBox(box, T); pile.appendChild(box);
-      const top = h('div', 'b-sheet', `<div style="position:absolute;inset:0;background:#fff;display:flex;align-items:center;padding:0 10px;font:600 13px var(--b-ui);color:#0d1a5c">${t.pattern.split(',')[0]}</div>`); top.style.cssText = `width:${w}px;height:${d}px;transform:translate3d(1px,-1px,${T + 0.6}px) rotateZ(-1deg)`;
+      const top = h('div', 'b-sheet', `<div style="position:absolute;inset:0;background:#fff;display:flex;align-items:center;padding:0 10px;font:600 15px var(--b-ui);color:#0d1a5c">${t.pattern.split(',')[0]}</div>`); top.style.cssText = `width:${w}px;height:${d}px;transform:translate3d(1px,-1px,${T + 0.6}px) rotateZ(-1deg)`;
       if (t.picked) pile.appendChild(top);
-      const lab = h('div', 'b-spl', `<b>${counts[id]}</b><span>${t.name}</span>`); lab.style.left = (x - 64) + 'px'; lab.style.top = (y + 36) + 'px'; a.appendChild(lab);
+      const lab = h('div', 'b-spl', `<b>${counts[id]}</b><span>${t.name}</span>`); lab.style.left = (x - 80) + 'px'; lab.style.top = (y + 44) + 'px'; a.appendChild(lab);
     });
     // slips in flight along each curve
     const slipsFor = { blog: ['/blog/q3-roadmap', '/blog/launch-notes', '/blog/benchmarks'], docs: ['/docs/webhooks', '/docs/api'], product: ['/product/oak-shelf', '/product/desk-lamp'], home: ['/'], pricing: ['/pricing'], oneoff: ['/careers', '/press'] };
     Object.keys(slipsFor).forEach((id) => {
       slipsFor[id].forEach((path, k, arr) => {
-        const u = 0.22 + (k / Math.max(1, arr.length)) * 0.55 + (id.length % 2) * 0.06;
+        const u = arr.length === 1 ? 0.62 : 0.4 + k * (0.42 / (arr.length - 1)) + (Object.keys(slipsFor).indexOf(id) % 3) * 0.035;
         const p = bz(curves[id], u), q = bz(curves[id], u + 0.01);
         const ang = Math.atan2(q[1] - p[1], q[0] - p[0]) * 180 / Math.PI;
         const slip = h('div', 'b-slip', path);
-        slip.style.transform = `translate(${p[0].toFixed(1)}px,${(p[1] - 13).toFixed(1)}px) rotate(${(ang * 0.35).toFixed(1)}deg) scale(${(0.9 + u * 0.15).toFixed(2)})`;
+        slip.style.transform = `translate(${p[0].toFixed(1)}px,${(p[1] - 13).toFixed(1)}px) rotate(${(ang * 0.4).toFixed(1)}deg) scale(${(1.0 + u * 0.2).toFixed(2)})`;
         a.appendChild(slip);
       });
     });
