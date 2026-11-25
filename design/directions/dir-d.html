@@ -1082,8 +1082,8 @@
       else if (act === 'domain') { const s = F.$('.d-search input'); if (s) s.focus(); }
     });
     F.$('.d-dlg').addEventListener('click', (e) => { if (e.target.classList.contains('d-dlg')) closePreview(F); });
-    board.addEventListener('keydown', (e) => {
-      if (e.key !== 'Escape') return;
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || !F.running) return;
       if (!F.$('.d-dlg').hidden) { closePreview(F); e.stopPropagation(); return; }
       if (!F.$('.d-pop').hidden) { F.$('.d-pop').hidden = true; F.$('[data-act="share"]').setAttribute('aria-expanded', 'false'); return; }
       if (st.open) closePile(F);
