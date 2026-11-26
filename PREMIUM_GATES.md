@@ -30,15 +30,15 @@ DIRECTION: wildcard | file: design/directions/dir-d.html | art: canvas likeness 
 SCREEN: <home> | custom: <element 1 (painter/shader/mesh/physics/custom shape/transition)>, <element 2> | art: <art file shown on it>
 
 ## Evidence of the look
-REST-STILLS: design/directions/shots/e/rest.png design/directions/shots/e/still-open.png design/directions/shots/e/still-start.png
-PREVIOUS-STILLS: design/directions/shots/c/art.png design/directions/shots/b/rest.png design/critic/previous-home.png
-SAME-APP: YES   (the critic: E is round 1 C in a new skin)
+REST-STILLS: design/directions/shots/f/rest.png design/directions/shots/f/opened.png design/directions/shots/f/start.png
+PREVIOUS-STILLS: design/directions/shots/e/rest.png design/directions/shots/e/still-open.png design/directions/shots/e/still-start.png
+SAME-APP: NO   (the critic: not E, not C, not today's app)
 SEEN-BEFORE: YES
 
 ## Critic (ui-critic output saved to a file; scores are read from it)
-CRITIC-REPORT: design/critic/stills-r2.md
-FIRST-GLANCE: 6
-WOW: 6
+CRITIC-REPORT: design/critic/stills-r3.md
+FIRST-GLANCE: 7
+WOW: 7
 
 ## Below the bar (First glance or Wow < 9) only
 ## Ask the user, stating the gap plainly ("this is 8/6, below your bar of 9/9"), then paste their exact words.
