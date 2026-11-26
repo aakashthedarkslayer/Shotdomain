@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>[hidden]{display:none!important}body{margin:0}</style></head><body><title>ShotDomain: four looks for Template piles</title>
+<title>ShotDomain: four looks for Template piles</title>
 <style>
 /* Shell chrome stays quiet so the directions lead. Four tabs, then one stage per direction:
    a live 1280 x 800 screen scaled to fit, two smaller stills under it, and a spec panel. */
@@ -13,7 +13,7 @@ body{font-family:var(--sh-ui)}
 .sh-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 32px}
 .sh-head h1{margin:0;font-size:30px;letter-spacing:-.02em}
 .sh-head p{margin:0;max-width:70ch;color:var(--sh-muted);font-size:14px;line-height:1.55}
-.sh-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:22px 0 16px}
+.sh-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:22px 0 16px}
 .sh-tabs button{all:unset;box-sizing:border-box;cursor:pointer;padding:12px 14px;background:var(--sh-panel);border:1px solid var(--sh-line);display:grid;gap:2px}
 .sh-tabs button[aria-selected="true"]{border-color:var(--sh-fg);box-shadow:0 0 0 1px var(--sh-fg)}
 .sh-tabs button:focus-visible{outline:2px solid var(--sh-accent);outline-offset:3px}
@@ -54,7 +54,8 @@ body{font-family:var(--sh-ui)}
     <button role="tab" id="tab-b" aria-controls="dir-b" aria-selected="true" data-dir="b"><span class="n">B Art and motion<span class="rec">Recommended</span></span><span class="d">A's art with a signature moment</span></button>
     <button role="tab" id="tab-c" aria-controls="dir-c" aria-selected="false" data-dir="c"><span class="n">C A world</span><span class="d">Every action is a ritual</span></button>
     <button role="tab" id="tab-d" aria-controls="dir-d" aria-selected="false" data-dir="d"><span class="n">D Wild card</span><span class="d">One unexpected idea</span></button>
-    <button role="tab" id="tab-e" aria-controls="dir-e" aria-selected="false" data-dir="e"><span class="n">E Hybrid<span class="rec">Round 2</span></span><span class="d">C's sorting office holding B's riffle stacks, in the riso inks</span></button>
+    <button role="tab" id="tab-e" aria-controls="dir-e" aria-selected="false" data-dir="e"><span class="n">E Hybrid</span><span class="d">C's sorting office holding B's riffle stacks, in the riso inks</span></button>
+    <button role="tab" id="tab-f" aria-controls="dir-f" aria-selected="false" data-dir="f"><span class="n">F The overprint<span class="rec">Round 3</span></span><span class="d">The site's shape as piles; odd pages print off register</span></button>
   </div>
   <main>
 <style>
@@ -1413,6 +1414,213 @@ body{font-family:var(--sh-ui)}
     <div class="swatches"><i style="background:#eef0f3" title="Paper"></i><i style="background:#3255a4" title="Riso blue"></i><i style="background:#1c2f63" title="Deep blue"></i><i style="background:#ff48b0" title="Print pink"></i><i style="background:#d61c82" title="Pink mark"></i></div>
     <p>Anybody only: 62% width at 900 for heads, 75% with tabular figures for counts and paths, normal width to read. Screenshots stay in true colour, keylined in blue.</p>
     <p class="tradeoff">Trade-off: the world is calmer than C and keeps every ritual, but the frame is still fixed at six holes; a site with 15 templates needs a second bay that slides in, or smaller holes. The riffle needs a pointer or the arrow keys to be discovered, so the autoplay shows it once.</p>
+  </aside>
+</section>
+
+
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,400..900&display=swap');
+/* VOICE: a proof off the press, read like a poster.
+   IDEA: the misregistration is the diff. Pages that fit their template print in one ink, in register; a page
+   that breaks it comes off the drum with its pink plate slipped by how unlike the pile it is.
+   PICTURE: the site's own shape: one sheet per template, its area the page count, each an overprint of every
+   page in the pile (real captures of a demo site, averaged into a halftone). Odd pages rise out of their pile.
+   COLOUR and TYPE: paper, riso blue, deep blue; pink only on the odd pages, the current thing and focus. Anybody.
+   LAYOUT: the piles stand on one bed line like a skyline; the words sit in the sky above the small piles. */
+#dir-f{
+  --f-paper:#eef0f3; --f-sheet:#f8f9fb; --f-white:#ffffff; --f-tray:#e2e6ee; --f-rule:#cdd3e0; --f-strong:#93a0bd; --f-edge:#7a88a8;
+  --f-fg:#1c2f63; --f-muted:#50648f; --f-blue:#3255a4; --f-pink:#d61c82; --f-pinkt:#c4126f; --f-soft:#ffe1f1; --f-danger:#b3203a;
+  --f-raise:0 1px 2px rgb(28 47 99 / .10), 0 14px 30px -12px rgb(28 47 99 / .35);
+  --f-f:'Anybody',ui-sans-serif,system-ui,sans-serif; --f-ease:cubic-bezier(.2,0,0,1); --f-spring:cubic-bezier(.34,1.56,.64,1);
+}
+#dir-f .stage{background:var(--f-fg)}
+#dir-f .stage .screen > figcaption{color:#e3e8f4;opacity:.92}
+#dir-f .f-board{overflow:hidden;background:var(--f-paper);font-family:var(--f-f);color:var(--f-fg);font-size:15px;line-height:1.35;-webkit-font-smoothing:antialiased;text-align:left}
+#dir-f .f-board *{box-sizing:border-box}
+#dir-f :where(.f-board) button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;text-align:inherit;-webkit-appearance:none;appearance:none}
+#dir-f .f-board :focus-visible{outline:3px solid var(--f-pink);outline-offset:3px}
+#dir-f .f-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+#dir-f .f-cond{font-stretch:75%;font-variant-numeric:tabular-nums}
+#dir-f .f-disp{font-stretch:62%;font-weight:900;line-height:.88;letter-spacing:-.01em}
+#dir-f .f-head{font-stretch:75%;font-weight:900;line-height:1.05}
+#dir-f .f-muted{color:var(--f-muted)}
+#dir-f .f-pk{color:var(--f-pinkt)}
+
+/* bar */
+#dir-f .f-bar{position:absolute;left:0;top:0;width:1280px;height:56px;display:flex;align-items:center;gap:20px;padding:0 40px;border-bottom:1px solid var(--f-rule)}
+#dir-f .f-mark{display:flex;align-items:center;gap:10px;font-weight:600;font-size:16px}
+#dir-f .f-site{display:flex;align-items:baseline;gap:12px;padding-left:20px;border-left:1px solid var(--f-rule);height:24px}
+#dir-f .f-site b{font-stretch:75%;font-weight:900;font-size:18px}
+#dir-f .f-site span{font-size:14px;color:var(--f-muted)}
+#dir-f .f-bar-r{margin-left:auto;display:flex;align-items:center;gap:10px}
+#dir-f .f-search{position:relative;width:220px}
+#dir-f .f-search input{width:100%;height:34px;border:1px solid var(--f-edge);border-radius:6px;background:var(--f-sheet);color:var(--f-fg);font:inherit;font-size:14px;padding:0 10px 0 32px}
+#dir-f .f-search input::placeholder{color:#566a93}
+#dir-f .f-search input:focus-visible{outline:3px solid var(--f-pink);outline-offset:1px}
+#dir-f .f-search svg{position:absolute;left:10px;top:10px}
+
+/* buttons: pressable things are 6 px round */
+#dir-f .f-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:34px;padding:0 14px;border-radius:6px;background:var(--f-blue);color:var(--f-white);font-weight:600;font-size:14px;white-space:nowrap;transition:background-color .15s}
+#dir-f .f-btn:hover{background:var(--f-fg)}
+#dir-f .f-btn:active{background:var(--f-pink)}
+#dir-f .f-btn[aria-disabled="true"]{background:var(--f-tray);color:var(--f-muted);cursor:not-allowed}
+#dir-f .f-btn.sec{background:var(--f-sheet);color:var(--f-blue);box-shadow:inset 0 0 0 1.5px var(--f-blue)}
+#dir-f .f-btn.sec:hover{background:var(--f-tray)}
+#dir-f .f-btn.ghost{background:none;color:var(--f-blue);padding:0 10px}
+#dir-f .f-btn.ghost:hover{background:var(--f-tray)}
+#dir-f .f-btn.danger{background:none;color:var(--f-danger);box-shadow:inset 0 0 0 1.5px var(--f-danger)}
+#dir-f .f-btn.danger:hover{background:#fbe9ec}
+#dir-f .f-btn.sm{height:28px;padding:0 10px;font-size:13px}
+#dir-f .f-btn.big{height:56px;padding:0 26px;font-size:18px}
+
+/* the sky: status and the settings sentence */
+#dir-f .f-sky{position:absolute;left:784px;top:84px;width:456px}
+#dir-f .f-sky h2{margin:0;font-size:76px;color:var(--f-fg)}
+#dir-f .f-sky h2 .n{font-variant-numeric:tabular-nums}
+#dir-f .f-sky .f-now{margin:16px 0 0;font-size:16px}
+#dir-f .f-sent{margin:10px 0 0;font-size:16px;line-height:1.55;max-width:44ch}
+#dir-f .f-term{color:var(--f-blue);font-weight:600;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px;text-decoration-color:var(--f-strong);border-radius:3px}
+#dir-f .f-term:hover{text-decoration-color:var(--f-blue)}
+#dir-f .f-term[aria-expanded="true"]{text-decoration-color:var(--f-pink)}
+#dir-f .f-acts{display:flex;gap:10px;margin-top:20px}
+#dir-f .f-pop{position:absolute;z-index:20;background:var(--f-sheet);box-shadow:var(--f-raise);border:1px solid var(--f-rule);padding:8px;width:240px}
+#dir-f .f-pop[hidden]{display:none}
+#dir-f .f-pop label{display:flex;align-items:center;gap:10px;min-height:36px;padding:0 8px;font-size:14px;cursor:pointer}
+#dir-f .f-pop label:hover{background:var(--f-tray)}
+#dir-f .f-pop input{accent-color:var(--f-pink);width:16px;height:16px;margin:0}
+#dir-f .f-pop .w{margin-left:auto;font-size:13px;color:var(--f-muted)}
+
+/* the bed and the piles */
+#dir-f .f-bed{position:absolute;left:40px;top:640px;width:1200px;height:1px;background:var(--f-fg)}
+#dir-f .f-pile{position:absolute;display:block;background:var(--f-sheet);outline:1px solid var(--f-rule);outline-offset:0;transition:outline-color .15s}
+#dir-f .f-pile:hover{outline:2px solid var(--f-blue)}
+#dir-f .f-pile:focus-visible{outline:3px solid var(--f-pink);outline-offset:3px}
+#dir-f .f-pile img{position:absolute;inset:0;width:100%;height:100%;display:block}
+#dir-f .f-pile .f-over{clip-path:inset(0 0 calc(100% - var(--p,1) * 100%) 0)}
+#dir-f .f-drum{position:absolute;left:-6px;right:-6px;height:2px;background:var(--f-blue);top:calc(var(--p,1) * 100%)}
+#dir-f .f-drum::after{content:"";position:absolute;right:0;top:-4px;width:10px;height:10px;background:var(--f-blue)}
+#dir-f .f-pile.queued{background:var(--f-sheet)}
+#dir-f .f-pile.off{background:none;outline:1.5px dashed var(--f-edge)}
+#dir-f .f-reg{position:absolute;width:13px;height:13px;pointer-events:none}
+#dir-f .f-reg::before,#dir-f .f-reg::after{content:"";position:absolute;background:var(--f-blue)}
+#dir-f .f-reg::before{left:6px;top:0;width:1px;height:13px}
+#dir-f .f-reg::after{top:6px;left:0;height:1px;width:13px}
+#dir-f .f-next{position:absolute;inset:0;display:grid;place-items:center;font-size:14px;color:var(--f-muted)}
+#dir-f .f-lab{position:absolute;top:652px;font-size:14px;line-height:1.35}
+#dir-f .f-lab .t{display:flex;align-items:baseline;gap:8px}
+#dir-f .f-lab .t b{font-stretch:75%;font-weight:900;font-size:19px}
+#dir-f .f-lab .t .c{font-stretch:75%;font-weight:900;font-size:19px;font-variant-numeric:tabular-nums;color:var(--f-blue)}
+#dir-f .f-lab .pat{font-stretch:75%;color:var(--f-muted)}
+#dir-f .f-lab .st{display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap}
+#dir-f .f-lab .bad{color:var(--f-danger);display:inline-flex;align-items:center;gap:5px;font-weight:600}
+#dir-f .f-key{position:absolute;left:40px;top:752px;width:900px;font-size:13px;color:var(--f-muted);line-height:1.45}
+#dir-f .f-key b{color:var(--f-fg);font-weight:600}
+
+/* odd pages: pulled out of their pile, pink plate off register by how unlike they are */
+#dir-f .f-odd{position:absolute;width:140px;display:block;background:var(--f-white);box-shadow:var(--f-raise);transform:rotate(var(--r,0deg));transition:transform .35s var(--f-ease);z-index:3}
+#dir-f .f-odd:hover{transform:rotate(var(--r,0deg)) translateY(-6px)}
+#dir-f .f-odd .pr{position:relative;display:block;width:140px;height:140px;overflow:hidden;background:var(--f-white)}
+#dir-f .f-odd .pr img{position:absolute;inset:0;width:100%;height:100%;display:block}
+#dir-f .f-odd .pr .pinkp{mix-blend-mode:multiply;transform:translate(var(--dx,0px),var(--dy,0px));transition:transform .7s var(--f-spring)}
+#dir-f .f-odd:hover .pinkp,#dir-f .f-odd:focus-visible .pinkp{transform:translate(0,0);transition-duration:.45s;transition-timing-function:var(--f-ease)}
+#dir-f .f-odd .cap{display:block;padding:7px 9px 8px;border-top:1px solid var(--f-rule)}
+#dir-f .f-odd .cap b{display:block;font-size:13px;font-weight:600;line-height:1.2}
+#dir-f .f-odd .cap span{display:block;font-size:13px;margin-top:2px}
+#dir-f .f-odd.is-new{transition:none}
+
+/* sheets landing on the docs pile while it prints */
+#dir-f .f-land{position:absolute;width:120px;height:120px;background:var(--f-white);box-shadow:var(--f-raise);pointer-events:none;z-index:4;opacity:0}
+#dir-f .f-land img{width:100%;height:100%;display:block}
+#dir-f .f-ghost{position:absolute;left:0;top:0;z-index:30;pointer-events:none;opacity:0;transition:transform 1.1s var(--f-ease),opacity .3s}
+
+/* opened pile */
+#dir-f .f-open{position:absolute;left:0;top:56px;width:1280px;height:744px}
+#dir-f .f-open[hidden]{display:none}
+#dir-f .f-open-h{position:absolute;left:40px;top:22px;right:40px;display:flex;align-items:flex-end;gap:24px}
+#dir-f .f-open-h h2{margin:6px 0 0;font-size:56px}
+#dir-f .f-open-h p{margin:8px 0 0;font-size:16px}
+#dir-f .f-devs{margin-left:auto;display:flex;gap:8px;align-items:center}
+#dir-f .f-chip{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:600;color:var(--f-fg);box-shadow:inset 0 0 0 1px var(--f-edge);background:var(--f-sheet)}
+#dir-f .f-chip[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--f-pink);background:var(--f-soft);color:var(--f-fg)}
+#dir-f .f-chip .bx{width:14px;height:14px;border-radius:3px;box-shadow:inset 0 0 0 1.5px var(--f-edge);display:grid;place-items:center}
+#dir-f .f-chip[aria-pressed="true"] .bx{background:var(--f-pink);box-shadow:none}
+#dir-f .f-rows{position:absolute;left:40px;top:160px;width:720px;display:grid;gap:22px}
+#dir-f .f-row{display:grid;grid-template-columns:300px 86px minmax(0,1fr);gap:16px;align-items:start;padding-left:14px;border-left:3px solid var(--f-pink)}
+#dir-f .f-fr{position:relative;display:block;overflow:hidden;outline:1.5px solid var(--f-blue);background:var(--f-white)}
+#dir-f .f-fr img{display:block;width:100%}
+#dir-f .f-fr .box{position:absolute;outline:2px solid var(--f-pink);outline-offset:-1px;pointer-events:none}
+#dir-f .f-fr .dl{position:absolute;left:0;bottom:0;background:var(--f-fg);color:var(--f-white);font-size:12px;padding:2px 6px}
+#dir-f .f-row .why{font-size:22px;margin:2px 0 6px}
+#dir-f .f-row .path{font-size:14px;color:var(--f-muted)}
+#dir-f .f-row .lk{font-size:14px;margin-top:4px}
+#dir-f .f-row .ac{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+#dir-f .f-inreg{position:absolute;left:820px;top:160px;width:420px}
+#dir-f .f-inreg h3{margin:0 0 4px;font-size:22px}
+#dir-f .f-inreg p{margin:0 0 14px;font-size:14px}
+#dir-f .f-inreg .sheet{position:relative;width:420px;height:420px;background:var(--f-sheet);outline:1px solid var(--f-rule)}
+#dir-f .f-inreg .sheet img{width:100%;height:100%;display:block}
+#dir-f .f-inreg .foot{display:flex;gap:10px;margin-top:14px;align-items:center}
+
+/* the start */
+#dir-f .f-start{position:absolute;left:40px;top:92px;width:560px}
+#dir-f .f-start h3{margin:0;font-size:88px}
+#dir-f .f-dom{display:flex;gap:10px;margin-top:28px}
+#dir-f .f-dom .in{flex:1;height:56px;border:1px solid var(--f-edge);border-radius:6px;background:var(--f-sheet);display:flex;align-items:center;padding:0 16px;font-size:20px;font-weight:600;outline:3px solid var(--f-pink);outline-offset:1px}
+#dir-f .f-dom .in i{display:inline-block;width:2px;height:24px;background:var(--f-fg);margin-left:2px}
+#dir-f .f-stream{position:absolute;left:40px;top:440px;width:520px}
+#dir-f .f-stream h4{margin:0 0 10px;font-size:19px}
+#dir-f .f-stream ol{list-style:none;margin:0;padding:0;border-top:1px solid var(--f-rule)}
+#dir-f .f-stream li{display:flex;justify-content:space-between;gap:12px;height:30px;align-items:center;border-bottom:1px solid var(--f-rule);font-size:15px}
+#dir-f .f-stream li .pt{color:var(--f-muted)}
+#dir-f .f-stream li:first-child{color:var(--f-pinkt);font-weight:600}
+#dir-f .f-stream li:first-child .pt{color:var(--f-pinkt)}
+#dir-f .f-plate{position:absolute;background:var(--f-sheet);outline:1px solid var(--f-strong)}
+#dir-f .f-final{position:absolute;outline:1px dashed var(--f-strong);outline-offset:-1px}
+#dir-f .f-urls{list-style:none;margin:0;padding:12px 14px;display:grid;gap:4px;font-size:14px;color:var(--f-muted)}
+#dir-f .f-sky .f-dom{margin-top:26px}
+#dir-f .f-sky .f-dom .in{min-width:0}
+#dir-f .f-plate .u{position:absolute;left:10px;top:8px;font-size:14px;font-stretch:75%;color:var(--f-muted)}
+#dir-f .f-plate .k{position:absolute;left:10px;bottom:8px;font-size:28px;font-stretch:75%;font-weight:900;font-variant-numeric:tabular-nums;color:var(--f-blue);line-height:1}
+#dir-f .f-plate.sm .u,#dir-f .f-plate.sm .k{display:none}
+#dir-f .f-plabel{position:absolute;font-size:14px;line-height:1.3}
+#dir-f .f-plabel b{font-stretch:75%;font-weight:900;font-size:17px;display:block}
+
+@media (prefers-reduced-motion: reduce){
+  #dir-f .f-odd,#dir-f .f-odd .pinkp,#dir-f .f-ghost,#dir-f .f-pile{transition:none!important}
+}
+</style>
+
+<section id="dir-f" class="direction" hidden aria-labelledby="dir-f-title">
+  <div class="stage">
+    <div class="screens">
+      <figure class="screen live"><div class="frame"><div class="artboard f-board" data-mode="live"></div></div><figcaption>The piles mid-capture: Docs is printing, and every odd page found so far rises out of its pile with its pink plate off register.</figcaption></figure>
+      <figure class="screen"><div class="frame"><div class="artboard f-board" data-mode="opened" inert></div></div><figcaption>Blog post opened: the three odd pages in true colour on Desktop and iPhone, the other 211 in register.</figcaption></figure>
+      <figure class="screen"><div class="frame"><div class="artboard f-board" data-mode="start" inert></div></div><figcaption>The start: the domain typed, and the crawl sorting URLs into plates by pattern.</figcaption></figure>
+    </div>
+  </div>
+  <aside class="panel">
+    <h2 id="dir-f-title">F The overprint</h2>
+    <p>The site's own shape is the layout: one sheet per template, its area the page count. Each sheet is an overprint of every page in its pile. Pages that fit print in one ink, in register. A page that breaks its template rises out of the pile with its pink plate slipped by how unlike the pile it is, so you see which pages don't line up before you read a word.</p>
+    <h3>Real, not drawn</h3>
+    <p>Every print is a real capture of a 412-page demo site, made with ShotDomain's Desktop and iPhone 14 Pro presets. The odd pages were found by a real check (layout likeness against the pile, plus broken images, content off the page, and a header, sidebar or font unlike the pile): it found the six planted pages and no others.</p>
+    <h3>Where everything lives</h3>
+    <ul>
+      <li>Enter a domain and start: the start screen, Capture site.</li>
+      <li>Piles from URL patterns with counts: the sheets, labelled under the bed line.</li>
+      <li>Pick or unpick a pile: One-off pages shows Pick; every opened pile has Leave out.</li>
+      <li>Find one exact page: Find a page, in the bar.</li>
+      <li>Devices and options: the sentence in the sky; each underlined word opens or toggles it (login session and custom CSS included).</li>
+      <li>Live progress per pile: the drum line moving down the sheet, and the count.</li>
+      <li>Failed pages and retry: under Docs.</li>
+      <li>Odd pages after capture: they rise out of their pile; hover one to see it in register.</li>
+      <li>Review a pile across devices: open it; the device chips switch the frames.</li>
+      <li>Full-size preview: Full size on every page.</li>
+      <li>Download ZIP and the 30-day share link (and Stop sharing): the bar, ready when printing ends.</li>
+    </ul>
+    <h3>Inks</h3>
+    <div class="swatches"><i style="background:#eef0f3"></i><i style="background:#f8f9fb"></i><i style="background:#3255a4"></i><i style="background:#1c2f63"></i><i style="background:#ff48b0"></i><i style="background:#c4126f"></i></div>
+    <p class="tradeoff">Trade-off: the overprint is honest only if the check behind it is right. A pile of pages that all differ a lot (one-off pages) has no template, so it gets no overprint and no odd pages.</p>
   </aside>
 </section>
 
@@ -5426,6 +5634,247 @@ window.PREFERS_REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').m
 })();
 </script>
 <script>
+(function () {
+  const ART = 'art/';
+  const D = { // from design/directions/art/f-data.json (the real check on the demo captures)
+    blog: { name: 'Blog post', pattern: '/blog/*', count: 214, median: 0.76, odd: [
+      { path: '/blog/2019-recap', why: 'Main image missing', drift: 20, likeness: 0.184, box: { x: .146, y: .04, w: .708, h: .0375 } },
+      { path: '/blog/old-theme-post', why: 'Different header and fonts', drift: 18, likeness: 0.224, box: { x: 0, y: 0, w: 1, h: .073 } },
+      { path: '/blog/benchmarks', why: 'Table runs off the page', drift: 4, likeness: 0.832, box: { x: .167, y: .557, w: .833, h: .164 } } ] },
+    docs: { name: 'Docs page', pattern: '/docs/*', count: 140, median: 0.707, odd: [
+      { path: '/docs/api/v1', why: 'Code block runs off the page', drift: 17, likeness: 0.241, box: { x: .342, y: .127, w: .658, h: .032 } },
+      { path: '/docs/legacy', why: 'Different sidebar and fonts', drift: 12, likeness: 0.392, box: { x: .167, y: .057, w: .146, h: .469 }, at: 70 } ] },
+    product: { name: 'Product', pattern: '/product/*', count: 48, odd: [ { path: '/product/gift-card', why: 'Main image missing', drift: 17, likeness: 0.343, box: { x: .167, y: .061, w: .345, h: .0375 } } ] }
+  };
+  const file = (p) => p.slice(1).replace(/\//g, '__');
+  const pct = (l) => Math.round(l * 100) + '% alike';
+  const S = 26, BED = 640, side = (n) => Math.round(S * Math.sqrt(n));
+  // x positions along the bed: each sheet's side is 26 x the square root of its page count, so its area is the count
+  const PILES = [
+    { id: 'blog', x: 40, n: 214 }, { id: 'docs', x: 448, n: 140 }, { id: 'product', x: 784, n: 48 },
+    { id: 'home', x: 984, n: 1, name: 'Home', pattern: '/' }, { id: 'pricing', x: 1060, n: 1, name: 'Pricing', pattern: '/pricing' },
+    { id: 'oneoff', x: 1150, n: 8, name: 'One-off', pattern: '/about and 7 more' }
+  ];
+  const DOCS_DONE = 96, PRINTED = 214 + DOCS_DONE + 2, TOTAL = 404;
+  const ICON = {
+    mark: '<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M1 7V1h6M15 1h6v6M21 15v6h-6M7 21H1v-6" fill="none" stroke="#3255a4" stroke-width="2.4"/><rect x="7" y="7" width="8" height="8" fill="#3255a4"/></svg>',
+    search: '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="none" stroke="#50648f" stroke-width="1.6"/><path d="M9.5 9.5L13 13" stroke="#50648f" stroke-width="1.6"/></svg>',
+    tick: '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect width="14" height="14" fill="#3255a4"/><path d="M3.5 7.2l2.3 2.3 4.7-5" fill="none" stroke="#fff" stroke-width="1.8"/></svg>',
+    warn: '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6.5 12H.5z" fill="#b3203a"/><path d="M7 5.2v3.6M7 10.2v1" stroke="#fff" stroke-width="1.6"/></svg>',
+    chk: '<svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 5.2l2 2 4-4.4" fill="none" stroke="#fff" stroke-width="1.8"/></svg>',
+    ghost: '<svg width="26" height="30" viewBox="0 0 26 30" aria-hidden="true"><path d="M3 2l18 13-8 1.6 4.6 9.2-3.4 1.7-4.6-9.2L3 24z" fill="#1c2f63" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>'
+  };
+  const reg = (x, y) => `<span class="f-reg" style="left:${x - 6}px;top:${y - 6}px"></span>`;
+
+  function bar(state) {
+    return `<div class="f-bar"><span class="f-mark">${ICON.mark}ShotDomain</span>` +
+      (state.domain ? `<span class="f-site"><b>example.com</b><span>412 pages in 6 templates</span></span>` : '') +
+      `<div class="f-bar-r"><label class="f-search">${ICON.search}<span class="f-vh">Find a page</span><input type="search" placeholder="Find a page" data-act="find"></label>` +
+      `<button class="f-btn sec" aria-disabled="${state.done ? 'false' : 'true'}" data-act="share" title="Ready when printing ends">Share link</button>` +
+      `<button class="f-btn" aria-disabled="${state.done ? 'false' : 'true'}" data-act="zip" title="Ready when printing ends">Download ZIP</button></div></div>`;
+  }
+  function sentence() {
+    return `<p class="f-sent">On <button class="f-term" data-act="devices" aria-expanded="false" aria-haspopup="true">Desktop and iPhone 14 Pro</button>, <button class="f-term" data-act="opt" data-k="full" data-on="full length" data-off="first screen only">full length</button>, <button class="f-term" data-act="opt" data-k="cookies" data-on="cookie banners hidden" data-off="cookie banners shown">cookie banners hidden</button>. <button class="f-term" data-act="opt" data-k="login" data-on="With a login session" data-off="No login">No login</button>. <button class="f-term" data-act="opt" data-k="css" data-on="With custom CSS" data-off="No custom CSS">No custom CSS</button>.</p>` +
+      `<div class="f-pop" hidden data-pop="devices" role="group" aria-label="Devices">` +
+      [['Desktop', '1920', 1], ['iPad Pro 11', '834', 0], ['iPhone 14 Pro', '393', 1], ['Pixel 7', '412', 0]].map(([n, w, on]) => `<label><input type="checkbox" ${on ? 'checked' : ''} data-dev="${n}">${n}<span class="w f-cond">${w} px</span></label>`).join('') + `</div>`;
+  }
+  function oddSheet(pile, o, x, y, r, scale = 0.8) {
+    const dx = Math.round(o.drift * scale), dy = Math.round(o.drift * scale * 0.55);
+    return `<button class="f-odd" data-act="openodd" data-pile="${pile}" data-path="${o.path}" style="left:${x}px;top:${y}px;--r:${r}deg;--dx:${dx}px;--dy:${dy}px" aria-label="${o.path}: ${o.why}. ${pct(o.likeness)}. Open it" title="${o.path}">` +
+      `<span class="pr"><img src="${ART}f-odd-${file(o.path)}.blue.webp" alt=""><img class="pinkp" src="${ART}f-odd-${file(o.path)}.pink.webp" alt=""></span>` +
+      `<span class="cap"><b>${o.why}</b><span class="f-cond f-pk">${pct(o.likeness)}</span></span></button>`;
+  }
+  // How far a page rises out of its pile: the odder it is, the further out.
+  function riseTop(pileTop, o, med) { return Math.round(pileTop - 198 + 18 + Math.min(1, o.likeness / med) * 46); }
+
+  function liveHTML() {
+    let h = bar({ domain: true, done: false });
+    h += `<div class="f-sky"><h2 class="f-disp"><span class="n" data-v="printed">${PRINTED}</span> of ${TOTAL}<br>pages printed.</h2>` +
+      `<p class="f-now"><b>Docs is printing.</b> Product is next. <span data-v="oddn">5</span> pages don't line up.</p>` + sentence() +
+      `<div class="f-acts"><button class="f-btn sec" data-act="pause">Pause</button><button class="f-btn danger" data-act="stop">Stop capture</button></div></div>`;
+    h += `<div class="f-bed" aria-hidden="true"></div>`;
+    for (const p of PILES) {
+      const s = side(p.n), top = BED - s, d = D[p.id];
+      const regs = '';
+      if (p.id === 'blog') h += regs + `<button class="f-pile" data-act="open" data-pile="blog" style="left:${p.x}px;top:${top}px;width:${s}px;height:${s}px" aria-label="Blog post, 214 pages, printed. 3 don't line up. Open the pile"><img class="f-over" src="${ART}f-pile-blog.webp" alt=""></button>`;
+      if (p.id === 'docs') h += regs + `<button class="f-pile" data-act="open" data-pile="docs" style="left:${p.x}px;top:${top}px;width:${s}px;height:${s}px;--p:${(DOCS_DONE / 140).toFixed(4)}" aria-label="Docs page, ${DOCS_DONE} of 140 printed. Open the pile"><img class="f-over" src="${ART}f-pile-docs.webp" alt=""><span class="f-drum" aria-hidden="true"></span></button>`;
+      if (p.id === 'product') h += regs + `<button class="f-pile queued" data-act="open" data-pile="product" style="left:${p.x}px;top:${top}px;width:${s}px;height:${s}px" aria-label="Product, 48 pages, next in line"><span class="f-next">Next in line</span></button>`;
+      if (p.id === 'home' || p.id === 'pricing') h += `<button class="f-pile" data-act="open" data-pile="${p.id}" style="left:${p.x}px;top:${top}px;width:${s}px;height:${s}px" aria-label="${p.name}, 1 page, printed"><img src="${ART}f-${p.id}.blue.webp" alt=""></button>`;
+      if (p.id === 'oneoff') h += `<span class="f-pile off" style="left:${p.x}px;top:${top}px;width:${s}px;height:${s}px"></span>`;
+      // labels under the bed
+      const lab = (name, count, pat, st, w) => `<div class="f-lab" style="left:${p.x}px;width:${w}px"><div class="t"><b>${name}</b><span class="c">${count}</span></div><div class="pat">${pat}</div><div class="st">${st}</div></div>`;
+      if (p.id === 'blog') h += lab('Blog post', 214, '/blog/*', `${ICON.tick}Printed`, s);
+      if (p.id === 'docs') h += lab('Docs page', 140, '/docs/*', `<span class="f-cond"><span data-v="docs">${DOCS_DONE}</span> of 140</span><span class="bad">${ICON.warn}2 failed</span><button class="f-btn ghost sm" data-act="retry">Retry 2</button>`, s);
+      if (p.id === 'product') h += lab('Product', 48, '/product/*', 'Next in line', s);
+      if (p.id === 'home' || p.id === 'pricing') h += lab(p.name, 1, p.pattern, `${ICON.tick}Printed`, 70);
+      if (p.id === 'oneoff') h += lab('One-off', 8, p.pattern, `<button class="f-btn sec sm" data-act="pick" aria-pressed="false">Pick</button>`, 100);
+    }
+    // odd pages risen out of their piles
+    const bt = BED - side(214), dt = BED - side(140);
+    const bx = [46, 168, 286], br = [-4, 2.5, -1.5];
+    D.blog.odd.forEach((o, i) => { h += oddSheet('blog', o, bx[i], riseTop(bt, o, D.blog.median), br[i]); });
+    const dxs = [462, 600], drs = [3, -2.5];
+    D.docs.odd.forEach((o, i) => { h += oddSheet('docs', o, dxs[i], riseTop(dt, o, D.docs.median), drs[i]); });
+    h += `<p class="f-key"><b>How to read it.</b> Each sheet's area is its page count, printed as every page in the pile laid over each other. Pages that fit print in one ink. An odd page rises out of its pile with its pink plate slipped by how unlike the pile it is.</p>`;
+    h += `<div class="f-open" hidden></div><span class="f-ghost" aria-hidden="true">${ICON.ghost}</span>`;
+    return h;
+  }
+
+  function openedHTML(pileId, devs = { Desktop: true, 'iPad Pro 11': false, 'iPhone 14 Pro': true, 'Pixel 7': false }) {
+    const d = D[pileId];
+    if (!d || pileId === 'product') return `<div class="f-open-h"><div><button class="f-btn ghost" data-act="back">All piles</button><h2 class="f-disp">${d ? d.name : 'This pile'}.</h2><p class="f-muted">Not printed yet. It is next in line.</p></div></div>`;
+    const done = pileId === 'blog' ? 214 : DOCS_DONE, fit = done - d.odd.length;
+    let h = `<div class="f-open-h"><div><button class="f-btn ghost" data-act="back">All piles</button><h2 class="f-disp">${d.name}, ${pileId === 'blog' ? '214 pages' : DOCS_DONE + ' of 140 pages'}.</h2><p><b>${fit} line up.</b> <span class="f-pk">${d.odd.length} don't.</span> <span class="f-cond f-muted">${d.pattern}</span></p></div>` +
+      `<div class="f-devs" role="group" aria-label="Devices">` + Object.entries(devs).map(([n, on]) => `<button class="f-chip" aria-pressed="${on}" data-act="dev" data-dev="${n}"><span class="bx">${on ? ICON.chk : ''}</span>${n}</button>`).join('') + `</div></div>`;
+    h += `<div class="f-rows">` + d.odd.map((o) => {
+      const f = file(o.path), b = o.box;
+      // the frame shows 300 px of a 1920 px page; scroll it so the boxed element is in view
+      const sh = b ? Math.max(0, Math.min(Math.round(b.y * 300 - 36), 250 - 172)) : 0;
+      return `<div class="f-row"><button class="f-fr" data-act="full" aria-label="${o.path} on Desktop, full size" style="height:172px"><img src="${ART}f-true-${f}.desktop.webp" alt="" style="transform:translateY(${-sh}px)">` +
+        (b ? `<span class="box" style="left:${(b.x * 100).toFixed(1)}%;top:${Math.round(b.y * 300 - sh)}px;width:${(b.w * 100).toFixed(1)}%;height:${Math.max(8, Math.round(b.h * 300))}px"></span>` : '') + `<span class="dl f-cond">Desktop</span></button>` +
+        `<button class="f-fr" data-act="full" aria-label="${o.path} on iPhone 14 Pro, full size" style="height:172px"><img src="${ART}f-true-${f}.iphone.webp" alt=""><span class="dl f-cond">iPhone</span></button>` +
+        `<div><div class="path f-cond">${o.path}</div><div class="why f-head">${o.why}</div><div class="lk f-cond f-pk">${pct(o.likeness)}, ${o.drift} px off register</div>` +
+        `<div class="ac"><button class="f-btn sec sm" data-act="full">Full size</button><button class="f-btn ghost sm" data-act="leave" aria-pressed="false">Leave out</button></div></div></div>`;
+    }).join('') + `</div>`;
+    if (pileId === 'blog') h += `<div class="f-inreg"><h3 class="f-head">211 line up</h3><p class="f-muted">Every other blog post, printed in register, in capture order.</p><div class="sheet"><img src="${ART}f-blog-sheet.webp" alt="211 small prints of the blog posts that match their template"></div><div class="foot"><button class="f-btn sec sm" data-act="colour">Show in colour</button><button class="f-btn ghost sm" data-act="leavepile">Leave the pile out</button></div></div>`;
+    else h += `<div class="f-inreg"><h3 class="f-head">${fit} line up so far</h3><p class="f-muted">Every docs page printed so far, laid over each other.</p><div class="sheet"><img src="${ART}f-pile-docs.webp" alt="The docs pages printed over each other"></div></div>`;
+    return h;
+  }
+
+  function startHTML() {
+    let h = bar({ domain: false, done: false });
+    const found = { blog: 150, docs: 98, product: 31, home: 1, pricing: 1, oneoff: 6 };
+    const total = Object.values(found).reduce((a, b) => a + b, 0);
+    h += `<div class="f-sky"><h2 class="f-disp">Print a proof<br>of every page.</h2>` +
+      `<div class="f-dom"><div class="in" role="textbox" aria-label="Website address">example.com<i aria-hidden="true"></i></div><button class="f-btn big">Capture site</button></div>` +
+      `<p class="f-now"><b>${total} pages found so far,</b> sorted into templates by their URLs.</p>${sentence()}</div>`;
+    h += `<div class="f-bed" aria-hidden="true"></div>`;
+    const latest = { blog: ['/blog/brass-studio-151', '/blog/winter-notes-150', '/blog/q3-roadmap'], docs: ['/docs/orders/slow-101', '/docs/stock/garden-71'], product: ['/product/walnut-tray-31'] };
+    for (const p of PILES) {
+      const n = found[p.id], s = Math.max(16, side(n)), top = BED - s, fin = side(p.n);
+      // the plate grows toward its final size, drawn as a faint outline
+      if (fin > s) h += `<span class="f-final" style="left:${p.x}px;top:${BED - fin}px;width:${fin}px;height:${fin}px" aria-hidden="true"></span>`;
+      h += `<div class="f-plate" style="left:${p.x}px;top:${top}px;width:${s}px;height:${s}px" aria-hidden="true">` +
+        (latest[p.id] ? `<ol class="f-urls">${latest[p.id].map((u, k) => `<li class="f-cond${k === 0 && p.id === 'blog' ? ' f-pk' : ''}">${u}</li>`).join('')}</ol>` : '') + `</div>`;
+      const name = { blog: 'Blog post', docs: 'Docs page', product: 'Product', home: 'Home', pricing: 'Pricing', oneoff: 'One-off' }[p.id];
+      const pat = { blog: '/blog/*', docs: '/docs/*', product: '/product/*', home: '/', pricing: '/pricing', oneoff: '/about and 5 more' }[p.id];
+      h += `<div class="f-lab" style="left:${p.x}px;width:${p.id === 'oneoff' ? 100 : Math.max(70, fin)}px"><div class="t"><b>${name}</b><span class="c">${n}</span></div><div class="pat">${pat}</div></div>`;
+    }
+    h += `<p class="f-key"><b>How to read it.</b> Each plate is a template, its area the number of pages found for it so far. It fills with prints once you start.</p>`;
+    return h;
+  }
+
+  // ---------- live behaviour ----------
+  function live(board) {
+    board.innerHTML = liveHTML();
+    const q = (s) => board.querySelector(s), qa = (s) => [...board.querySelectorAll(s)];
+    const legacy = board.querySelector('[data-path="/docs/legacy"]');
+    const docs = board.querySelector('[data-pile="docs"].f-pile');
+    const set = (k, v) => qa(`[data-v="${k}"]`).forEach((e) => (e.textContent = v));
+    const open = board.querySelector('.f-open');
+    let timers = [], raf = 0, playing = false;
+    const later = (ms, fn) => timers.push(setTimeout(fn, ms));
+    function stopPlay() { timers.forEach(clearTimeout); timers = []; cancelAnimationFrame(raf); playing = false; rest(); }
+    function rest() {
+      docs.style.setProperty('--p', (DOCS_DONE / 140).toFixed(4)); set('docs', DOCS_DONE); set('printed', PRINTED); set('oddn', 5);
+      legacy.style.opacity = ''; legacy.classList.remove('is-new'); legacy.style.removeProperty('--dx0');
+      legacy.querySelector('.pinkp').style.transform = ''; legacy.style.transform = '';
+      qa('.f-land').forEach((e) => e.remove()); const g = q('.f-ghost'); g.style.opacity = 0;
+    }
+    function autoplay() {
+      if (window.PREFERS_REDUCED_MOTION) return;
+      playing = true;
+      const from = 64, t0 = performance.now(), dur = 4000;
+      legacy.style.opacity = 0; set('oddn', 4);
+      const pink = legacy.querySelector('.pinkp');
+      pink.style.transition = 'none'; pink.style.transform = 'translate(0,0)';
+      const dtop = parseFloat(docs.style.top), dleft = parseFloat(docs.style.left);
+      function tick(now) {
+        const k = Math.min(1, (now - t0) / dur), n = Math.round(from + (DOCS_DONE - from) * k);
+        docs.style.setProperty('--p', (n / 140).toFixed(4)); set('docs', n); set('printed', PRINTED - (DOCS_DONE - n));
+        if (k < 1) raf = requestAnimationFrame(tick);
+      }
+      raf = requestAnimationFrame(tick);
+      // sheets land on the pile as they print
+      const imgs = ['returns__morning-96', 'returns__hosting-97', 'returns__reading-98', 'orders__cotton-99', 'orders__warm-100', 'orders__slow-101'];
+      imgs.forEach((f, i) => later(150 + i * 620, () => {
+        const el = document.createElement('span'); el.className = 'f-land'; el.innerHTML = `<img src="${ART}f-page-docs__${f}.blue.webp" alt="">`;
+        el.style.left = dleft + 90 + (i % 3) * 22 + 'px'; el.style.top = dtop + 40 + 'px';
+        board.appendChild(el);
+        el.animate([{ opacity: 0, transform: 'translateY(-80px) rotate(-3deg)' }, { opacity: 1, transform: 'translateY(0) rotate(0)', offset: .3 }, { opacity: 1, transform: 'translateY(0)', offset: .7 }, { opacity: 0, transform: 'translateY(4px) scale(.98)' }], { duration: 1150, easing: 'cubic-bezier(.2,0,0,1)', fill: 'forwards' }).onfinish = () => el.remove();
+      }));
+      // page 70 doesn't match: it lands, rises out of the pile, and its pink plate slips off register
+      later(1500, () => {
+        legacy.style.transition = 'none'; legacy.style.opacity = 1; legacy.style.transform = `rotate(0deg) translateY(110px) scale(.86)`;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          legacy.style.transition = 'transform .9s cubic-bezier(.34,1.4,.64,1)'; legacy.style.transform = '';
+        }));
+      });
+      later(2300, () => { pink.style.transition = 'transform .9s cubic-bezier(.34,1.56,.64,1)'; pink.style.transform = ''; set('oddn', 5); });
+      // a ghost hand points at it, then at the Blog pile
+      const g = q('.f-ghost'), lr = { x: parseFloat(legacy.style.left), y: parseFloat(legacy.style.top) };
+      later(2500, () => { g.style.transition = 'none'; g.style.transform = `translate(${lr.x + 220}px,${lr.y + 210}px)`; g.style.opacity = 1; });
+      later(2600, () => { g.style.transition = ''; g.style.transform = `translate(${lr.x + 96}px,${lr.y + 90}px)`; });
+      later(4000, () => { g.style.transform = `translate(250px,470px)`; q('[data-pile="blog"].f-pile').style.outline = '2px solid #3255a4'; });
+      later(5400, () => { g.style.opacity = 0; q('[data-pile="blog"].f-pile').style.outline = ''; playing = false; pink.style.transition = ''; legacy.style.transition = ''; });
+    }
+    function handover() { if (playing) stopPlay(); }
+    board.addEventListener('pointerdown', handover, true);
+    board.addEventListener('keydown', handover, true);
+
+    function showOpen(pile) {
+      open.innerHTML = openedHTML(pile); open.hidden = false;
+      qa('.f-sky,.f-bed,.f-pile,.f-lab,.f-odd,.f-key,.f-reg').forEach((e) => (e.style.visibility = 'hidden'));
+      open.querySelector('[data-act="back"]').focus({ preventScroll: true });
+    }
+    function closeOpen(pile) {
+      open.hidden = true; open.innerHTML = '';
+      qa('.f-sky,.f-bed,.f-pile,.f-lab,.f-odd,.f-key,.f-reg').forEach((e) => (e.style.visibility = ''));
+      const b = q(`[data-pile="${pile}"].f-pile`); if (b) b.focus({ preventScroll: true });
+    }
+    let lastPile = 'blog';
+    board.addEventListener('click', (e) => {
+      const t = e.target.closest('[data-act]'); if (!t) return;
+      const a = t.dataset.act;
+      if (a === 'open' || a === 'openodd') { lastPile = t.dataset.pile; showOpen(lastPile); }
+      if (a === 'back') closeOpen(lastPile);
+      if (a === 'pause') { const on = t.textContent === 'Pause'; t.textContent = on ? 'Resume' : 'Pause'; q('.f-now b').textContent = on ? 'Paused.' : 'Docs is printing.'; }
+      if (a === 'stop') { t.textContent = t.textContent === 'Stop capture' ? 'Stopped. Start again' : 'Stop capture'; }
+      if (a === 'retry') { t.textContent = 'Retrying'; t.setAttribute('aria-disabled', 'true'); }
+      if (a === 'pick') { const on = t.getAttribute('aria-pressed') !== 'true'; t.setAttribute('aria-pressed', on); t.textContent = on ? 'Picked' : 'Pick'; q('.f-pile.off').style.outlineColor = on ? '#d61c82' : ''; }
+      if (a === 'opt') { const on = t.textContent === t.dataset.on; t.textContent = on ? t.dataset.off : t.dataset.on; }
+      if (a === 'devices') { const p = q('[data-pop="devices"]'), on = p.hidden; p.hidden = !on; t.setAttribute('aria-expanded', on); if (on) { p.style.left = t.offsetLeft + 'px'; p.style.top = t.offsetTop + t.offsetHeight + 6 + 'px'; p.querySelector('input').focus({ preventScroll: true }); } }
+      if (a === 'dev') { const on = t.getAttribute('aria-pressed') !== 'true'; t.setAttribute('aria-pressed', on); t.querySelector('.bx').innerHTML = on ? ICON.chk : ''; }
+      if (a === 'leave') { const on = t.getAttribute('aria-pressed') !== 'true'; t.setAttribute('aria-pressed', on); t.textContent = on ? 'Left out' : 'Leave out'; }
+    });
+    board.addEventListener('change', (e) => {
+      if (!e.target.dataset.dev) return;
+      const on = qa('[data-pop="devices"] input').filter((i) => i.checked).map((i) => i.dataset.dev);
+      q('[data-act="devices"]').textContent = on.length ? on.join(on.length > 2 ? ', ' : ' and ').replace(/, ([^,]*)$/, ' and $1') : 'no device yet';
+    });
+    board.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      const p = q('[data-pop="devices"]'); if (!p.hidden) { p.hidden = true; q('[data-act="devices"]').setAttribute('aria-expanded', 'false'); q('[data-act="devices"]').focus({ preventScroll: true }); }
+      else if (!open.hidden) closeOpen(lastPile);
+    });
+    return { autoplay, stop: stopPlay };
+  }
+
+  let liveCtl = null, played = false;
+  window.Directions.f = {
+    mount(section) {
+      section.querySelectorAll('.f-board').forEach((b) => {
+        if (b.dataset.mode === 'live') liveCtl = live(b);
+        if (b.dataset.mode === 'opened') b.innerHTML = bar({ domain: true, done: true }) + `<div class="f-open">${openedHTML('blog')}</div>`;
+        if (b.dataset.mode === 'start') b.innerHTML = startHTML();
+      });
+    },
+    show() { if (!played && liveCtl) { played = true; setTimeout(() => liveCtl.autoplay(), 500); } },
+    hide() { if (liveCtl) liveCtl.stop(); }
+  };
+})();
+</script>
+<script>
 /* Shell: scale artboards, switch tabs, autoplay each live screen's signature moment once (directions do the playing). */
 (function () {
   function fit() { document.querySelectorAll('.frame').forEach((f) => f.style.setProperty('--s', (f.clientWidth / 1280).toFixed(4))); }
@@ -5437,10 +5886,9 @@ window.PREFERS_REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').m
     if (location.hash !== '#' + x) history.replaceState(null, '', '#' + x);
   }
   document.querySelectorAll('.sh-tabs button').forEach((b) => b.addEventListener('click', () => select(b.dataset.dir)));
-  // Open the hybrid when it is on the page, else B.
-  const fallback = document.getElementById('dir-e') ? 'e' : 'b';
+  // Open the newest round when it is on the page, else B.
+  const fallback = document.getElementById('dir-f') ? 'f' : document.getElementById('dir-e') ? 'e' : 'b';
   const start = (location.hash || '#' + fallback).slice(1);
-  select(['a', 'b', 'c', 'd', 'e'].includes(start) && document.getElementById('dir-' + start) ? start : fallback);
+  select(['a', 'b', 'c', 'd', 'e', 'f'].includes(start) && document.getElementById('dir-' + start) ? start : fallback);
 })();
 </script>
-</body></html>

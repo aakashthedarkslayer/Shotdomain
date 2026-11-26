@@ -55,8 +55,8 @@
 
 /* the sky: status and the settings sentence */
 #dir-f .f-sky{position:absolute;left:784px;top:84px;width:456px}
-#dir-f .f-sky h3{margin:0;font-size:76px;color:var(--f-fg)}
-#dir-f .f-sky h3 .n{font-variant-numeric:tabular-nums}
+#dir-f .f-sky h2{margin:0;font-size:76px;color:var(--f-fg)}
+#dir-f .f-sky h2 .n{font-variant-numeric:tabular-nums}
 #dir-f .f-sky .f-now{margin:16px 0 0;font-size:16px}
 #dir-f .f-sent{margin:10px 0 0;font-size:16px;line-height:1.55;max-width:44ch}
 #dir-f .f-term{color:var(--f-blue);font-weight:600;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px;text-decoration-color:var(--f-strong);border-radius:3px}
@@ -117,7 +117,7 @@
 #dir-f .f-open{position:absolute;left:0;top:56px;width:1280px;height:744px}
 #dir-f .f-open[hidden]{display:none}
 #dir-f .f-open-h{position:absolute;left:40px;top:22px;right:40px;display:flex;align-items:flex-end;gap:24px}
-#dir-f .f-open-h h3{margin:6px 0 0;font-size:56px}
+#dir-f .f-open-h h2{margin:6px 0 0;font-size:56px}
 #dir-f .f-open-h p{margin:8px 0 0;font-size:16px}
 #dir-f .f-devs{margin-left:auto;display:flex;gap:8px;align-items:center}
 #dir-f .f-chip{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:600;color:var(--f-fg);box-shadow:inset 0 0 0 1px var(--f-edge);background:var(--f-sheet)}
@@ -135,7 +135,7 @@
 #dir-f .f-row .lk{font-size:14px;margin-top:4px}
 #dir-f .f-row .ac{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 #dir-f .f-inreg{position:absolute;left:820px;top:160px;width:420px}
-#dir-f .f-inreg h4{margin:0 0 4px;font-size:22px}
+#dir-f .f-inreg h3{margin:0 0 4px;font-size:22px}
 #dir-f .f-inreg p{margin:0 0 14px;font-size:14px}
 #dir-f .f-inreg .sheet{position:relative;width:420px;height:420px;background:var(--f-sheet);outline:1px solid var(--f-rule)}
 #dir-f .f-inreg .sheet img{width:100%;height:100%;display:block}
@@ -259,7 +259,7 @@
 
   function liveHTML() {
     let h = bar({ domain: true, done: false });
-    h += `<div class="f-sky"><h3 class="f-disp"><span class="n" data-v="printed">${PRINTED}</span> of ${TOTAL}<br>pages printed.</h3>` +
+    h += `<div class="f-sky"><h2 class="f-disp"><span class="n" data-v="printed">${PRINTED}</span> of ${TOTAL}<br>pages printed.</h2>` +
       `<p class="f-now"><b>Docs is printing.</b> Product is next. <span data-v="oddn">5</span> pages don't line up.</p>` + sentence() +
       `<div class="f-acts"><button class="f-btn sec" data-act="pause">Pause</button><button class="f-btn danger" data-act="stop">Stop capture</button></div></div>`;
     h += `<div class="f-bed" aria-hidden="true"></div>`;
@@ -292,9 +292,9 @@
 
   function openedHTML(pileId, devs = { Desktop: true, 'iPad Pro 11': false, 'iPhone 14 Pro': true, 'Pixel 7': false }) {
     const d = D[pileId];
-    if (!d || pileId === 'product') return `<div class="f-open-h"><div><button class="f-btn ghost" data-act="back">All piles</button><h3 class="f-disp">${d ? d.name : 'This pile'}.</h3><p class="f-muted">Not printed yet. It is next in line.</p></div></div>`;
+    if (!d || pileId === 'product') return `<div class="f-open-h"><div><button class="f-btn ghost" data-act="back">All piles</button><h2 class="f-disp">${d ? d.name : 'This pile'}.</h2><p class="f-muted">Not printed yet. It is next in line.</p></div></div>`;
     const done = pileId === 'blog' ? 214 : DOCS_DONE, fit = done - d.odd.length;
-    let h = `<div class="f-open-h"><div><button class="f-btn ghost" data-act="back">All piles</button><h3 class="f-disp">${d.name}, ${pileId === 'blog' ? '214 pages' : DOCS_DONE + ' of 140 pages'}.</h3><p><b>${fit} line up.</b> <span class="f-pk">${d.odd.length} don't.</span> <span class="f-cond f-muted">${d.pattern}</span></p></div>` +
+    let h = `<div class="f-open-h"><div><button class="f-btn ghost" data-act="back">All piles</button><h2 class="f-disp">${d.name}, ${pileId === 'blog' ? '214 pages' : DOCS_DONE + ' of 140 pages'}.</h2><p><b>${fit} line up.</b> <span class="f-pk">${d.odd.length} don't.</span> <span class="f-cond f-muted">${d.pattern}</span></p></div>` +
       `<div class="f-devs" role="group" aria-label="Devices">` + Object.entries(devs).map(([n, on]) => `<button class="f-chip" aria-pressed="${on}" data-act="dev" data-dev="${n}"><span class="bx">${on ? ICON.chk : ''}</span>${n}</button>`).join('') + `</div></div>`;
     h += `<div class="f-rows">` + d.odd.map((o) => {
       const f = file(o.path), b = o.box;
@@ -306,8 +306,8 @@
         `<div><div class="path f-cond">${o.path}</div><div class="why f-head">${o.why}</div><div class="lk f-cond f-pk">${pct(o.likeness)}, ${o.drift} px off register</div>` +
         `<div class="ac"><button class="f-btn sec sm" data-act="full">Full size</button><button class="f-btn ghost sm" data-act="leave" aria-pressed="false">Leave out</button></div></div></div>`;
     }).join('') + `</div>`;
-    if (pileId === 'blog') h += `<div class="f-inreg"><h4 class="f-head">211 line up</h4><p class="f-muted">Every other blog post, printed in register, in capture order.</p><div class="sheet"><img src="${ART}f-blog-sheet.webp" alt="211 small prints of the blog posts that match their template"></div><div class="foot"><button class="f-btn sec sm" data-act="colour">Show in colour</button><button class="f-btn ghost sm" data-act="leavepile">Leave the pile out</button></div></div>`;
-    else h += `<div class="f-inreg"><h4 class="f-head">${fit} line up so far</h4><p class="f-muted">Every docs page printed so far, laid over each other.</p><div class="sheet"><img src="${ART}f-pile-docs.webp" alt="The docs pages printed over each other"></div></div>`;
+    if (pileId === 'blog') h += `<div class="f-inreg"><h3 class="f-head">211 line up</h3><p class="f-muted">Every other blog post, printed in register, in capture order.</p><div class="sheet"><img src="${ART}f-blog-sheet.webp" alt="211 small prints of the blog posts that match their template"></div><div class="foot"><button class="f-btn sec sm" data-act="colour">Show in colour</button><button class="f-btn ghost sm" data-act="leavepile">Leave the pile out</button></div></div>`;
+    else h += `<div class="f-inreg"><h3 class="f-head">${fit} line up so far</h3><p class="f-muted">Every docs page printed so far, laid over each other.</p><div class="sheet"><img src="${ART}f-pile-docs.webp" alt="The docs pages printed over each other"></div></div>`;
     return h;
   }
 
@@ -315,7 +315,7 @@
     let h = bar({ domain: false, done: false });
     const found = { blog: 150, docs: 98, product: 31, home: 1, pricing: 1, oneoff: 6 };
     const total = Object.values(found).reduce((a, b) => a + b, 0);
-    h += `<div class="f-sky"><h3 class="f-disp">Print a proof<br>of every page.</h3>` +
+    h += `<div class="f-sky"><h2 class="f-disp">Print a proof<br>of every page.</h2>` +
       `<div class="f-dom"><div class="in" role="textbox" aria-label="Website address">example.com<i aria-hidden="true"></i></div><button class="f-btn big">Capture site</button></div>` +
       `<p class="f-now"><b>${total} pages found so far,</b> sorted into templates by their URLs.</p>${sentence()}</div>`;
     h += `<div class="f-bed" aria-hidden="true"></div>`;
