@@ -1,7 +1,10 @@
 import { NextRequest } from 'next/server';
 import { getJob, updateResult } from '@/lib/jobStore';
+import { getOwnedJob } from '@/lib/jobAccess';
+import { refreshSharedCapture } from '@/lib/shareStore';
 import { captureScreenshots } from '@/lib/screenshot';
-import type { CaptureResult } from '@/lib/jobStore';
+import type { CaptureResult, CaptureSettings } from '@/lib/jobStore';
+import * as path from 'path';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,7 +20,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const job = getJob(jobId);
+    const job = await getOwnedJob(jobId);
     if (!job) {
       return Response.json(
         { error: 'Job not found' },
@@ -62,17 +65,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Reset the result counters
-    // Decrement failed counter since we're retrying
+    // It's leaving the failed state; `completed` was never counted for it.
     job.failed = Math.max(0, job.failed - 1);
-    job.completed = Math.max(0, job.completed - 1);
-
-    // Reset status to queued
     updateResult(jobId, resultKey, { status: 'queued', error: undefined, fileName: undefined });
 
-    const retrySettings = result.device
-      ? { ...job.settings, devices: [result.device as any], device: result.device as any }
-      : job.settings;
+    const retryDevice = result.device as NonNullable<CaptureSettings['devices']>[number] | undefined;
+    const retrySettings: CaptureSettings = retryDevice ? { ...job.settings, devices: [retryDevice], device: retryDevice } : job.settings;
+    // A multi-device job keeps its per-device folders and "Device:url" keys; a
+    // retried page must never take the file name of a page that succeeded.
+    const multiDevice = (job.settings.devices?.length ?? 0) > 1;
+    const reservedNames = Array.from(job.results.values())
+      .filter((r) => r.fileName && r.device === result.device)
+      .map((r) => path.basename(r.fileName!));
 
     // Start retry asynchronously
     captureScreenshots(
@@ -81,10 +85,17 @@ export async function POST(request: NextRequest) {
       retrySettings,
       (key: string, retryResult: Partial<CaptureResult>) => {
         updateResult(jobId, key, retryResult);
-      }
-    ).catch((error) => {
-      console.error(`Retry capture for ${url} in job ${jobId} failed:`, error);
-    });
+      },
+      { deviceFolders: multiDevice, reservedNames },
+    )
+      .then(async () => {
+        // If this capture is shared, update the shared copy so it includes the retried screenshot.
+        const latest = getJob(jobId);
+        if (latest) await refreshSharedCapture({ ...latest, results: latest.results.values() });
+      })
+      .catch((error) => {
+        console.error(`Retry capture for ${url} in job ${jobId} failed:`, error);
+      });
 
     return Response.json({ success: true });
   } catch (error) {

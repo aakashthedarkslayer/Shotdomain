@@ -1,0 +1,111 @@
+[
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "site",
+  "shape": "Workbench",
+  "theme": "custom (Riso proof)",
+  "axes": "cool-paper/condensed-grotesk/two-ink",
+  "hero": "Counter (/), Banner (/terms, /privacy, /refunds)",
+  "nav": "edge-aligned bar",
+  "footer": "mast",
+  "imagery": "screenshots: ShotDomain output printed in two inks in the hero, true colour elsewhere",
+  "photos": [],
+  "entry": "poster head and capture form beside a proof sheet of riso-printed real frames",
+  "fingerprint": "cool paper, riso blue type and buttons, fluorescent pink marks and off-register plate, Anybody condensed 900, registration marks",
+  "sections": [
+   "hero (Counter: form beside a proof sheet)",
+   "worked example (share page print beside the ZIP in deep blue ink)",
+   "how it works (numbered rows)",
+   "login pages (split: guide)",
+   "pricing (three sheets, Pro in ink)",
+   "faq (rows)",
+   "footer (mast)"
+  ],
+  "signature": "a proof sheet of real ShotDomain frames printed in two inks, off-register, with registration marks",
+  "waived": [
+   "39b",
+   "44c",
+   "79"
+  ],
+  "prompt": "a tool that screenshots every page of a website on every device, for people who hand sites to clients",
+  "genre": "modern-minimal",
+  "job": "sign up",
+  "date": "2026-11-25"
+ },
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "site",
+  "shape": "Workbench",
+  "theme": "custom (Contact sheet)",
+  "axes": "cool-paper/wide-grotesk/film-black",
+  "hero": "Counter (/), Banner (/terms, /privacy, /refunds)",
+  "nav": "edge-aligned bar",
+  "footer": "mast",
+  "imagery": "screenshots: ShotDomain output (frames, share page)",
+  "photos": [],
+  "entry": "wide Archivo head over the capture form, a film strip of real frames at the foot",
+  "fingerprint": "proof paper, film black strip with sprockets and amber frame numbers, marker red for picked, Archivo width axis",
+  "sections": [
+   "hero (Counter: form over a film strip)",
+   "worked example (share page print beside the ZIP on film)",
+   "how it works (numbered rows)",
+   "login pages (split: guide)",
+   "pricing (three prints, Pro on film)",
+   "faq (rows)",
+   "footer (mast)"
+  ],
+  "signature": "a strip of film holding real ShotDomain frames, numbered on the edge",
+  "waived": [
+   "7b",
+   "39b",
+   "44c",
+   "78",
+   "79"
+  ],
+  "prompt": "a tool that screenshots every page of a website on every device, for people who hand sites to clients",
+  "genre": "modern-minimal",
+  "job": "sign up",
+  "date": "2026-11-25"
+ },
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "site",
+  "shape": "Workbench",
+  "theme": "brand (DESIGN.md, locked)",
+  "axes": "soft-white/geometric-sans/ink",
+  "hero": "Counter (/), Banner (/terms, /privacy, /refunds)",
+  "nav": "edge-aligned bar (kept)",
+  "footer": "mast",
+  "imagery": "screenshots: ShotDomain output and capture.mjs",
+  "photos": [],
+  "entry": "hero capture form, three-line head",
+  "fingerprint": "ink-on-soft-white, Geist 600 head at 96px, pill form panel, real share-page capture, ZIP tree, rows",
+  "sections": [
+   "hero (Counter: capture form)",
+   "worked example (Showcase: share page, ZIP tree, phone capture)",
+   "how it works (Rows)",
+   "login pages (Split: guide)",
+   "pricing (three plans)",
+   "faq (Rows)",
+   "footer (mast)"
+  ],
+  "signature": "ShotDomain own pages, captured by ShotDomain, as the share page a client opens",
+  "waived": [
+   "7b",
+   "29",
+   "81",
+   "59",
+   "78",
+   "39b",
+   "44c",
+   "79"
+  ],
+  "prompt": "a tool that screenshots every page of a website on every device, for people who hand sites to clients",
+  "genre": "modern-minimal",
+  "job": "sign up",
+  "date": "2026-11-25"
+ }
+]

@@ -11,9 +11,13 @@ const parser = new XMLParser({ ignoreAttributes: false });
  * Fetch a URL with the shared User-Agent header and an AbortSignal.
  * Throws a descriptive error on network failure or non-200 response.
  */
-async function fetchXml(url: string, signal: AbortSignal): Promise<string> {
+/** Extra request headers per URL (login cookies / basic auth). */
+export type HeadersFor = (url: string) => Record<string, string>;
+const noHeaders: HeadersFor = () => ({});
+
+async function fetchXml(url: string, signal: AbortSignal, headersFor: HeadersFor = noHeaders): Promise<string> {
   const res = await fetch(url, {
-    headers: { 'User-Agent': USER_AGENT },
+    headers: { 'User-Agent': USER_AGENT, ...headersFor(url) },
     signal,
   });
 
@@ -89,11 +93,12 @@ async function collectUrls(
   signal: AbortSignal,
   collected: Set<string>,
   depth: number,
+  headersFor: HeadersFor,
 ): Promise<boolean> {
   if (depth > MAX_RECURSION_DEPTH) return false;
   if (collected.size >= MAX_URLS) return true;
 
-  const xml = await fetchXml(url, signal);
+  const xml = await fetchXml(url, signal, headersFor);
   const parsed = parser.parse(xml) as Record<string, unknown>;
 
   // --- Regular sitemap (<urlset>) ---
@@ -106,7 +111,7 @@ async function collectUrls(
   // --- Sitemap index (<sitemapindex>) ---
   const childLocs = extractChildSitemapLocs(parsed);
   for (const childLoc of childLocs) {
-    const truncated = await collectUrls(childLoc, signal, collected, depth + 1);
+    const truncated = await collectUrls(childLoc, signal, collected, depth + 1, headersFor);
     if (truncated) return true;
   }
 
@@ -127,7 +132,7 @@ async function collectUrls(
  *
  * @returns `{ urls: string[], truncated: boolean, method: 'sitemap' }`
  */
-export async function discoverFromSitemap(origin: string): Promise<{
+export async function discoverFromSitemap(origin: string, headersFor: HeadersFor = noHeaders): Promise<{
   urls: string[];
   truncated: boolean;
   method: 'sitemap';
@@ -147,14 +152,14 @@ export async function discoverFromSitemap(origin: string): Promise<{
 
     try {
       // Try the primary URL first; a non-200 status throws inside fetchXml.
-      await fetchXml(primaryUrl, controller.signal);
+      await fetchXml(primaryUrl, controller.signal, headersFor);
       sitemapUrl = primaryUrl;
     } catch (err: unknown) {
       // If the primary failed with a 404-like message, try the fallback.
       const message = err instanceof Error ? err.message : String(err);
       if (message.includes('404')) {
         // Attempt fallback — let errors propagate if this also fails.
-        await fetchXml(fallbackUrl, controller.signal);
+        await fetchXml(fallbackUrl, controller.signal, headersFor);
         sitemapUrl = fallbackUrl;
       } else {
         throw err;
@@ -162,7 +167,7 @@ export async function discoverFromSitemap(origin: string): Promise<{
     }
 
     // We already validated the URL is reachable; now collect URLs from it.
-    truncated = await collectUrls(sitemapUrl, controller.signal, collected, 0);
+    truncated = await collectUrls(sitemapUrl, controller.signal, collected, 0, headersFor);
 
     return {
       urls: Array.from(collected),

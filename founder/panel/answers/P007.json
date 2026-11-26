@@ -1,0 +1,13 @@
+{
+  "id": "P007",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "I'd sign up for the free tier and point it at one client site to see if the iPhone captures and change alerts are actually accurate, but I'm not paying a brand-new tool with zero reviews in month one. The free plan covers the test, so there's no reason to upgrade until it's proven itself.",
+  "objection": "It's brand new with no reviews. If I build my client reporting around these links and the company folds next year, I lose the history and look bad in front of clients. That's also why the $79 lifetime deal makes me nervous rather than excited.",
+  "would_change_my_mind": "The free tier catching a real change on a client site that I'd have missed, plus some proof the company will stick around, like real users or an export of my capture history so I'm not locked in if it shuts down.",
+  "price_too_cheap": 3,
+  "price_cheap": 7,
+  "price_expensive": 19,
+  "price_too_expensive": 35
+}

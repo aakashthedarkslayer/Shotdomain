@@ -55,6 +55,17 @@ export const ASPECT_RATIOS: Record<string, number> = {
   '1:1': 1,
 };
 
+/**
+ * The honest User-Agent for a device. Phone and tablet captures add a
+ * form-factor hint ("Mobile" / "Tablet") that responsive sites and UA
+ * sniffers understand, instead of pretending to be Safari or Chrome.
+ */
+export function userAgentFor(deviceName: string, base: string): string {
+  const preset = DEVICE_PRESETS[deviceName];
+  if (!preset || !preset.isMobile) return base;
+  return `${base} ${deviceName === 'Tablet' ? 'Tablet' : 'Mobile'}`;
+}
+
 export function getDevicePreset(deviceName: string): DevicePreset | undefined {
   return DEVICE_PRESETS[deviceName];
 }

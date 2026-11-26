@@ -162,6 +162,7 @@ export function dedupeUrls(urls: string[], rootUrl?: string): string[] {
  * Generate a filename from a URL path:
  * - /about/team → about-team.png
  * - / → home.png
+ * - /pricing.html → pricing.png
  * - Strip query strings
  * - Replace / with -
  * - Strip non-alphanumeric chars except -
@@ -189,6 +190,9 @@ export function urlToFilename(
   if (pathname === '/' || pathname === '') {
     pathname = 'home';
   }
+
+  // "/pricing.html" → "pricing", "/index.php" → "index": the page extension says nothing useful.
+  pathname = pathname.replace(/\.(html?|php|aspx?|jsp|cfm)$/i, '');
 
   // Replace slashes with hyphens
   let slug = pathname.replace(/\//g, '-');

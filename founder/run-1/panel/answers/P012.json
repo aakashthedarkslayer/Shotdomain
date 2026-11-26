@@ -1,0 +1,13 @@
+{
+  "id": "P012",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "I'd try the free tier once on a client site, but full-site multi-device screenshots are something I need a few times a year, and a Playwright script loop over the sitemap does that for free. Nine bucks a month for something I'd use twice before cancelling isn't worth it.",
+  "objection": "I can script the capture part myself in an afternoon, and I only need it occasionally, so a subscription would sit unused and I'd cancel it.",
+  "would_change_my_mind": "If the scheduled change-detection emails actually caught a broken client page before the client did, that's something I wouldn't bother building myself, and I'd pay for it, probably the $99 lifetime.",
+  "price_too_cheap": 2,
+  "price_cheap": 5,
+  "price_expensive": 12,
+  "price_too_expensive": 20
+}

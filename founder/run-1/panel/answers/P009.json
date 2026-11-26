@@ -1,0 +1,13 @@
+{
+  "id": "P009",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "I already pay for a monitoring service that watches my key client pages, so this would replace something that works. I'd poke at the free tier for a client handoff, but I'm not moving my client monitoring onto a brand-new app with zero reviews.",
+  "objection": "It's brand new with no reviews, so I don't know if it'll still be around next year. That also makes the $99 lifetime deal feel like a bet, not a bargain, and pasting my clients' browser sessions into an unknown tool makes me nervous.",
+  "would_change_my_mind": "A few months of it running with real reviews from other freelancers, plus a free trial of Studio so I can run a full client site on all devices and compare it with what I use now.",
+  "price_too_cheap": 3,
+  "price_cheap": 7,
+  "price_expensive": 19,
+  "price_too_expensive": 35
+}

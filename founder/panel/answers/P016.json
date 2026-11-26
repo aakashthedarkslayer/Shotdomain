@@ -1,0 +1,13 @@
+{
+  "id": "P016",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "I only need full-site screenshots a few times a year, around a launch or a redesign handoff, so a monthly subscription for daily re-captures is paying for something I'd barely use. The free 15-page tier probably covers my occasional needs, and with zero reviews I'm not putting money down on a brand-new tool anyway.",
+  "objection": "I don't need ongoing monitoring, I need a clean full-page capture on a phone now and then, and there's nothing yet showing it actually works on real client sites with sliders, lazy-loaded images and sticky headers.",
+  "would_change_my_mind": "A pay-per-use option, like a few dollars for one full-site capture on desktop and phone, plus some real reviews or sample captures from live sites showing the mobile screenshots come out right.",
+  "price_too_cheap": 2,
+  "price_cheap": 4,
+  "price_expensive": 12,
+  "price_too_expensive": 20
+}

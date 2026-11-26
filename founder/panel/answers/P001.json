@@ -1,0 +1,13 @@
+{
+  "id": "P001",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "It literally says it never gets past bot protection, and half the sites I look after sit behind Cloudflare, so my first question isn't answered, it's confirmed. I'd throw one site at the free tier and see what comes back before I pay anything, and I only need full-site screenshots when a project comes up anyway.",
+  "objection": "New, no reviews, and it admits it won't get through bot protection, so I'd likely get blocked pages or challenge screens instead of real captures. Pasting a logged-in browser session into a brand-new third-party tool is also something our IT people would ask me about.",
+  "would_change_my_mind": "The free tier giving me clean desktop and iPhone captures of my actual sites, including the protected ones and a logged-in page, with the cookie banner really gone.",
+  "price_too_cheap": 2,
+  "price_cheap": 9,
+  "price_expensive": 30,
+  "price_too_expensive": 60
+}

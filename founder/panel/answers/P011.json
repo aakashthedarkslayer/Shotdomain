@@ -1,0 +1,13 @@
+{
+  "id": "P011",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "I only screenshot a client site when a project calls for it, like a redesign or a sign-off, and the free 15 pages on desktop and iPhone covers that. I don't need a site watched every day, so I'd use the free tier and keep my extension rather than pay $9 a month.",
+  "objection": "The paid tier mostly sells me things I don't want: login pages mean pasting my clients' browser sessions into a brand-new tool with no reviews, and I'm not doing that however it's encrypted. Without that, it's an automated version of something I already do for free a few times a year.",
+  "would_change_my_mind": "If I took on a few maintenance retainers where clients expect a monthly record and change alerts, a link I can send them would earn its keep, and the $79 lifetime would get me to pay once the free tier had proved the phone captures are accurate.",
+  "price_too_cheap": 3,
+  "price_cheap": 5,
+  "price_expensive": 15,
+  "price_too_expensive": 25
+}

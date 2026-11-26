@@ -1,0 +1,13 @@
+{
+  "id": "P010",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "I need full-page shots once a month when I hand a site over, not daily monitoring, and my extension plus the free 15-page tier covers that. Paying a subscription to watch sites I've already handed off isn't something my clients pay me for.",
+  "objection": "Honestly, I could rig up Playwright to crawl a sitemap and grab full-page desktop and mobile shots in an afternoon, so $9 a month for something I'd use twelve times a year feels like paying for a cron job.",
+  "would_change_my_mind": "If a client started paying me for an ongoing care plan where I have to prove nothing broke each month, the change alerts and a before/after link I can send them would earn the $9.",
+  "price_too_cheap": 2,
+  "price_cheap": 4,
+  "price_expensive": 12,
+  "price_too_expensive": 20
+}

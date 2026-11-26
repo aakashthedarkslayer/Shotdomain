@@ -1,0 +1,13 @@
+{
+  "id": "P019",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "I need a clean full-site capture at handover, not a dated record that re-shoots every page daily or weekly, so a monthly subscription is paying for monitoring I'd never use. The free 15-page tier probably covers most of my small client sites anyway, and with zero reviews I wouldn't put my card in for a tool nobody has vouched for.",
+  "objection": "It's built around ongoing monitoring and a monthly bill, but my use is occasional. On top of that it's brand new with no reviews and no proof it handles real sites with sticky headers, lazy-loaded images and cookie banners, so even the $79 lifetime deal feels like a bet the company will still be around.",
+  "would_change_my_mind": "A pay-per-site option (a few dollars per full-site capture, no subscription), backed by real reviews from other freelancers showing it works on messy real-world sites.",
+  "price_too_cheap": 2,
+  "price_cheap": 4,
+  "price_expensive": 9,
+  "price_too_expensive": 15
+}

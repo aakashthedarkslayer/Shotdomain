@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>8 Culling deck</title><link rel="stylesheet" href="sketch.css">
+<style>
+  .now { position: absolute; left: 60px; top: 90px; font-size: 26px; font-weight: 800; }
+  .now span { font-size: 15px; font-weight: 400; color: var(--muted); margin-left: 12px; }
+  .devs { position: absolute; left: 60px; top: 150px; display: flex; gap: 24px; align-items: flex-end; }
+  .devs .shot { height: 460px; }
+  .keys { position: absolute; left: 60px; top: 640px; display: flex; gap: 16px; }
+  .k { border: 1.5px solid var(--line); background: var(--paper); padding: 10px 14px; font-weight: 700; }
+  .k kbd { display: inline-block; min-width: 26px; text-align: center; background: var(--ink); color: var(--paper); margin-right: 8px; padding: 2px 6px; }
+  .k.fix kbd { background: var(--mark); }
+  .tally { position: absolute; right: 60px; top: 560px; width: 380px; font-size: 14px; }
+  .tally b { font-size: 34px; display: block; }
+  .strip { position: absolute; left: 60px; right: 60px; top: 720px; display: flex; gap: 6px; }
+  .strip .c { width: 26px; height: 40px; background: var(--block); border: 1.5px solid var(--line); }
+  .strip .keep { background: var(--ink); } .strip .fix { background: var(--mark); } .strip .cur { outline: 3px solid var(--ink); outline-offset: 2px; background: var(--paper); }
+</style></head><body>
+<div class="bar"><span class="logo">ShotDomain</span><span class="muted">example.com, reviewing 42 pages</span></div>
+<div class="now">/pricing<span>page 9 of 42, on every device</span></div>
+<div class="devs">
+  <div class="shot" style="width:420px"><i style="top:20%"></i><i style="top:35%;right:50%"></i></div>
+  <div class="shot" style="width:250px"><i style="top:20%"></i></div>
+  <div class="shot" style="width:150px"><i style="top:20%;right:10%"></i></div>
+  <div class="shot" style="width:150px"><i style="top:20%;right:10%"></i></div>
+</div>
+<div class="keys"><span class="k"><kbd>K</kbd>Keep for the client</span><span class="k fix"><kbd>F</kbd>Needs a fix</span><span class="k"><kbd>→</kbd>Next page</span></div>
+<div class="tally"><b>6 kept, 2 to fix</b>Kept pages go into the client link and the ZIP. Pages to fix become a list you can send your developer, with the screenshot attached.</div>
+<div class="strip"><div class="c keep"></div><div class="c keep"></div><div class="c fix"></div><div class="c keep"></div><div class="c keep"></div><div class="c keep"></div><div class="c fix"></div><div class="c keep"></div><div class="c cur"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div></div>
+<div class="note"><b>8 Culling deck</b>Review like a photographer culls a shoot: one page at a time on every device, keep it or flag it with one key. What you keep becomes the client link and ZIP; what you flag becomes a fix list.</div>
+</body></html>

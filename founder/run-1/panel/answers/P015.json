@@ -1,0 +1,13 @@
+{
+  "id": "P015",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "quality",
+  "reason": "I already pay for a monitoring tool that watches the few pages I care about. The free tier lets me test it, but it says it never gets past bot protection and says nothing about cookie banners, so half my client sites would probably come back as challenge pages or with a banner over the hero, and that's useless for my portfolio folder.",
+  "objection": "Will it actually work on my clients' real sites? Cloudflare-protected ones, logins and cookie banners. 'Never bypasses bot protection' tells me some of them will just fail, and with no reviews I'm not paying to find out.",
+  "would_change_my_mind": "Running the free tier on two or three of my trickiest client sites and getting clean, banner-free full-page shots on every device. If it did that, I'd consider the $99 lifetime in place of one of my subscriptions.",
+  "price_too_cheap": 2,
+  "price_cheap": 5,
+  "price_expensive": 15,
+  "price_too_expensive": 30
+}

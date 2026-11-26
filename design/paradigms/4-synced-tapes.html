@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>4 Synced tapes</title><link rel="stylesheet" href="sketch.css">
+<style>
+  .rail { position: absolute; left: 0; right: 0; top: 86px; height: 10px; background: var(--block-2); }
+  .tapes { position: absolute; left: 40px; top: 96px; display: flex; gap: 26px; }
+  .tape { width: 168px; height: 780px; background: var(--paper); border: 1.5px solid var(--line); position: relative; overflow: hidden; }
+  .tape.phone { width: 74px; }
+  .tape .seg { position: absolute; left: 10%; right: 10%; height: 22px; background: var(--block); }
+  .clip { position: absolute; top: -8px; left: 50%; width: 30px; height: 18px; margin-left: -15px; background: var(--ink); }
+  .cap2 { position: absolute; bottom: 6px; left: 6px; font-size: 11px; color: var(--muted); }
+  .line { position: absolute; left: 0; right: 0; top: 470px; height: 0; border-top: 2px dashed var(--mark); }
+  .line span { position: absolute; right: 24px; top: -26px; background: var(--mark); color: #fff; font-size: 12px; padding: 2px 8px; }
+  .out { transform: translateY(40px) rotate(3deg); outline: 3px solid var(--mark); }
+</style></head><body>
+<div class="bar"><span class="logo">ShotDomain</span><span class="muted">example.com, full pages hung side by side</span></div>
+<div class="rail"></div>
+<div class="tapes">
+  <div class="tape"><span class="clip"></span><div class="seg" style="top:8%"></div><div class="seg" style="top:30%"></div><div class="seg" style="top:52%"></div><div class="seg" style="top:74%"></div><span class="cap2">/ desktop</span></div>
+  <div class="tape phone"><span class="clip"></span><div class="seg" style="top:6%"></div><div class="seg" style="top:20%"></div><div class="seg" style="top:34%"></div><span class="cap2">/ iPhone</span></div>
+  <div class="tape"><span class="clip"></span><div class="seg" style="top:12%"></div><div class="seg" style="top:40%"></div><span class="cap2">/pricing</span></div>
+  <div class="tape phone out"><span class="clip"></span><div class="seg" style="top:10%"></div><div class="seg" style="top:44%"></div><span class="cap2">/pricing</span></div>
+  <div class="tape"><span class="clip"></span><div class="seg" style="top:20%"></div><div class="seg" style="top:48%"></div><span class="cap2">/about</span></div>
+  <div class="tape"><span class="clip"></span><div class="seg" style="top:14%"></div><div class="seg" style="top:62%"></div><span class="cap2">/blog</span></div>
+  <div class="tape phone"><span class="clip"></span><div class="seg" style="top:24%"></div><span class="cap2">/blog</span></div>
+  <div class="tape"><span class="clip"></span><div class="seg" style="top:18%"></div><span class="cap2">/contact</span></div>
+</div>
+<div class="line"><span>one scroll moves every tape: same depth, every page</span></div>
+<div class="note"><b>4 Synced tapes</b>Full-page screenshots hang as long tapes. One scroll moves them all, so you compare the same depth on every page and device. Pull a tape down to pick it; snip it with scissors to crop.</div>
+</body></html>

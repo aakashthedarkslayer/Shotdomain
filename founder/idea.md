@@ -1,0 +1,7 @@
+# ShotDomain ("One Shot Every Domain")
+
+- What it is: a web service that keeps a dated, browsable record of every page of the websites an agency looks after, on desktop and phone: it captures them, flags what changed between runs, and gives the client a link they can open.
+- Who it is for: small web agencies (2-15 people) and freelance web designers who look after client sites; secondarily in-house web/QA staff.
+- What it sells, at what price: SaaS, USD. Free $0 (15 pages per capture, desktop + iPhone, last 10 captures). Studio $9/month or $90/year (5 client sites monitored x 25 key pages, daily/weekly/monthly runs kept, change alerts, all 4 devices, pages behind a login, 150 pages per one-off capture). Agency $29/month or $290/year (25 client sites x 100 pages, share links with the agency's own logo and name, before/after compare links for clients, 30 runs kept per site, 500 pages per one-off capture). Lifetime $79 one-time, founding batch capped at 100 buyers (Studio limits forever).
+- Where and how: online, worldwide, self-serve. Sign in with Google; Paddle checkout (merchant of record). No acquisition channel tested yet.
+- Budget and constraints: solo founder. Built and working on the founder's machine; not yet on a public domain; no outside users, customers or reviews yet. Marketing budget not stated. Never bypasses CAPTCHAs or bot protection; honest User-Agent; respects robots.txt.

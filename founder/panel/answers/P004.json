@@ -1,0 +1,13 @@
+{
+  "id": "P004",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "What I actually do is grab a before set when a redesign starts and an after set at launch for the portfolio, and the free 15 pages covers that for one site. I don't need daily monitoring and change alerts badly enough to pay this month, so I'd sign up free, try it on a client site and see.",
+  "objection": "It says it never gets past bot protection, and half my clients sit behind Cloudflare or have a members area. If it gives me a challenge page or a blank screenshot on my real sites, it's worth nothing to me. And it's new with no reviews, so I'm not pasting client login sessions into it yet.",
+  "would_change_my_mind": "If the free run captures my hardest client site cleanly (the Cloudflare one with the logged-in area, no cookie banner in the shot) and before/after compare came with Studio, I'd grab the $79 lifetime.",
+  "price_too_cheap": 3,
+  "price_cheap": 8,
+  "price_expensive": 25,
+  "price_too_expensive": 50
+}

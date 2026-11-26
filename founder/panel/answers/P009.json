@@ -1,0 +1,13 @@
+{
+  "id": "P009",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "I already pay for a change-monitoring tool that covers the few client pages I actually care about, and I'm not moving client work to something with zero reviews. I'd grab the free tier on one site and watch it for a couple of months, but I wouldn't pay anything this month, not even the $79 lifetime, because a lifetime deal from a brand-new tool is exactly what dies first.",
+  "objection": "It's brand new with no reviews. If it shuts down next year I lose the dated history I was keeping for clients, and pasting my clients' logged-in browser sessions into a service nobody has vetted makes me nervous.",
+  "would_change_my_mind": "A couple of months of the free tier catching real changes on a client site without false alerts, plus a way to export or download all my captures so the archive survives even if they go under.",
+  "price_too_cheap": 3,
+  "price_cheap": 7,
+  "price_expensive": 19,
+  "price_too_expensive": 35
+}

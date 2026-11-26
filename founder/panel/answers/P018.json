@@ -1,0 +1,13 @@
+{
+  "id": "P018",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "It's aimed right at how I report to clients, but it's brand new with no reviews, and the part I'd actually pay for, the branded before/after links, isn't in the free plan, so I can't see it before I pay. I'll run the free tier on one client site this month and decide after that.",
+  "objection": "I'd be putting my agency's name on links from a service nobody has heard of yet. If a capture comes out wrong or the link dies, that's my credibility with the client, not theirs. And part of me still thinks my developer could script full-page screenshots on a cron job in an afternoon.",
+  "would_change_my_mind": "Seeing a real branded before/after link before I pay, ideally opened on my phone the way my clients would see it, through a sample page or a short free trial of the Agency plan.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 35,
+  "price_too_expensive": 60
+}

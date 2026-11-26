@@ -1,8 +1,12 @@
 import { NextRequest } from 'next/server';
-import { createJob, getJob } from '@/lib/jobStore';
+import { createJob, updateResult } from '@/lib/jobStore';
 import { captureScreenshots } from '@/lib/screenshot';
-import { updateResult } from '@/lib/jobStore';
+import { currentUserKey } from '@/auth';
 import type { CaptureSettings } from '@/lib/jobStore';
+import { sanitizeAuth, sanitizeCleanup } from '@/lib/captureOptions';
+import { planInfoFor } from '@/lib/billing';
+import { checkCapture, limitResponse } from '@/lib/entitlements';
+import { checkTargetUrl } from '@/lib/ssrf';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,8 +36,18 @@ export async function POST(request: NextRequest) {
     if (settings.format !== 'png' && settings.format !== 'jpeg') {
       settings.format = 'png';
     }
+    settings.cleanup = sanitizeCleanup(settings.cleanup);
+    settings.auth = sanitizeAuth(settings.auth);
 
-    const job = await createJob('capture', urls, settings);
+    for (const url of urls) {
+      const problem = await checkTargetUrl(String(url));
+      if (problem) return Response.json({ error: problem }, { status: 400 });
+    }
+
+    const ownerKey = (await currentUserKey()) ?? undefined;
+    const denial = checkCapture(await planInfoFor(ownerKey ?? null), urls.length, settings);
+    if (denial) return limitResponse(denial);
+    const job = await createJob('capture', urls, settings, ownerKey);
 
     // Start capture asynchronously (don't await)
     captureScreenshots(
@@ -44,8 +58,8 @@ export async function POST(request: NextRequest) {
         updateResult(job.id, url, result);
       }
     ).catch((error) => {
-      console.error(`Capture job ${job.id} failed:`, error);
-    });
+        console.error(`Capture job ${job.id} failed:`, error);
+      });
 
     return Response.json({ jobId: job.id });
   } catch (error) {

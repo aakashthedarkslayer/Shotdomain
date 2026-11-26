@@ -1,19 +1,20 @@
 import { ZipArchive } from 'archiver';
 import * as path from 'path';
 import * as fsp from 'fs/promises';
+import { isThumbFile } from './thumbnails';
 
 /**
  * Helper to recursively collect all file paths relative to a root directory.
  */
-async function collectRelativeFiles(dir: string, baseRel: string = ''): Promise<string[]> {
+async function collectRelativeFiles(dir: string, baseRel: string = '', exclude: string[] = []): Promise<string[]> {
   const entries = await fsp.readdir(dir, { withFileTypes: true });
   const result: string[] = [];
   for (const entry of entries) {
-    if (entry.name.endsWith('.zip') || entry.name === 'manifest.json') continue;
+    if (entry.name.endsWith('.zip') || entry.name === 'manifest.json' || isThumbFile(entry.name) || exclude.includes(entry.name)) continue;
     const rel = baseRel ? `${baseRel}/${entry.name}` : entry.name;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      const sub = await collectRelativeFiles(full, rel);
+      const sub = await collectRelativeFiles(full, rel, exclude);
       result.push(...sub);
     } else if (entry.isFile()) {
       result.push(rel);
@@ -57,8 +58,8 @@ export async function createZipStream(jobId: string): Promise<{
   const archive = new ZipArchive({ zlib: { level: 5 } });
 
   // Handle archiver warnings (e.g. stat failures)
-  archive.on('warning', (err: any) => {
-    if (err && err.code === 'ENOENT') {
+  archive.on('warning', (err: Error & { code?: string }) => {
+    if (err.code === 'ENOENT') {
       console.warn(`[zip] Warning for job ${jobId}:`, err.message);
     } else {
       throw err;
@@ -66,7 +67,7 @@ export async function createZipStream(jobId: string): Promise<{
   });
 
   // Handle archiver errors
-  archive.on('error', (err: any) => {
+  archive.on('error', (err: Error) => {
     throw err;
   });
 
@@ -132,7 +133,7 @@ export async function createZipBufferFromDir(sourceDir: string): Promise<Buffer>
 
     archive.on('data', (chunk: Buffer) => chunks.push(chunk));
     archive.on('end', () => resolve(Buffer.concat(chunks)));
-    archive.on('error', (err: any) => reject(err));
+    archive.on('error', (err: Error) => reject(err));
 
     for (const relName of files) {
       archive.file(path.join(sourceDir, relName), { name: relName.replace(/\\/g, '/') });
@@ -141,3 +142,29 @@ export async function createZipBufferFromDir(sourceDir: string): Promise<Buffer>
   });
 }
 
+
+/**
+ * Stream a ZIP of every file in `dir` (recursively), skipping names in `exclude`.
+ * Returns null when there is nothing to zip.
+ */
+export async function createZipStreamFromDir(dir: string, exclude: string[] = []): Promise<ZipArchive | null> {
+  const files = await collectRelativeFiles(dir, '', exclude);
+  if (files.length === 0) return null;
+  const archive = new ZipArchive({ zlib: { level: 5 } });
+  for (const relName of files) {
+    archive.file(path.join(dir, relName), { name: relName.replace(/\\/g, '/') });
+  }
+  archive.finalize();
+  return archive;
+}
+
+/** Wrap an archiver stream as a Web ReadableStream for a Response body. */
+export function toWebStream(archive: ZipArchive): ReadableStream<Uint8Array> {
+  return new ReadableStream({
+    start(controller) {
+      archive.on('data', (chunk: Buffer) => controller.enqueue(new Uint8Array(chunk)));
+      archive.on('end', () => controller.close());
+      archive.on('error', (err: Error) => controller.error(err));
+    },
+  });
+}

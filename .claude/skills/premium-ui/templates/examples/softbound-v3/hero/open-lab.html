@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Open Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap">
+<style>
+:root{--wall:#F3ECE3;--ink:#2B2A4A}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;gap:40px;background:#E4DACD;font:500 13px "Bricolage Grotesque",system-ui,sans-serif;color:var(--ink)}
+#phone{width:414px;height:868px;border-radius:58px;padding:12px;background:#1d1a1f;box-shadow:0 40px 80px -30px rgba(40,25,20,.6)}
+#screen{position:relative;width:390px;height:844px;border-radius:46px;overflow:hidden;background:var(--wall)}
+#screen canvas{position:absolute;left:0;top:0;width:390px;height:844px;display:block}
+.sb{position:absolute;left:0;right:0;top:0;height:47px;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 36px;font:600 15px system-ui;color:var(--ink);z-index:9;pointer-events:none}
+.sb i{width:120px;height:34px;border-radius:20px;background:#111;position:absolute;left:50%;top:10px;transform:translateX(-50%)}
+.home{position:absolute;left:24px;top:64px;transition:opacity .4s}
+.home b{display:block;font:800 30px/1 "Bricolage Grotesque";letter-spacing:-.03em}
+.home span{font-size:12px;opacity:.6}
+#panel{display:flex;flex-direction:column;gap:10px;width:220px}
+#panel button{all:unset;cursor:pointer;padding:10px 14px;border-radius:12px;background:#fff;text-align:center;font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+#panel label{display:flex;flex-direction:column;gap:4px}
+</style></head>
+<body>
+<div id="phone"><div id="screen">
+  <canvas id="gl"></canvas>
+  <div class="sb"><span>9:41</span><i></i><span>●●●</span></div>
+  <div class="home"><span>1 notebook</span><b>Your shelf</b></div>
+</div></div>
+<div id="panel">
+  <button id="bOpen">Open</button><button id="bClose">Close</button>
+  <label>Cover angle <input id="rCover" type="range" min="0" max="1" step=".001" value="0"></label>
+  <label>Fan <input id="rFan" type="range" min="0" max="1" step=".001" value="0"></label>
+  <button id="bTime">Time: golden</button>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="src/art.js" onerror="0"></script>
+<script src="src/sound.js" onerror="0"></script>
+<script src="src/book.js"></script>
+<script src="src/open.js"></script>
+<script>
+(async function () {
+  const T = THREE, cv = document.getElementById('gl'), screenEl = document.getElementById('screen');
+  const R = new T.WebGLRenderer({ canvas: cv, antialias: true, powerPreference: 'high-performance' });
+  R.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); R.setSize(390, 844, false);
+  R.outputEncoding = T.sRGBEncoding; R.toneMapping = T.NoToneMapping;
+  R.shadowMap.enabled = true; R.shadowMap.type = T.PCFSoftShadowMap;
+  const lin = h => new T.Color(h).convertSRGBToLinear();
+  const scene = new T.Scene(); scene.background = lin('#F3ECE3');
+  // soft studio environment for sheen, clearcoat and foil
+  { const pm = new T.PMREMGenerator(R), es = new T.Scene(), sg = new T.SphereGeometry(20, 32, 16), col = [], P = sg.attributes.position;
+    for (let i = 0; i < P.count; i++) { const t = (P.getY(i) / 20 + 1) / 2; col.push(.22 + .3 * t, .19 + .29 * t, .17 + .27 * t); }
+    sg.setAttribute('color', new T.Float32BufferAttribute(col, 3));
+    es.add(new T.Mesh(sg, new T.MeshBasicMaterial({ vertexColors: true, side: T.BackSide })));
+    const win = new T.Mesh(new T.PlaneGeometry(9, 9), new T.MeshBasicMaterial({ color: new T.Color(1.5, 1.3, 1.05), side: T.DoubleSide })); win.position.set(9, 11, 8); win.lookAt(0, 0, 0); es.add(win);
+    scene.environment = pm.fromScene(es, .04).texture; pm.dispose(); }
+  // lighting rig: key from the top-right window, warm fill, sky/ground bounce
+  scene.add(new T.HemisphereLight(0xFFF3E6, 0xC99674, .28));
+  const key = new T.DirectionalLight(0xFFE7CC, .82); key.position.set(4.5, 7, 4.2); key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048); key.shadow.radius = 6; key.shadow.bias = -.0005; key.shadow.normalBias = .02;
+  Object.assign(key.shadow.camera, { left: -3, right: 3, top: 3, bottom: -3, near: 1, far: 22 }); key.shadow.camera.updateProjectionMatrix();
+  scene.add(key);
+  const fill = new T.DirectionalLight(0xFFD9BC, .18); fill.position.set(-5, 2.5, 3); scene.add(fill);
+  // clay plinth and wall
+  const pts = [new T.Vector2(0, 0)]; for (let i = 0; i <= 10; i++) { const a = i / 10 * Math.PI / 2; pts.push(new T.Vector2(1.75 + Math.sin(a) * .15, -.15 + Math.cos(a) * .15)); } pts.push(new T.Vector2(1.9, -1.2));
+  const plinth = new T.Mesh(new T.LatheGeometry(pts.reverse(), 96), new T.MeshStandardMaterial({ color: lin('#E9B98F'), roughness: .92, emissive: lin('#7A4A33'), emissiveIntensity: .12 }));
+  plinth.receiveShadow = true; scene.add(plinth);
+  const wall = new T.Mesh(new T.PlaneGeometry(30, 20), new T.MeshStandardMaterial({ color: lin('#F3ECE3'), roughness: 1 })); wall.position.set(0, 4, -4); wall.receiveShadow = true; scene.add(wall);
+
+  const cam = new T.PerspectiveCamera(30, 390 / 844, .1, 60); cam.position.set(0, 2.5, 8.2); cam.lookAt(0, .7, 0);
+
+  // ---- minimal fake SB ----
+  const ticks = new Set(); let awake = false, want = false, last = 0;
+  function frame(now) {
+    const dt = Math.max(0, Math.min(.05, (now - last) / 1000 || 1 / 60)); last = now; want = false;
+    ticks.forEach(f => f(dt)); R.render(scene, cam);
+    if (want) requestAnimationFrame(frame); else awake = false;
+  }
+  const homeEl = document.querySelector('.home');
+  const SB = window.SB = {
+    renderer: R, scene, camera: cam, screenEl, books: [], time: 'golden', light: { key },
+    requestFrame() { want = true; if (!awake) { awake = true; last = performance.now(); requestAnimationFrame(frame); } },
+    onTick(f) { ticks.add(f); return () => ticks.delete(f); },
+    puff(p, s) { console.log('puff', s); }, save(n) { console.log('save', n.title); }, remove() {}, create() {},
+    homeOverlay(show) { homeEl.style.opacity = show ? 1 : 0; },
+  };
+
+  const note = (window.SB_NOTES && SB_NOTES[0]) || { id: 1, title: 'Kyoto in April', body: "Philosopher's Path at 6am before the crowds. Fushimi Inari, top gate at sunset. Ask Kenji about the tofu place in Arashiyama.", tag: 'Travel', date: 'Apr 2' };
+  let time = new URLSearchParams(location.search).get('time') || 'golden';
+  async function art(tag) {
+    if (!window.SBArt) return {};
+    try { await SBArt.ready; return { label: await SBArt.cover(tag, { time }), linen: SBArt.linen(SBBook.TAGS[tag], 512), paper: SBArt.paper(1024) }; } catch (e) { console.warn('art', e); return {}; }
+  }
+  await SBBook.fontsReady;
+  const book = SBBook.create(note, Object.assign({ clothHex: SBBook.TAGS[note.tag] }, await art(note.tag)));
+  book.group.position.set(-.48, 0, .2); book.group.rotation.y = .32; scene.add(book.group);
+  SB.books.push({ book, note, slotAngle: 0 });
+  window.book = book;
+  SB.requestFrame();
+
+  const unlock = () => { try { window.SBSound && SBSound.unlock(); } catch (e) {} };
+  document.getElementById('bOpen').onclick = () => { SBOpen.open(book, SB); setTimeout(unlock); };
+  cv.addEventListener('click', () => { if (!SBOpen.busy) SBOpen.open(book, SB); setTimeout(unlock); });
+  document.getElementById('bClose').onclick = () => SBOpen.close();
+  document.getElementById('rCover').oninput = e => { book.setCover(+e.target.value * Math.PI * .95); SB.requestFrame(); };
+  document.getElementById('rFan').oninput = e => { book.setFan(+e.target.value); SB.requestFrame(); };
+  document.getElementById('bTime').onclick = async e => {
+    time = { morning: 'golden', golden: 'night', night: 'morning' }[time]; e.target.textContent = 'Time: ' + time;
+    const a = await art(note.tag); if (a.label) { book.setLabel(a.label); SB.requestFrame(); }
+  };
+  window.labReady = true;
+})();
+</script>
+</body></html>

@@ -1,0 +1,222 @@
+[
+ {
+  "id": "P001",
+  "name": "Ruby",
+  "age": 37,
+  "segment": "In-house marketing, web or QA staff at a company",
+  "income": 106000,
+  "behaviour": "Does it by hand today",
+  "behaviour_how": "Screenshots pages one by one with a browser extension when a project needs it.",
+  "objection": "Will it actually work on my clients' sites with bot protection, logins and cookie banners?",
+  "habit": "you check sites on your phone because most of your clients' visitors are on mobile"
+ },
+ {
+  "id": "P002",
+  "name": "Iris",
+  "age": 39,
+  "segment": "In-house marketing, web or QA staff at a company",
+  "income": 56000,
+  "behaviour": "Would script it",
+  "behaviour_how": "Comfortable writing a quick Playwright or Puppeteer script rather than paying for a tool.",
+  "objection": "I don't want to give a third-party tool my clients' login sessions",
+  "habit": "you check sites on your phone because most of your clients' visitors are on mobile"
+ },
+ {
+  "id": "P003",
+  "name": "Seth",
+  "age": 24,
+  "segment": "Freelance web designer or developer",
+  "income": 29000,
+  "behaviour": "Does it by hand today",
+  "behaviour_how": "Screenshots pages one by one with a browser extension when a project needs it.",
+  "objection": "Change alerts from tools like this are usually noisy and full of false positives",
+  "habit": "you keep a folder of before/after screenshots for your portfolio"
+ },
+ {
+  "id": "P004",
+  "name": "Hugo",
+  "age": 38,
+  "segment": "Small web agency owner or project manager (2-15 people)",
+  "income": 101000,
+  "behaviour": "Does it by hand today",
+  "behaviour_how": "Screenshots pages one by one with a browser extension when a project needs it.",
+  "objection": "Will it actually work on my clients' sites with bot protection, logins and cookie banners?",
+  "habit": "you keep a folder of before/after screenshots for your portfolio"
+ },
+ {
+  "id": "P005",
+  "name": "Mason",
+  "age": 46,
+  "segment": "Small web agency owner or project manager (2-15 people)",
+  "income": 98000,
+  "behaviour": "Lifetime-deal hunter",
+  "behaviour_how": "Buys tools on AppSumo-style one-time deals and avoids new subscriptions.",
+  "objection": "I only need full-site screenshots a few times a year, not every month",
+  "habit": "you already pay for Figma, a hosting account and a password manager"
+ },
+ {
+  "id": "P006",
+  "name": "Olivia",
+  "age": 36,
+  "segment": "In-house marketing, web or QA staff at a company",
+  "income": 75000,
+  "behaviour": "Lifetime-deal hunter",
+  "behaviour_how": "Buys tools on AppSumo-style one-time deals and avoids new subscriptions.",
+  "objection": "I don't want to give a third-party tool my clients' login sessions",
+  "habit": "your clients sometimes ask 'what did the site look like before?' and you can't answer"
+ },
+ {
+  "id": "P007",
+  "name": "Cole",
+  "age": 23,
+  "segment": "Small web agency owner or project manager (2-15 people)",
+  "income": 85000,
+  "behaviour": "Tight budget",
+  "behaviour_how": "Every subscription is weighed against what clients pay; cancels anything unused for a month.",
+  "objection": "It is brand new with no reviews; will it still be around next year?",
+  "habit": "you check sites on your phone because most of your clients' visitors are on mobile"
+ },
+ {
+  "id": "P008",
+  "name": "Nora",
+  "age": 29,
+  "segment": "Freelance web designer or developer",
+  "income": 36000,
+  "behaviour": "Would script it",
+  "behaviour_how": "Comfortable writing a quick Playwright or Puppeteer script rather than paying for a tool.",
+  "objection": "Will it actually work on my clients' sites with bot protection, logins and cookie banners?",
+  "habit": "you already pay for Figma, a hosting account and a password manager"
+ },
+ {
+  "id": "P009",
+  "name": "Sam",
+  "age": 34,
+  "segment": "Freelance web designer or developer",
+  "income": 85000,
+  "behaviour": "Already pays for a monitoring tool",
+  "behaviour_how": "Uses a change-monitoring or screenshot-archive service for a few key pages.",
+  "objection": "It is brand new with no reviews; will it still be around next year?",
+  "habit": "you already pay for Figma, a hosting account and a password manager"
+ },
+ {
+  "id": "P010",
+  "name": "Sienna",
+  "age": 46,
+  "segment": "Freelance web designer or developer",
+  "income": 79000,
+  "behaviour": "Does it by hand today",
+  "behaviour_how": "Screenshots pages one by one with a browser extension when a project needs it.",
+  "objection": "I could script this myself in an afternoon",
+  "habit": "you hand over a redesigned site to a client roughly once a month"
+ },
+ {
+  "id": "P011",
+  "name": "Grace",
+  "age": 35,
+  "segment": "Freelance web designer or developer",
+  "income": 77000,
+  "behaviour": "Does it by hand today",
+  "behaviour_how": "Screenshots pages one by one with a browser extension when a project needs it.",
+  "objection": "I don't want to give a third-party tool my clients' login sessions",
+  "habit": "you check sites on your phone because most of your clients' visitors are on mobile"
+ },
+ {
+  "id": "P012",
+  "name": "Marco",
+  "age": 45,
+  "segment": "Freelance web designer or developer",
+  "income": 62000,
+  "behaviour": "Tight budget",
+  "behaviour_how": "Every subscription is weighed against what clients pay; cancels anything unused for a month.",
+  "objection": "I could script this myself in an afternoon",
+  "habit": "you check sites on your phone because most of your clients' visitors are on mobile"
+ },
+ {
+  "id": "P013",
+  "name": "Tariq",
+  "age": 34,
+  "segment": "Small web agency owner or project manager (2-15 people)",
+  "income": 98000,
+  "behaviour": "Would script it",
+  "behaviour_how": "Comfortable writing a quick Playwright or Puppeteer script rather than paying for a tool.",
+  "objection": "Change alerts from tools like this are usually noisy and full of false positives",
+  "habit": "you check sites on your phone because most of your clients' visitors are on mobile"
+ },
+ {
+  "id": "P014",
+  "name": "June",
+  "age": 25,
+  "segment": "Small web agency owner or project manager (2-15 people)",
+  "income": 98000,
+  "behaviour": "Client reporting focused",
+  "behaviour_how": "Sends clients before/after evidence and reports; wants things that look professional.",
+  "objection": "A free browser extension already does full-page screenshots",
+  "habit": "you already pay for Figma, a hosting account and a password manager"
+ },
+ {
+  "id": "P015",
+  "name": "Quinn",
+  "age": 41,
+  "segment": "Small web agency owner or project manager (2-15 people)",
+  "income": 49000,
+  "behaviour": "Already pays for a monitoring tool",
+  "behaviour_how": "Uses a change-monitoring or screenshot-archive service for a few key pages.",
+  "objection": "Will it actually work on my clients' sites with bot protection, logins and cookie banners?",
+  "habit": "you keep a folder of before/after screenshots for your portfolio"
+ },
+ {
+  "id": "P016",
+  "name": "Mei",
+  "age": 31,
+  "segment": "Freelance web designer or developer",
+  "income": 75000,
+  "behaviour": "Reads every review",
+  "behaviour_how": "Will not try a new tool without reviews, a free tier and proof it works on real sites.",
+  "objection": "I only need full-site screenshots a few times a year, not every month",
+  "habit": "you check sites on your phone because most of your clients' visitors are on mobile"
+ },
+ {
+  "id": "P017",
+  "name": "Pablo",
+  "age": 41,
+  "segment": "In-house marketing, web or QA staff at a company",
+  "income": 79000,
+  "behaviour": "Reads every review",
+  "behaviour_how": "Will not try a new tool without reviews, a free tier and proof it works on real sites.",
+  "objection": "I only need full-site screenshots a few times a year, not every month",
+  "habit": "you already pay for Figma, a hosting account and a password manager"
+ },
+ {
+  "id": "P018",
+  "name": "Ravi",
+  "age": 50,
+  "segment": "Small web agency owner or project manager (2-15 people)",
+  "income": 92000,
+  "behaviour": "Client reporting focused",
+  "behaviour_how": "Sends clients before/after evidence and reports; wants things that look professional.",
+  "objection": "I could script this myself in an afternoon",
+  "habit": "you check sites on your phone because most of your clients' visitors are on mobile"
+ },
+ {
+  "id": "P019",
+  "name": "Lina",
+  "age": 34,
+  "segment": "Freelance web designer or developer",
+  "income": 60000,
+  "behaviour": "Reads every review",
+  "behaviour_how": "Will not try a new tool without reviews, a free tier and proof it works on real sites.",
+  "objection": "I only need full-site screenshots a few times a year, not every month",
+  "habit": "you hand over a redesigned site to a client roughly once a month"
+ },
+ {
+  "id": "P020",
+  "name": "Isla",
+  "age": 27,
+  "segment": "In-house marketing, web or QA staff at a company",
+  "income": 112000,
+  "behaviour": "Lifetime-deal hunter",
+  "behaviour_how": "Buys tools on AppSumo-style one-time deals and avoids new subscriptions.",
+  "objection": "Change alerts from tools like this are usually noisy and full of false positives",
+  "habit": "you check sites on your phone because most of your clients' visitors are on mobile"
+ }
+]

@@ -1,0 +1,93 @@
+{
+ "n": 20,
+ "seed": 172409,
+ "customer": {
+  "business": "ShotDomain, a web app that screenshots every page of a website on desktop, tablet and phone, and can re-capture and compare them on a schedule",
+  "target": "Freelance web designers/developers, small web agency owners and in-house web/QA staff who need screenshots of whole client or company websites",
+  "where": "online, worldwide (English-speaking; many freelancers in lower-cost countries)",
+  "age": [
+   23,
+   50
+  ],
+  "segments": [
+   {
+    "name": "Freelance web designer or developer",
+    "share": 0.4,
+    "income": [
+     15000,
+     90000
+    ]
+   },
+   {
+    "name": "Small web agency owner or project manager (2-15 people)",
+    "share": 0.35,
+    "income": [
+     45000,
+     150000
+    ]
+   },
+   {
+    "name": "In-house marketing, web or QA staff at a company",
+    "share": 0.25,
+    "income": [
+     40000,
+     120000
+    ]
+   }
+  ],
+  "behaviours": [
+   {
+    "name": "Does it by hand today",
+    "share": 0.25,
+    "how": "Screenshots pages one by one with a browser extension when a project needs it."
+   },
+   {
+    "name": "Would script it",
+    "share": 0.15,
+    "how": "Comfortable writing a quick Playwright or Puppeteer script rather than paying for a tool."
+   },
+   {
+    "name": "Already pays for a monitoring tool",
+    "share": 0.1,
+    "how": "Uses a change-monitoring or screenshot-archive service for a few key pages."
+   },
+   {
+    "name": "Lifetime-deal hunter",
+    "share": 0.15,
+    "how": "Buys tools on AppSumo-style one-time deals and avoids new subscriptions."
+   },
+   {
+    "name": "Reads every review",
+    "share": 0.15,
+    "how": "Will not try a new tool without reviews, a free tier and proof it works on real sites."
+   },
+   {
+    "name": "Tight budget",
+    "share": 0.1,
+    "how": "Every subscription is weighed against what clients pay; cancels anything unused for a month."
+   },
+   {
+    "name": "Client reporting focused",
+    "share": 0.1,
+    "how": "Sends clients before/after evidence and reports; wants things that look professional."
+   }
+  ],
+  "objections": [
+   "I only need full-site screenshots a few times a year, not every month",
+   "A free browser extension already does full-page screenshots",
+   "I could script this myself in an afternoon",
+   "Will it actually work on my clients' sites with bot protection, logins and cookie banners?",
+   "It is brand new with no reviews; will it still be around next year?",
+   "I don't want to give a third-party tool my clients' login sessions",
+   "Change alerts from tools like this are usually noisy and full of false positives"
+  ],
+  "habits": [
+   "you hand over a redesigned site to a client roughly once a month",
+   "you check sites on your phone because most of your clients' visitors are on mobile",
+   "you keep a folder of before/after screenshots for your portfolio",
+   "you already pay for Figma, a hosting account and a password manager",
+   "your clients sometimes ask 'what did the site look like before?' and you can't answer"
+  ]
+ },
+ "pitch": "ShotDomain, a new web service for agencies and freelancers who look after client sites (launching soon; no reviews yet).\nIt keeps a dated record of every page of your client sites on desktop and phone: it finds the pages, captures them full page, re-captures them daily, weekly or monthly, flags what changed (cookie banners hidden and animations settled first, to avoid false alerts) and emails you.\nSend a client a link to any capture, or a before/after of any page between two dates; on Agency the link shows your own logo and name. Pages behind a login work without a password: you paste your browser session, which is encrypted and deleted with the schedule.\nFree: a whole site up to 15 pages, on desktop and iPhone. Studio $9/month or $90/year: 5 client sites x 25 pages monitored, all devices, login pages. Agency $29/month or $290/year: 25 sites x 100 pages, branded client links, before/after compare. Lifetime: $79 once for Studio, first 100 buyers only.\nSign in with Google. 14-day money-back guarantee. Never bypasses CAPTCHAs or bot protection."
+}

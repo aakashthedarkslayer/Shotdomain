@@ -1,0 +1,23 @@
+{
+  "business": "ShotDomain (online SaaS). Unit = one paying Studio subscriber for one month; 'per day' fields are per month here (days_per_month = 1).",
+  "unit": "subscriber-month",
+  "price": 9.00,
+  "variable": [
+    {"label": "Paddle fee, ~5% + $0.50 (founder's understanding; confirm on Paddle's pricing page)", "cost": 0.95},
+    {"label": "Screenshot storage, ~3 GB per subscriber at ~$0.15/GB-month on a disk volume (ESTIMATE)", "cost": 0.45},
+    {"label": "Bandwidth for downloads/share links (ESTIMATE)", "cost": 0.20}
+  ],
+  "fixed_monthly": [
+    {"label": "Always-on server running Chrome (founder estimate $10-40; upper end used)", "cost": 40},
+    {"label": "Domain (~$15/year, ESTIMATE)", "cost": 1.25},
+    {"label": "Transactional email (free tier at this volume, ESTIMATE)", "cost": 0},
+    {"label": "Marketing budget (not stated by founder; set to 0)", "cost": 0}
+  ],
+  "startup": [
+    {"label": "Domain registration, first year (ESTIMATE)", "cost": 15},
+    {"label": "Legal review of Terms/Privacy/Refunds (not quoted; set to 0, see sources)", "cost": 0}
+  ],
+  "days_per_month": 1,
+  "plan_per_day": 25,
+  "ramp_per_day": [0, 1, 2, 3, 4, 6, 8, 10, 13, 16, 20, 25]
+}

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>9 Endless roll</title><link rel="stylesheet" href="sketch.css">
+<style>
+  .roll { position: absolute; left: 300px; top: 56px; width: 720px; height: 844px; background: var(--paper); border-left: 1.5px solid var(--line); border-right: 1.5px solid var(--line); overflow: hidden; }
+  .seg { position: absolute; left: 0; right: 0; }
+  .seg i { position: absolute; left: 8%; right: 30%; height: 18px; background: var(--block); }
+  .perf { position: absolute; left: 0; right: 0; height: 0; border-top: 3px dotted var(--line); }
+  .perf span { position: absolute; left: 12px; top: -12px; background: var(--bg); padding: 0 8px; font-size: 13px; font-weight: 700; }
+  .torn { position: absolute; left: 1060px; top: 380px; width: 230px; height: 230px; background: var(--paper); border: 1.5px solid var(--line); transform: rotate(4deg); outline: 3px solid var(--mark); outline-offset: 4px; }
+  .torn span { position: absolute; bottom: -28px; left: 0; font-size: 13px; color: var(--mark); font-weight: 700; }
+  .mini { position: absolute; left: 60px; top: 90px; width: 180px; }
+  .mini div { height: 26px; margin-bottom: 4px; background: var(--block); font-size: 12px; padding: 5px 8px; }
+  .mini .here { background: var(--ink); color: var(--paper); }
+</style></head><body>
+<div class="bar"><span class="logo">ShotDomain</span><span class="muted">example.com as one continuous roll, in sitemap order</span></div>
+<div class="mini"><div>/ home</div><div>/pricing</div><div class="here">/about</div><div>/blog (14)</div><div>/docs (18)</div><div>/contact</div><div>/careers</div></div>
+<div class="roll">
+  <div class="seg" style="top:-120px;height:360px"><i style="top:40%"></i><i style="top:60%;right:50%"></i></div>
+  <div class="perf" style="top:250px"><span>/pricing ends, /about begins</span></div>
+  <div class="seg" style="top:250px;height:400px"><i style="top:12%"></i><i style="top:30%"></i><i style="top:48%;right:55%"></i><i style="top:66%"></i></div>
+  <div class="perf" style="top:660px"><span>/about ends, /blog begins</span></div>
+  <div class="seg" style="top:660px;height:300px"><i style="top:15%"></i></div>
+</div>
+<div class="torn"><span>Torn off: /careers goes to the client</span></div>
+<div class="note"><b>9 Endless roll</b>The whole site is one continuous scroll, page after page in sitemap order, joined at perforations. You read a site the way a visitor would, jump by section on the left, and tear a page off at its perforation to pick it.</div>
+</body></html>

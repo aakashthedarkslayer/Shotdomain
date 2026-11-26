@@ -1,6 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
+import type { CleanupOptions, SiteAuth } from './captureOptions';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { sweepExpiredShares } from './shareStore';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -19,6 +21,10 @@ export interface CaptureSettings {
   blockAds: boolean;
   useCache: boolean;
   backgroundColor?: string;
+  /** Hide banners/elements, click, inject CSS before capture. */
+  cleanup?: CleanupOptions;
+  /** Login for sites that need one. Lives in memory only, for this job. */
+  auth?: SiteAuth;
 }
 
 export interface CaptureResult {
@@ -27,6 +33,8 @@ export interface CaptureResult {
   status: CaptureStatus;
   fileName?: string;
   error?: string;
+  /** Non-fatal problem, e.g. a click selector that wasn't found. */
+  warning?: string;
 }
 
 export interface Job {
@@ -40,6 +48,8 @@ export interface Job {
   completed: number;
   failed: number;
   cancelled: boolean;
+  /** userKey of whoever started the job. */
+  ownerKey?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -68,6 +78,7 @@ export async function createJob(
   type: JobType,
   urls: string[],
   settings?: CaptureSettings,
+  ownerKey?: string,
 ): Promise<Job> {
   const id = uuidv4();
 
@@ -98,6 +109,7 @@ export async function createJob(
     completed: 0,
     failed: 0,
     cancelled: false,
+    ownerKey,
   };
 
   jobs.set(id, job);
@@ -170,16 +182,35 @@ export async function deleteJob(jobId: string): Promise<void> {
 }
 
 /**
- * Deletes every job whose `createdAt` timestamp is older than 1 hour.
+ * Deletes finished jobs older than an hour and abandoned ones older than
+ * three, with their screenshots. A shared capture has its own copy (see
+ * lib/shareStore.ts), so nothing else is kept. Also removes tmp/ folders no
+ * job owns any more (left behind by a server restart).
  */
 export async function cleanupOldJobs(): Promise<void> {
   const oneHourAgo = Date.now() - 60 * 60 * 1000;
+  // A big capture can legitimately run longer than an hour; give it three.
+  const threeHoursAgo = Date.now() - 3 * 60 * 60 * 1000;
 
   const deletions: Promise<void>[] = [];
   for (const [id, job] of jobs) {
-    if (job.createdAt < oneHourAgo) {
+    const finished = job.cancelled || job.completed + job.failed >= job.total;
+    if (job.createdAt < (finished ? oneHourAgo : threeHoursAgo)) {
       deletions.push(deleteJob(id));
     }
+  }
+
+  // Folders from before a restart: the in-memory job is gone, so nothing can read them.
+  const tmpRoot = path.join(process.cwd(), 'tmp');
+  const names = await fs.readdir(tmpRoot).catch(() => [] as string[]);
+  for (const name of names) {
+    if (jobs.has(name) || !/^[0-9a-f-]{36}$/.test(name)) continue;
+    deletions.push(
+      fs
+        .stat(path.join(tmpRoot, name))
+        .then((st) => (st.mtimeMs < threeHoursAgo ? fs.rm(path.join(tmpRoot, name), { recursive: true, force: true }) : undefined))
+        .catch(() => undefined),
+    );
   }
 
   await Promise.all(deletions);
@@ -190,5 +221,9 @@ export async function cleanupOldJobs(): Promise<void> {
 // ---------------------------------------------------------------------------
 
 if (process.env.NODE_ENV !== 'test') {
-  setInterval(cleanupOldJobs, 5 * 60 * 1000);
+  setInterval(() => {
+    void cleanupOldJobs();
+    // Expired share links are deleted here too, even if nobody opens a page.
+    void sweepExpiredShares().catch(() => undefined);
+  }, 5 * 60 * 1000);
 }

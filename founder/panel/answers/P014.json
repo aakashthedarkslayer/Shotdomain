@@ -1,0 +1,13 @@
+{
+  "id": "P014",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "The branded before/after client link is the one thing here I'd actually pay for, but I'm not sending clients a link with my agency's name on it from a brand-new tool with zero reviews. For now I'd keep grabbing screenshots with my free extension and maybe poke at the free tier.",
+  "objection": "The free plan doesn't let me see the branded link or the compare view, which are the only parts that beat my extension. So I'd be paying $29 just to find out whether it looks professional enough to show a client, and whether it'll still be around in six months.",
+  "would_change_my_mind": "A real sample of a branded before/after client link I can click through, or a free trial of the Agency features on one of my client sites, so I can see it looks client-ready before I pay.",
+  "price_too_cheap": 5,
+  "price_cheap": 12,
+  "price_expensive": 25,
+  "price_too_expensive": 49
+}

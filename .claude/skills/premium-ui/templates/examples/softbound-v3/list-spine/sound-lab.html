@@ -1,0 +1,32 @@
+<!doctype html><meta charset="utf-8"><title>Softbound sound lab</title>
+<style>body{font:15px system-ui;background:#f4efe6;color:#3a2f26;margin:24px}button{font:inherit;padding:10px 16px;margin:4px;border-radius:10px;border:1px solid #cdbfa8;background:#fff;cursor:pointer}button:active{transform:scale(.97)}canvas{display:block;margin-top:16px;background:#1e1a16;border-radius:10px;width:800px;max-width:100%}label{margin-right:16px}</style>
+<h1>Softbound sound lab</h1>
+<div><label><input type="checkbox" id="mute"> mute</label><label><input type="checkbox" id="room"> room tone</label></div>
+<div id="btns"></div><div id="info"></div>
+<canvas id="cv" width="800" height="360"></canvas>
+<script src="src/sound.js"></script>
+<script>
+var cv=document.getElementById('cv'),g=cv.getContext('2d');
+var mute=document.getElementById('mute');mute.checked=SBSound.muted;
+mute.onchange=function(){SBSound.setMuted(mute.checked)};
+document.getElementById('room').onchange=function(e){SBSound.unlock();SBSound.room(e.target.checked)};
+function draw(d,sr){
+  g.clearRect(0,0,800,360);
+  g.strokeStyle='#e8c98a';g.beginPath();
+  for(var x=0;x<800;x++){var a=Math.floor(x/800*d.length),b=Math.floor((x+1)/800*d.length),mn=1,mx=-1;
+    for(var i=a;i<b;i++){mn=Math.min(mn,d[i]);mx=Math.max(mx,d[i]);}
+    g.moveTo(x,90-mx*80);g.lineTo(x,90-mn*80);}
+  g.stroke();
+  // naive DFT spectrogram, 20Hz..20kHz log axis
+  var W=512,cols=200,bins=120,hop=Math.max(1,Math.floor((d.length-W)/cols));
+  for(var c=0;c<cols;c++){for(var k=0;k<bins;k++){
+    var f=20*Math.pow(1000,k/bins),re=0,im=0,w=2*Math.PI*f/sr;
+    for(var n=0;n<W;n+=2){var s=d[c*hop+n]||0,h=.5-.5*Math.cos(2*Math.PI*n/W);re+=s*h*Math.cos(w*n);im-=s*h*Math.sin(w*n);}
+    var m=Math.min(1,Math.log10(1+Math.sqrt(re*re+im*im)*60)/1.5);
+    g.fillStyle='hsl(30,80%,'+Math.round(m*70)+'%)';g.fillRect(c*4,360-(k+1)*2.2,4,2.3);}}
+}
+SBSound.names.forEach(function(n){var b=document.createElement('button');b.textContent=n;
+  b.onclick=function(){SBSound.unlock();SBSound.play(n);SBHaptics.light();
+    SBSound.__renderOffline(n).then(function(d){draw(d,48000);document.getElementById('info').textContent=n+' · '+(d.length/48).toFixed(0)+' ms'});};
+  document.getElementById('btns').appendChild(b);});
+</script>

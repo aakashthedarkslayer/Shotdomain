@@ -1,0 +1,7 @@
+# ShotDomain ("One Shot Every Domain")
+
+- What it is: a web app that finds every page of a website (sitemap + crawl) and screenshots them all, full page, on desktop, tablet and phone in one run, then keeps them, compares runs and shares them.
+- Who it is for: freelancers, web designers, small web agencies and QA testers who need screenshots of whole client sites (before/after a redesign, client handover, audits, monitoring key pages over time).
+- What it sells, at what price: a SaaS subscription. Free $0 (15 pages per capture, desktop only, last 10 captures); Studio $9/month or $90/year (150 pages per capture, all 4 devices, pages behind a login, 5 schedules of 25 pages, change alerts, 100 captures kept); Agency $29/month or $290/year (500 pages per capture, 25 schedules of 100 pages, 30 runs kept, 500 captures kept); Lifetime $99 one-time (Studio limits forever).
+- Where and how: online, sold worldwide in USD. Self-serve: sign in with Google, checkout through Paddle (merchant of record, handles VAT/GST). Customers would find it through search and word of mouth (no channel tested yet).
+- Budget and constraints: solo founder. Product is built and working locally; not yet hosted on a public domain, no paying customers yet, Paddle sandbox being set up. Marketing budget not stated. Must stay honest: no CAPTCHA solving or bot-detection evasion, honest User-Agent, respects robots.txt.

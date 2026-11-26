@@ -1,0 +1,13 @@
+{
+  "id": "P005",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "The lifetime option is the only plan I'd even look at, but $99 for something I'd fire up three or four times a year is steep, and the free tier will probably cover a small client site when I actually need one. I've bought lots of lifetime deals in the $39-$69 range and I'd wait for this one to land there.",
+  "objection": "It's brand new with zero reviews, and I've been burned by lifetime deals from startups that shut down or quietly cut features a year later. Paying $99 upfront to an unknown is a lot of trust.",
+  "would_change_my_mind": "A launch lifetime deal around $49-$59 with real reviews from other agency people, or a client project landing that week where I need all devices on a 100-page site.",
+  "price_too_cheap": 15,
+  "price_cheap": 39,
+  "price_expensive": 79,
+  "price_too_expensive": 129
+}

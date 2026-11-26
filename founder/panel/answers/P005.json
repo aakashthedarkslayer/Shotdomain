@@ -1,0 +1,13 @@
+{
+  "id": "P005",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "I need full-site captures maybe three or four times a year, at a redesign or a handover, and the free tier's 15 pages on desktop and iPhone probably covers most of that. I'm not adding another subscription for something I'd use quarterly, and $79 lifetime from a brand-new tool with zero reviews is more than I'd gamble on a whim.",
+  "objection": "Lifetime deals from unproven startups have burned me before: the tool goes quiet or gets sold a year later. And Studio caps me at 5 client sites, which is fewer than I actually look after, so even the lifetime deal doesn't really fit my agency.",
+  "would_change_my_mind": "A lifetime deal around $49 that covers more client sites, with some real reviews or a public track record so I believe it'll still be running in two years.",
+  "price_too_cheap": 15,
+  "price_cheap": 39,
+  "price_expensive": 79,
+  "price_too_expensive": 129
+}

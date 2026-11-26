@@ -1,0 +1,13 @@
+{
+  "id": "P015",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "I'd run the free 15-page plan on one client site, but I'm not dropping the tool I already pay for on a service with no reviews. It says outright it won't get past bot protection, and a few of my clients sit behind exactly that.",
+  "objection": "Will it actually capture my clients' sites? It won't touch anything with bot protection, and I'm not convinced a pasted browser session survives a month of daily captures before the login expires and the run quietly fails.",
+  "would_change_my_mind": "If the free run gets my worst client site right, logged-in pages included, with clean before/afters and no false alerts for two or three weeks, I'd take the $79 lifetime Studio deal before the 100 spots go.",
+  "price_too_cheap": 3,
+  "price_cheap": 8,
+  "price_expensive": 20,
+  "price_too_expensive": 40
+}

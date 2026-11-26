@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>3 One sentence</title><link rel="stylesheet" href="sketch.css">
+<style>
+  .s { position: absolute; left: 120px; top: 150px; width: 1200px; font-size: 64px; line-height: 1.25; font-weight: 700; letter-spacing: -0.02em; }
+  .w { border-bottom: 5px solid var(--ink); padding: 0 6px; background: var(--block); }
+  .w.open { background: var(--paper); outline: 2px solid var(--line); }
+  .pop { position: absolute; left: 515px; top: 330px; width: 380px; background: var(--paper); border: 1.5px solid var(--line); padding: 16px; font-size: 15px; box-shadow: 0 16px 30px #0002; }
+  .pop label { display: flex; gap: 10px; align-items: center; padding: 6px 0; }
+  .box { width: 16px; height: 16px; border: 1.5px solid var(--ink); }
+  .box.on { background: var(--mark); border-color: var(--mark); }
+  .answer { position: absolute; left: 120px; top: 600px; display: flex; gap: 18px; }
+  .answer .shot { width: 200px; height: 130px; }
+  .go { position: absolute; left: 120px; top: 520px; background: var(--ink); color: var(--paper); padding: 14px 22px; font-weight: 800; font-size: 18px; }
+</style></head><body>
+<div class="bar"><span class="logo">ShotDomain</span><span class="muted">no form, no settings page</span></div>
+<div class="s">Capture <span class="w">every page</span> of <span class="w">example.com</span> on <span class="w open">desktop and iPhone</span>, and <span class="w">send my client a link</span>.</div>
+<div class="pop"><b>Devices</b>
+  <label><span class="box on"></span>Desktop, 1920 wide</label>
+  <label><span class="box"></span>iPad Pro 11, 834 wide</label>
+  <label><span class="box on"></span>iPhone 14 Pro, 393 wide</label>
+  <label><span class="box"></span>Pixel 7, 412 wide</label></div>
+<div class="go">Do it</div>
+<div class="answer"><div class="shot"></div><div class="shot"></div><div class="shot"></div><div class="shot"></div><div class="shot"></div></div>
+<div class="note"><b>3 One sentence</b>The whole setup is one sentence you edit: every underlined word opens its own picker (pages, site, devices, delivery). The results print underneath as the sentence's answer.</div>
+</body></html>

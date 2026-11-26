@@ -43,3 +43,10 @@ next-env.d.ts
 # screenshot temp files
 /tmp/
 /data/
+!.env.example
+
+# python bytecode (the premium-ui gate hook)
+__pycache__/
+
+# local direction previews
+design/directions/_local-*.html

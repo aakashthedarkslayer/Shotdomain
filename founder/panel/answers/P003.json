@@ -1,0 +1,13 @@
+{
+  "id": "P003",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "I mostly build a site, hand it off and grab before/after shots for my portfolio. The free plan's 15 pages on desktop and iPhone already covers that, so I'd sign up free and not pay. On $29k a year I'm not adding another monthly bill for monitoring I don't really do.",
+  "objection": "I don't have ongoing maintenance clients to watch, so the daily re-captures and change emails don't help me much. And from what I've seen these alerts are mostly noise. 'Cookie banners hidden and animations settled' is a claim on a brand-new product with no reviews, and I'd have to see it not spam me before I trusted it.",
+  "would_change_my_mind": "Landing two or three maintenance retainers where clients want proof of what changed. Then $9 a month for Studio, or the $79 lifetime if it's still open, pays for itself, as long as the free plan shows me the alerts aren't junk.",
+  "price_too_cheap": 2,
+  "price_cheap": 5,
+  "price_expensive": 12,
+  "price_too_expensive": 20
+}

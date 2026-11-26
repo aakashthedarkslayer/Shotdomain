@@ -1,0 +1,13 @@
+{
+  "id": "P006",
+  "buys": true,
+  "purchases_first_month": 1,
+  "reason_code": "price",
+  "reason": "I'd run the free 15-page plan on one site first, and if the captures come out clean I'd grab the $79 lifetime before the 100 spots go, because the 14-day refund covers me. I would never take the $9 a month plan; I'm not adding another subscription for something I only need now and then.",
+  "objection": "I'm not pasting my clients' login sessions into a brand-new tool with no reviews, so the login-page feature is useless to me. And with lifetime deals, the company folding in a year is a real risk, which would make my $79 worthless.",
+  "would_change_my_mind": "If the lifetime deal sold out or went away and only the monthly or yearly plans were left, I'd stay on the free tier and not buy.",
+  "price_too_cheap": 2,
+  "price_cheap": 4,
+  "price_expensive": 9,
+  "price_too_expensive": 15
+}

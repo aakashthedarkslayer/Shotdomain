@@ -82,8 +82,6 @@ async function testSectionMap() {
     const candidates = Array.from(document.querySelectorAll(
       'header, nav, main, footer, section, article, aside, [role="banner"], [role="navigation"], [role="main"], [role="contentinfo"], div[id], div[class*="header"], div[class*="footer"], div[class*="nav"], div[class*="content"], div[class*="container"], div[class*="hero"], div[class*="quote"]'
     ));
-
-    const bodyRect = document.body.getBoundingClientRect();
     const scrollX = window.scrollX || document.documentElement.scrollLeft || 0;
     const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
 

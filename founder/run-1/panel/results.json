@@ -1,0 +1,164 @@
+{
+ "business": "ShotDomain, a web app that screenshots every page of a website on desktop, tablet and phone, and can re-capture and compare them on a schedule",
+ "seed": 172409,
+ "dealt": 20,
+ "answered": 20,
+ "skipped": [],
+ "buys": 0,
+ "passes": 20,
+ "buy_rate": 0.0,
+ "by_segment": [
+  [
+   "In-house marketing, web or QA staff at a company",
+   5,
+   0.0
+  ],
+  [
+   "Freelance web designer or developer",
+   8,
+   0.0
+  ],
+  [
+   "Small web agency owner or project manager (2-15 people)",
+   7,
+   0.0
+  ]
+ ],
+ "by_behaviour": [
+  [
+   "Does it by hand today",
+   5,
+   0.0
+  ],
+  [
+   "Would script it",
+   3,
+   0.0
+  ],
+  [
+   "Lifetime-deal hunter",
+   3,
+   0.0
+  ],
+  [
+   "Tight budget",
+   2,
+   0.0
+  ],
+  [
+   "Already pays for a monitoring tool",
+   2,
+   0.0
+  ],
+  [
+   "Client reporting focused",
+   2,
+   0.0
+  ],
+  [
+   "Reads every review",
+   3,
+   0.0
+  ]
+ ],
+ "by_income": [
+  [
+   "$92,000 and up",
+   7,
+   0.0
+  ],
+  [
+   "under $75,000",
+   6,
+   0.0
+  ],
+  [
+   "$75,000 to $92,000",
+   7,
+   0.0
+  ]
+ ],
+ "why_not": [
+  [
+   "trust",
+   9,
+   [
+    "I'd run the free tier on one of our sites, but it's desktop only, and mobile is the part I actually care about. I'm not paying for something with no reviews before I've seen it handle our cookie banner and bot protection. I only need full-site screenshots when a project comes up, and my extension gets me through that.",
+    "I'd run the free 15-page tier on one client site and see what comes back, but I wouldn't pay this month. Full-site captures only come up a few times a quarter for me, and my extension does the job well enough."
+   ],
+   [
+    "P001",
+    "P004"
+   ]
+  ],
+  [
+   "habit",
+   6,
+   [
+    "I can write a Playwright script that crawls the sitemap and shoots every page at mobile and desktop sizes in an afternoon, and it runs on our own machines. Nine dollars a month isn't much, but I'd be paying for something I already have.",
+    "I only need full-site screenshots now and then, and my browser extension plus the free 15-page tier covers most of my small client sites. I'd try the free plan, but I'm not adding another subscription on my income for something I do a few times a year."
+   ],
+   [
+    "P002",
+    "P003"
+   ]
+  ],
+  [
+   "need",
+   3,
+   [
+    "I hand over a site about once a month, and most of my client sites are well under 15 pages, so the free tier or my browser extension already covers it. If I ever need all devices in bulk, I'd write a quick Playwright script over the sitemap and be done.",
+    "I only need full-site screenshots now and then, when a project calls for it, and my extension gets it done for free. I'd poke at the free tier, but it's desktop only, and mobile is the view I actually care about, so it wouldn't prove anything to me."
+   ],
+   [
+    "P010",
+    "P011"
+   ]
+  ],
+  [
+   "price",
+   1,
+   [
+    "The lifetime option is the only plan I'd even look at, but $99 for something I'd fire up three or four times a year is steep, and the free tier will probably cover a small client site when I actually need one. I've bought lots of lifetime deals in the $39-$69 range and I'd wait for this one to land there."
+   ],
+   [
+    "P005"
+   ]
+  ],
+  [
+   "quality",
+   1,
+   [
+    "I already pay for a monitoring tool that watches the few pages I care about. The free tier lets me test it, but it says it never gets past bot protection and says nothing about cookie banners, so half my client sites would probably come back as challenge pages or with a banner over the hero, and that's useless for my portfolio folder."
+   ],
+   [
+    "P015"
+   ]
+  ]
+ ],
+ "why_yes": [],
+ "flip": [
+  "Letting me run one full mobile and desktop capture of my own site for free, so I can see whether the banner gets dismissed and the pages behind protection actually come out right.",
+  "If my team needed scheduled visual diffs with email alerts across lots of sites and I had no time to maintain scripts, and it ran self-hosted or never touched session cookies, I might pay for it.",
+  "Landing a big client site with 50+ pages where I need every page on mobile and desktop for a before/after. Then I'd pay $9 for one month and cancel.",
+  "A free run on a real client site that comes back clean, with no cookie banner over the content and lazy-loaded images actually rendered, on more than desktop. Then the $99 lifetime would be an easy call.",
+  "A launch lifetime deal around $49-$59 with real reviews from other agency people, or a client project landing that week where I need all devices on a 100-page site.",
+  "A launch lifetime deal around $49-59 with real reviews from other agencies or QA people, plus a clear explanation of how session cookies are stored and deleted.",
+  "Letting the free tier do one full run with iPhone and Android shots on a real client site, so I can see the mobile captures are accurate before paying.",
+  "Seeing it handle cookie banners and lazy-loaded content cleanly on one of my real client sites on the free tier, plus a client asking me for ongoing visual change monitoring that I could bill them for.",
+  "A few months of it running with real reviews from other freelancers, plus a free trial of Studio so I can run a full client site on all devices and compare it with what I use now.",
+  "A client asking for ongoing visual change monitoring that I could bill them for, so the scheduled diff emails pay for themselves.",
+  "A big redesign or audit project landing on my desk where I need every page on iPhone and Android at once. Letting the free tier capture one mobile device would also help, so I could see the quality before paying.",
+  "If the scheduled change-detection emails actually caught a broken client page before the client did, that's something I wouldn't bother building myself, and I'd pay for it, probably the $99 lifetime.",
+  "Seeing on one of my own client sites that the change detection ignores dynamic noise and only flags real layout or content changes, with a free trial of the scheduling so I can check that first.",
+  "A free run on one of my real client sites where all four device sizes come out clean and the share link or change report looks polished enough to send a client as is.",
+  "Running the free tier on two or three of my trickiest client sites and getting clean, banner-free full-page shots on every device. If it did that, I'd consider the $99 lifetime in place of one of my subscriptions.",
+  "Real reviews from other freelancers, plus a free trial that includes iPhone and Android captures so I can see it handle one of my clients' sites first. After that I'd consider the $99 lifetime plan.",
+  "Solid independent reviews plus a free trial of the full multi-device capture on my own site, or a one-off pay-per-capture option instead of a subscription.",
+  "A branded, client-ready PDF or share page with side-by-side before/after diffs and my agency logo on it. Our script doesn't do that, and it would save me real time on reports.",
+  "Solid reviews from other freelancers showing clean full-page captures on real sites, plus a pay-per-capture option instead of a monthly plan.",
+  "A launch lifetime deal around $59, or a free trial that includes mobile devices so I can check myself whether the screenshots and change alerts are any good before paying."
+ ],
+ "purchases_first_month_per_buyer": null,
+ "price_answers": 20
+}

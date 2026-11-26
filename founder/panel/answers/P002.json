@@ -1,0 +1,13 @@
+{
+  "id": "P002",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "I can write a Playwright script in an afternoon that crawls our sitemap, takes full-page shots at an iPhone viewport and diffs them, and I already have the CI box to run it on. For one company site I'd rather own that than add another subscription I have to justify.",
+  "objection": "I'm not pasting a logged-in browser session for our site into a brand-new tool with no reviews. 'Encrypted and deleted later' is a promise I can't check, and if it leaks it's my name on the incident report.",
+  "would_change_my_mind": "A version that runs on my own machine or in our CI so the session cookies never leave our network, with the hosted part only for storing captures and sending the before/after links.",
+  "price_too_cheap": 2,
+  "price_cheap": 5,
+  "price_expensive": 15,
+  "price_too_expensive": 30
+}

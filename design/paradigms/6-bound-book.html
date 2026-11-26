@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>6 Bound book</title><link rel="stylesheet" href="sketch.css">
+<style>
+  .book { position: absolute; left: 190px; top: 110px; width: 1000px; height: 640px; display: flex; box-shadow: 0 30px 60px #0003; }
+  .pg { flex: 1; background: var(--paper); border: 1.5px solid var(--line); position: relative; padding: 40px; }
+  .pg.l { border-right: 0; } .pg.r { border-left: 2px solid var(--block-2); }
+  .pg .shot { height: 420px; }
+  .pg .cap { position: absolute; bottom: 20px; left: 40px; }
+  .ear { position: absolute; right: -1px; top: -1px; width: 0; height: 0; border-left: 46px solid var(--block-2); border-bottom: 46px solid var(--bg); }
+  .ear-pick { border-left-color: var(--mark); }
+  .tabs { position: absolute; left: 1188px; top: 150px; display: flex; flex-direction: column; gap: 8px; }
+  .tab { width: 92px; height: 54px; background: var(--block); border: 1.5px solid var(--line); border-left: 0; font-size: 12px; padding: 8px; }
+  .tab.on { background: var(--paper); font-weight: 700; }
+  .spine { position: absolute; left: 150px; top: 110px; width: 40px; height: 640px; background: var(--block-2); writing-mode: vertical-rl; text-align: center; font-weight: 800; font-size: 13px; padding-top: 20px; }
+</style></head><body>
+<div class="bar"><span class="logo">ShotDomain</span><span class="muted">example.com, printed as a book for your client</span></div>
+<div class="spine">example.com, 42 pages, 25 Nov</div>
+<div class="book">
+  <div class="pg l"><div class="shot"><i style="top:30%"></i><i style="top:50%;right:50%"></i></div><div class="cap">p. 4 /pricing, desktop</div></div>
+  <div class="pg r"><div class="shot" style="width:200px;margin:0 auto"></div><div class="cap">p. 5 /pricing, iPhone</div><div class="ear ear-pick"></div></div>
+</div>
+<div class="tabs"><div class="tab on">Desktop</div><div class="tab">iPad</div><div class="tab on">iPhone</div><div class="tab">Pixel</div></div>
+<div class="note"><b>6 Bound book</b>A capture prints a book: one spread per page, a tab on the fore-edge per device. Your client flips it like a proof book and dog-ears the pages they want changed; you see their dog-ears.</div>
+</body></html>

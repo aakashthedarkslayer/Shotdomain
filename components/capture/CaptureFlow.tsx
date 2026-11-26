@@ -1,0 +1,386 @@
+'use client';
+
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Stepper } from '@/components/capture/Stepper';
+import UrlInputStep from '@/components/capture/UrlInputStep';
+import PageSelectionStep from '@/components/capture/PageSelectionStep';
+import CaptureSettingsStep from '@/components/capture/CaptureSettingsStep';
+import CaptureProgressStep from '@/components/capture/CaptureProgressStep';
+import ResultsStep from '@/components/capture/ResultsStep';
+import { Alert } from '@/components/ui/Alert';
+import { usePlan } from '@/components/billing/PlanContext';
+import { DEFAULT_SETTINGS } from '@/components/capture/types';
+import type { CaptureResult, SettingsState } from '@/components/capture/types';
+import { urlHost } from '@/lib/url';
+import { NO_AUTH, sanitizeAuth } from '@/lib/captureOptions';
+import type { SiteAuth } from '@/lib/captureOptions';
+
+export interface CaptureStart {
+  /** A normalized, valid URL: discovery starts right away (step 2). */
+  url?: string;
+  /** Open on step 1 with "This site needs a login" switched on. */
+  login?: boolean;
+  /** Open on step 1 with this address already typed in. */
+  prefill?: string;
+}
+
+/**
+ * The whole capture tool: URL → pages → settings → capture → results. Lives
+ * on the homepage; the hero hands it a URL to start with, or opens it on
+ * step 1 for the login and single-page options.
+ */
+const STEP_NAMES = ['Website', 'Pages', 'Settings', 'Capture', 'Results'];
+
+export function CaptureFlow({ start }: { start: CaptureStart }) {
+  const { limits } = usePlan();
+  const [currentStep, setCurrentStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const topRef = useRef<HTMLDivElement>(null);
+
+  // Step 1
+  const [rootUrl, setRootUrl] = useState(start.url ?? start.prefill ?? '');
+  const [auth, setAuth] = useState<SiteAuth>(start.login ? { ...NO_AUTH, method: 'cookies' } : NO_AUTH);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [pathPrefix, setPathPrefix] = useState<string | undefined>(undefined);
+
+  // Step 2
+  const [discoveredUrls, setDiscoveredUrls] = useState<string[]>([]);
+  const [selectedUrls, setSelectedUrls] = useState<string[]>([]);
+  const [discoveryMethod, setDiscoveryMethod] = useState<'sitemap' | 'crawl'>('sitemap');
+  const [truncated, setTruncated] = useState(false);
+  const [isDiscovering, setIsDiscovering] = useState(false);
+  const [discoveryStatus, setDiscoveryStatus] = useState('Checking sitemap.xml…');
+  const [discoveryError, setDiscoveryError] = useState<string | undefined>(undefined);
+
+  // Step 3
+  const [settings, setSettings] = useState<SettingsState>(DEFAULT_SETTINGS);
+  const [isStarting, setIsStarting] = useState(false);
+  const [startError, setStartError] = useState<string | undefined>(undefined);
+
+  // Step 4
+  const [captureJobId, setCaptureJobId] = useState('');
+  const [captureTotal, setCaptureTotal] = useState(0);
+  const [captureCompleted, setCaptureCompleted] = useState(0);
+  const [captureFailed, setCaptureFailed] = useState(0);
+  const [captureResults, setCaptureResults] = useState<CaptureResult[]>([]);
+  const [isCaptureComplete, setIsCaptureComplete] = useState(false);
+  const [actionError, setActionError] = useState<string | undefined>(undefined);
+
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const stopPolling = useCallback(() => {
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => stopPolling, [stopPolling]);
+
+  // Step 1 → 2: discover pages
+  const handleDiscover = useCallback(async (url: string) => {
+    setDiscoveryStatus(sanitizeAuth(auth) ? 'Logging in…' : 'Checking sitemap.xml…');
+    setIsLoading(true);
+    setRootUrl(url);
+    setIsDiscovering(true);
+    setDiscoveryError(undefined);
+    setCurrentStep(2);
+
+    const crawlTimer = setTimeout(() => setDiscoveryStatus('No sitemap yet. Crawling links…'), 2500);
+
+    try {
+      const response = await fetch('/api/discover', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, auth: sanitizeAuth(auth) }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Discovery failed');
+      setLoggedIn(Boolean(data.loggedIn));
+      setPathPrefix(data.pathPrefix);
+
+      setDiscoveredUrls(data.urls);
+      // Pre-select as many pages as the plan captures at once.
+      setSelectedUrls(data.urls.slice(0, limits.pagesPerRun));
+      setDiscoveryMethod(data.method);
+      setTruncated(data.truncated);
+    } catch (error) {
+      setDiscoveryError(error instanceof Error ? error.message : 'Discovery failed');
+    } finally {
+      clearTimeout(crawlTimer);
+      setIsDiscovering(false);
+      setIsLoading(false);
+    }
+  }, [auth, limits.pagesPerRun]);
+
+  // Step 1 → 3: one page, no discovery.
+  const handleQuickCapture = useCallback((url: string) => {
+    setRootUrl(url);
+    setDiscoveredUrls([url]);
+    setSelectedUrls([url]);
+    setDiscoveryMethod('crawl');
+    setTruncated(false);
+    setDiscoveryError(undefined);
+    setLoggedIn(false);
+    setPathPrefix(undefined);
+    setCurrentStep(3);
+  }, []);
+
+  // The hero handed over a URL: start discovery right away. Deferred so the
+  // effect itself doesn't set state; the cleanup makes it run once under StrictMode.
+  const startUrl = start.login ? undefined : start.url;
+  const discoverRef = useRef(handleDiscover);
+  useEffect(() => {
+    if (!startUrl) return;
+    const timer = setTimeout(() => void discoverRef.current(startUrl), 0);
+    return () => clearTimeout(timer);
+  }, [startUrl]);
+
+  // Each new step starts at the top of the tool, not wherever the last one was scrolled to.
+  const firstStep = useRef(true);
+  useEffect(() => {
+    if (firstStep.current) {
+      firstStep.current = false;
+      return;
+    }
+    topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [currentStep]);
+
+  const startPolling = useCallback(
+    (jobId: string, total: number) => {
+      stopPolling();
+      pollingRef.current = setInterval(async () => {
+        try {
+          const response = await fetch(`/api/capture/status?jobId=${jobId}`);
+          if (!response.ok) return;
+          const data = await response.json();
+          setCaptureCompleted(data.completed);
+          setCaptureFailed(data.failed);
+          setCaptureResults(data.results);
+          if (data.completed + data.failed >= total || data.cancelled) {
+            setIsCaptureComplete(true);
+            stopPolling();
+          }
+        } catch {
+          // transient polling error — try again next tick
+        }
+      }, 1000);
+    },
+    [stopPolling],
+  );
+
+  // Step 3 → 4: start capture
+  const handleStartCapture = useCallback(async () => {
+    setIsStarting(true);
+    setStartError(undefined);
+    try {
+      const devices = settings.devices.length > 0 ? settings.devices : [settings.device || 'Desktop'];
+      const totalCount = selectedUrls.length * devices.length;
+
+      const response = await fetch('/api/capture/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          urls: selectedUrls,
+          settings: {
+            device: devices[0] || 'Desktop',
+            devices,
+            width: settings.width,
+            height: settings.height,
+            fullPage: settings.fullPage,
+            format: settings.format,
+            blockAds: settings.blockAds,
+            useCache: settings.useCache,
+            backgroundColor: settings.showBackgroundColor ? settings.backgroundColor : undefined,
+            cleanup: settings.cleanup,
+            auth: sanitizeAuth(auth),
+          },
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Failed to start capture');
+
+      setCaptureJobId(data.jobId);
+      setCaptureTotal(totalCount);
+      setCaptureCompleted(0);
+      setCaptureFailed(0);
+      setCaptureResults(devices.flatMap((device) => selectedUrls.map((url) => ({ url, device, status: 'queued' as const }))));
+      setIsCaptureComplete(false);
+      setActionError(undefined);
+      setCurrentStep(4);
+      startPolling(data.jobId, totalCount);
+    } catch (error) {
+      setStartError(error instanceof Error ? error.message : 'Failed to start capture');
+    } finally {
+      setIsStarting(false);
+    }
+  }, [selectedUrls, settings, auth, startPolling]);
+
+  // Step 4: retry one failed capture
+  const handleRetry = useCallback(
+    async (url: string, device?: string) => {
+      setActionError(undefined);
+      try {
+        const response = await fetch('/api/capture/retry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jobId: captureJobId, url, device }),
+        });
+        if (!response.ok) {
+          const data = await response.json().catch(() => ({}));
+          throw new Error(data.error || 'Retry failed');
+        }
+        setIsCaptureComplete(false);
+        startPolling(captureJobId, captureTotal);
+      } catch (error) {
+        setActionError(error instanceof Error ? error.message : 'Retry failed');
+      }
+    },
+    [captureJobId, captureTotal, startPolling],
+  );
+
+  // Step 4: cancel everything still queued
+  const handleCancel = useCallback(async () => {
+    stopPolling();
+    if (captureJobId) {
+      try {
+        await fetch('/api/capture/cancel', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jobId: captureJobId }),
+        });
+      } catch {
+        // ignore — the UI treats the job as finished either way
+      }
+    }
+    setIsCaptureComplete(true);
+  }, [captureJobId, stopPolling]);
+
+  // Step 5: reset
+  const handleStartNew = useCallback(() => {
+    stopPolling();
+    setCurrentStep(1);
+    setRootUrl('');
+    setDiscoveredUrls([]);
+    setSelectedUrls([]);
+    setDiscoveryMethod('sitemap');
+    setTruncated(false);
+    setIsDiscovering(false);
+    setDiscoveryError(undefined);
+    setCaptureJobId('');
+    setCaptureTotal(0);
+    setCaptureCompleted(0);
+    setCaptureFailed(0);
+    setCaptureResults([]);
+    setIsCaptureComplete(false);
+    setStartError(undefined);
+    setActionError(undefined);
+    setSettings(DEFAULT_SETTINGS);
+    setAuth(NO_AUTH);
+    setLoggedIn(false);
+    setPathPrefix(undefined);
+  }, [stopPolling]);
+
+  const handleSettingsChange = useCallback((partial: Partial<SettingsState>) => {
+    setSettings((prev) => ({ ...prev, ...partial }));
+  }, []);
+
+  return (
+    <div ref={topRef} className="mx-auto max-w-3xl scroll-mt-24 text-left">
+      {/* Step 1 has its own visible h1; later steps name the page for screen readers. */}
+      {currentStep > 1 && (
+        <h1 className="sr-only">
+          Capture {rootUrl ? urlHost(rootUrl) : 'a website'}: step {currentStep} of 5, {STEP_NAMES[currentStep - 1]}
+        </h1>
+      )}
+      <div className="mb-8 space-y-4">
+        <Stepper current={currentStep} />
+        {rootUrl && currentStep > 1 && (
+          <p className="truncate text-center text-sm font-semibold text-fg">{urlHost(rootUrl)}</p>
+        )}
+      </div>
+
+      {actionError && (
+        <Alert tone="danger" className="mb-4">
+          {actionError}
+        </Alert>
+      )}
+
+      {currentStep === 1 && (
+        <UrlInputStep
+          onDiscover={handleDiscover}
+          onQuickCapture={handleQuickCapture}
+          isLoading={isLoading}
+          initialValue={rootUrl}
+          auth={auth}
+          onAuthChange={setAuth}
+        />
+      )}
+
+      {currentStep === 2 && (
+        <PageSelectionStep
+          urls={discoveredUrls}
+          selectedUrls={selectedUrls}
+          onSelectionChange={setSelectedUrls}
+          onContinue={() => setCurrentStep(3)}
+          onBack={() => setCurrentStep(1)}
+          discoveryMethod={discoveryMethod}
+          truncated={truncated}
+          isDiscovering={isDiscovering}
+          discoveryStatus={discoveryStatus}
+          discoveryError={discoveryError}
+          rootUrl={rootUrl}
+          loggedIn={loggedIn}
+          pathPrefix={pathPrefix}
+          pageLimit={limits.pagesPerRun}
+          onAddLogin={() => {
+            setAuth((prev) => ({ ...prev, method: prev.method === 'none' ? 'cookies' : prev.method }));
+            setCurrentStep(1);
+          }}
+          onAddUrls={(added) => {
+            const fresh = added.filter((u) => !discoveredUrls.includes(u));
+            setDiscoveredUrls((prev) => [...prev, ...fresh]);
+            setSelectedUrls((prev) => [...prev, ...fresh.filter((u) => !prev.includes(u))]);
+          }}
+        />
+      )}
+
+      {currentStep === 3 && (
+        <CaptureSettingsStep
+          settings={settings}
+          onSettingsChange={handleSettingsChange}
+          onStartCapture={handleStartCapture}
+          onBack={() => setCurrentStep(2)}
+          selectedCount={selectedUrls.length}
+          isStarting={isStarting}
+          error={startError}
+          authMethod={auth.method}
+        />
+      )}
+
+      {currentStep === 4 && (
+        <CaptureProgressStep
+          jobId={captureJobId}
+          total={captureTotal}
+          completed={captureCompleted}
+          failed={captureFailed}
+          results={captureResults}
+          onRetry={handleRetry}
+          onCancel={handleCancel}
+          onViewResults={() => setCurrentStep(5)}
+          isComplete={isCaptureComplete}
+        />
+      )}
+
+      {currentStep === 5 && (
+        <ResultsStep
+          jobId={captureJobId}
+          results={captureResults}
+          onStartNew={handleStartNew}
+        />
+      )}
+    </div>
+  );
+}
+
+export default CaptureFlow;

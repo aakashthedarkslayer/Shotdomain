@@ -1,0 +1,13 @@
+{
+  "id": "P017",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "I need full-site screenshots of our company site maybe three or four times a year, before a redesign or an audit, so a monthly subscription is paying for eleven months of nothing. And with zero reviews I'm not putting even the $79 lifetime on a card; at most I'd poke at the free tier, and 15 pages won't cover our site.",
+  "objection": "It's brand new with no reviews and no proof it handles a real site with logins and heavy scripts, and the whole pitch is ongoing monitoring when what I actually need is an occasional one-off capture.",
+  "would_change_my_mind": "A pay-per-capture option, say a one-off full-site run for a few dollars, backed by a handful of real reviews from in-house teams showing it works on sites like ours.",
+  "price_too_cheap": 2,
+  "price_cheap": 5,
+  "price_expensive": 15,
+  "price_too_expensive": 30
+}

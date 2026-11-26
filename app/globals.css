@@ -1,51 +1,424 @@
+/* Hallmark · shape: Workbench · genre: modern-minimal · theme: custom (Riso proof: DESIGN.md, locked) · redesign: full · job: sign up
+ * paper: #eef0f3 · accent: #d61c82 · display: Anybody 62% condensed 900 · body: Anybody · hero: Counter (/), Banner (/terms), Banner (/privacy), Banner (/refunds) · nav: edge-aligned bar · footer: mast · signature: a proof sheet of real ShotDomain frames printed in two inks, off-register, with registration marks
+ * axes: cool-paper/condensed-grotesk/two-ink · posture: committed · contrast: pass · fold: pass · imagery: screenshots (ShotDomain's own output, printed in two inks in the hero, true colour elsewhere) · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 · weakest: S, the proof sheet must stay the one loud thing; everything else is blue ink on paper */
+/* Hallmark · waive 39b · the hero's field and Capture site button stand 56 to 64px · the form is the hero's Counter visual, set large; every other control is 32 to 48px */
+/* Hallmark · waive 44c · /terms, /privacy and /refunds open on a Banner · Terms of Service, Privacy Policy and Refund Policy open on their title and Last updated date, then the document */
+/* Hallmark · waive 79 · /terms, /privacy and /refunds are Banner routes whose document starts below the title band and runs past the fold · the homepage hero ends on the proof sheet */
 @import "tailwindcss";
 
-@theme {
-  --font-serif: var(--font-serif), Georgia, serif;
-  --font-sans: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+/*
+ * Design tokens: the Riso proof system in DESIGN.md. ShotDomain prints a proof
+ * of a website for your client, in two spot inks on paper: riso blue carries
+ * the type, the frames and the buttons; fluorescent pink marks what you pick,
+ * where you are and focus. Palette values live only here, in :root;
+ * components use the semantic names (bg-bg, bg-surface, text-fg, text-muted,
+ * border-line, card, bg-primary, text-accent...). .ink-panel is a solid block
+ * of deep blue ink in any mode; .ink-flip (the featured price) is ink on
+ * paper, and paper on the navy stock of dark mode.
+ */
+:root {
+  /* The palette: every colour on the site, once. */
+  --paper: #eef0f3; /* the stock: the page */
+  --sheet: #f8f9fb; /* a sheet on the stock: cards, dialogs, inputs */
+  --white: #ffffff;
+  --tray: #e2e6ee; /* hover, inset regions, chips */
+  --rule: #cdd3e0; /* hairline */
+  --rule-strong: #93a0bd;
+  --edge: #7a88a8; /* input borders, 3:1 on paper and sheet */
+  --riso-blue: #3255a4; /* ink 1: buttons, links, keylines */
+  --deep-blue: #1c2f63; /* headings and type, 11:1 on paper */
+  --blue-muted: #50648f; /* secondary type, 5.1:1 on paper */
+  --blue-faint: #566a93; /* tertiary type and placeholders, 4.7:1 on paper */
+  --fluoro-pink: #ff48b0; /* ink 2 as printed: prints, tints, registration marks */
+  --pink-mark: #d61c82; /* ink 2 where it must read: picked, current, focus (4.2:1 on paper, white on it 4.8:1) */
+  --pink-type: #c4126f; /* pink as text, 5:1 on paper */
+  --pink-tint: #ffe1f1; /* a picked row */
+  --overprint: #5b3c8f; /* where the two inks cross */
+  --riso-yellow: #ffe800; /* a third drum, for warnings only */
+  --yellow-type: #7a5b00;
+  --yellow-tint: #fff6b3;
+  --red-type: #b3203a;
+  --red-tint: #fbe1e4;
+  /* Dark mode: the same inks on navy stock. */
+  --navy: #0e1630;
+  --navy-sheet: #141e3e;
+  --navy-sheet-2: #1b2750;
+  --navy-tray: #1f2b57;
+  --navy-rule: #2a3766;
+  --navy-rule-strong: #44538a;
+  --navy-edge: #6676ae;
+  --light-ink: #eef0f7;
+  --light-muted: #a9b4d3;
+  --light-faint: #8d99be;
+  --light-blue: #8fa9f0;
+  --light-blue-hover: #b5c6f5;
+  --night-pink: #ff5cb8;
+  --night-pink-type: #ff8ac9;
+  --night-pink-tint: #3a1840;
+  --night-yellow: #ffe24d;
+  --night-yellow-tint: #3a3410;
+  --night-red: #ff8a9a;
+  --night-red-tint: #3d1a24;
+  /* A block of deep blue ink (the ZIP listing, the featured price, the guide's ShotDomain panels). */
+  --panel-sheet: #24397a;
+  --panel-sheet-2: #2b4289;
+  --panel-rule: #34488a;
+  --panel-rule-strong: #5468a8;
+  --panel-muted: #b4c0e0;
+  --panel-faint: #9dabd3;
+  --panel-pink-type: #ff9bd0;
+  --panel-red: #ff9aa8;
+  /* The session guide's drawn DevTools, in Chrome's own greys. */
+  --devtools-bg: #202124;
+  --devtools-menu: #2a2b2e;
+  /* The stand-in site in the login guide: a plain light page, the same in both modes. */
+  --guide-site: var(--deep-blue);
+  --guide-ink: var(--deep-blue);
+  --guide-key: var(--riso-blue);
+  --guide-text: var(--blue-muted);
+  --guide-line: var(--rule);
+  --guide-edge: var(--rule-strong);
+  --guide-tile: var(--tray);
+  /* Behind a dialog. */
+  --scrim: #0e163073;
+  /* A screenshot's own backdrop: white, as the captured page painted it. */
+  --shot-paper: var(--white);
 
-  --color-safelight: #e54d2e;
-  --color-safelight-hover: #d43d1f;
-  --color-safelight-dark: #ff5733;
-
-  --color-paper: #fbfbfa;
-  --color-paper-subtle: #f4f4f0;
-  --color-paper-border: #e4e4df;
-
-  --color-ink: #121315;
-  --color-ink-muted: #6b6d74;
+  /* Semantic names (light: blue and pink on paper). */
+  --bg: var(--paper);
+  --surface: var(--sheet);
+  --surface-strong: var(--white);
+  --field: var(--sheet);
+  --field-edge: var(--edge);
+  --subtle: var(--tray);
+  --line: var(--rule);
+  --line-strong: var(--rule-strong);
+  --fg: var(--deep-blue);
+  --muted: var(--blue-muted);
+  --faint: var(--blue-faint);
+  --primary: var(--riso-blue);
+  --primary-fg: var(--white);
+  --primary-hover: var(--deep-blue);
+  --accent: var(--pink-mark);
+  --accent-soft: var(--pink-tint);
+  --accent-text: var(--pink-type);
+  --accent-ink: var(--white);
+  --print-pink: var(--fluoro-pink);
+  --frame-no: var(--pink-type);
+  --on-status: var(--white);
+  --success: var(--riso-blue); /* done is printed: blue */
+  --success-soft: var(--tray);
+  --warning: var(--yellow-type);
+  --warning-soft: var(--yellow-tint);
+  --warning-fill: var(--riso-yellow);
+  --danger: var(--red-type);
+  --danger-soft: var(--red-tint);
+  /* Flat: sheets lie on the stock. Only things that float over the page cast a soft, blue-tinted shadow. */
+  --shadow-card: none;
+  --shadow-float: none;
+  --shadow-modal: 0 1px 0 #1c2f6314, 0 22px 44px -18px #1c2f6366;
+  --elev-knob: 0 1px 2px #1c2f6340;
+  --elev-glyph: 0 2px 3px #00000080;
 }
 
-@keyframes shutter-flash {
-  0% {
+/* Dark mode: the same inks, printed on navy stock. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: var(--navy);
+    --surface: var(--navy-sheet);
+    --surface-strong: var(--navy-sheet-2);
+    --field: var(--navy-sheet);
+    --field-edge: var(--navy-edge);
+    --subtle: var(--navy-tray);
+    --line: var(--navy-rule);
+    --line-strong: var(--navy-rule-strong);
+    --fg: var(--light-ink);
+    --muted: var(--light-muted);
+    --faint: var(--light-faint);
+    --primary: var(--light-blue);
+    --primary-fg: var(--navy);
+    --primary-hover: var(--light-blue-hover);
+    --accent: var(--night-pink);
+    --accent-soft: var(--night-pink-tint);
+    --accent-text: var(--night-pink-type);
+    --accent-ink: var(--navy);
+    --print-pink: var(--night-pink);
+    --frame-no: var(--night-pink-type);
+    --on-status: var(--navy);
+    --success: var(--light-blue);
+    --success-soft: var(--navy-tray);
+    --warning: var(--night-yellow);
+    --warning-soft: var(--night-yellow-tint);
+    --warning-fill: var(--night-yellow);
+    --danger: var(--night-red);
+    --danger-soft: var(--night-red-tint);
+    --shadow-modal: 0 24px 48px -12px #000000b3;
+  }
+}
+
+/* A solid block of deep blue ink, in any mode. */
+.ink-panel,
+.ink-flip {
+  --bg: var(--deep-blue);
+  --surface: var(--panel-sheet);
+  --surface-strong: var(--panel-sheet-2);
+  --field: var(--panel-sheet);
+  --field-edge: var(--panel-rule-strong);
+  --subtle: var(--panel-sheet);
+  --line: var(--panel-rule);
+  --line-strong: var(--panel-rule-strong);
+  --fg: var(--light-ink);
+  --muted: var(--panel-muted);
+  --faint: var(--panel-faint);
+  --primary: var(--light-ink);
+  --primary-fg: var(--deep-blue);
+  --primary-hover: var(--white);
+  --accent: var(--night-pink);
+  --accent-soft: var(--night-pink-tint);
+  --accent-text: var(--panel-pink-type);
+  --accent-ink: var(--deep-blue);
+  --frame-no: var(--night-pink);
+  --on-status: var(--deep-blue);
+  --success: var(--light-ink);
+  --success-soft: var(--panel-sheet);
+  --warning: var(--night-yellow);
+  --warning-soft: var(--night-yellow-tint);
+  --danger: var(--panel-red);
+  --danger-soft: var(--night-red-tint);
+  color-scheme: dark;
+}
+
+/* On navy stock the featured price turns to a paper sheet. */
+@media (prefers-color-scheme: dark) {
+  .ink-flip {
+    --bg: var(--paper);
+    --surface: var(--sheet);
+    --surface-strong: var(--white);
+    --field: var(--sheet);
+    --field-edge: var(--edge);
+    --subtle: var(--tray);
+    --line: var(--rule);
+    --line-strong: var(--rule-strong);
+    --fg: var(--deep-blue);
+    --muted: var(--blue-muted);
+    --faint: var(--blue-faint);
+    --primary: var(--riso-blue);
+    --primary-fg: var(--white);
+    --primary-hover: var(--deep-blue);
+    --accent: var(--pink-mark);
+    --accent-soft: var(--pink-tint);
+    --accent-text: var(--pink-type);
+    --accent-ink: var(--white);
+    --frame-no: var(--pink-type);
+    --on-status: var(--white);
+    --success: var(--riso-blue);
+    --success-soft: var(--tray);
+    --warning: var(--yellow-type);
+    --warning-soft: var(--yellow-tint);
+    --danger: var(--red-type);
+    --danger-soft: var(--red-tint);
+    color-scheme: light;
+  }
+}
+
+/* A sheet of paper in any mode: the hero's proof keeps light-mode inks on navy stock. */
+.paper-sheet {
+  --bg: var(--paper);
+  --surface: var(--sheet);
+  --surface-strong: var(--white);
+  --line: var(--rule);
+  --line-strong: var(--rule-strong);
+  --fg: var(--deep-blue);
+  --muted: var(--blue-muted);
+  --faint: var(--blue-faint);
+  --primary: var(--riso-blue);
+  --print-pink: var(--fluoro-pink);
+  --frame-no: var(--pink-type);
+  color-scheme: light;
+}
+
+@theme inline {
+  --font-sans: var(--font-anybody), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-field: var(--field);
+  --color-field-edge: var(--field-edge);
+  --color-subtle: var(--subtle);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-hover: var(--primary-hover);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-text: var(--accent-text);
+  --color-accent-ink: var(--accent-ink);
+  --color-print-pink: var(--print-pink);
+  --color-frame-no: var(--frame-no);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-fill: var(--warning-fill);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-devtools: var(--devtools-bg);
+  --color-devtools-menu: var(--devtools-menu);
+  --color-guide-site: var(--guide-site);
+  --color-guide-ink: var(--guide-ink);
+  --color-guide-key: var(--guide-key);
+  --color-guide-text: var(--guide-text);
+  --color-guide-line: var(--guide-line);
+  --color-guide-edge: var(--guide-edge);
+  --color-guide-tile: var(--guide-tile);
+  --color-on-status: var(--on-status);
+  --color-scrim: var(--scrim);
+  --color-shot-paper: var(--shot-paper);
+  --shadow-knob: var(--elev-knob);
+  --drop-shadow-glyph: var(--elev-glyph);
+}
+
+/* A sheet on the stock: square-cut, a hairline edge, no shadow. */
+@utility card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+}
+
+/* Things that float over the page: menus, dialogs, popovers. */
+@utility card-raised {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-modal);
+}
+
+/* A sheet with a printed keyline: pricing, callouts, framed screenshots. */
+@utility card-strong {
+  background: var(--surface);
+  border: 1.5px solid var(--primary);
+  box-shadow: var(--shadow-float);
+}
+
+/* Anybody's width axis carries the type: condensed for heads and captions. */
+@utility type-head {
+  font-stretch: 75%;
+}
+
+@utility type-cond {
+  font-stretch: 75%;
+}
+
+/* Poster heads: very condensed, black weight, tight. */
+@utility display {
+  font-stretch: 62%;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 0.88;
+}
+
+@layer base {
+  html,
+  body {
+    overflow-x: clip;
+  }
+
+  html {
+    color-scheme: light dark;
+    background: var(--bg);
+    scrollbar-color: var(--line-strong) var(--bg);
+    scroll-padding-top: 80px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    caret-color: var(--fg);
+  }
+
+  /* Three weights in the whole system: 400, 600, 800. */
+  b,
+  strong,
+  th {
+    font-weight: 600;
+  }
+
+  h1,
+  h2,
+  h3 {
+    overflow-wrap: break-word;
+    min-width: 0;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  .ink-panel,
+  .ink-flip {
+    background: var(--bg);
+    color: var(--fg);
+  }
+
+  ::selection {
+    background: var(--print-pink);
+    color: var(--deep-blue);
+  }
+
+  /* Default keyboard focus ring, instant; utilities like outline-none can override it. */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+/* The proof's frames print once, in order: opacity only. */
+@keyframes ink-in {
+  from {
     opacity: 0;
   }
-  15% {
-    opacity: 0.95;
+  to {
+    opacity: 1;
   }
-  100% {
+}
+
+/* Cookie guide animations: transform and opacity only. */
+@keyframes guide-fade-in {
+  from {
     opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
-.animate-shutter-flash {
-  animation: shutter-flash 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+@keyframes guide-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 
-/* Mechanical film / contact sheet details */
-.crop-mark {
-  position: relative;
-}
-.crop-mark::before,
-.crop-mark::after {
-  content: '';
-  position: absolute;
-  pointer-events: none;
-  border-color: currentColor;
+@keyframes guide-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
 }
 
-/* Accessible reduced motion override */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -53,5 +426,16 @@
     animation-duration: 0.001s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001s !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* A visitor who presses "Play" on a reduced-motion device opted in: restore motion inside. */
+@media (prefers-reduced-motion: reduce) {
+  .allow-motion,
+  .allow-motion * {
+    animation-duration: revert-layer !important;
+    animation-iteration-count: revert-layer !important;
+    transition-duration: revert-layer !important;
   }
 }
