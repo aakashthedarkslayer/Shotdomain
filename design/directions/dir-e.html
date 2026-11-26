@@ -1,0 +1,835 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,400..900&display=swap');
+/* VOICE: the sorting office, printed: a quiet working room in two inks.
+   IDEA: C's pigeonhole frame holding B's paper reams, printed on a risograph in ShotDomain's own inks.
+   PICTURE: one big riso-blue sorting frame, paper reams you can riffle in each hole, a shelf of trays below.
+   COLOUR and TYPE: paper, riso blue, deep blue, a pink second plate for odd and failed pages; Anybody only.
+   LAYOUT: the frame takes about three quarters of the canvas, a 280 px docket strip holds devices and options. */
+#dir-e{
+  --e-paper:#eef0f3; --e-sheet:#f8f9fb; --e-tray:#e2e6ee; --e-rule:#cdd3e0; --e-edge:#7a88a8; --e-fg:#1c2f63; --e-muted:#50648f;
+  --e-blue:#3255a4; --e-pink:#d61c82; --e-pinkt:#c4126f; --e-print:#ff48b0; --e-soft:#ffe1f1;
+  --e-t07:#e4e8ef; --e-t12:#d7ddea; --e-t25:#bfc9df; --e-t45:#99aacf;
+  --e-f:'Anybody',ui-sans-serif,system-ui,sans-serif; --e-ease:cubic-bezier(.2,0,0,1);
+  --e-ink-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='5'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -3.4 0 0 0 2.75'/%3E%3C/filter%3E%3Crect width='160' height='60' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+#dir-e .stage{background:#1c2f63}
+#dir-e .stage .screen > figcaption{color:#e3e8f4;opacity:.92}
+#dir-e .e-board{overflow:hidden;background:var(--e-paper);font-family:var(--e-f);color:var(--e-fg);font-size:14px;line-height:1.3;-webkit-font-smoothing:antialiased;text-align:left}
+#dir-e .e-board *{box-sizing:border-box}
+#dir-e :where(.e-board) button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;text-align:inherit;-webkit-appearance:none;appearance:none}
+#dir-e .e-board :focus-visible{outline:3px solid var(--e-pink);outline-offset:2px;box-shadow:0 0 0 2px var(--e-sheet)}
+#dir-e .e-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+#dir-e .e-stage{position:absolute;left:0;top:0;width:996px;height:800px;overflow:hidden}
+#dir-e .e-scene,#dir-e .e-review{position:absolute;left:0;top:0;width:996px;height:800px}
+#dir-e .e-review{z-index:3;background:var(--e-paper)}
+#dir-e .e-fly{position:absolute;left:0;top:0;width:1280px;height:800px;pointer-events:none;z-index:6}
+#dir-e .e-svg{position:absolute;left:0;top:0;pointer-events:none}
+#dir-e .e-cond{font-stretch:75%;font-variant-numeric:tabular-nums}
+
+/* buttons: pressable things are 6 px round */
+#dir-e .e-btn{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-height:34px;padding:0 14px;border-radius:6px;background:var(--e-blue);color:#fff;font-weight:600;font-size:14px;line-height:1.1;white-space:nowrap;transition:background-color .15s}
+#dir-e .e-btn:hover{background:var(--e-fg)}
+#dir-e .e-btn:active{background:var(--e-pink)}
+#dir-e .e-btn small{font-size:12px;font-weight:400;opacity:.92;margin-top:2px}
+#dir-e .e-btn.two{min-height:44px;padding:0 14px}
+#dir-e .e-btn-s{background:var(--e-sheet);color:var(--e-blue);box-shadow:inset 0 0 0 1.5px var(--e-blue)}
+#dir-e .e-btn-s:hover{background:var(--e-tray);color:var(--e-fg)}
+#dir-e .e-btn-s small{color:var(--e-muted);opacity:1}
+
+/* the frame */
+#dir-e .e-corn{position:absolute;left:36px;right:30px;top:20px;height:32px;display:flex;align-items:baseline;gap:18px;color:var(--e-sheet);white-space:nowrap}
+#dir-e .e-corn b{font-weight:900;font-stretch:62%;font-size:28px;line-height:1}
+#dir-e .e-corn span{font-size:14px;color:var(--e-t12)}
+#dir-e .e-corn .e-ct{position:absolute;right:0;bottom:4px;font-stretch:75%;font-variant-numeric:tabular-nums;font-size:15px;color:var(--e-sheet);font-weight:600}
+#dir-e .e-hole{position:absolute;width:302px;height:186px}
+#dir-e .e-clip{position:absolute;inset:0;overflow:hidden}
+#dir-e .e-persp{position:absolute;inset:0;perspective:1100px;pointer-events:none}
+#dir-e .e-plane{position:absolute;width:204px;height:94px;transform-style:preserve-3d;transform-origin:50% 100%;transform:rotateX(50deg)}
+#dir-e .e-plane > *{position:absolute;left:0;top:0;transform-origin:50% 0}
+#dir-e .e-fsh{background:var(--e-t25)}
+#dir-e .e-body{background:repeating-linear-gradient(180deg,var(--e-sheet) 0 1.3px,#c3cbe0 1.3px 2.6px);box-shadow:inset 0 0 0 .8px rgba(50,85,164,.35)}
+#dir-e .e-sh{width:150px;height:94px;transform-style:preserve-3d}
+#dir-e .e-sh.ph{width:40px;height:86px}
+#dir-e .e-fr,#dir-e .e-bk{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#fff;box-shadow:inset 0 0 0 .8px rgba(50,85,164,.45)}
+#dir-e .e-bk{transform:rotateX(180deg);background:#eef1f6}
+#dir-e .e-fr img{display:block;width:100%;height:100%;pointer-events:none}
+#dir-e .e-ghost-r{opacity:.55}
+#dir-e .e-ghost-r .e-body{background:repeating-linear-gradient(180deg,var(--e-sheet) 0 1.3px,#dde2ec 1.3px 2.6px);box-shadow:none}
+#dir-e .e-ghost-r .e-fr{background:var(--e-sheet);box-shadow:inset 0 0 0 .8px rgba(50,85,164,.25)}
+#dir-e .e-qnote{position:absolute;left:0;right:0;top:34px;text-align:center;font-weight:600;font-size:15px;color:var(--e-muted)}
+#dir-e .e-qnote small{display:block;font-size:13px;font-weight:400;margin-top:2px}
+#dir-e .e-shut{position:absolute;inset:0;background:repeating-linear-gradient(180deg,var(--e-t12) 0 7px,var(--e-t45) 7px 9px,var(--e-t25) 9px 11px);box-shadow:inset 0 -12px 0 var(--e-blue)}
+#dir-e .e-shut.up{transform:translateY(-100%)}
+#dir-e .e-plate{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);background:var(--e-sheet);padding:8px 14px 9px;text-align:center;font-weight:600;font-size:15px;white-space:nowrap;box-shadow:inset 0 0 0 1.5px var(--e-blue)}
+#dir-e .e-plate small{display:block;font-weight:400;font-size:13px;color:var(--e-muted);margin-top:2px}
+#dir-e .e-housing{position:absolute;left:0;right:0;top:0;height:10px;background:var(--e-blue)}
+#dir-e .e-openb{position:absolute;left:0;right:0;top:10px;bottom:0;touch-action:pan-y}
+#dir-e .e-pullfull{position:absolute;left:0;right:0;top:10px;bottom:0}
+#dir-e .e-hole.cur .e-clip{box-shadow:inset 0 0 0 3px var(--e-pink)}
+#dir-e .e-hole.lit .e-clip::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 0 3px var(--e-pink);background:rgba(255,225,241,.35)}
+#dir-e .e-ret{position:absolute;inset:0;pointer-events:none}
+#dir-e .e-rc{position:absolute;width:110px;height:69px;background:#fff;padding:3px;box-shadow:inset 0 0 0 1px var(--e-blue)}
+#dir-e .e-rc img{display:block;width:100%;height:100%}
+#dir-e .e-retry{pointer-events:auto;position:absolute;left:14px;top:22px;z-index:3}
+#dir-e .e-tag{position:absolute;right:10px;top:20px;z-index:2;background:var(--e-sheet);color:var(--e-pinkt);font-weight:600;font-size:13px;padding:5px 9px;box-shadow:inset 0 0 0 1.5px var(--e-pink)}
+
+/* rails */
+#dir-e .e-rail{position:absolute;width:302px;height:56px;padding:7px 0 0}
+#dir-e .e-lab{height:31px;display:flex;align-items:center;gap:9px;padding:0 10px 0 6px;background:var(--e-sheet);transform:translate(1px,1px)}
+#dir-e .e-lab b{font-weight:600;font-size:15.5px;white-space:nowrap}
+#dir-e .e-cnt{margin-left:auto;font-weight:900;font-size:22px;line-height:1;font-stretch:75%;font-variant-numeric:tabular-nums;white-space:nowrap}
+#dir-e .e-cnt small{font-size:12.5px;font-weight:400;margin-left:3px}
+#dir-e .e-pick{position:relative;width:24px;height:24px;flex:none;border-radius:6px}
+#dir-e .e-pick i{position:absolute;left:3px;top:3px;width:18px;height:18px;border:1.5px solid var(--e-edge);border-radius:3px;background:#fff}
+#dir-e .e-pick[aria-checked="true"] i{background:var(--e-pink);border-color:var(--e-pink)}
+#dir-e .e-pick[aria-checked="true"] i::after{content:'';position:absolute;left:5px;top:1.5px;width:4.5px;height:9px;border:solid #fff;border-width:0 2.2px 2.2px 0;transform:rotate(42deg)}
+#dir-e .e-l2{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:4px;padding:0 3px;font-size:13.5px;color:var(--e-sheet);white-space:nowrap;font-variant-numeric:tabular-nums}
+#dir-e .e-l2 .e-pat{font-stretch:75%;color:var(--e-t12);overflow:hidden;text-overflow:ellipsis}
+#dir-e .e-l2 .e-prog{font-weight:600;font-stretch:75%}
+#dir-e .e-l2.riff .e-pat{color:var(--e-sheet);font-weight:600}
+
+/* shelf objects */
+#dir-e .e-tray{position:absolute;left:54px;top:602px;width:428px;height:146px}
+#dir-e .e-lip{position:absolute;left:0;right:0;bottom:0;height:46px;background:var(--e-sheet);box-shadow:inset 0 0 0 1.5px var(--e-blue);display:flex;align-items:center;gap:10px;padding:0 14px;z-index:2}
+#dir-e .e-lip b{font-weight:900;font-stretch:62%;font-size:24px}
+#dir-e .e-lip span{font-size:13.5px;color:var(--e-muted)}
+#dir-e .e-tc{position:absolute;top:18px;width:124px;height:78px;background:#fff;padding:3px;box-shadow:inset 0 0 0 1px var(--e-blue)}
+#dir-e .e-tc img{display:block;width:100%;height:100%}
+#dir-e .e-trayb{position:absolute;inset:0;z-index:3}
+#dir-e .e-empty{position:absolute;left:14px;right:14px;top:34px;text-align:center;font-size:14px;color:var(--e-muted)}
+#dir-e .e-parcel{position:absolute;left:504px;top:604px;width:196px;height:144px}
+#dir-e .e-plabel{position:absolute;left:12px;top:56px;width:128px;padding:6px 8px 7px;background:var(--e-sheet);box-shadow:inset 0 0 0 1px var(--e-blue)}
+#dir-e .e-plabel span{display:block;font-size:12px;color:var(--e-muted)}
+#dir-e .e-plabel b{display:block;white-space:nowrap;font-weight:900;font-stretch:75%;font-size:21px;line-height:1.05;font-variant-numeric:tabular-nums}
+#dir-e .e-parcel .e-btn{position:absolute;left:12px;top:10px}
+#dir-e .e-env{position:absolute;left:718px;top:596px;width:236px;height:152px;background:var(--e-sheet);box-shadow:inset 0 0 0 1.5px var(--e-blue)}
+#dir-e .e-env-to{position:absolute;left:14px;top:46px;right:14px}
+#dir-e .e-env-to span{display:block;font-size:12.5px;color:var(--e-muted)}
+#dir-e .e-env-to b{display:block;font-weight:600;font-stretch:75%;font-size:15px;margin-top:2px}
+#dir-e .e-env-b{position:absolute;left:14px;bottom:12px;display:flex;gap:8px}
+#dir-e .e-recalled{position:absolute;right:14px;top:12px;padding:3px 8px;color:var(--e-blue);font-weight:900;font-stretch:75%;font-size:16px;box-shadow:inset 0 0 0 2px var(--e-blue);rotate:-6deg}
+#dir-e .e-intray{position:absolute;left:54px;top:592px;width:300px;height:156px}
+#dir-e .e-note{position:absolute;left:14px;top:0;right:14px;height:110px;background:#fff;padding:10px 14px;box-shadow:inset 0 0 0 1px var(--e-blue)}
+#dir-e .e-note span{display:block;font-size:12.5px;color:var(--e-muted)}
+#dir-e .e-note input{display:block;width:100%;margin-top:4px;border:0;border-bottom:1.5px solid var(--e-edge);background:transparent;font:900 34px/1.1 var(--e-f);font-stretch:62%;color:var(--e-fg);padding:0}
+#dir-e .e-cta-w{position:absolute;left:622px;top:618px;width:330px}
+#dir-e .e-cta{display:flex;align-items:center;justify-content:center;width:100%;height:64px;border-radius:6px;background:var(--e-blue);color:#fff;font-weight:900;font-stretch:75%;font-size:28px}
+#dir-e .e-cta:hover{background:var(--e-fg)}
+#dir-e .e-cta-s{display:block;margin-top:9px;font-size:14px;color:var(--e-muted);text-align:center}
+#dir-e .e-slip{position:absolute;width:150px;height:34px;background:#fff;padding:5px 9px;font-size:13.5px;font-weight:600;font-stretch:75%;white-space:nowrap;overflow:hidden;box-shadow:inset 0 0 0 1px var(--e-blue)}
+#dir-e .e-slip small{display:block;font-size:11.5px;font-weight:400;color:var(--e-muted)}
+#dir-e .e-slipf{position:absolute;background:repeating-linear-gradient(180deg,var(--e-sheet) 0 1.4px,#c3cbe0 1.4px 2.8px)}
+#dir-e .e-slip.fl{width:auto;height:auto;padding:5px 10px;z-index:4}
+
+/* stamps: pink second plate, a little off register */
+#dir-e .e-stp{position:absolute;z-index:2;color:var(--e-pinkt);background:rgba(248,249,251,.9);padding:3px 8px 4px;font-weight:600;font-stretch:75%;font-size:13px;line-height:1.1;white-space:nowrap;rotate:-6deg;box-shadow:inset 0 0 0 2px var(--e-pink);-webkit-mask-image:var(--e-ink-mask);mask-image:var(--e-ink-mask);pointer-events:none;text-shadow:1.6px 1.2px 0 rgba(255,72,176,.45)}
+#dir-e .e-stp b{display:block;font-weight:900;font-size:16px}
+#dir-e .e-stp::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 0 2px var(--e-print);transform:translate(2px,1.5px);opacity:.75}
+#dir-e .e-stp.wait{opacity:0}
+#dir-e .e-tc .e-stp{left:6px;top:26px}
+#dir-e .e-rc .e-stp{left:8px;top:6px;font-size:13px;padding:2px 7px}
+
+/* the docket strip */
+#dir-e .e-dock{position:absolute;left:996px;top:0;width:284px;height:800px;background:var(--e-sheet);box-shadow:inset 1.5px 0 0 var(--e-blue);padding:18px 20px 16px 22px;display:flex;flex-direction:column;gap:0;z-index:4}
+#dir-e .e-logo{display:flex;align-items:center;gap:8px;color:var(--e-blue);font-weight:900;font-stretch:62%;font-size:24px;line-height:1}
+#dir-e .e-logo svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6}
+#dir-e .e-sec{border-top:1px solid var(--e-rule);margin-top:14px;padding-top:12px}
+#dir-e .e-cap{display:block;font-size:13px;font-weight:600;color:var(--e-muted);margin-bottom:6px}
+#dir-e .e-dom{display:block;font-weight:900;font-stretch:62%;font-size:36px;line-height:1}
+#dir-e .e-domf{display:block;font-size:13.5px;color:var(--e-muted);margin:4px 0 10px}
+#dir-e .e-q{width:100%;height:40px;border:1.5px solid var(--e-edge);border-radius:6px;background:#fff;padding:0 12px;font:400 15px var(--e-f);color:var(--e-fg)}
+#dir-e .e-q::placeholder{color:var(--e-muted)}
+#dir-e .e-q::-webkit-search-cancel-button{display:none}
+#dir-e .e-res{position:absolute;left:-250px;width:242px;background:var(--e-sheet);z-index:9;box-shadow:inset 0 0 0 1.5px var(--e-blue)}
+#dir-e .e-r{display:grid;grid-template-columns:1fr auto;gap:1px 10px;width:100%;padding:8px 12px;border-bottom:1px solid var(--e-rule)}
+#dir-e .e-r:hover{background:var(--e-tray)}
+#dir-e .e-r b{font-weight:600;font-stretch:75%;font-size:14.5px}
+#dir-e .e-r span{font-size:12.5px;color:var(--e-muted)}
+#dir-e .e-r em{grid-row:1/3;grid-column:2;align-self:center;font-style:normal;font-size:12.5px;font-weight:600;color:var(--e-blue)}
+#dir-e .e-r em.pk{color:var(--e-pinkt)}
+#dir-e .e-nores{display:block;padding:10px 12px;font-size:13.5px;color:var(--e-muted)}
+#dir-e .e-devs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#dir-e .e-dev{position:relative;height:56px;border-radius:6px;padding:9px 6px 0 34px;white-space:nowrap;font-stretch:75%;font-size:14.5px;box-shadow:inset 0 0 0 1.5px var(--e-edge);background:#fff;font-size:13.5px;font-weight:600;line-height:1.15}
+#dir-e .e-dev small{display:block;font-weight:400;font-size:12px;color:var(--e-muted);font-stretch:75%;font-variant-numeric:tabular-nums}
+#dir-e .e-dev svg{position:absolute;left:9px;top:11px;width:20px;height:22px;fill:none;stroke:var(--e-blue);stroke-width:1.8}
+#dir-e .e-dev.on{box-shadow:inset 0 0 0 2px var(--e-pink);background:var(--e-soft)}
+#dir-e .e-dev.on svg{stroke:var(--e-pinkt)}
+#dir-e .e-dev:hover{background:var(--e-tray)}
+#dir-e .e-dev.on:hover{background:#ffd3ea}
+#dir-e .e-opt{display:flex;align-items:flex-start;gap:10px;width:100%;min-height:30px;padding:3px 0;font-size:14px;font-weight:400}
+#dir-e .e-opt small{display:block;font-size:12px;color:var(--e-muted)}
+#dir-e .e-box{position:relative;flex:none;width:18px;height:18px;margin-top:1px;border:1.5px solid var(--e-edge);border-radius:3px;background:#fff}
+#dir-e .e-opt.on .e-box{background:var(--e-pink);border-color:var(--e-pink)}
+#dir-e .e-opt.on .e-box::after{content:'';position:absolute;left:4.5px;top:1px;width:4.5px;height:9px;border:solid #fff;border-width:0 2.2px 2.2px 0;transform:rotate(42deg)}
+#dir-e .e-meter{margin-top:auto;border-top:1px solid var(--e-rule);padding-top:12px}
+#dir-e .e-mn{display:flex;align-items:baseline;gap:6px;font-weight:900;font-stretch:75%;font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+#dir-e .e-mn small{font-size:15px;font-weight:400;font-stretch:100%;color:var(--e-muted)}
+#dir-e .e-bar{position:relative;height:8px;margin:9px 0 7px;background:var(--e-tray);box-shadow:inset 0 0 0 1px var(--e-rule)}
+#dir-e .e-bar i{position:absolute;left:0;top:0;bottom:0;background:var(--e-blue)}
+#dir-e .e-mf{font-size:13.5px;color:var(--e-muted)}
+#dir-e .e-mf b{color:var(--e-pinkt);font-weight:600}
+
+/* review: the bundle untied */
+#dir-e .e-rv-head{position:absolute;left:32px;right:32px;top:22px;height:54px;display:flex;align-items:center;gap:20px}
+#dir-e .e-rv-lab{display:flex;align-items:baseline;gap:12px;height:50px;padding:0 16px;background:var(--e-sheet);box-shadow:inset 0 0 0 1.5px var(--e-blue);align-items:center;white-space:nowrap}
+#dir-e .e-rv-lab b{font-weight:900;font-stretch:62%;font-size:28px;line-height:1}
+#dir-e .e-rv-lab span{font-stretch:75%;font-size:14px;color:var(--e-muted)}
+#dir-e .e-rv-lab .e-cnt{font-size:26px}
+#dir-e .e-rv-sum{display:flex;flex-direction:column;gap:3px}
+#dir-e .e-rv-sum b{font-size:16px;font-weight:600}
+#dir-e .e-rv-sum span{font-size:13.5px;color:var(--e-muted)}
+#dir-e .e-rv-btns{margin-left:auto;display:flex;gap:10px;align-items:center}
+#dir-e .e-pair,#dir-e .e-oddp{position:absolute;width:276px;height:160px}
+#dir-e .e-pc{position:absolute;left:0;top:0;width:200px;height:125px;padding:0;background:#fff;box-shadow:0 0 0 1.5px var(--e-blue)}
+#dir-e .e-pc img{display:block;width:100%;height:100%}
+#dir-e .e-pc.ph{left:212px;top:8px;width:54px;height:117px}
+#dir-e button.e-pc:hover{transform:translateY(-3px)}
+#dir-e button.e-pc{transition:transform .2s var(--e-ease)}
+#dir-e .e-cap2{position:absolute;left:0;top:134px;display:flex;gap:9px;align-items:baseline;font-size:13.5px;font-weight:600;font-stretch:75%;white-space:nowrap}
+#dir-e .e-cap2 i{font-style:normal;font-weight:900;color:var(--e-pinkt);font-variant-numeric:tabular-nums}
+#dir-e .e-rv-tray{position:absolute;left:20px;top:488px;width:956px;height:296px;background:var(--e-tray);box-shadow:inset 0 0 0 1.5px var(--e-blue)}
+#dir-e .e-rv-th{position:absolute;left:20px;top:14px;display:flex;align-items:baseline;gap:12px}
+#dir-e .e-rv-th b{font-weight:900;font-stretch:62%;font-size:28px;line-height:1}
+#dir-e .e-rv-th span{font-size:13.5px;color:var(--e-muted)}
+#dir-e .e-oddp .e-pc{width:212px;height:132px}
+#dir-e .e-oddp .e-pc.ph{left:224px;top:8px;width:57px;height:124px}
+#dir-e .e-oddp .e-cap2{top:142px}
+#dir-e .e-oddp .e-stp{left:22px;top:60px;font-size:14px;padding:4px 10px 5px}
+#dir-e .e-oddp .e-stp b{font-size:19px}
+#dir-e .e-note2{position:absolute;font-size:14px;color:var(--e-muted)}
+#dir-e .e-spread{position:absolute;left:32px;top:100px;width:932px;height:372px;display:grid;grid-template-columns:repeat(20,42px);grid-auto-rows:26px;gap:6px 5.2px;align-content:start}
+#dir-e .e-mini{position:relative;width:42px;height:26px;background:#fff;box-shadow:0 0 0 1px var(--e-blue)}
+#dir-e .e-mini img{display:block;width:100%;height:100%}
+#dir-e .e-mini:hover{transform:scale(1.7);z-index:2}
+#dir-e .e-bundle{position:absolute;width:150px;height:94px;z-index:6}
+#dir-e .e-bundle > i{position:absolute;width:150px;height:94px;background:#fff;box-shadow:0 0 0 1px var(--e-blue)}
+#dir-e .e-bundle img{display:block;width:100%;height:100%}
+#dir-e .e-twine{position:absolute;left:0;top:0;width:150px;height:94px;overflow:visible}
+#dir-e .e-twine .tw{fill:none;stroke:var(--e-pink);stroke-width:2.6;stroke-linecap:round}
+#dir-e .e-twine .e-bow{transform-box:fill-box;transform-origin:50% 60%}
+#dir-e .e-flc{position:absolute;width:150px;height:94px;background:#fff;box-shadow:0 0 0 1px var(--e-blue)}
+#dir-e .e-flc img{display:block;width:100%;height:100%}
+#dir-e .e-ghost{position:absolute;left:0;top:0;width:40px;height:52px;z-index:9;pointer-events:none}
+#dir-e .e-ghost svg{display:block;transform-origin:20px 6px}
+#dir-e .e-ripple{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;box-shadow:inset 0 0 0 2.5px var(--e-print);z-index:8}
+
+/* full-size preview */
+#dir-e .e-lb{position:absolute;inset:0;z-index:8;background:rgba(28,47,99,.95)}
+#dir-e .e-lb-h{position:absolute;left:70px;right:70px;top:40px;display:flex;align-items:baseline;gap:18px;color:var(--e-sheet)}
+#dir-e .e-lb-h b{font-weight:900;font-stretch:62%;font-size:34px;line-height:1}
+#dir-e .e-lb-h span{font-size:15px;color:var(--e-t12)}
+#dir-e .e-lb-h .e-btn{margin-left:auto}
+#dir-e .e-lb .e-pc{box-shadow:0 0 0 2px var(--e-sheet)}
+#dir-e .e-lb-c{position:absolute;top:620px;font-size:14px;color:var(--e-t12)}
+#dir-e .e-lb .e-stp{left:260px;top:300px;font-size:20px;padding:8px 16px}
+#dir-e .e-lb .e-stp b{font-size:30px}
+#dir-e .e-lb-q{position:absolute;inset:0;display:grid;place-items:center;background:repeating-linear-gradient(135deg,rgba(248,249,251,.8) 0 10px,rgba(226,230,238,.8) 10px 20px);font-weight:600;font-size:22px;color:var(--e-fg)}
+@media (prefers-reduced-motion: reduce){#dir-e .e-board *{transition:none!important}}
+
+/* panel */
+#dir-e .e-rit{width:100%;border-collapse:collapse;margin-top:2px}
+#dir-e .e-rit th,#dir-e .e-rit td{text-align:left;vertical-align:top;padding:6px 0;border-top:1px solid var(--sh-line)}
+#dir-e .e-rit th{width:84px;font-weight:700;padding-right:10px}
+#dir-e .e-rit small{display:block;opacity:.75}
+</style>
+
+<section id="dir-e" class="direction" hidden aria-label="Direction E, the sorting office printed in riso inks">
+  <div class="stage">
+    <div class="screens">
+      <figure class="screen live"><div class="frame"><div class="artboard e-board" data-board="live"></div></div><figcaption>Mid-capture: Blog post, Home and Pricing done, Docs filling with 2 returned, Product queued, One-off pages shuttered. Move across a ream to riffle it, click to pull the bundle out.</figcaption></figure>
+      <figure class="screen"><div class="frame" role="img" aria-label="Still: the Blog post bundle untied, each page on Desktop and iPhone, and the three odd pages stamped in pink with how alike they are"><div class="artboard e-board" data-board="open" inert></div></div><figcaption>Blog post pulled out and untied: Desktop beside iPhone, the 3 odd pages stamped with how alike they are</figcaption></figure>
+      <figure class="screen"><div class="frame" role="img" aria-label="Still: example.com on a delivery note, the crawl sorting address slips into holes by URL pattern, devices and options on the docket, and the capture button"><div class="artboard e-board" data-board="start" inert></div></div><figcaption>The start: example.com on the delivery note, addresses sorted into holes by pattern</figcaption></figure>
+    </div>
+  </div>
+  <aside class="panel">
+    <h2>E. The sorting office, printed</h2>
+    <p>C's sorting frame holding B's paper reams, printed on a risograph in ShotDomain's own inks. Each template is a pigeonhole; each hole holds a ream of its captured pages, as thick as its count, and you riffle it to see them. Pink is the second plate: it marks what you pick, where you are, and every page that is odd or failed.</p>
+    <h3>Every action is a ritual, with its plain name</h3>
+    <table class="e-rit">
+      <tr><th>Start</th><td>Write the domain on the delivery note. Addresses sort into holes by URL pattern.<small>New delivery: change site</small></td></tr>
+      <tr><th>Pick</th><td>Tick a hole's label and its shutter rolls up; untick and it rolls down. Look up one page like an address.</td></tr>
+      <tr><th>Capture</th><td>Sheets land on the ream; Docs is still filling. A failed page comes back stamped Returned.<small>Retry: capture again</small></td></tr>
+      <tr><th>Browse</th><td>Move across a ream (or use the arrow keys) and it riffles; the rail below names each page, so nothing covers the flip.</td></tr>
+      <tr><th>Odd pages</th><td>When a pile finishes, pages that break its template are stamped in pink with how alike they are, and drop onto the shelf.</td></tr>
+      <tr><th>Review</th><td>Pull the bundle out and untie it: Desktop beside iPhone, numbered in capture order.<small>Put back: back to piles</small></td></tr>
+      <tr><th>ZIP, link</th><td>The parcel is the ZIP. The envelope is posted to your client, 30 days on the postmark.<small>Recall: stop sharing</small></td></tr>
+    </table>
+    <h3>Try this</h3>
+    <ul>
+      <li>Move the pointer slowly across the Blog post ream.</li>
+      <li>Click it to untie the bundle, then Put back.</li>
+      <li>Tick One-off pages: its shutter rolls up.</li>
+      <li>Retry the 2 returned Docs pages.</li>
+      <li>Type /docs/api in Look up a page.</li>
+      <li>Recall the envelope, then post it again.</li>
+    </ul>
+    <h3>Where everything lives</h3>
+    <ul>
+      <li>Domain and start, find one page, devices, options and overall progress: the docket strip on the right.</li>
+      <li>Piles by URL pattern, counts, pick, live progress, failed pages and retry: the holes and their labels.</li>
+      <li>Odd pages, the ZIP and the share link (30 days, Recall to stop): the shelf at the bottom of the frame.</li>
+      <li>Review across devices: click a ream. Full size: click any page.</li>
+    </ul>
+    <h3>Palette and type</h3>
+    <div class="swatches"><i style="background:#eef0f3" title="Paper"></i><i style="background:#3255a4" title="Riso blue"></i><i style="background:#1c2f63" title="Deep blue"></i><i style="background:#ff48b0" title="Print pink"></i><i style="background:#d61c82" title="Pink mark"></i></div>
+    <p>Anybody only: 62% width at 900 for heads, 75% with tabular figures for counts and paths, normal width to read. Screenshots stay in true colour, keylined in blue.</p>
+    <p class="tradeoff">Trade-off: the world is calmer than C and keeps every ritual, but the frame is still fixed at six holes; a site with 15 templates needs a second bay that slides in, or smaller holes. The riffle needs a pointer or the arrow keys to be discovered, so the autoplay shows it once.</p>
+  </aside>
+</section>
+
+<script>
+(function () {
+  const SITE = window.SAMPLE_SITE, ART = window.PAGE_ART;
+  const T = {}; SITE.templates.forEach((t) => (T[t.id] = t));
+  const ORDER = ['blog', 'docs', 'product', 'home', 'pricing', 'oneoff'];
+  const COLX = [30, 347, 664], ROWY = [58, 300], HW = 302, HH = 186, RAIL = 56;
+  const VP = [498, 140], K = 0.1;
+  const PLX = 49, PLH = 94, ZG = 1.1;
+  const EASE = 'cubic-bezier(.2,0,0,1)', DROP = 'cubic-bezier(.6,0,.95,.45)', OUT = 'cubic-bezier(.4,0,1,1)';
+  const CX = 498, CY = 300, SC = 1.9;
+  const ALIKE = { '/blog/2019-recap': 71, '/blog/benchmarks': 64, '/blog/old-theme-post': 58, '/docs/api/v1': 69, '/docs/legacy': 55, '/product/gift-card': 62 };
+  const TRAY = [[70, 620, -4], [204, 626, 2.5], [338, 620, -2]];
+  const CANCEL = { cancelled: true };
+  const reduced = () => !!window.PREFERS_REDUCED_MOTION || matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hr = (i) => ({ x: COLX[i % 3], y: ROWY[(i / 3) | 0], col: i % 3, row: (i / 3) | 0 });
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const pages = (n) => (n === 1 ? '1 page' : n + ' pages');
+  const thick = (n) => (n <= 0 ? 0 : 3 + Math.sqrt(n) * 2.1);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  let uid = 0;
+
+  /* ---------- page art: the client's site in its own true colours, rasterized once ---------- */
+  const TINT = { paper: '#ffffff', ink: '#24303d', soft: '#dde3e9', accent: '#1f8a70' };
+  const IMGC = { blog: ['#f4c7a1', '#bfe0d2', '#f2d784', '#c9d6f0', '#e9c4d8', '#d0e6b6'], docs: ['#c9d6f0', '#cfe6e0', '#dcd4f2', '#d6e2ea'], product: ['#cfe6d2', '#f3dfb4', '#f1cfc4', '#d4dcf4'], home: ['#d8d0f2'], pricing: ['#f3dca0'], oneoff: ['#dde2ec', '#e4dcf2', '#d6ece4'] };
+  const cache = new Map();
+  function art(id, seed, phone, variant) {
+    const key = id + seed + (phone ? 'p' : 'd') + (variant || '');
+    let u = cache.get(key);
+    if (!u) {
+      const svg = ART.render(id, seed, { device: phone ? 'phone' : 'desktop', variant: variant || 'normal' }).replace(/var\(--pa-(paper|ink|soft|accent|image)[^)]*\)/g, (m, n) => (n === 'image' ? IMGC[id][seed % IMGC[id].length] : TINT[n]));
+      u = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); cache.set(key, u);
+    }
+    return u;
+  }
+  const img = (id, seed, phone, variant) => `<img alt="" draggable="false" src="${art(id, seed, phone, variant)}">`;
+  const stamp = (path, why, cls) => `<span class="e-stp${cls ? ' ' + cls : ''}"><b>${ALIKE[path] || 60}% alike</b>${esc(why)}</span>`;
+
+  /* ---------- state ---------- */
+  function makeState(kind, keep) {
+    const s = { mode: kind === 'start' ? 'start' : 'live', t: {}, dev: {}, opt: Object.assign({}, SITE.options), posted: true, stamped: kind === 'rest', zip: false, open: null };
+    SITE.devices.forEach((d) => (s.dev[d.id] = d.picked));
+    SITE.templates.forEach((t) => (s.t[t.id] = { picked: t.picked, done: t.capture.done, total: t.capture.total, failed: t.capture.failed, found: t.count }));
+    if (kind === 'pre') { s.t.blog.done = 209; s.t.docs.done = 93; }
+    if (kind === 'start') { const f = { blog: 186, docs: 121, product: 40, home: 1, pricing: 1, oneoff: 6 }; for (const k in f) { s.t[k].found = f[k]; s.t[k].done = 0; s.t[k].failed = 0; } }
+    if (keep) { s.dev = Object.assign({}, keep.dev); s.opt = Object.assign({}, keep.opt); }
+    return s;
+  }
+  function totals(s) {
+    let done = 0, total = 0, failed = 0, found = 0;
+    ORDER.forEach((k) => { const t = s.t[k]; found += t.found; if (!t.picked) return; done += t.done; total += t.total; failed += t.failed; });
+    return { done, total, failed, found, nd: SITE.devices.filter((d) => s.dev[d.id]).length };
+  }
+
+  /* ---------- the frame, printed once per board ---------- */
+  function roomSVG(u) {
+    const P = (a) => a.map((p) => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+    const boxes = ORDER.map((id, i) => { const r = hr(i); return [r.x, r.y, r.x + HW, r.y + HH]; });
+    boxes.push([30, 542, 966, 772]);
+    let inner = '', cut = '';
+    boxes.forEach(([x0, y0, x1, y1]) => {
+      const b = (x, y) => [x + (VP[0] - x) * K, y + (VP[1] - y) * K];
+      const B0 = b(x0, y0), B1 = b(x1, y0), B2 = b(x1, y1), B3 = b(x0, y1), w = B2[0] - B0[0], h = B2[1] - B0[1];
+      inner += `<polygon points="${P([B0, B1, B2, B3])}" fill="#d7ddea"/>`;
+      inner += `<path d="M${B0[0]} ${B0[1]}H${B1[0]}V${B0[1] + h * 0.2}H${B0[0] + w * 0.13}V${B2[1]}H${B0[0]}Z" fill="#c8d0e3"/>`;
+      if (y0 < VP[1]) inner += `<polygon points="${P([[x0, y0], [x1, y0], B1, B0])}" fill="#99aacf"/>`;
+      if (y1 > VP[1]) inner += `<polygon points="${P([[x0, y1], [x1, y1], B2, B3])}" fill="#e4e8ef"/>`;
+      if (x0 < VP[0]) inner += `<polygon points="${P([[x0, y0], B0, B3, [x0, y1]])}" fill="#aab7d6"/>`;
+      if (x1 > VP[0]) inner += `<polygon points="${P([[x1, y0], B1, B2, [x1, y1]])}" fill="#dde2ec"/>`;
+      cut += `M${x0} ${y0}V${y1}H${x1}V${y0}Z`;
+    });
+    const face = `M16 14H980V786H16Z${cut}`;
+    return `<svg class="e-svg" viewBox="0 0 996 800" width="996" height="800" aria-hidden="true"><defs>
+      <filter id="eg${u}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="2" seed="11"/><feColorMatrix values="0 0 0 0 .93 0 0 0 0 .94 0 0 0 0 .96 0 0 0 1.1 -.74"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+      <filter id="ed${u}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="3"/><feColorMatrix values="0 0 0 0 .93 0 0 0 0 .94 0 0 0 0 .96 0 0 0 .3 -.12"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+      <filter id="ep${u}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="1" seed="2"/><feColorMatrix values="0 0 0 0 .2 0 0 0 0 .33 0 0 0 0 .64 0 0 0 .5 -.32"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+    </defs>
+    <rect width="996" height="800" fill="#eef0f3"/><rect width="996" height="800" fill="#000" filter="url(#ep${u})"/>
+    <g transform="translate(1.4 1)">${inner}</g>
+    <path d="${face}" fill="#3255a4" fill-rule="evenodd"/><path d="${face}" fill="#000" fill-rule="evenodd" filter="url(#ed${u})"/><path d="${face}" fill="#000" fill-rule="evenodd" filter="url(#eg${u})"/>
+    <path d="M30 57.5H966M16 785H980" stroke="#1c2f63" stroke-width="1.2" opacity=".5"/>
+    </svg>`;
+  }
+
+  /* ---------- reams: B's paper stacks, seen from the front of a pigeonhole ---------- */
+  function reamSamples(id) { return T[id].paths.filter((p) => !T[id].outliers.some((o) => o.path === p)).slice(0, 6); }
+  function reamHTML(s, id, r) {
+    const st = s.t[id], ghost = st.done === 0;
+    const n = ghost ? st.total : st.done, Th = thick(n), paths = reamSamples(id), vis = ghost ? 1 : Math.min(paths.length, st.done);
+    let sheets = '';
+    for (let k = vis - 1; k >= 0; k--) {
+      const z = (Th + (vis - 1 - k) * ZG + 0.4).toFixed(1);
+      sheets += `<div class="e-sh" data-k="${k}" data-z="${z}" style="transform:translateZ(${z}px)"><i class="e-fr">${ghost ? '' : img(id, k + 1)}</i><i class="e-bk"></i></div><div class="e-sh ph" data-k="${k}" data-z="${z}" style="left:164px;top:8px;transform:translateZ(${z}px)"><i class="e-fr">${ghost ? '' : img(id, k + 1, true)}</i><i class="e-bk"></i></div>`;
+    }
+    const body = (x, y, w) => `<i class="e-body" style="left:${x}px;top:94px;width:${w}px;height:${Th.toFixed(1)}px;transform:translateZ(${Th.toFixed(1)}px) rotateX(-90deg)"></i>`;
+    return `<div class="e-persp" style="perspective-origin:${VP[0] - r.x}px ${VP[1] - r.y}px"><div class="e-plane${ghost ? ' e-ghost-r' : ''}" data-ream="${id}" data-vis="${vis}" style="left:${PLX}px;top:${HH - 14 - PLH}px">
+      <i class="e-fsh" style="width:150px;height:94px;transform:translate(7px,5px)"></i><i class="e-fsh" style="left:164px;top:8px;width:40px;height:86px;transform:translate(7px,5px)"></i>
+      ${body(0, 0, 150)}${body(164, 0, 40)}${sheets}</div></div>`;
+  }
+  function slipsHTML(s, id) {
+    const st = s.t[id], n = Math.min(10, Math.round(st.found / 18)), p = T[id].paths[1] || T[id].paths[0];
+    return `<div class="e-slipf" style="left:78px;top:${142 - n * 2.8}px;width:146px;height:${n * 2.8}px"></div><div class="e-slip" style="left:76px;top:142px">${esc(p)}<small>${esc(T[id].pattern.split(',')[0])}</small></div>`;
+  }
+  function progText(s, id) {
+    const st = s.t[id];
+    if (s.mode === 'start') return `Sorting, ${st.found} so far`;
+    if (!st.picked) return 'Not picked';
+    if (st.done === 0) return `Queued, ${st.total} to go`;
+    if (st.done >= st.total) return st.total === 1 ? 'Captured' : `All ${st.total} captured`;
+    return `${st.done} of ${st.total} captured`;
+  }
+  function holeLabel(s, id) {
+    const st = s.t[id], t = T[id];
+    if (st.done === 0) return `${t.name}: ${progText(s, id)}`;
+    return `${t.name}, ${t.pattern}: ${progText(s, id)}${id === 'blog' && s.stamped ? ", 3 don't fit" : ''}${st.failed ? `, ${st.failed} returned` : ''}. Move across or use the arrow keys to riffle; press Enter to untie the bundle.`;
+  }
+  function holeHTML(s, id, i) {
+    const r = hr(i), t = T[id], st = s.t[id];
+    let inside = '';
+    if (s.mode === 'start') inside = slipsHTML(s, id);
+    else if (st.picked || st.done) inside = reamHTML(s, id, r) + (st.done === 0 && st.picked ? `<div class="e-qnote">Queued<small>${st.total} pages, after Docs</small></div>` : '');
+    let h = `<div data-part="hole-${id}"><div class="e-hole" data-hole="${id}" style="left:${r.x}px;top:${r.y}px"><div class="e-clip">${inside}
+      <div class="e-shut${st.picked ? ' up' : ''}"><span class="e-plate">Not picked<small>Tick the label to pick ${pages(t.count)}</small></span></div><div class="e-housing"></div></div>`;
+    if (s.mode === 'live' && st.picked && st.done > 0) h += `<button class="e-openb" data-act="open" data-id="${id}" aria-label="${esc(holeLabel(s, id))}"></button>`;
+    if (!st.picked) h += `<button class="e-pullfull" data-act="pick" data-id="${id}" aria-label="Roll the shutter up: pick ${esc(t.name)}"></button>`;
+    if (s.mode === 'live' && st.picked && st.failed) h += `<div class="e-ret" data-ret="${id}"><div class="e-rc" style="left:186px;top:30px;rotate:-7deg">${img(id, 201)}<span class="e-stp"><b>Returned</b>Timed out</span></div><div class="e-rc" style="left:200px;top:78px;rotate:5deg">${img(id, 202)}</div><button class="e-btn two e-retry" data-act="retry" data-id="${id}" aria-label="Retry the ${st.failed} returned pages: ${esc((t.capture.failedPaths || []).join(' and '))}">Retry<small>${pages(st.failed)} again</small></button></div>`;
+    if (s.mode === 'live' && id === 'blog' && s.stamped && st.picked) h += `<span class="e-tag">3 don't fit</span>`;
+    h += `</div><div class="e-rail" style="left:${r.x}px;top:${r.y + HH}px"><div class="e-lab"><button class="e-pick" role="checkbox" aria-checked="${st.picked}" data-act="pick" data-id="${id}" aria-label="Pick ${esc(t.name)}"><i></i></button><b>${esc(t.name)}</b><span class="e-cnt">${s.mode === 'start' ? st.found : t.count}<small>${t.count === 1 ? 'page' : 'pages'}</small></span></div><div class="e-l2" data-l2="${id}"><span class="e-pat">${esc(t.pattern)}</span><span class="e-prog">${progText(s, id)}</span></div></div></div>`;
+    return h;
+  }
+  function shelfHTML(s, tot) {
+    let h = '';
+    if (s.mode === 'start') {
+      h += `<div class="e-intray"><div class="e-note"><span>Delivery note</span><input value="example.com" spellcheck="false" aria-label="Site to capture"><span style="margin-top:8px">${tot.found} pages found so far</span></div><div class="e-lip"><b>In-tray</b><span>The crawl sorts what it finds</span></div></div>`;
+      h += `<div class="e-cta-w"><button class="e-cta" data-act="capture">Capture ${tot.total} pages</button><span class="e-cta-s">${tot.total * tot.nd} images on ${SITE.devices.filter((d) => s.dev[d.id]).map((d) => d.name).join(' and ')}</span></div>`;
+      h += `<div class="e-tray" style="left:378px;width:220px"><span class="e-empty">Pages that break their template land here</span><div class="e-lip"><b>Doesn't fit</b></div></div>`;
+      return h;
+    }
+    h += `<div class="e-tray" data-part="tray">${s.stamped ? T.blog.outliers.map((o, j) => `<div class="e-tc" style="left:${TRAY[j][0] - 54}px;top:${TRAY[j][1] - 602}px;rotate:${TRAY[j][2]}deg">${img('blog', 101 + j, false, o.variant)}${stamp(o.path, o.why)}</div>`).join('') + `<button class="e-trayb" data-act="open" data-id="blog" aria-label="Review the 3 Blog post pages that don't fit"></button>` : '<span class="e-empty">Odd pages land here when a pile finishes</span>'}<div class="e-lip"><b>Doesn't fit</b><span>${s.stamped ? '3 pages, from Blog post' : 'Nothing yet'}</span></div></div>`;
+    h += `<div class="e-parcel"><svg class="e-svg" viewBox="0 0 196 144" width="196" height="144" aria-hidden="true"><rect x="1" y="1" width="194" height="142" fill="#bfc9df"/><rect x="1" y="1" width="194" height="8" fill="#99aacf"/><path d="M164 1V143M1 50H195" stroke="#d61c82" stroke-width="2.4"/><path d="M165.6 1V143M1 51.6H195" stroke="#ff48b0" stroke-width="1.2" opacity=".6"/><rect x="1" y="1" width="194" height="142" fill="none" stroke="#3255a4" stroke-width="1.5"/></svg><div class="e-plabel"><span>ZIP of example.com</span><b>${tot.done} pages</b><span>${tot.done * tot.nd} images</span></div><button class="e-btn" data-act="zip">${s.zip ? 'ZIP is ready' : 'Download ZIP'}</button></div>`;
+    let waves = '';
+    for (let k = 0; k < 3; k++) waves += `<path d="M80 ${16 + k * 6}q6-3.5 12 0t12 0t12 0" fill="none" stroke="#3255a4" stroke-width="1.4"/>`;
+    h += `<div class="e-env"><svg class="e-svg" viewBox="0 0 236 152" width="236" height="152" aria-hidden="true"><path d="M1 1L118 76L235 1" fill="none" stroke="#cdd3e0" stroke-width="1.2"/><rect x="190" y="10" width="34" height="40" fill="#fff" stroke="#3255a4" stroke-width="1.2" stroke-dasharray="2 2"/><rect x="195" y="15" width="24" height="30" fill="#3255a4"/><rect x="199" y="20" width="7" height="8" fill="#eef0f3"/><rect x="208" y="20" width="7" height="8" fill="#eef0f3"/><rect x="199" y="31" width="7" height="8" fill="#ff48b0"/><rect x="208" y="31" width="7" height="8" fill="#eef0f3"/>${s.posted ? `${waves}<circle cx="160" cy="27" r="20" fill="none" stroke="#3255a4" stroke-width="1.6"/><text x="160" y="31" text-anchor="middle" font-family="Anybody, sans-serif" font-weight="900" font-stretch="75%" font-size="12.5" fill="#3255a4">30 days</text>` : ''}</svg>${s.posted ? '' : '<span class="e-recalled">Recalled</span>'}
+      <div class="e-env-to"><span>${s.posted ? 'Posted to your client' : 'Recalled: the link is off'}</span><b>${esc(SITE.share.url)}</b></div>
+      <div class="e-env-b">${s.posted ? '<button class="e-btn two" data-act="copy">Copy link<small>Share</small></button><button class="e-btn e-btn-s two" data-act="recall">Recall<small>Stop sharing</small></button>' : '<button class="e-btn two" data-act="post">Post again<small>Share for 30 days</small></button>'}</div></div>`;
+    return h;
+  }
+  function dockHTML(s, tot, u) {
+    const DEV = { desktop: '<svg viewBox="0 0 20 22"><rect x="1" y="3" width="18" height="12" rx="1"/><path d="M7 19h6M10 15v4"/></svg>', ipad: '<svg viewBox="0 0 20 22"><rect x="3" y="1" width="14" height="20" rx="2"/></svg>', iphone: '<svg viewBox="0 0 20 22"><rect x="5.5" y="1" width="9" height="20" rx="2.5"/><path d="M8.5 3.5h3"/></svg>', pixel: '<svg viewBox="0 0 20 22"><rect x="5" y="1" width="10" height="20" rx="1.5"/><circle cx="10" cy="4" r=".9"/></svg>' };
+    const OPT = [['fullPage', 'Full page', ''], ['hideCookieBanners', 'Hide cookie banners', ''], ['login', 'Login session', 'For pages behind a login'], ['customCss', 'Custom CSS', 'Hide or restyle parts first']];
+    const pct = tot.total ? Math.round((tot.done / tot.total) * 100) : 0;
+    return `<div class="e-logo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8V2h6M16 2h6v6M22 16v6h-6M8 22H2v-6"/></svg>ShotDomain</div>
+      <div class="e-sec"><span class="e-cap">Delivery note</span><span class="e-dom">example.com</span><span class="e-domf">412 pages found, in 6 URL patterns</span>${s.mode === 'live' ? '<button class="e-btn e-btn-s two" data-act="new">New delivery<small>Change site</small></button>' : ''}</div>
+      <div class="e-sec" style="position:relative"><label class="e-cap" for="e-q${u}">Look up a page</label><input id="e-q${u}" class="e-q" type="search" placeholder="An address, like /docs/api" autocomplete="off" spellcheck="false"><div class="e-res" hidden></div></div>
+      <div class="e-sec"><span class="e-cap">Devices</span><div class="e-devs">${SITE.devices.map((d) => `<button class="e-dev${s.dev[d.id] ? ' on' : ''}" data-act="dev" data-id="${d.id}" aria-pressed="${s.dev[d.id]}">${DEV[d.id]}${esc(d.name)}<small>${d.width} px</small></button>`).join('')}</div></div>
+      <div class="e-sec"><span class="e-cap">Options</span>${OPT.map(([k, l, hint]) => `<button class="e-opt${s.opt[k] ? ' on' : ''}" data-act="opt" data-id="${k}" role="checkbox" aria-checked="${s.opt[k]}"><span class="e-box" aria-hidden="true"></span><span>${l}${hint ? `<small>${hint}</small>` : ''}</span></button>`).join('')}</div>
+      <div class="e-meter" data-part="meter">${s.mode === 'start'
+        ? `<span class="e-cap">Ready to capture</span><div class="e-mn">${tot.total}<small>pages</small></div><div class="e-mf">${tot.total * tot.nd} images on ${tot.nd} devices</div>`
+        : `<span class="e-cap">Captured</span><div class="e-mn">${tot.done}<small>of ${tot.total}</small></div><div class="e-bar"><i style="width:${pct}%"></i></div><div class="e-mf">${tot.failed ? `<b>${tot.failed} returned</b> in Docs page` : 'Nothing failed'}</div>`}</div>`;
+  }
+  function flyingSlips() {
+    const arcs = '<svg class="e-svg" viewBox="0 0 996 800" width="996" height="800" aria-hidden="true" style="z-index:3"><g fill="none" stroke="#d61c82" stroke-width="1.8" stroke-dasharray="2 6" stroke-linecap="round"><path d="M160 600C110 470 120 300 180 190"/><path d="M200 600C300 480 430 360 498 190"/><path d="M230 610C420 520 690 380 815 190"/><path d="M220 615C330 560 450 500 498 430"/></g></svg>';
+    const S = [['/blog/hiring-designers', 96, 372, -8], ['/blog/benchmarks', 170, 168, 6], ['/docs/webhooks', 318, 384, 10], ['/product/oak-shelf', 600, 214, -6], ['/pricing', 420, 470, 5], ['/docs/limits', 250, 520, -4]];
+    return arcs + S.map(([p, x, y, r]) => `<div class="e-slip fl" style="left:${x}px;top:${y}px;rotate:${r}deg">${p}</div>`).join('');
+  }
+  function sceneHTML(s, u) {
+    const tot = totals(s);
+    let h = roomSVG(u) + `<div class="e-corn"><b>Sorting frame</b><span>Pages sorted by URL pattern, one hole per template</span><span class="e-ct" data-tot>${s.mode === 'start' ? `Sorting, ${tot.found} found so far` : `${tot.done} of ${tot.total} captured`}</span></div>`;
+    ORDER.forEach((id, i) => (h += holeHTML(s, id, i)));
+    h += `<div data-part="shelf">${shelfHTML(s, tot)}</div>`;
+    if (s.mode === 'start') h += flyingSlips();
+    return h;
+  }
+
+  /* ---------- review: the bundle untied ---------- */
+  const RV = { gx: 36, gy: 104, cw: 322, rh: 178, ox: 44, oy: 548, ow: 312 };
+  const fitCount = (s, id) => s.t[id].done - (id === 'blog' ? 3 : 0);
+  function reviewHTML(s, id, mode) {
+    const t = T[id], st = s.t[id], good = reamSamples(id), fit = fitCount(s, id), first = mode === 'stage';
+    let sumA, sumB;
+    if (id === 'blog') { sumA = `${fit} fit the template`; sumB = "Each page on Desktop and iPhone 14 Pro. 3 don't fit."; }
+    else if (st.failed) { sumA = `${st.done} of ${st.total} captured`; sumB = `${st.failed} came back returned`; }
+    else { sumA = st.done >= st.total ? `${pages(st.done)}, all fit` : `${st.done} of ${st.total} captured`; sumB = 'Each page on Desktop and iPhone 14 Pro'; }
+    let h = `<div class="e-rv-head"><div class="e-rv-lab"><b>${esc(t.name)}</b><span>${esc(t.pattern)}</span><span class="e-cnt">${t.count}<small>${t.count === 1 ? 'page' : 'pages'}</small></span></div><div class="e-rv-sum"><b>${sumA}</b><span>${sumB}</span></div>
+      <div class="e-rv-btns">${fit > 6 && mode !== 'static' ? `<button class="e-btn e-btn-s two" data-act="spread">Spread all ${fit}<small>See every page</small></button>` : ''}<button class="e-btn two" data-act="close">Put back<small>Back to piles</small></button></div></div>`;
+    h += `<svg class="e-svg e-string" viewBox="0 0 996 800" width="996" height="800" aria-hidden="true"><path d="M376 86c34 8 60-8 92 0s46 10 78 2 44-10 60 0c10 8-4 14-16 8" fill="none" stroke="#d61c82" stroke-width="2.6" stroke-linecap="round"/><path d="M378 87.6c34 8 60-8 92 0s46 10 78 2 44-10 60 0" fill="none" stroke="#ff48b0" stroke-width="1.2" opacity=".55"/></svg>`;
+    h += `<div class="e-rv-grid">` + good.map((p, k) => {
+      const x = RV.gx + (k % 3) * RV.cw, y = RV.gy + ((k / 3) | 0) * RV.rh;
+      return `<div class="e-pair" data-k="${k}" style="left:${x}px;top:${y}px"><button class="e-pc dk" data-act="lb" data-id="${id}" data-path="${esc(p)}" aria-label="Full size: ${esc(p)}">${img(id, k + 1)}</button><div class="e-pc ph">${img(id, k + 1, true)}</div><span class="e-cap2"><i>${String(k + 1).padStart(2, '0')}</i>${esc(p)}</span></div>`;
+    }).join('') + `</div>`;
+    let head, body = '';
+    if (id === 'blog') {
+      head = `<b>Doesn't fit</b><span>3 pages pulled out of 214, stamped with how alike each is to the template</span>`;
+      body = t.outliers.map((o, j) => `<div class="e-oddp" data-j="${j}" style="left:${RV.ox + j * RV.ow}px;top:${RV.oy}px"><button class="e-pc dk" data-act="lb" data-id="${id}" data-path="${esc(o.path)}" aria-label="Full size: ${esc(o.path)}, ${ALIKE[o.path]}% alike, ${esc(o.why)}">${img(id, 101 + j, false, o.variant)}${stamp(o.path, o.why, first ? 'wait' : '')}</button><div class="e-pc ph">${img(id, 101 + j, true, o.variant)}</div><span class="e-cap2"><i>${String(t.paths.length + j + 1).padStart(2, '0')}</i>${esc(o.path)}</span></div>`).join('');
+    } else if (st.failed) {
+      head = `<b>Returned</b><span>${pages(st.failed)} timed out. Odd pages are pulled out when Docs finishes.</span>`;
+      body = (t.capture.failedPaths || []).map((p, j) => `<div class="e-oddp" data-j="${j}" style="left:${RV.ox + j * RV.ow}px;top:${RV.oy}px"><div class="e-pc dk">${img(id, 201 + j)}<span class="e-stp"><b>Returned</b>Timed out</span></div><div class="e-pc ph">${img(id, 201 + j, true)}</div><span class="e-cap2">${esc(p)}</span></div>`).join('') + `<button class="e-btn two" data-act="retry" data-id="${id}" style="position:absolute;left:${RV.ox + 2 * RV.ow + 20}px;top:${RV.oy + 40}px">Retry<small>${pages(st.failed)} again</small></button>`;
+    } else {
+      head = `<b>Doesn't fit</b><span>${st.done >= st.total ? 'Every page fits the template' : `Odd pages are pulled out when ${esc(t.name)} finishes`}</span>`;
+    }
+    return h + `<div class="e-rv-tray"><div class="e-rv-th">${head}</div></div>${body}`;
+  }
+  function bundleEl(id) {
+    const d = document.createElement('div'); d.className = 'e-bundle';
+    d.innerHTML = `<i style="left:6px;top:-6px"></i><i style="left:3px;top:-3px"></i><i>${img(id, 1)}</i><svg class="e-twine" viewBox="0 0 150 94" aria-hidden="true"><g class="e-sh"><path d="M-6 50H156" class="tw"/></g><g class="e-sv"><path d="M86 -10V100" class="tw"/></g><g class="e-bow"><ellipse cx="74" cy="44" rx="12" ry="5.5" transform="rotate(-24 74 44)" class="tw"/><ellipse cx="98" cy="44" rx="12" ry="5.5" transform="rotate(24 98 44)" class="tw"/><path d="M84 52q-5 12-17 18M88 52q7 10 17 15" class="tw"/><circle cx="86" cy="49" r="3.8" fill="#d61c82"/></g></svg>`;
+    return d;
+  }
+
+  /* ---------- plumbing: WAAPI for choreography, one rAF loop for the riffle springs, both idle when still ---------- */
+  let root, board, st, run = 0, playing = false, busy = false, played = false, opener = null, lbOpener = null, gpos = [0, 0];
+  const live = new Set(), timers = new Set(), reams = {};
+  const loop = { raf: 0, set: new Set(), last: 0 };
+  const $ = (sel) => board.querySelector(sel);
+  function go(el, kf, o) {
+    const a = el.animate(kf, Object.assign({ fill: 'both' }, o)); live.add(a);
+    const last = kf[kf.length - 1];
+    return a.finished.then(() => { for (const k in last) if (k !== 'offset' && k !== 'easing') el.style[k] = last[k]; a.cancel(); live.delete(a); }, () => live.delete(a));
+  }
+  function wait(ms) { return new Promise((res) => { const t = setTimeout(() => { timers.delete(t); res(); }, ms); timers.add(t); }); }
+  function chk(rid) { if (rid !== run) throw CANCEL; }
+  const swallow = (e) => { if (e !== CANCEL) console.error(e); };
+  function stopAll() { live.forEach((a) => a.cancel()); live.clear(); timers.forEach(clearTimeout); timers.clear(); if (loop.raf) cancelAnimationFrame(loop.raf); loop.raf = 0; loop.set.clear(); }
+
+  function bindReam(id) {
+    const plane = $(`[data-ream="${id}"]`);
+    if (!plane || plane.classList.contains('e-ghost-r')) { delete reams[id]; return; }
+    reams[id] = { id, plane, vis: +plane.dataset.vis, L: 0, riffling: false, sheets: [...plane.querySelectorAll('.e-sh')].map((el) => ({ el, k: +el.dataset.k, ph: el.classList.contains('ph'), z: +el.dataset.z, th: 0, v: 0, tgt: 0, due: 0, dueT: 0 })) };
+  }
+  function wake(R) { loop.set.add(R); if (!loop.raf) { loop.last = performance.now(); loop.raf = requestAnimationFrame(tick); } }
+  function tick(now) {
+    const dt = Math.min(0.033, (now - loop.last) / 1000); loop.last = now;
+    for (const R of [...loop.set]) if (!stepReam(R, dt, now)) loop.set.delete(R);
+    loop.raf = loop.set.size ? requestAnimationFrame(tick) : 0;
+  }
+  function stepReam(R, dt, now) {
+    let moving = false;
+    for (const s of R.sheets) {
+      if (s.due) { if (now >= s.due) { s.tgt = s.dueT; s.due = 0; } else moving = true; }
+      const up = s.tgt > s.th, k = up ? 520 : 340, c = up ? 30 : 19;
+      s.v += (-k * (s.th - s.tgt) - c * s.v) * dt; s.th += s.v * dt;
+      if (s.th < 0) { s.th = 0; s.v = -s.v * 0.25; }
+      if (Math.abs(s.th - s.tgt) < 0.05 && Math.abs(s.v) < 0.5) { s.th = s.tgt; s.v = 0; } else moving = true;
+      s.el.style.transform = `translateZ(${s.z}px) rotateX(${s.th.toFixed(2)}deg)`;
+    }
+    return moving;
+  }
+  function readout(id, L) {
+    const el = $(`[data-l2="${id}"]`); if (!el) return;
+    if (L < 0) { el.classList.remove('riff'); el.innerHTML = `<span class="e-pat">${esc(T[id].pattern)}</span><span class="e-prog">${progText(st, id)}</span>`; return; }
+    const p = reamSamples(id)[L] || T[id].paths[0];
+    el.classList.add('riff'); el.innerHTML = `<span class="e-pat">${esc(p)}</span><span class="e-prog">Page ${L + 1} of ${st.t[id].done}</span>`;
+  }
+  function riffleTo(id, L) {
+    const R = reams[id]; if (!R || st.open || R.vis < 2) return;
+    L = clamp(L, 0, R.vis - 1);
+    if (L === R.L && R.riffling) return;
+    R.L = L; R.riffling = true; readout(id, L);
+    $(`[data-hole="${id}"]`).classList.add('cur');
+    if (reduced()) { const top = R.sheets.filter((s) => s.k === 0); top[0].el.querySelector('img').src = art(id, L + 1); top[1].el.querySelector('img').src = art(id, L + 1, true); return; }
+    const now = performance.now();
+    R.sheets.forEach((s) => { const tgt = s.k < L ? Math.min(86, 66 + (L - 1 - s.k) * 4) : 0; if (s.ph) { s.due = now + 34; s.dueT = tgt; } else { s.tgt = tgt; s.due = 0; } });
+    wake(R);
+  }
+  function release(id) {
+    const R = reams[id]; if (!R || !R.riffling) return;
+    R.riffling = false; readout(id, -1);
+    const h = $(`[data-hole="${id}"]`); if (h) h.classList.remove('cur');
+    if (reduced()) { const top = R.sheets.filter((s) => s.k === 0); top[0].el.querySelector('img').src = art(id, 1); top[1].el.querySelector('img').src = art(id, 1, true); R.L = 0; return; }
+    const now = performance.now(), L = R.L;
+    R.sheets.forEach((s) => { if (s.k < L) { s.due = now + (L - 1 - s.k) * 45 + (s.ph ? 34 : 0); s.dueT = 0; } });
+    R.L = 0; wake(R);
+  }
+
+  /* ---------- rendering ---------- */
+  const GHOST = '<svg viewBox="0 0 40 52" width="40" height="52"><path d="M10.5 50V20C10.5 11 14.5 4 21.5 4S32.5 11 32.5 20v30z" fill="none" stroke="#3255a4" stroke-width="1.6"/><path d="M8 49V19C8 10 12 3 19 3s11 7 11 16v30z" fill="#ff48b0" opacity=".92"/><g fill="#d61c82"><circle cx="15" cy="20" r="1.2"/><circle cx="22" cy="17" r="1.2"/><circle cx="25" cy="25" r="1.2"/><circle cx="17" cy="29" r="1.2"/><circle cx="24" cy="34" r="1.2"/><circle cx="14" cy="38" r="1.2"/><circle cx="21" cy="42" r="1.2"/><circle cx="26" cy="46" r="1.2"/></g></svg>';
+  function renderLive() {
+    const u = ++uid, tot = totals(st);
+    board.innerHTML = `<div class="e-stage"><div class="e-scene">${sceneHTML(st, u)}</div><div class="e-review" hidden></div></div><div class="e-dock" data-part="dock">${dockHTML(st, tot, u)}</div><div class="e-fly" aria-hidden="true"></div><div class="e-lb" hidden></div><div class="e-ghost" aria-hidden="true" hidden>${GHOST}</div><p class="e-vh" aria-live="polite"></p>`;
+    ORDER.forEach(bindReam);
+  }
+  function renderHole(id) { const w = $(`[data-part="hole-${id}"]`); if (w) { w.outerHTML = holeHTML(st, id, ORDER.indexOf(id)); bindReam(id); } }
+  function renderShelf() { const d = $('[data-part="shelf"]'); if (d) d.innerHTML = shelfHTML(st, totals(st)); }
+  function renderTotals(skipShelf) {
+    const tot = totals(st);
+    const tt = $('[data-tot]'); if (tt) tt.textContent = st.mode === 'start' ? `Sorting, ${tot.found} found so far` : `${tot.done} of ${tot.total} captured`;
+    const m = $('[data-part="meter"]'); if (m) { const tmp = document.createElement('div'); tmp.innerHTML = dockHTML(st, tot, 0); m.innerHTML = tmp.querySelector('[data-part="meter"]').innerHTML; }
+    const sh = $('[data-part="shelf"]'); if (!skipShelf && sh && !sh.contains(document.activeElement)) sh.innerHTML = shelfHTML(st, tot);
+  }
+  function say(msg) { const p = $('.e-vh[aria-live]'); if (p) p.textContent = msg; }
+  function updateDepth(id) {
+    const plane = $(`[data-ream="${id}"]`); if (!plane) return;
+    const Th = thick(st.t[id].done), vis = +plane.dataset.vis;
+    plane.querySelectorAll('.e-body').forEach((b) => { b.style.height = Th.toFixed(1) + 'px'; b.style.transform = `translateZ(${Th.toFixed(1)}px) rotateX(-90deg)`; });
+    const R = reams[id];
+    if (R) R.sheets.forEach((s) => { s.z = +(Th + (vis - 1 - s.k) * ZG + 0.4).toFixed(1); s.el.style.transform = `translateZ(${s.z}px) rotateX(${s.th.toFixed(2)}deg)`; });
+    const pr = $(`[data-l2="${id}"] .e-prog`); if (pr) { pr.textContent = progText(st, id); go(pr, [{ transform: 'translateY(5px)', opacity: 0.3 }, { transform: 'none', opacity: 1 }], { duration: 200, easing: EASE }); }
+    renderTotals(true);
+  }
+
+  /* ---------- the signature moment ---------- */
+  const ghost = () => $('.e-ghost');
+  function ghostShow(x, y) { const G = ghost(); G.hidden = false; gpos = [x, y]; G.style.transform = `translate(${x - 19}px,${y - 4}px)`; return go(G, [{ opacity: 0 }, { opacity: 1 }], { duration: 260 }); }
+  function ghostTo(x, y, ms, delay, ease) { const f = gpos; gpos = [x, y]; return go(ghost(), [{ transform: `translate(${f[0] - 19}px,${f[1] - 4}px)` }, { transform: `translate(${x - 19}px,${y - 4}px)` }], { duration: ms, delay: delay || 0, easing: ease || 'cubic-bezier(.45,0,.2,1)' }); }
+  function ghostPress() {
+    const rp = document.createElement('div'); rp.className = 'e-ripple'; rp.style.left = gpos[0] + 'px'; rp.style.top = gpos[1] + 'px'; $('.e-fly').appendChild(rp);
+    go(rp, [{ transform: 'scale(.3)', opacity: 1 }, { transform: 'scale(1.5)', opacity: 0 }], { duration: 420, easing: EASE }).then(() => rp.remove());
+    return go(ghost().firstElementChild, [{ transform: 'scale(1)' }, { transform: 'scale(.84)', offset: 0.45 }, { transform: 'scale(1)' }], { duration: 240 });
+  }
+  function ghostHide() { const G = ghost(); if (!G || G.hidden) return Promise.resolve(); return go(G, [{ opacity: 1 }, { opacity: 0 }], { duration: 320 }).then(() => { G.hidden = true; G.style.opacity = ''; }); }
+  function reamTop(id) { const r = hr(ORDER.indexOf(id)), Th = thick(st.t[id].done); return [r.x + PLX + 75, r.y + HH - 14 - 34 - Th * 0.77]; }
+
+  function fill(id, n, gap, rid, d0) {
+    const fly = $('.e-fly'), ps = [];
+    for (let k = 0; k < n; k++) {
+      const c = document.createElement('div'); c.className = 'e-flc'; c.innerHTML = img(id, 30 + k);
+      const [tx, ty] = reamTop(id); c.style.left = tx - 75 + 'px'; c.style.top = ty - 47 + 'px'; c.style.opacity = '0'; fly.appendChild(c);
+      ps.push(go(c, [{ transform: `translate(${60 + k * 14}px,${-ty - 40}px) rotate(${-10 + k * 4}deg) scale(1.15)`, opacity: 1 }, { transform: 'translate(0,-10px) rotate(0deg) scale(1,.75)', opacity: 1, offset: 0.75 }, { transform: 'translate(0,2px) scale(.97,.6)', opacity: 0 }], { duration: 560, delay: (d0 || 0) + k * gap, easing: EASE }).then(() => { c.remove(); if (rid !== run) return; st.t[id].done++; updateDepth(id); }));
+    }
+    return Promise.all(ps);
+  }
+  async function autoplay() {
+    const rid = ++run; playing = true;
+    st = makeState('pre'); renderLive();
+    try {
+      const [bx, by] = reamTop('blog');
+      ghostShow(760, 700);
+      const fills = Promise.all([fill('blog', 5, 120, rid, 0), fill('docs', 3, 180, rid, 140)]);
+      await ghostTo(bx - 78, by + 8, 900, 150); chk(rid);
+      await fills; chk(rid);
+      // the riffle: the thimble thumbs across the ream
+      const vis = reams.blog.vis;
+      for (let L = 1; L < vis; L++) { riffleTo('blog', L); ghostTo(bx - 78 + (L / (vis - 1)) * 200, by + 8 - L * 1.5, 170); await wait(190); chk(rid); }
+      await wait(260); chk(rid);
+      release('blog');
+      await wait(420); chk(rid);
+      await stampOdd(rid);
+      await ghostHide();
+    } catch (e) { swallow(e); return; }
+    playing = false;
+  }
+  async function stampOdd(rid) {
+    const fly = $('.e-fly'), [bx, by] = reamTop('blog'), outs = T.blog.outliers;
+    const cards = outs.map((o, j) => {
+      const c = document.createElement('div'); c.className = 'e-tc'; c.style.position = 'absolute';
+      c.innerHTML = img('blog', 101 + j, false, o.variant) + stamp(o.path, o.why, 'wait');
+      c.style.left = TRAY[j][0] + 'px'; c.style.top = TRAY[j][1] + 'px'; c.style.rotate = TRAY[j][2] + 'deg'; fly.appendChild(c); return c;
+    });
+    // they will not lie flat: each slides out of the ream and hangs in front of the hole
+    const SX = (j) => 40 + j * 88, SY = (j) => by - 46 + (j === 1 ? -10 : 6);
+    const pose = cards.map((c, j) => `translate(${SX(j) - TRAY[j][0]}px,${SY(j) - TRAY[j][1]}px) rotate(${(j - 1) * 8 - TRAY[j][2]}deg) scale(1.12)`);
+    const start = cards.map((c, j) => `translate(${bx - 62 - TRAY[j][0]}px,${by - TRAY[j][1]}px) scale(.9,.55)`);
+    await Promise.all(cards.map((c, j) => go(c, [{ transform: start[j], opacity: 0 }, { transform: start[j], opacity: 1, offset: 0.12 }, { transform: pose[j], opacity: 1 }], { duration: 460, delay: j * 70, easing: EASE })));
+    chk(rid);
+    for (let j = 0; j < cards.length; j++) {
+      const c = cards[j], s = c.querySelector('.e-stp');
+      const [px, py] = [SX(j) + 34, SY(j) + 50];
+      await ghostTo(px, py, 150); chk(rid);
+      ghostPress(); s.classList.remove('wait');
+      go(s, [{ transform: 'scale(1.35)', opacity: 0 }, { transform: 'scale(.96)', opacity: 1, offset: 0.6 }, { transform: 'none', opacity: 1 }], { duration: 200, easing: OUT });
+      go(c, [{ transform: pose[j] }, { transform: pose[j] + ' translateY(3px)' }, { transform: pose[j] }], { duration: 150 });
+      await wait(110); chk(rid);
+    }
+    ghostTo(860, 560, 500);
+    await Promise.all(cards.map((c, j) => go(c, [{ transform: pose[j], easing: DROP }, { transform: 'none', offset: 0.74, easing: EASE }, { transform: 'translateY(-8px)', offset: 0.87, easing: 'ease-in' }, { transform: 'none' }], { duration: 640, delay: j * 80 })));
+    chk(rid);
+    st.stamped = true; renderShelf(); renderHole('blog');
+    cards.forEach((c) => c.remove());
+    say("3 Blog post pages don't fit: stamped and moved to the shelf");
+  }
+  function skip() {
+    if (!playing) return;
+    run++; playing = false; busy = false; stopAll();
+    st = makeState('rest'); renderLive();
+  }
+
+  /* ---------- review: pull the bundle out and untie it ---------- */
+  async function openPile(id, o) {
+    o = o || {};
+    if (st.open || busy) return;
+    const s = st.t[id]; if (!s.picked || s.done === 0) return;
+    release(id);
+    busy = true; st.open = id;
+    const rid = run; opener = document.activeElement;
+    const scene = $('.e-scene'), rv = $('.e-review'), fly = $('.e-fly');
+    rv.innerHTML = reviewHTML(st, id, 'deal'); rv.hidden = false;
+    if (reduced()) { scene.style.transform = 'translateY(-800px)'; busy = false; say(`${T[id].name} untied`); rv.querySelector('[data-act="close"]').focus(); return; }
+    const [tx, ty] = reamTop(id), bx = tx - 75, by = ty - 47;
+    const B = bundleEl(id); B.style.left = bx + 'px'; B.style.top = by + 'px'; fly.appendChild(B);
+    const plane = $(`[data-hole="${id}"] .e-persp`); plane.style.opacity = '0';
+    const pairs = [...rv.querySelectorAll('.e-pair')], odds = [...rv.querySelectorAll('.e-oddp')];
+    [...pairs, ...odds].forEach((e) => (e.style.opacity = '0'));
+    const string = rv.querySelector('.e-string'); string.style.opacity = '0';
+    const dx = CX - (bx + 75), dy = CY - (by + 47);
+    go(scene, [{ transform: 'translateY(0)' }, { transform: 'translateY(-800px)' }], { duration: 640, delay: 100, easing: EASE });
+    go(rv, [{ transform: 'translateY(800px)' }, { transform: 'translateY(0)' }], { duration: 640, delay: 100, easing: EASE });
+    await go(B, [{ transform: 'translate(0,0) scale(1)' }, { transform: 'translate(0,14px) scale(1.1)', offset: 0.2 }, { transform: `translate(${dx}px,${dy}px) scale(${SC})` }], { duration: 720, easing: EASE }); chk(rid);
+    await Promise.all([
+      go(B.querySelector('.e-bow'), [{ transform: 'scale(1) rotate(0deg)', opacity: 1 }, { transform: 'scale(1.2) rotate(-14deg)', opacity: 1, offset: 0.35 }, { transform: 'scale(.3) rotate(55deg)', opacity: 0 }], { duration: 380, easing: EASE }),
+      go(B.querySelector('.e-sh'), [{ transform: 'translateX(0)', opacity: 1 }, { transform: 'translateX(60px)', opacity: 0 }], { duration: 320, delay: 100, easing: OUT }),
+      go(B.querySelector('.e-sv'), [{ transform: 'translateY(0)', opacity: 1 }, { transform: 'translateY(50px)', opacity: 0 }], { duration: 320, delay: 130, easing: OUT }),
+      go(string, [{ opacity: 0, transform: 'translateY(-10px)' }, { opacity: 1, transform: 'none' }], { duration: 300, delay: 200, easing: EASE })
+    ]); chk(rid);
+    B.remove();
+    const deals = [];
+    [...pairs, ...odds].forEach((p, k) => {
+      const x = parseFloat(p.style.left), y = parseFloat(p.style.top), d = p.querySelector('.dk'), ph = p.querySelector('.ph'), cap = p.querySelector('.e-cap2');
+      p.style.opacity = '1'; ph.style.opacity = '0'; cap.style.opacity = '0';
+      deals.push(go(d, [{ transform: `translate(${CX - (x + 103)}px,${CY - (y + 64)}px) scale(1.35) rotate(${(k % 2 ? 1 : -1) * (3 + k)}deg)` }, { transform: 'none' }], { duration: 500, delay: k * 45, easing: EASE }));
+      deals.push(go(ph, [{ transform: 'translateX(-90px) scale(.9)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 360, delay: 260 + k * 45, easing: EASE }));
+      deals.push(go(cap, [{ opacity: 0 }, { opacity: 1 }], { duration: 240, delay: 340 + k * 45 }));
+    });
+    await Promise.all(deals); chk(rid);
+    busy = false; say(`${T[id].name} untied`);
+    const c = rv.querySelector('[data-act="close"]'); if (c) c.focus();
+  }
+  async function closePile() {
+    const id = st.open; if (!id || busy) return;
+    busy = true; closeLB();
+    const rid = run, scene = $('.e-scene'), rv = $('.e-review'), fly = $('.e-fly');
+    const done = () => { const p = $(`[data-hole="${id}"] .e-persp`); if (p) p.style.opacity = ''; rv.hidden = true; rv.innerHTML = ''; rv.style.transform = ''; scene.style.transform = ''; st.open = null; busy = false; if (opener && board.contains(opener)) opener.focus(); opener = null; };
+    if (reduced()) { done(); return; }
+    const items = [...rv.querySelectorAll('.e-pair, .e-mini, .e-oddp')];
+    await Promise.all(items.map((p, k) => { const x = p.offsetLeft + (p.classList.contains('e-mini') ? 32 : 0), y = p.offsetTop + (p.classList.contains('e-mini') ? 100 : 0); return go(p, [{ transform: 'none', opacity: 1 }, { transform: `translate(${CX - (x + 120)}px,${CY - (y + 64)}px) scale(.8)`, opacity: 0 }], { duration: 260, delay: Math.min(k, 12) * 15, easing: OUT }); }));
+    chk(rid);
+    const [tx, ty] = reamTop(id), bx = tx - 75, by = ty - 47, B = bundleEl(id);
+    B.style.left = bx + 'px'; B.style.top = by + 'px'; fly.appendChild(B);
+    go(rv, [{ transform: 'translateY(0)' }, { transform: 'translateY(800px)' }], { duration: 560, easing: EASE });
+    go(scene, [{ transform: 'translateY(-800px)' }, { transform: 'translateY(0)' }], { duration: 560, easing: EASE });
+    await go(B, [{ transform: `translate(${CX - tx}px,${CY - ty}px) scale(${SC})` }, { transform: 'translate(0,-8px) scale(1.03)', offset: 0.8 }, { transform: 'translate(0,0) scale(1,.7)', opacity: 0.4 }], { duration: 620, easing: EASE });
+    chk(rid); B.remove(); done();
+  }
+
+  /* ---------- the other rituals ---------- */
+  function togglePick(id) {
+    const s = st.t[id], fromBox = document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('e-pick');
+    s.picked = !s.picked;
+    renderHole(id); renderTotals();
+    const sh = $(`[data-hole="${id}"] .e-shut`);
+    if (fromBox) $(`[data-part="hole-${id}"] .e-pick`).focus();
+    say(`${T[id].name} ${s.picked ? 'picked, the shutter is up' : 'left out, the shutter is down'}`);
+    if (reduced()) return;
+    if (s.picked) go(sh, [{ transform: 'translateY(0)' }, { transform: 'translateY(-100%)' }], { duration: 620, easing: EASE });
+    else go(sh, [{ transform: 'translateY(-100%)', easing: DROP }, { transform: 'translateY(0)', offset: 0.72, easing: 'ease-out' }, { transform: 'translateY(-5%)', offset: 0.86, easing: 'ease-in' }, { transform: 'translateY(0)' }], { duration: 660 });
+  }
+  function retry(id) {
+    const s = st.t[id], n = s.failed; if (!n) return;
+    const fin = () => { s.failed = 0; s.done = Math.min(s.total, s.done + n); if (st.open === id) $('.e-review').innerHTML = reviewHTML(st, id, 'static'); renderHole(id); renderTotals(); say(`${n} Docs pages captured again`); };
+    const ret = $(`[data-ret="${id}"]`);
+    if (reduced() || !ret || st.open) { fin(); return; }
+    ret.querySelector('.e-retry').style.visibility = 'hidden';
+    Promise.all([...ret.querySelectorAll('.e-rc')].map((c, j) => go(c, [{ transform: 'none', opacity: 1 }, { transform: 'translate(-60px,10px) scale(.95,.7)', opacity: 1, offset: 0.6 }, { transform: 'translate(-80px,20px) scale(.9,.5)', opacity: 0 }], { duration: 560, delay: j * 120, easing: EASE }))).then(fin);
+  }
+  function toggleDev(id, b) { const on = !st.dev[id]; st.dev[id] = on; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); renderTotals(); say(`${SITE.devices.find((d) => d.id === id).name} ${on ? 'on' : 'off'}`); if (on && !reduced()) go(b, [{ transform: 'scale(.94)' }, { transform: 'none' }], { duration: 260, easing: 'cubic-bezier(.34,1.56,.64,1)' }); }
+  function toggleOpt(id, b) { st.opt[id] = !st.opt[id]; b.classList.toggle('on', st.opt[id]); b.setAttribute('aria-checked', st.opt[id]); }
+  function setPosted(v, sel) {
+    st.posted = v; renderShelf();
+    const env = $('.e-env'), f = env.querySelector(sel); if (f) f.focus();
+    say(v ? 'Link posted to your client, open for 30 days' : 'Envelope recalled: sharing stopped');
+    if (!reduced()) go(env, v ? [{ transform: 'translate(-24px,16px) rotate(-3deg)', opacity: 0.4 }, { transform: 'none', opacity: 1 }] : [{ transform: 'translateY(-22px) rotate(2deg)' }, { transform: 'none' }], { duration: 460, easing: EASE });
+  }
+  function zip() {
+    st.zip = true; renderShelf(); const p = $('.e-parcel'); p.querySelector('[data-act="zip"]').focus(); say('The ZIP is packed and ready');
+    if (!reduced()) go(p, [{ transform: 'none' }, { transform: 'translateY(-12px)', offset: 0.4, easing: DROP }, { transform: 'none', offset: 0.75 }, { transform: 'translateY(-3px)', offset: 0.88 }, { transform: 'none' }], { duration: 600, easing: EASE });
+  }
+  function copyLink(b) {
+    try { const p = navigator.clipboard && navigator.clipboard.writeText('https://' + SITE.share.url); if (p && p.catch) p.catch(() => {}); } catch (e) { /* the preview frame may refuse the clipboard */ }
+    b.firstChild.textContent = 'Copied'; say('Link copied');
+    const t = setTimeout(() => { timers.delete(t); if (b.isConnected) b.firstChild.textContent = 'Copy link'; }, 1600); timers.add(t);
+  }
+  function spread() {
+    const rv = $('.e-review'), grid = rv.querySelector('.e-rv-grid'), btn = rv.querySelector('[data-act="spread"]'), id = st.open;
+    if (grid.dataset.spread) { const tmp = document.createElement('div'); tmp.innerHTML = reviewHTML(st, id, 'static'); grid.dataset.spread = ''; grid.className = 'e-rv-grid'; grid.innerHTML = tmp.querySelector('.e-rv-grid').innerHTML; btn.firstChild.textContent = `Spread all ${fitCount(st, id)}`; return; }
+    const n = fitCount(st, id); let h = '';
+    for (let k = 0; k < n; k++) h += `<button class="e-mini" data-act="lb" data-id="${id}" data-n="${k + 1}" aria-label="Full size: ${esc(T[id].name)} page ${k + 1} of ${n}">${img(id, k + 1)}</button>`;
+    grid.dataset.spread = '1'; grid.className = 'e-rv-grid e-spread'; grid.innerHTML = h; btn.firstChild.textContent = 'Show 6';
+    if (!reduced()) [...grid.children].forEach((m, k) => go(m, [{ transform: `translate(${466 - (m.offsetLeft + 21)}px,${190 - (m.offsetTop + 13)}px) scale(2)`, opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 500, delay: k * 3, easing: EASE }));
+  }
+  function openLB(id, path, n, from) {
+    const t = T[id], s = st.t[id], oi = t.outliers.findIndex((o) => o.path === path), pi = t.paths.indexOf(path), fi = (t.capture.failedPaths || []).indexOf(path);
+    const seed = n ? +n : oi >= 0 ? 101 + oi : fi >= 0 ? 201 + fi : pi >= 0 ? pi + 1 : 1, variant = oi >= 0 ? t.outliers[oi].variant : 'normal';
+    const queued = !s.picked || s.done === 0, failed = fi >= 0 && s.failed, odd = oi >= 0 && id === 'blog' && st.stamped;
+    const status = queued ? (s.picked ? 'Queued, not captured yet' : 'Not picked') : failed ? 'Returned: retry it from the Docs hole' : odd ? `${ALIKE[path]}% alike to its template` : 'Captured';
+    const lb = $('.e-lb'); lbOpener = from || document.activeElement;
+    const cover = queued || failed ? `<span class="e-lb-q">${queued ? 'Not captured yet' : 'Returned: the page timed out'}</span>` : '';
+    lb.innerHTML = `<div role="dialog" aria-modal="true" aria-labelledby="e-lbt${uid}"><div class="e-lb-h"><b id="e-lbt${uid}">${esc(path || `${t.name}, page ${n}`)}</b><span>${esc(t.name)}</span><span>${status}</span><button class="e-btn e-btn-s" data-act="lbclose">Close</button></div>
+      <div class="e-pc" style="left:70px;top:110px;width:780px;height:488px">${img(id, seed, false, variant)}${cover}${odd ? stamp(path, t.outliers[oi].why) : ''}</div><div class="e-pc" style="left:900px;top:110px;width:225px;height:488px">${img(id, seed, true, variant)}${cover}</div>
+      <span class="e-lb-c" style="left:70px">Desktop, 1920 px</span><span class="e-lb-c" style="left:900px">iPhone 14 Pro, 393 px</span></div>`;
+    lb.hidden = false; lb.querySelector('[data-act="lbclose"]').focus();
+    if (!reduced()) { go(lb, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 }); lb.querySelectorAll('.e-pc').forEach((c, k) => go(c, [{ transform: 'translateY(26px) scale(.95)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 400, delay: k * 70, easing: EASE })); }
+  }
+  function closeLB() { const lb = board && $('.e-lb'); if (!lb || lb.hidden) return; lb.hidden = true; lb.innerHTML = ''; if (lbOpener && board.contains(lbOpener)) lbOpener.focus(); lbOpener = null; }
+  function onSearch(inp) {
+    const v = inp.value.trim().toLowerCase(), res = inp.parentNode.querySelector('.e-res');
+    board.querySelectorAll('.e-hole.lit').forEach((h) => h.classList.remove('lit'));
+    if (!v) { res.hidden = true; res.innerHTML = ''; return; }
+    const out = [], holes = new Set();
+    SITE.templates.forEach((t) => { new Set([...t.paths, ...t.outliers.map((o) => o.path), ...(t.capture.failedPaths || [])]).forEach((p) => { if (p.toLowerCase().includes(v)) { out.push([t, p]); holes.add(t.id); } }); });
+    holes.forEach((id) => { const h = $(`[data-hole="${id}"]`); if (h) h.classList.add('lit'); });
+    res.style.top = inp.offsetTop + 'px';
+    res.innerHTML = out.length ? out.slice(0, 6).map(([t, p]) => { const s = st.t[t.id], f = (t.capture.failedPaths || []).includes(p) && s.failed, odd = t.id === 'blog' && t.outliers.some((o) => o.path === p) && st.stamped; return `<button class="e-r" data-act="find" data-id="${t.id}" data-path="${esc(p)}"><b>${esc(p)}</b><span>In ${esc(t.name)}</span><em class="${f || odd ? 'pk' : ''}">${!s.picked ? 'Not picked' : f ? 'Returned' : odd ? `${ALIKE[p]}% alike` : s.done ? 'Captured' : 'Queued'}</em></button>`; }).join('') : '<span class="e-nores">No page at that address. Try /docs or /blog.</span>';
+    res.hidden = false;
+  }
+  function setMode(m) {
+    st = makeState(m === 'start' ? 'start' : 'rest', st); renderLive();
+    if (m === 'start') { const i = $('.e-note input'); if (i) i.focus(); say('New delivery: write the site on the note'); }
+    else { say('Capture started'); const c = $('.e-openb'); if (c) c.focus(); }
+    if (!reduced()) go($('.e-scene'), [{ opacity: 0.2 }, { opacity: 1 }], { duration: 340 });
+  }
+  function onClick(e) {
+    const b = e.target.closest('[data-act]'); if (!b || !board.contains(b)) return;
+    const a = b.dataset.act, id = b.dataset.id;
+    if (a === 'open') { if (b.dataset.moved === '1') { b.dataset.moved = ''; return; } openPile(id).catch(swallow); }
+    else if (a === 'close') closePile().catch(swallow);
+    else if (a === 'pick') togglePick(id);
+    else if (a === 'retry') retry(id);
+    else if (a === 'dev') toggleDev(id, b);
+    else if (a === 'opt') toggleOpt(id, b);
+    else if (a === 'zip') zip();
+    else if (a === 'copy') copyLink(b);
+    else if (a === 'recall') setPosted(false, '[data-act="post"]');
+    else if (a === 'post') setPosted(true, '[data-act="recall"]');
+    else if (a === 'lb' || a === 'find') { if (a === 'find') b.closest('.e-res').hidden = true; openLB(id, b.dataset.path, b.dataset.n, b); }
+    else if (a === 'lbclose') closeLB();
+    else if (a === 'spread') spread();
+    else if (a === 'new') setMode('start');
+    else if (a === 'capture') setMode('live');
+  }
+  function handover() { if (playing) skip(); }
+  function riffleAt(b, e) { const R = reams[b.dataset.id]; if (!R) return; const r = b.getBoundingClientRect(); const f = (e.clientX - r.left) / r.width; riffleTo(b.dataset.id, Math.floor(clamp((f - 0.12) / 0.76, 0, 0.999) * R.vis)); }
+
+  function mount(sec) {
+    root = sec; board = sec.querySelector('[data-board="live"]');
+    st = makeState('rest'); renderLive();
+    board.addEventListener('click', onClick);
+    board.addEventListener('pointerdown', (e) => { handover(); const b = e.target.closest('.e-openb'); if (b && e.pointerType === 'touch') { b.setPointerCapture(e.pointerId); b._x = e.clientX; } }, true);
+    board.addEventListener('wheel', handover, { passive: true });
+    board.addEventListener('pointermove', (e) => { const b = e.target.closest('.e-openb'); if (!b || playing) return; if (e.pointerType === 'touch') { if (!e.buttons) return; if (Math.abs(e.clientX - (b._x || 0)) > 8) b.dataset.moved = '1'; } riffleAt(b, e); });
+    board.addEventListener('pointerout', (e) => { const b = e.target.closest('.e-openb'); if (b && !b.contains(e.relatedTarget) && !playing) release(b.dataset.id); });
+    board.addEventListener('focusout', (e) => { const b = e.target.closest && e.target.closest('.e-openb'); if (b && !playing) release(b.dataset.id); });
+    sec.addEventListener('keydown', (e) => {
+      handover();
+      const t = e.target;
+      if (e.key === 'Escape') { if (!$('.e-lb').hidden) closeLB(); else if (st.open) closePile().catch(swallow); return; }
+      if (t.classList && t.classList.contains('e-openb') && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) { e.preventDefault(); const R = reams[t.dataset.id]; if (R) riffleTo(t.dataset.id, (R.riffling ? R.L : 0) + (e.key === 'ArrowRight' ? 1 : -1)); }
+      if (e.key === 'Enter' && t.classList && t.classList.contains('e-q')) { const f = t.parentNode.querySelector('.e-r'); if (f) { e.preventDefault(); f.click(); } }
+    }, true);
+    board.addEventListener('input', (e) => { if (e.target.classList.contains('e-q')) onSearch(e.target); });
+    const sOpen = makeState('rest'), sStart = makeState('start');
+    const bo = sec.querySelector('[data-board="open"]'), bs = sec.querySelector('[data-board="start"]');
+    bo.innerHTML = `<div class="e-stage"><div class="e-review">${reviewHTML(sOpen, 'blog', 'static')}</div></div><div class="e-dock">${dockHTML(sOpen, totals(sOpen), ++uid)}</div>`;
+    bs.innerHTML = `<div class="e-stage"><div class="e-scene">${sceneHTML(sStart, ++uid)}</div></div><div class="e-dock">${dockHTML(sStart, totals(sStart), ++uid)}</div>`;
+  }
+  function show() { if (played) return; played = true; if (!reduced()) autoplay().catch(swallow); }
+  function hide() { if (playing) skip(); ORDER.forEach(release); stopAll(); busy = false; closeLB(); }
+  window.Directions.e = { mount, show, hide };
+})();
+</script>
