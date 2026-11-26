@@ -3,7 +3,7 @@ Copy to the project root as PREMIUM_GATES.md. Every path is relative to the proj
 Fill it with evidence of the work. Never edit it to get past the hook: fix the work. Never invent a USER-OK quote.
 Lines are `KEY: value`; anything with `<...>` counts as empty.
 
-PHASE: directions
+PHASE: stills
 
 ## Paradigm sweep (first: 6+ rough single-screen sketches of NEW MECHANICS, not themes; the critic answers never-seen for each)
 PARADIGM: survey-map | mechanic: the site is a map, sections as districts; pick by lassoing a district, captures fill each plot in place, the share link is the map | sketch: design/paradigms/1-survey-map.png | never-seen: NO
@@ -42,4 +42,4 @@ WOW: 7
 
 ## Below the bar (First glance or Wow < 9) only
 ## Ask the user, stating the gap plainly ("this is 8/6, below your bar of 9/9"), then paste their exact words.
-USER-OK:
+USER-OK: Build the hybrid (Recommended)

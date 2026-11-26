@@ -13,7 +13,7 @@ body{font-family:var(--sh-ui)}
 .sh-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px 32px}
 .sh-head h1{margin:0;font-size:30px;letter-spacing:-.02em}
 .sh-head p{margin:0;max-width:70ch;color:var(--sh-muted);font-size:14px;line-height:1.55}
-.sh-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:22px 0 16px}
+.sh-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:22px 0 16px}
 .sh-tabs button{all:unset;box-sizing:border-box;cursor:pointer;padding:12px 14px;background:var(--sh-panel);border:1px solid var(--sh-line);display:grid;gap:2px}
 .sh-tabs button[aria-selected="true"]{border-color:var(--sh-fg);box-shadow:0 0 0 1px var(--sh-fg)}
 .sh-tabs button:focus-visible{outline:2px solid var(--sh-accent);outline-offset:3px}
@@ -54,6 +54,7 @@ body{font-family:var(--sh-ui)}
     <button role="tab" id="tab-b" aria-controls="dir-b" aria-selected="true" data-dir="b"><span class="n">B Art and motion<span class="rec">Recommended</span></span><span class="d">A's art with a signature moment</span></button>
     <button role="tab" id="tab-c" aria-controls="dir-c" aria-selected="false" data-dir="c"><span class="n">C A world</span><span class="d">Every action is a ritual</span></button>
     <button role="tab" id="tab-d" aria-controls="dir-d" aria-selected="false" data-dir="d"><span class="n">D Wild card</span><span class="d">One unexpected idea</span></button>
+    <button role="tab" id="tab-e" aria-controls="dir-e" aria-selected="false" data-dir="e"><span class="n">E Hybrid<span class="rec">Round 2</span></span><span class="d">C's sorting office holding B's riffle stacks, in the riso inks</span></button>
   </div>
   <main>
 <!--DIRECTIONS-->
@@ -190,7 +191,9 @@ window.PREFERS_REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').m
     if (location.hash !== '#' + x) history.replaceState(null, '', '#' + x);
   }
   document.querySelectorAll('.sh-tabs button').forEach((b) => b.addEventListener('click', () => select(b.dataset.dir)));
-  const start = (location.hash || '#b').slice(1);
-  select(['a', 'b', 'c', 'd'].includes(start) ? start : 'b');
+  // Open the hybrid when it is on the page, else B.
+  const fallback = document.getElementById('dir-e') ? 'e' : 'b';
+  const start = (location.hash || '#' + fallback).slice(1);
+  select(['a', 'b', 'c', 'd', 'e'].includes(start) && document.getElementById('dir-' + start) ? start : fallback);
 })();
 </script>
