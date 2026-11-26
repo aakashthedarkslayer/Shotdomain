@@ -7,7 +7,7 @@ import re, sys, pathlib
 here = pathlib.Path(__file__).parent
 shell = (here / "shell.html").read_text()
 markup, scripts = [], []
-only = sys.argv[sys.argv.index("--only")+1] if "--only" in sys.argv else "abcde"  # e.g. --only a
+only = sys.argv[sys.argv.index("--only")+1] if "--only" in sys.argv else "abcdef"  # e.g. --only a
 for k in only:
     f = here / f"dir-{k}.html"
     if not f.exists():

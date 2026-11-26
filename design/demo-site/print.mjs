@@ -71,6 +71,9 @@ for (const [id, list] of Object.entries(piles)) {
     if (hd || sb || ft) why.push(`Different ${[hd && 'header', sb && 'sidebar', ft && 'fonts'].filter(Boolean).join(' and ')}`.replace(/^Different (\w+) and (\w+) and/, 'Different $1, $2 and'));
     if (!why.length && x.likeness < cut) why.push('Layout differs');
     x.why = why;
+    // Box the element behind the first reason (page pixels / 1920, the top square), else the layout diff.
+    const R = c.rects || {}, el = c.broken.length ? R.broken : c.overflow ? R.overflow : hd ? R.header : sb ? R.sidebar : ft ? R.h1 : null;
+    if (el) x.box = { x: el.x / 1920, y: el.y / 1920, w: el.w / 1920, h: Math.max(el.h, el === R.broken ? 72 : 0) / 1920 }; // a missing image collapses, so box the gap it left
   }
   const odd = L.filter((x) => x.why.length).sort((a, b) => a.likeness - b.likeness);
   // How far the pink plate drifts: by how unlike the pile the page is, at least 4 px for any odd page.
@@ -103,7 +106,7 @@ async function overprint(list, size, file) {
   const cell = 4.2, k = (2 * Math.PI) / cell, out = new Float32Array(size * size);
   const lowNoise = (x, y) => 0.5 * Math.sin(x * 0.021 + Math.sin(y * 0.017) * 2) * Math.cos(y * 0.013 + x * 0.004);
   for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
-    const i = y * size + x, v = clamp((acc[i] / list.length) * (1 + 0.12 * lowNoise(x, y)));
+    const i = y * size + x, v = clamp(Math.pow(acc[i] / list.length, 0.72) * (1 + 0.12 * lowNoise(x, y))); // lift the mid-tones so shared text reads
     const u = (x + y) * Math.SQRT1_2 * k, w = (x - y) * Math.SQRT1_2 * k;
     const t = (Math.cos(u) + Math.cos(w)) / 4 + 0.5; // 0..1 threshold, dots grow into a checker
     out[i] = v > 0.97 ? 0.96 : clamp((v - (1 - t)) / 0.12 + 0.5) * 0.92;
@@ -140,7 +143,7 @@ for (const p of oddAll) {
     const d = sharp(join(CAP, 'full', n + '.desktop.webp')); const dm = await d.metadata();
     await d.extract({ left: 0, top: 0, width: dm.width, height: Math.min(dm.height, 1600) }).resize(720).webp({ quality: 84 }).toFile(join(ART, `f-true-${n}.desktop.webp`));
     const ph = sharp(join(CAP, 'full', n + '.iphone.webp')); const pm = await ph.metadata();
-    await ph.extract({ left: 0, top: 0, width: pm.width, height: Math.min(pm.height, 1500) }).resize(240).webp({ quality: 84 }).toFile(join(ART, `f-true-${n}.iphone.webp`));
+    await ph.extract({ left: 0, top: 0, width: Math.min(pm.width, 786), height: Math.min(pm.height, 1500) }) // what the phone shows: 393 px at 2x, even when the page is wider.resize(240).webp({ quality: 84 }).toFile(join(ART, `f-true-${n}.iphone.webp`));
   } catch (e) { console.log('no full capture for', p); }
 }
 data.paths = paths.length;

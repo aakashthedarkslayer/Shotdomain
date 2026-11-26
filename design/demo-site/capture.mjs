@@ -41,7 +41,15 @@ async function worker(list) {
       const widest = overflow;
       const aside = document.querySelector('aside');
       const h1 = document.querySelector('h1'), hd = document.querySelector('header');
-      return { broken, overflow: widest, h1Font: h1 ? getComputedStyle(h1).fontFamily.split(',')[0].replace(/["']/g, '') : null,
+      // Where each fact sits on the page, in page pixels, so the review can box the exact element.
+      const box = (el, wide) => { if (!el) return null; const r = el.getBoundingClientRect(), pr = wide ? el.parentElement.getBoundingClientRect() : r;
+        return { x: Math.round(pr.left), y: Math.round(r.top + scrollY), w: Math.round(Math.min(pr.right, vw) - pr.left), h: Math.max(48, Math.round(r.height)) }; };
+      const brokenEl = [...document.images].find((i) => i.complete && i.naturalWidth === 0);
+      let overEl = null;
+      for (const el of document.querySelectorAll('table, pre')) { const r = el.getBoundingClientRect(); if (r.right > vw + 8 || el.scrollWidth > el.clientWidth + 8) { overEl = el; break; } }
+      const overBox = overEl && (() => { const r = overEl.getBoundingClientRect(); return { x: Math.round(r.left), y: Math.round(r.top + scrollY), w: Math.round(vw - r.left), h: Math.round(r.height) }; })();
+      const rects = { broken: box(brokenEl, true), overflow: overBox, header: box(hd), sidebar: box(aside), h1: box(h1) };
+      return { broken, overflow: widest, rects, h1Font: h1 ? getComputedStyle(h1).fontFamily.split(',')[0].replace(/["']/g, '') : null,
         header: hd ? { h: Math.round(hd.getBoundingClientRect().height), bg: getComputedStyle(hd).backgroundColor } : null,
         sidebar: aside ? getComputedStyle(aside).backgroundColor : null,
         firstImageBroken: !!document.images[0] && document.images[0].complete && document.images[0].naturalWidth === 0 };
